@@ -29,7 +29,7 @@ addLayer("c", {
 
         // For normal layers, gain beyond [softcap] points is put to the [softcapPower]th power
         softcap: new Decimal(1e100), 
-        softcapPower: new Decimal(0.5), 
+        softcapPower: new Decimal(0.8), 
         canBuyMax() {}, // Only needed for static layers with buy max
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
