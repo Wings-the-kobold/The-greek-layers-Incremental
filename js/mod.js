@@ -18,9 +18,12 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
+	<h3>v0.0.1</h3><br>
 		- The First layer is added.<br>
-		- the beginining.`
+		- Pain, Pain and more Pain
+		<h3>v0.0.2 - synergism</h3><br>
+		- added 2 more upgrades.<br>
+		- *unplesant kobold groan noises*`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -44,6 +47,10 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 	return gain
+	if (hasUpgrade('B', 11)) gain = gain.times(1.5)
+	if (hasUpgrade('B', 12)) gain = gain.times(1.5)
+	if (hasUpgrade('B', 13)) gain = gain.times(1.75)
+	if (hasUpgrade('B', 14)) gain = gain.times(upgradeEffect('B', 14))
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
