@@ -1,29 +1,34 @@
 let modInfo = {
-	name: "The Omega Tree",
-	id: "True Omega Tree",
+	name: "The Greek Layers incremental",
+	id: "Omega",
 	author: "Wings",
-	pointsName: "Aplha's",
+	pointsName: "Points",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "",
+	discordName: "Wings#8659",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	offlineLimit: 5,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.1",
-	name: "First Layer",
+	num: "0.0.3",
+	name: "Too much chaos",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0.1</h3><br>
-		- The First layer is added.<br>
-		- Pain, Pain and more Pain
-		<h3>v0.0.2 - synergism</h3><br>
+		<h3>v0.0.1</h3><br>
+		- The First layer is added
+		I have no idea what im doing :D
+		<h3>v0.0.2 - synergism. </h3><br>
 		- added 2 more upgrades.<br>
-		- *unplesant kobold groan noises*`
+	   *unplesant kobold groan noises*
+	    <h3>v0.0.4 - Chaos. </h3><br>
+		- 2 buyable have been added
+		- increased offline limit to 5 hours
+		I think im getting the hang of this(kinda)
+	   `
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -46,24 +51,28 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	return gain
-	if (hasUpgrade('B', 11)) gain = gain.times(1.5)
-	if (hasUpgrade('B', 12)) gain = gain.times(1.5)
-	if (hasUpgrade('B', 13)) gain = gain.times(1.75)
-	if (hasUpgrade('B', 14)) gain = gain.times(upgradeEffect('B', 14))
-}
+	if (hasUpgrade('B', 11)) gain = gain.times(2)
+	if (hasUpgrade('B', 12)) gain = gain.times(2)
+	if (hasUpgrade('B', 13)) gain = gain.times(5)
+	if (hasUpgrade('B', 14)) gain = gain.times(upgradeEffect('B', 14)) 
+	
+	
 
+    
+}
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	Photosmic: new Decimal(0),
 }}
 
 // Display extra things at the top of the page
 var displayThings = [
+	
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("6.69e9"))
 }
 
 

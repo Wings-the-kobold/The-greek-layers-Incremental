@@ -102,3 +102,4 @@ To implement this effect, we modify gainMult, which returns the multiplier to th
 ```
 
 Refresh the page and see your new upgrade! Next time: a new layer...
+(Wings was here, kobold go Yip!)
