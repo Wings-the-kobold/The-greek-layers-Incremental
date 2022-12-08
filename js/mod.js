@@ -8,13 +8,13 @@ let modInfo = {
 	discordName: "Wings#8659",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 3,  // In hours
+	offlineLimit: 3,  // In hours 
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.3",
-	name: "Too much chaos",
+	num: "0.1.5",
+	name: "The Alpha Era.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -25,12 +25,16 @@ let changelog = `<h1>Changelog:</h1><br>
 		- added 2 more upgrades.<br>
 	   *unplesant kobold groan noises*
 	    <h3>v0.0.4 - Chaos. </h3><br>
-		- 2 buyables have been added (1 is working)
-		- increased offline limit to 3 hours
+		- 1 buyable have been added
+		- increased offline limit to 3 hours because YEA, WHY NOT.
 		I think im getting the hang of this(kinda)
+		<h3>v0.1.5 - Alpha era. POG!</h3><br>
+		- Alpha Layer!!!! ong!
+		- Fixed some stuff
+		kobold is getting less confused yay
 	   `
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `You have gotten enough upgrades and points that can no longer give any more progress. and thus, ending this game. (good job)`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -56,10 +60,10 @@ function getPointGen() {
 	if (hasUpgrade('B', 13)) gain = gain.times(5)
 	if (hasUpgrade('B', 14)) gain = gain.times(upgradeEffect('B', 14)) 
 	if (hasUpgrade('B', 16)) gain = gain.pow(1.05)
-	
-	
-
-    
+	if (hasUpgrade('A', 12)) gain = gain.times(10)
+	if (hasUpgrade('A', 13)) gain = gain.times(2)
+	if (hasUpgrade('A', 14)) gain = gain.times(2)
+    if (hasUpgrade('A', 15)) gain = gain.times(2)
 }
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
@@ -73,7 +77,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("6.69e9"))
+	return player.points.gte(new Decimal("2.11e9"))
 }
 
 
