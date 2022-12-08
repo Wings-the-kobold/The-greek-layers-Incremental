@@ -8,7 +8,7 @@ let modInfo = {
 	discordName: "Wings#8659",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 5,  // In hours
+	offlineLimit: 3,  // In hours
 }
 
 // Set your version in num and name
@@ -25,8 +25,8 @@ let changelog = `<h1>Changelog:</h1><br>
 		- added 2 more upgrades.<br>
 	   *unplesant kobold groan noises*
 	    <h3>v0.0.4 - Chaos. </h3><br>
-		- 2 buyable have been added
-		- increased offline limit to 5 hours
+		- 2 buyables have been added (1 is working)
+		- increased offline limit to 3 hours
 		I think im getting the hang of this(kinda)
 	   `
 
@@ -55,6 +55,7 @@ function getPointGen() {
 	if (hasUpgrade('B', 12)) gain = gain.times(2)
 	if (hasUpgrade('B', 13)) gain = gain.times(5)
 	if (hasUpgrade('B', 14)) gain = gain.times(upgradeEffect('B', 14)) 
+	if (hasUpgrade('B', 16)) gain = gain.pow(1.05)
 	
 	
 
@@ -67,7 +68,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	
+
 ]
 
 // Determines when the game "ends"
