@@ -59,17 +59,16 @@ function getPointGen() {
 	if (hasUpgrade('B', 12)) gain = gain.times(2)
 	if (hasUpgrade('B', 13)) gain = gain.times(5)
 	if (hasUpgrade('B', 14)) gain = gain.times(upgradeEffect('B', 14)) 
-	if (hasUpgrade('B', 16)) gain = gain.pow(1.05)
+	if (hasUpgrade('B', 16)) gain = gain.times(1.3)
 	if (hasUpgrade('A', 12)) gain = gain.times(10)
-	if (hasUpgrade('A', 13)) gain = gain.times(2)
+	if (hasUpgrade('A', 13)) gain = gain.times(upgradeEffect('A', 13))
 	if (hasUpgrade('A', 14)) gain = gain.times(upgradeEffect('A', 14))
 	if (hasUpgrade('A', 16)) gain = gain.times(4)
-	
+	gain = gain.times(buyableEffect("B", 21))
 	return gain;
 }
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-	Photosmic: new Decimal(0),
 }}
 
 // Display extra things at the top of the page
@@ -93,7 +92,7 @@ var backgroundStyle = {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
+	return(100) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,

@@ -12,7 +12,7 @@ addLayer("B", {
     baseResource:"Base Points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1.95, // Prestige currency exponent
+    exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -39,9 +39,9 @@ addLayer("B", {
         14: {
             title: "Boost.", // wip    
             description: "Base multiplies Point Generation (Base -> Points)", //increase point gain by Basepoints
-            cost: new Decimal(200),
+            cost: new Decimal(165),
             effect() {
-                return player[this.layer].points.add(1).pow(0.2)
+                return player[this.layer].points.add(1).pow(0.15)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
 
@@ -60,31 +60,31 @@ addLayer("B", {
         16: {
             title: "Boost. (again)",
             description:"Give ^1.05 boost to Point gain. and unlock a buyable", //jkladsfuroeiln
-            cost: new Decimal(900),
+            cost: new Decimal(2000),
         },
         17: {
             title: "I hope this is worth it.",
             description:"New layer perhaps?", //more jkladsfuroeiln
-            cost: new Decimal(1500),
+            cost: new Decimal(15000),
         }
     },
     buyables: {
         21: {
-            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(100).mul(x) },
-            display() { return "Each upgrade gives a compounding 50% boost to Points. Cost:" + this.cost() + " Base."},
+            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(100).pow(1.46) },
+            display() { return "Each upgrade gives a compounding 50% boost to Points. Cost:" + this.cost() + " Base." + +"x"
+        },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 
             },
-            effect() { 
-               return mult = mult.times(1.5);     
+            effect(x) { 
+               return Decimal.pow(1.5,x);     
                     
             },
             effectDisplay() { 
-                return format(upgradeEffect(this.layer, this.id))+"x"
-            
+                return format(buyableEffect(this.layer, this.id))+"x"
             },
             unlocked() { return hasUpgrade("B",16) },
         },
@@ -101,6 +101,8 @@ addLayer("B", {
     
 }
 )
+//new layer
+
 addLayer("A", {
     name: "Alpha Points", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "AP", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -112,10 +114,10 @@ addLayer("A", {
     color: "#8c0b0b",
     requires: new Decimal(10,000), // Can be a function that takes requirement increases into account
     resource: "α", // Name of prestige currency
-    baseResource:"Base's", // Name of resource prestige is based on
+    baseResource:"Bases", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1.1, // Prestige currency exponent
+    exponent: 0.48, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -137,18 +139,18 @@ addLayer("A", {
             title: "Grind go brr", //yes
             description: "AP multiplies Point gain by 20% per amount of it",
             effect() {
-                return player[this.layer].points.add(1).times(1.2)
+                return player[this.layer].points.times(1.2)
             },
             cost: new Decimal(5),
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
-            
+
         },
         14: {
             title: "Inflation", // wip    
             description: "AP multiplies Points. (AP -> Points)", //increase point gain by Basepoints
             cost: new Decimal(8),
             effect() {
-                return player[this.layer].points.add(1).pow(1.4).times(1.3)
+                return player[this.layer].points.add(1).times(3)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
 
@@ -158,7 +160,7 @@ addLayer("A", {
             description:"You read the title, AP -> Base ", //increase Basepoints by point gain, but have its effect reduced
             cost: new Decimal(15),
             effect() {
-                return player[this.layer].points.add(1).times(3)
+                return player[this.layer].points.add(1).times(1.1)
                
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },  
@@ -190,7 +192,7 @@ addLayer("A", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 
             },
-            effect() {
+            effect(x) {
                 mult = mult.times(1.2)
 
             },
@@ -228,3 +230,13 @@ addLayer("A", {
     
 }
 )
+
+
+
+
+
+
+
+
+
+
