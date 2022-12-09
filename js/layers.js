@@ -12,10 +12,11 @@ addLayer("B", {
     baseResource:"Base Points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1.2, // Prestige currency exponent
+    exponent: 2.25, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
+        
     },
 
 
@@ -33,14 +34,14 @@ addLayer("B", {
         13: {
             title: "why so high?.", //yes
             description: "Multiply Point Generation by 5x",
-            cost: new Decimal(100)
+            cost: new Decimal(80)
         },
         14: {
             title: "Boost.", // wip    
             description: "Base multiplies Point Generation (Base -> Points)", //increase point gain by Basepoints
-            cost: new Decimal(150),
+            cost: new Decimal(200),
             effect() {
-                return player[this.layer].points.add(1).pow(0.4)
+                return player[this.layer].points.add(1).pow(0.2)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
 
@@ -48,9 +49,9 @@ addLayer("B", {
         15: {
             title: "Synergy.",
             description:"Points Boosts Base (Points -> Base).", //increase Basepoints by point gain, but have its effect reduced
-            cost: new Decimal(300),
+            cost: new Decimal(500),
             effect() {
-                return player.points.add(1).pow(0.2)
+                return player.points.add(1).pow(0.15)
                
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },  
@@ -64,13 +65,13 @@ addLayer("B", {
         17: {
             title: "I hope this is worth it.",
             description:"New layer perhaps?", //more jkladsfuroeiln
-            cost: new Decimal(2000),
+            cost: new Decimal(1500),
         }
     },
     buyables: {
         21: {
             cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(100).mul(x) },
-            display() { return "Each upgrade gives a compounding 50% boost to Points" },
+            display() { return "Each upgrade gives a compounding 50% boost to Points. Cost:" + this.cost() + " Base."},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -109,7 +110,7 @@ addLayer("A", {
 		points: new Decimal(0),
     }},
     color: "#8c0b0b",
-    requires: new Decimal(1500), // Can be a function that takes requirement increases into account
+    requires: new Decimal(10,000), // Can be a function that takes requirement increases into account
     resource: "α", // Name of prestige currency
     baseResource:"Base's", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -138,7 +139,9 @@ addLayer("A", {
             effect() {
                 return player[this.layer].points.add(1).times(1.2)
             },
-            cost: new Decimal(5)
+            cost: new Decimal(5),
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+            
         },
         14: {
             title: "Inflation", // wip    
@@ -173,7 +176,7 @@ addLayer("A", {
         },
         18: {
             title: "aslf vparear 0inwen",
-            description:"2 new buyables", //more jkladsfuroeiln
+            description:"Points boosts Points", //more jkladsfuroeiln
             cost: new Decimal(25),
         },
     },
@@ -187,10 +190,15 @@ addLayer("A", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 
             },
+            effect() {
+                mult = mult.times(1.2)
+
+            },
             effectDisplay() { 
                 return format(upgradeEffect(this.layer, this.id))+"x"
             
             },
+
             unlocked() { return hasUpgrade('A',17) },
         },
         21: {
