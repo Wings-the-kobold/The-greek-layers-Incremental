@@ -47,7 +47,7 @@ addLayer("B", {
         },
         15: {
             title: "Synergy.",
-            description:"Points Boosts Base (Points -> Base). and unlock a buyable", //increase Basepoints by point gain, but have its effect reduced
+            description:"Points Boosts Base (Points -> Base).", //increase Basepoints by point gain, but have its effect reduced
             cost: new Decimal(300),
             effect() {
                 return player.points.add(1).pow(0.2)
@@ -58,7 +58,7 @@ addLayer("B", {
         },
         16: {
             title: "Boost. (again)",
-            description:"Give ^1.05 boost to Point gain, and unlock 2 buyables", //jkladsfuroeiln
+            description:"Give ^1.05 boost to Point gain. and unlock a buyable", //jkladsfuroeiln
             cost: new Decimal(900),
         },
         17: {
