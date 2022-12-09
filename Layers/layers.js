@@ -139,7 +139,7 @@ addLayer("A", {
             title: "Grind go brr", //yes
             description: "AP multiplies Point gain by 20% per amount of it",
             effect() {
-                return player[this.layer].points.times(1.2)
+                return player[this.layer].points.add(0.8).times(1.2)
             },
             cost: new Decimal(5),
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
