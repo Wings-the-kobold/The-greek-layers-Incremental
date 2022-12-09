@@ -7,7 +7,7 @@ let modInfo = {
 
 	discordName: "Wings#8659",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (10.5), // Used for hard resets and new players
 	offlineLimit: 3,  // In hours 
 }
 
@@ -62,8 +62,10 @@ function getPointGen() {
 	if (hasUpgrade('B', 16)) gain = gain.pow(1.05)
 	if (hasUpgrade('A', 12)) gain = gain.times(10)
 	if (hasUpgrade('A', 13)) gain = gain.times(2)
-	if (hasUpgrade('A', 14)) gain = gain.times(2)
-    if (hasUpgrade('A', 15)) gain = gain.times(2)
+	if (hasUpgrade('A', 14)) gain = gain.times(upgradeEffect('A', 14))
+	if (hasUpgrade('A', 16)) gain = gain.times(4)
+	
+	return gain;
 }
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {

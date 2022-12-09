@@ -7,15 +7,14 @@ addLayer("B", {
 		points: new Decimal(0),
     }},
     color: "#6AFF1D",
-    requires: new Decimal(10.5), // Can be a function that takes requirement increases into account
-    resource: "Base's", // Name of prestige currency
-    baseResource:"BasePoints", // Name of resource prestige is based on
+    requires: new Decimal(10), // Can be a function that takes requirement increases into account
+    resource: "Base", // Name of prestige currency
+    baseResource:"Base Points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 1.2, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        tmp.A.effect
         return mult
     },
 
@@ -28,7 +27,7 @@ addLayer("B", {
         },
         12: {
             title: "Pain.",  //also done
-            description: "Unlock 2 Buyables, And multiply Point generation by 2x",
+            description: "Multiply Point generation by 2x",
             cost: new Decimal(35) 
         },
         13: {
@@ -136,10 +135,13 @@ addLayer("A", {
         13: {
             title: "Grind go brr", //yes
             description: "AP multiplies Point gain by 20% per amount of it",
+            effect() {
+                return player[this.layer].points.add(1).times(1.2)
+            },
             cost: new Decimal(5)
         },
         14: {
-            title: "Inflation.", // wip    
+            title: "Inflation", // wip    
             description: "AP multiplies Points. (AP -> Points)", //increase point gain by Basepoints
             cost: new Decimal(8),
             effect() {
