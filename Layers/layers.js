@@ -12,8 +12,12 @@ addLayer("B", {
     baseResource:"Base Points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
-    gainMult() { // Calculate the multiplier for main currency from bonuses
+    exponent: 1/1.7, // Prestige currency exponent
+    gainMult() {
+        
+        
+        
+        // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
         
@@ -23,17 +27,17 @@ addLayer("B", {
     upgrades: {
         11: {
             title: "Second thoughts.",
-            description: "Point generation is 2x stronger", //finished
+            description: "Point generation is 1.15 stronger", //finished
             cost: new Decimal(10),
         },
         12: {
             title: "Pain.",  //also done
-            description: "Multiply Point generation by 2x",
+            description: "Multiply Point generation by 1.4",
             cost: new Decimal(35) 
         },
         13: {
             title: "why so high?.", //yes
-            description: "Multiply Point Generation by 5x",
+            description: "Multiply Point Generation by 1.55",
             cost: new Decimal(80)
         },
         14: {
@@ -41,7 +45,7 @@ addLayer("B", {
             description: "Base multiplies Point Generation (Base -> Points)", //increase point gain by Basepoints
             cost: new Decimal(165),
             effect() {
-                return player[this.layer].points.add(1).pow(0.15)
+                return player[this.layer].points.add(1).log(5)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
 
@@ -70,8 +74,8 @@ addLayer("B", {
     },
     buyables: {
         21: {
-            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(100).pow(1.46) },
-            display() { return "Each upgrade gives a compounding 50% boost to Points. Cost:" + this.cost() + " Base." + +"x"
+            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(100).times(1.35) },
+            display() { return "Each upgrade gives a compounding 10% boost to Points. Cost:" + this.cost() + " Base." + +"x"
         },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -80,7 +84,7 @@ addLayer("B", {
                 
             },
             effect(x) { 
-               return Decimal.pow(1.5,x);     
+               return Decimal.pow(1.1,x);     
                     
             },
             effectDisplay() { 
@@ -117,10 +121,10 @@ addLayer("A", {
     baseResource:"Bases", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.48, // Prestige currency exponent
+    exponent: 1.4, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        mult = new Decimal(1)
-        return mult
+       
+        return gainMult
     },
  effect() { },
 
@@ -205,7 +209,7 @@ addLayer("A", {
         },
         21: {
             cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(5).mul(x) },
-            display() { return "add 2x to Base gain." },
+            display() { return "multiply base gain by 15%" },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -216,11 +220,10 @@ addLayer("A", {
                 return format(upgradeEffect(this.layer, this.id))+"x"
             
             },
-            unlocked() { return hasUpgrade("A",17) },
+            unlocked() { return hasUpgrade('A',17) },
         },
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1.005)
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [

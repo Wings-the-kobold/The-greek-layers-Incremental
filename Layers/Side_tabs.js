@@ -4,9 +4,19 @@ addLayer("Ph", {
         points: new Decimal(0),
     }},
     color: "yellow",
-    resource: "Photosmic",
-
-    row: "side",
+    
     unlocked: true,
+    row: "side",
+
+    clickables: {
+        11: {
+            display() {return "Click for a compounding 1% boost to points!"},
+            
+            
+
+        }
+       
+    }
+
 }
 )

@@ -10,12 +10,7 @@ var layoutInfo = {
 
 
 // A "ghost" layer which offsets other layers in the tree
-addNode("a", {
-    layerShown: true,
-    tooltip: "Reset all progress up to AP for Prestige points",
-    branches: [["B","A"]],
-}, 
-)
+
 
 
 addLayer("tree-tab", {
