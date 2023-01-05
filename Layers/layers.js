@@ -1,23 +1,23 @@
 addLayer("B", {
-    name: "Base Points", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "B", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    name: "Base Points", 
+    symbol: "B",
+    position: 0, 
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
     }},
     color: "#6AFF1D",
-    requires: new Decimal(10), // Can be a function that takes requirement increases into account
-    resource: "Base", // Name of prestige currency
-    baseResource:"Base Points", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1/1.7, // Prestige currency exponent
+    requires: new Decimal(10),
+    resource: "Base", 
+    baseResource:"Base Points", 
+    baseAmount() {return player.points}, 
+    type: "normal", 
+    exponent: 1/1.7, 
     gainMult() {
         
         
         
-        // Calculate the multiplier for main currency from bonuses
+    
         mult = new Decimal(1)
         return mult
         
@@ -108,21 +108,21 @@ addLayer("B", {
 //new layer
 
 addLayer("A", {
-    name: "Alpha Points", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "AP", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    name: "Alpha Points", 
+    symbol: "AP", 
+    position: 1,
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
     }},
     color: "#8c0b0b",
-    requires: new Decimal(10,000), // Can be a function that takes requirement increases into account
-    resource: "α", // Name of prestige currency
-    baseResource:"Bases", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1.4, // Prestige currency exponent
-    gainMult() { // Calculate the multiplier for main currency from bonuses
+    requires: new Decimal(10,000), 
+    resource: "α", 
+    baseResource:"Bases", 
+    baseAmount() {return player.points}, 
+    type: "static", 
+    exponent: 1.4, 
+    gainMult() { 
        
         return gainMult
     },
@@ -161,10 +161,10 @@ addLayer("A", {
         },
         15: {
             title: "What if Alpha boosts Base?",
-            description:"You read the title, AP -> Base ", //increase Basepoints by point gain, but have its effect reduced
+            description:"You read the title, AP -> Base ", 
             cost: new Decimal(15),
             effect() {
-                return player[this.layer].points.add(1).times(1.1)
+                return player[this.layer].points.add(1).times(2)
                
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },  
