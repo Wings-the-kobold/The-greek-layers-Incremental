@@ -12,7 +12,7 @@ addLayer("B", {
     baseResource:"Base Points", 
     baseAmount() {return player.points}, 
     type: "normal", 
-    exponent: 1/1.7, 
+    exponent: 3, 
     gainMult() {
         
         
@@ -95,7 +95,6 @@ addLayer("B", {
 
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1.005)
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -164,7 +163,7 @@ addLayer("A", {
             description:"You read the title, AP -> Base ", 
             cost: new Decimal(15),
             effect() {
-                return player[this.layer].points.add(1).times(2)
+                return player[this.layer].points
                
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },  
