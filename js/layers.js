@@ -1,81 +1,84 @@
 addLayer("B", {
-    name: "Base Points", 
-    symbol: "B",
+    name: "Base increasers", 
+    symbol: "B↑",
     position: 0, 
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
     }},
-    color: "#6AFF1D",
+    color: "#2f39ed",
     requires: new Decimal(10),
-    resource: "Base", 
-    baseResource:"Base Points", 
+    resource: "BaseP", 
+    baseResource:"Points", 
     baseAmount() {return player.points}, 
     type: "normal", 
     exponent: 3, 
     gainMult() {
-        
-        
-        
-    
         mult = new Decimal(1)
+        if (hasUpgrade("B",14)) mult = mult.times(1.2);
         return mult
-        
+
     },
 
 
     upgrades: {
         11: {
-            title: "Second thoughts.",
-            description: "Point generation is 1.15 stronger", //finished
-            cost: new Decimal(10),
+            title: "Upgrade 1",
+            description() {return "Point generation is added by " + format(this.effect());},
+            effect(){
+                x = new Decimal(3) //base multiplier
+        
+                  if(hasUpgrade('B', 14)) {
+                    x = x.times(upgradeEffect('B', 14))
+                  } //boost from B14
+        
+                return x;
+             },
+            cost: new Decimal(5),
         },
         12: {
-            title: "Pain.",  //also done
-            description: "Multiply Point generation by 1.4",
-            cost: new Decimal(35) 
-        },
-        13: {
-            title: "why so high?.", //yes
-            description: "Multiply Point Generation by 1.55",
-            cost: new Decimal(80)
-        },
-        14: {
-            title: "Boost.", // wip    
-            description: "Base multiplies Point Generation (Base -> Points)", //increase point gain by Basepoints
-            cost: new Decimal(165),
+            title: "i hate titles",  
+            description: "BaseP multiplies Point gain",
             effect() {
                 return player[this.layer].points.add(1).log(5)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
-
+            cost: new Decimal(15), 
+            unlocked() { return hasUpgrade("B",11) },
+        },
+        13: {
+            title: "TITLES ARE FREAKING BORING", 
+            description: "Points are multiplied by 2",
+            cost: new Decimal(30),
+            unlocked() { return hasUpgrade("B",12) }
+        },
+        14: {
+            title: "Surely it wont get softcapped... right?",   
+            description: "Upgrade 1 is stronger based on points", 
+            cost: new Decimal(50),
+            effect() {
+                let effect = player[this.layer].points.log(10).pow(0.3)
+                effect = softcap(effect, new Decimal(8000), new Decimal(0.15))
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+            unlocked() { return hasUpgrade("B",13) }
         },
         15: {
-            title: "Synergy.",
-            description:"Points Boosts Base (Points -> Base).", //increase Basepoints by point gain, but have its effect reduced
-            cost: new Decimal(500),
-            effect() {
-                return player.points.add(1).pow(0.15)
-               
-            },
-            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },  
-        
+            title: "MORE!!!!!!",
+            description:"gain 20% more baseP on prestige",
+            cost: new Decimal(70),
+            unlocked() { return hasUpgrade("B",14) }
         },
         16: {
-            title: "Boost. (again)",
-            description:"Give ^1.05 boost to Point gain. and unlock a buyable", //jkladsfuroeiln
-            cost: new Decimal(2000),
-        },
-        17: {
-            title: "I hope this is worth it.",
-            description:"New layer perhaps?", //more jkladsfuroeiln
-            cost: new Decimal(15000),
+            title: "Buyable time",
+            description:"time for a buyable, ", //more jkladsfuroeiln
+            cost: new Decimal(100),
         }
     },
     buyables: {
         21: {
-            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(100).times(1.35) },
-            display() { return "Each upgrade gives a compounding 10% boost to Points. Cost:" + this.cost() + " Base." + +"x"
+            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(100).times(1.44) },
+            display() { return "add 1 to the baseP gain\n cost:" + this.cost() + "Base."
         },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -84,7 +87,7 @@ addLayer("B", {
                 
             },
             effect(x) { 
-               return Decimal.pow(1.1,x);     
+               return Decimal.add(1);     
                     
             },
             effectDisplay() { 
@@ -117,10 +120,10 @@ addLayer("A", {
     color: "#8c0b0b",
     requires: new Decimal(10,000), 
     resource: "α", 
-    baseResource:"Bases", 
+    baseResource:"Base", 
     baseAmount() {return player.points}, 
     type: "static", 
-    exponent: 1.4, 
+    exponent: 1.15, 
     gainMult() { 
        
         return gainMult
@@ -130,19 +133,19 @@ addLayer("A", {
     upgrades: {
         11: {
             title: "This isnt worth it.",
-            description: "Base Is multiplied by 1.3x", //finished
+            description: "Base added by 3", //finished
             cost: new Decimal(1),
         },
         12: {
             title: "Why?",  //also done
-            description: "10x point gain",
+            description: "2x point gain",
             cost: new Decimal(3) 
         },
         13: {
             title: "Grind go brr", //yes
             description: "AP multiplies Point gain by 20% per amount of it",
             effect() {
-                return player[this.layer].points.add(0.8).times(1.2)
+                return player[this.layer].points.add(0.8).times(0.2)
             },
             cost: new Decimal(5),
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
@@ -185,43 +188,7 @@ addLayer("A", {
             cost: new Decimal(25),
         },
     },
-    buyables: {
-        21: {
-            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(5).mul(x) },
-            display() { return "1.2x boost to Points as a compounding effect." },
-            canAfford() { return player[this.layer].points.gte(this.cost()) },
-            buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-                
-            },
-            effect(x) {
-                mult = mult.times(1.2)
-
-            },
-            effectDisplay() { 
-                return format(upgradeEffect(this.layer, this.id))+"x"
-            
-            },
-
-            unlocked() { return hasUpgrade('A',17) },
-        },
-        21: {
-            cost(x=getBuyableAmount(this.layer,this.id)) { return new Decimal(5).mul(x) },
-            display() { return "multiply base gain by 15%" },
-            canAfford() { return player[this.layer].points.gte(this.cost()) },
-            buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-                
-            },
-            effectDisplay() { 
-                return format(upgradeEffect(this.layer, this.id))+"x"
-            
-            },
-            unlocked() { return hasUpgrade('A',17) },
-        },
-    },
+   
     gainExp() { // Calculate the exponent on main currency from bonuses
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
