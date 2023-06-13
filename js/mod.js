@@ -1,28 +1,33 @@
 let modInfo = {
-	name: "The ??? Tree",
+	name: "Number++: TMT version",
 	id: "mymod",
-	author: "nobody",
-	pointsName: "points",
+	author: "ThatOneKobold",
+	pointsName: "",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "",
-	discordLink: "",
+	discordName: "Join my Twitch!",
+	discordLink: "discord.gg/tJDWU7twvB",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	offlineLimit: 3,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.1",
+	name: "Numbr go up!",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+		- game added<br>
+		- 5 upgrades!
+		
+		
+		
+		
+		`
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `ThatOneKobold is very proud you reached endgame, good job!`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -56,7 +61,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("1e13"))
 }
 
 
