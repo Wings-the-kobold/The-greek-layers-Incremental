@@ -58,7 +58,7 @@ addLayer("M", {
             effect() {
                 let effect = getBuyableAmount(this.layer, this.id);
                 if (buyableEffect("M", 11).lt(1)) effect = new Decimal(1);
-                effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
+                effect = effect.add(1).mul(buyableEffect("R" , 12));
                 return effect;
               },
          
@@ -99,7 +99,7 @@ addLayer("M", {
           effect() {
             let effect = getBuyableAmount(this.layer, this.id);
             if (buyableEffect("M", 12).lt(1)) effect = new Decimal(1);
-            effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
+            effect = effect.add(1).mul(buyableEffect("R" , 12));
             
             return effect;
           },
