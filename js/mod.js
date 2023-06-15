@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.6 - Reduction Era",
+	num: "0.1.6a - Reduction Era",
 	name: "REDUCTION!!",
 }
 
@@ -24,11 +24,12 @@ let changelog = `<h1>Changelog:</h1><br>
 		<h3>v0.1.1</h3><br>
 		- idk<br>
 		- Added stuff.<br>
-		<h3>v0.1.1</h3><br>
+		<h3>v0.1.6</h3><br>
 		- added 2 buyables<br>
 		- new prestige layer! (who tf reads these).<br>
-	
-		
+		- too many bug fixes xd
+		<h3>v0.1.6a</h3><br>
+		- fixed everything again askdjngliajg;lk<br>
 		
 		
 		
