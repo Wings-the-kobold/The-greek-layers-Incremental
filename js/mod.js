@@ -5,8 +5,8 @@ let modInfo = {
 	pointsName: "G.M",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "",
-	discordLink: "",
+	discordName: "My twitch server",
+	discordLink: "https://discord.gg/tJDWU7twvB",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }

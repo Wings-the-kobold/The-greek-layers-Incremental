@@ -58,7 +58,7 @@ addLayer("M", {
             effect() {
                 let effect = getBuyableAmount(this.layer, this.id);
                 if (buyableEffect("M", 11).lt(1)) effect = new Decimal(1);
-                effect = effect.add(1).mul(buyableEffect("R" , 12));
+                effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
                 return effect;
               },
          
@@ -99,7 +99,7 @@ addLayer("M", {
           effect() {
             let effect = getBuyableAmount(this.layer, this.id);
             if (buyableEffect("M", 12).lt(1)) effect = new Decimal(1);
-            effect = effect.add(1).mul(buyableEffect("R" , 12));
+            effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
             
             return effect;
           },
@@ -140,7 +140,7 @@ addLayer("M", {
           effect() {
             let effect = getBuyableAmount(this.layer, this.id).add(1);
             if (buyableEffect("M", 13).lt(1)) effect = new Decimal(1);
-            effect = effect.pow(1.1).sub(getBuyableAmount(this.layer, this.id)).mul(buyableEffect("R" , 12));
+            effect = effect.pow(1.1).sub(getBuyableAmount(this.layer, this.id)).mul(buyableEffect("R" , 12)).sub(1);
            
             return effect;
           },
@@ -186,7 +186,6 @@ addLayer("M", {
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    branches: ["M", "R"],
     layerShown(){return true}
 })
 
@@ -264,7 +263,7 @@ addLayer("R", {
       },
       display() {
         return `all Multiplier buyables are 50% stronger<br>
-        x${format(tmp[this.layer].buyables[this.id].effect)} buyable strength </b><br>
+        x${format(tmp[this.layer].buyables[this.id].effect.sub(1))} buyable strength </b><br>
     <h1>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Reduction Points</h1>`
       },
       canAfford() {
@@ -288,7 +287,7 @@ addLayer("R", {
         effect() {
           let effect = new Decimal(1);
           if (buyableEffect("R", 12).lt(1)) effect = new Decimal(1); // <-- why is this here? this should very clearly be different than the first line
-          effect = effect.add(getBuyableAmount(this.layer, this.id).mul(1.5))
+          effect = effect.add(getBuyableAmount(this.layer, this.id).mul(1.5)).add(1)
           return effect;
           },
 
