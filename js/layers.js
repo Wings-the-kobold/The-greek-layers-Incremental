@@ -186,6 +186,7 @@ addLayer("M", {
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    branches: ["M", "R"],
     layerShown(){return true}
 })
 
@@ -311,6 +312,7 @@ addLayer("R", {
 
 
   row: 1, // Row the layer is in on the tree (0 is the first row)
+  branches: ["M", "R"],
   hotkeys: [
       {key: "T", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
   ],
