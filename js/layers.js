@@ -264,7 +264,7 @@ addLayer("R", {
       },
       display() {
         return `all Multiplier buyables are 50% stronger<br>
-        x${format(tmp[this.layer].buyables[this.id].effect.sub(1))} buyable strength </b><br>
+        x${format(tmp[this.layer].buyables[this.id].effect)} buyable strength </b><br>
     <h1>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Reduction Points</h1>`
       },
       canAfford() {

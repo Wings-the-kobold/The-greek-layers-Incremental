@@ -30,6 +30,7 @@ let changelog = `<h1>Changelog:</h1><br>
 		- too many bug fixes xd
 		<h3>v0.1.6a</h3><br>
 		- fixed everything again askdjngliajg;lk<br>
+		- display on reduction and every other buyable and its effects are now normal<br>
 		
 		
 		
