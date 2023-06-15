@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.1",
-	name: "Literally nothing",
+	num: "0.1.6 - Reduction Era",
+	name: "REDUCTION!!",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -24,12 +24,16 @@ let changelog = `<h1>Changelog:</h1><br>
 		<h3>v0.1.1</h3><br>
 		- idk<br>
 		- Added stuff.<br>
+		<h3>v0.1.1</h3><br>
+		- added 2 buyables<br>
+		- new prestige layer! (who tf reads these).<br>
 	
 		
 		
 		
 		
 		
+										
 		`
 
 let winText = `hey, this is the end game screen. you can stop playing now lmao`
@@ -51,11 +55,13 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
-
+//if (buyableEffect("M" , 11) > 1) effect = 1
 	let gain = new Decimal(1)
 	gain = gain.mul(buyableEffect("M" , 11))
 	if (hasUpgrade('M', 11)) gain = gain.times(2)
 	if (hasUpgrade('M', 12)) gain = gain.times(upgradeEffect('M', 12))
+	gain = gain.mul(buyableEffect("M" , 13))
+	if (hasUpgrade('R', 11)) gain = gain.times(upgradeEffect('R', 11)).add(1)
 	return gain
 }
 
@@ -69,7 +75,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("60000"))
+	return player.points.gte(new Decimal("1e10"))
 }
 
 
