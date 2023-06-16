@@ -330,12 +330,12 @@ addLayer("R", {
   points: new Decimal(0),
   }},
   color: "#5A66D6",
-  requires: new Decimal(5000), // Can be a function that takes requirement increases into account
+  requires: new Decimal(2000), // Can be a function that takes requirement increases into account
   resource: "Reduction Points", // Name of prestige currency
   baseResource: "Multiplier", // Name of resource prestige is based on
   baseAmount() {return player["M"].points}, // Get the current amount of baseResource
   type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-  exponent: 1.3, // Prestige currency exponent
+  exponent: 0.7, // Prestige currency exponent
   resetDescription: `Reduction reset will do everything Multiplier does as well as its upgrades to gain  `,
   gainMult() { // Calculate the multiplier for main currency from bonuses
       mult = new Decimal(1)
