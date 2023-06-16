@@ -14,11 +14,12 @@ addLayer("M", {
     baseResource: "G.M", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.3, // Prestige currency exponent
+    exponent: 0.4, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         mult = mult.mul(buyableEffect("M" , 12))
         if(hasUpgrade("M", 16)) mult = mult.times(2)
+        if (hasMilestone('I', 3)) mult = mult.pow(1.05)
         return mult
 
     },
@@ -30,7 +31,7 @@ addLayer("M", {
     passiveGeneration() {
       let gen = new Decimal(1)
       if(hasUpgrade("I", 11)) gen = gen.mul(0.5) // multiplies passive generation by the upgrade effect
-      return gen // returns the correct value
+      if(hasUpgrade("I", 11)) return gen // returns the correct value
       },
       doReset(resettingLayer) {
         if (layers[resettingLayer].row <= layers[this.layer].row) return; // just necessary boilerplate
@@ -52,9 +53,9 @@ addLayer("M", {
             return Calculation;
           },
           display() {
-            return `Increase G.M gain by +1<br>
-            +${format(tmp[this.layer].buyables[this.id].effect)} Generated Multiplier boost</b><br>
-        <h1>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h1>`
+            return `<h2>Increase G.M gain by +1</h2><br>
+            <h3> +${format(tmp[this.layer].buyables[this.id].effect)} Generated Multiplier boost<h3></b><br>
+        <h3>Cost: ${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h3>`
           },
           canAfford() {
             return player[this.layer].points.gte(this.cost())
@@ -96,9 +97,9 @@ addLayer("M", {
             return Calculation;
           },
           display() {
-            return `Increase Multiplier gain by +1<br>
-            x${format(tmp[this.layer].buyables[this.id].effect)} Multiplier Boost</b><br>
-        <h1>Cost: ${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h1>`
+            return `<h2>Increase Multiplier gain by +1</h2><br>
+            <h3>  x${format(tmp[this.layer].buyables[this.id].effect)} Multiplier Boost</h3></b><br>
+        <h3>Cost: ${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h3>`
           },
           canAfford() {
             return player[this.layer].points.gte(this.cost())
@@ -137,9 +138,9 @@ addLayer("M", {
             return Calculation;
           },
           display() {
-            return `Multiply G.M gain by 10% compounding<br>
-            x${format(tmp[this.layer].buyables[this.id].effect)} G.M gain</b><br>
-        <h1>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h1>`
+            return `<h2>Multiply G.M gain by 10% compounding</h2><br>
+            <h3> x${format(tmp[this.layer].buyables[this.id].effect)} G.M gain</h3></b><br>
+        <h3>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h3>`
           },
           canAfford() {
             return player[this.layer].points.gte(this.cost())
@@ -162,7 +163,7 @@ addLayer("M", {
           effect() {
             let effect = getBuyableAmount(this.layer, this.id).add(1);
             if (buyableEffect("M", 13).lt(1)) effect = new Decimal(1);
-            effect = effect.pow(1.1).sub(getBuyableAmount(this.layer, this.id)).mul(buyableEffect("R" , 12))//.sub(1);
+            effect = effect.pow(1.1).sub(getBuyableAmount(this.layer, this.id)).mul(buyableEffect("R" , 12)).sub(1);
            
             return effect;
           },
@@ -180,7 +181,8 @@ addLayer("M", {
             effect() {
               let effect = 2
               if (hasUpgrade('R', 12)) effect = effect.mul(upgradeEffect('R', 12))
-
+            //  if (hasMilestone('I', 3)) effect = effect.mul(2)
+              //if (hasMilestone('I', 4)) effect = effect.mul(2)
             },
             effectDisplay() {
               if (hasUpgrade('R', 12)) return format(upgradeEffect(this.layer, this.id))+"x"
@@ -244,7 +246,7 @@ addLayer("M", {
           cost: new Decimal(15000),
           effect() {
             //let effect = 2
-           // if (hasUpgrade('R', 12)) effect = effect.mul(upgradeEffect('R', 12))
+           //if (hasUpgrade('R', 12)) effect = effect.mul(upgradeEffect('R', 12))
 
           },
           effectDisplay() {
@@ -419,7 +421,8 @@ addLayer("R", {
         effect() {
           let effect = new Decimal(1);
           if (buyableEffect("R", 12).lt(1)) effect = new Decimal(1); // <-- why is this here? this should very clearly be different than the first line
-          effect = effect.add(getBuyableAmount(this.layer, this.id))
+          if (effect.lt(1)) effect = new Decimal(1);
+          effect = effect.add(getBuyableAmount(this.layer, this.id)).add(1)
           return effect;
           },
 
@@ -511,7 +514,7 @@ addLayer("I", {
 
         11: {
           title: "finally a QoL upgrade",
-          description: "gain 50% of Multiplier gain as you would every second",
+          description: "gain 50% of Multiplier gain as you would reset for Incresor every second",
           cost: new Decimal(5)
         },
         12: {
@@ -540,12 +543,12 @@ addLayer("I", {
     },
       3: {
           requirementDescription: "10 Incresors",
-          effectDescription: "Basic upgrade I is 2x stronger",
+          effectDescription: "Multiplier is raised ^1.05",
         done() { return player["I"].points.gte(10) }
       },
       4: {
         requirementDescription: "100 Incresors ",
-        effectDescription: "Basic upgrade II boosts Basic Upgrade I",
+        effectDescription: "Autobuy Reduction points",
         done() { return player["I"].points.gte(100) }
     },
       5: {
