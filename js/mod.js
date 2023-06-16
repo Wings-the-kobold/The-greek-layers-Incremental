@@ -32,10 +32,17 @@ let changelog = `<h1>Changelog:</h1><br>
 		- fixed everything again askdjngliajg;lk<br>
 		- display on reduction and every other buyable and its effects are now normal<br>
 		<h3>v0.2 - Increasor chaos</h3><br>
-		- added a new layer<br>
-		- added a Qol Side layer <br>
-		- nerfed Multiplier gain (^0.5 -> ^0.3) {i will add that makes it better! i promise!} <br>
-		- made the upgrade buttons slightly bigger <br>
+		- NERFED: <br>
+		- Multiplier gain (^0.5 -> ^0.3)<br>
+		- Reduction gain amount 2000 -> 3500 <br>
+		- Reduction Scale increase ^0.5 -> ^0.7<br>
+		ADDED:<br>
+		- Increasor layer! :O {some QoL upgrades are stil in WIP}<br>
+		- QoL upgrades<br>
+		FIXED:<br>
+		- buttons are easier to read<br>
+		- endgame is now 1e100 -> 1e10 {what was i thinking on that lmao}<br>
+		- Reduction layer buyables boost Multiplier buyables normally<br>
 		- 
 		
 		
