@@ -13,25 +13,30 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.6a - Reduction Era",
-	name: "REDUCTION!!",
+	num: "0.2 - Incresor chaos",
+	name: "QoL update 1",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.1</h3><br>
 		- Added things.<br>
 		- Added stuff.<br>
-		<h3>v0.1.1</h3><br>
+		<h3>v0.1.1 - the pain begins</h3><br>
 		- idk<br>
 		- Added stuff.<br>
-		<h3>v0.1.6</h3><br>
+		<h3>v0.1.6 - Reducer era</h3><br>
 		- added 2 buyables<br>
 		- new prestige layer! (who tf reads these).<br>
-		- too many bug fixes xd
+		- too many bug fixes xd <br>
 		<h3>v0.1.6a</h3><br>
 		- fixed everything again askdjngliajg;lk<br>
 		- display on reduction and every other buyable and its effects are now normal<br>
-		
+		<h3>v0.2 - Increasor chaos</h3><br>
+		- added a new layer<br>
+		- added a Qol Side layer <br>
+		- nerfed Multiplier gain (^0.5 -> ^0.3) {i will add that makes it better! i promise!} <br>
+		- made the upgrade buttons slightly bigger <br>
+		- 
 		
 		
 		
@@ -64,6 +69,9 @@ function getPointGen() {
 	if (hasUpgrade('M', 12)) gain = gain.times(upgradeEffect('M', 12))
 	gain = gain.mul(buyableEffect("M" , 13))
 	if (hasUpgrade('R', 11)) gain = gain.times(upgradeEffect('R', 11)).add(1)
+	if (hasUpgrade('M', 14)) gain = gain.times(2)
+	if (hasUpgrade('M', 15)) gain = gain.times(upgradeEffect('M', 15))
+	if (hasMilestone('I', 1)) gain = gain.pow(1.05)
 	return gain
 }
 
@@ -77,7 +85,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e10"))
+	return player.points.gte(new Decimal("1e100"))
 }
 
 
