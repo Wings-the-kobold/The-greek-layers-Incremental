@@ -163,7 +163,7 @@ addLayer("M", {
           effect() {
             let effect = getBuyableAmount(this.layer, this.id).add(1);
             if (buyableEffect("M", 13).lt(1)) effect = new Decimal(1);
-            effect = effect.pow(1.1).sub(getBuyableAmount(this.layer, this.id)).mul(buyableEffect("R" , 12)).sub(1);
+            effect = effect.pow(1.1).sub(getBuyableAmount(this.layer, this.id)).mul(buyableEffect("R" , 12));
            
             return effect;
           },
@@ -222,7 +222,7 @@ addLayer("M", {
       },
         13: {
             title: "Weak Produci",
-            description: `Multiplier Boosts G.M again, but much weaker.<br> this upgrade is permenant `,
+            description: `Multiplier Boosts G.M again, but much weaker.<br>`,
             effect() {
                 return player[this.layer].points.add(1).log(50).add(1)
             },
@@ -461,7 +461,8 @@ addLayer("R", {
     if (hasUpgrade('M', 13)) return true
     if (player[this.layer].points.gte(1)) return true
     if (hasUpgrade('R', 11)) return true
-
+    if (getBuyableAmount('R', 12).gte(1)) return true
+    if (getBuyableAmount('R', 11).gte(1)) return true
 },
 })
 
