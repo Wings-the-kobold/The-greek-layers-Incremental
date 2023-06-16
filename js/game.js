@@ -160,8 +160,6 @@ function layerDataReset(layer, keep = []) {
 	}
 }
 
-
-
 function addPoints(layer, gain) {
 	player[layer].points = player[layer].points.add(gain).max(0)
 	if (player[layer].best) player[layer].best = player[layer].best.max(player[layer].points)

@@ -39,6 +39,9 @@ addLayer("M", {
         if (hasUpgrade("I", 13)) keep.push("upgrades");
         layerDataReset(this.layer, keep);
       },
+      
+
+
 
     buyables: {
         11: {
@@ -71,6 +74,8 @@ addLayer("M", {
             player[this.layer].points = player[this.layer].points.sub(this.cost())
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
           },
+
+
             effect() {
                 let effect = getBuyableAmount(this.layer, this.id);
                 if (buyableEffect("M", 11).lt(1)) effect = new Decimal(1);
@@ -80,7 +85,8 @@ addLayer("M", {
          
           unlocked() {
             return true
-          }
+          },
+          
         },
           12: {
           cost(x) {
@@ -327,7 +333,7 @@ addLayer("R", {
   baseResource: "Multiplier", // Name of resource prestige is based on
   baseAmount() {return player["M"].points}, // Get the current amount of baseResource
   type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-  exponent: 1.1, // Prestige currency exponent
+  exponent: 1.3, // Prestige currency exponent
   resetDescription: `Reduction reset will do everything Multiplier does as well as its upgrades to gain  `,
   gainMult() { // Calculate the multiplier for main currency from bonuses
       mult = new Decimal(1)
@@ -347,10 +353,12 @@ addLayer("R", {
           let Calculation = new Decimal(1).mul(Decimal.pow(PowerI, x.pow(1))) //the cost scaling of the upgrade
           return Calculation;
         },
+
+        
         display() {
-          return `Reduce all Multiplier Buyables Costs by %100<br>
-          /${format(tmp[this.layer].buyables[this.id].effect)} buyable cost </b><br>
-      <h1>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Reduction Points</h1>`
+          return `<h2>Dividi</h2><br>
+         <h3>  /${format(tmp[this.layer].buyables[this.id].effect)} buyable cost</h3> </b><br>
+      <h3>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Reduction Points</h3>`
         },
         canAfford() {
           return player[this.layer].points.gte(this.cost())
@@ -386,9 +394,9 @@ addLayer("R", {
         return Calculation;
       },
       display() {
-        return `all Multiplier buyables are 50% stronger<br>
-        x${format(tmp[this.layer].buyables[this.id].effect.sub(1))} buyable strength </b><br>
-    <h1>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Reduction Points</h1>`
+        return `<h2>Multiplicand</h2><br> 
+        <h3>x${format(tmp[this.layer].buyables[this.id].effect.sub(1))} buyable strength <h3></b><br>
+    <h3>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Reduction Points</h3>`
       },
       canAfford() {
         return player[this.layer].points.gte(this.cost())
@@ -462,7 +470,27 @@ addLayer("I", {
   startData() { return {
       unlocked: true,
   points: new Decimal(0),
+
+  increment: new Decimal(0),
   }},
+
+
+ /* tabFormat: [
+    "main-display",
+    ["prestige-button"],
+    
+    ["display-text",
+        function() { return `You have ` + format(player.increment) + ` increment<br> your current increment boosts Multiplier by ` },
+       
+      ],
+    "blank",
+    
+    "milestones",
+    "blank",
+    "blank",
+    "upgrades"
+],
+//*/
   color: "#E18E5F",
   requires: new Decimal("15000"), // Can be a function that takes requirement increases into account
   resource: "Incresors", // Name of prestige currency
