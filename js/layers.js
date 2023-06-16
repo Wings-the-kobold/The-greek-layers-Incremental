@@ -179,7 +179,7 @@ addLayer("M", {
             description: "Gain 2x more G.M",
             cost: new Decimal(30),
             effect() {
-              let effect = 2
+              let effect = new Decimal(2)
               if (hasUpgrade('R', 12)) effect = effect.mul(upgradeEffect('R', 12))
             //  if (hasMilestone('I', 3)) effect = effect.mul(2)
               //if (hasMilestone('I', 4)) effect = effect.mul(2)
