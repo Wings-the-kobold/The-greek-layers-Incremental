@@ -1,33 +1,56 @@
 let modInfo = {
-	name: "Number++: TMT version",
+	name: "Multi++",
 	id: "mymod",
 	author: "ThatOneKobold",
-	pointsName: "",
+	pointsName: "G.M",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "Join my Twitch!",
-	discordLink: "discord.gg/tJDWU7twvB",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 3,  // In hours
+	discordName: "My twitch server",
+	discordLink: "https://discord.gg/tJDWU7twvB",
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
+	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
-	name: "Numbr go up!",
+	num: `0.2.3 - 🧀`,
+	name: "Banana",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- game added<br>
-		- 5 upgrades!
+	<h3>v0.1</h3><br>
+		- Added things.<br>
+		- Added stuff.<br>
+		<h3>v0.1.1 - the pain begins</h3><br>
+		- idk<br>
+		- Added stuff.<br>
+		<h3>v0.1.6 - Reducer era</h3><br>
+		- added 2 buyables<br>
+		- new prestige layer! (who tf reads these).<br>
+		- too many bug fixes xd <br>
+		<h3>v0.1.6a</h3><br>
+		- fixed everything again askdjngliajg;lk<br>
+		- display on reduction and every other buyable and its effects are now normal<br>
+		<h3>v0.2 - Increasor chaos</h3><br>
+		- NERFED: <br>
+		- Multiplier gain (^0.5 -> ^0.3)<br>
+		- Reduction gain amount 2000 -> 3500 <br>
+		- Reduction Scale increase ^0.5 -> ^0.7<br>
+		ADDED:<br>
+		- Increasor layer! :O {some QoL upgrades are stil in WIP}<br>
+		- QoL upgrades<br>
+		FIXED:<br>
+		- buttons are easier to read<br>
+		- endgame is now 1e100 -> 1e10 {what was i thinking on that lmao}<br>
+		- Reduction layer buyables boost Multiplier buyables normally<br>
+		<h3>v0.2.3 - Incremented</h3><br>
+		- added a new sub currency for Incresor
 		
 		
-		
-		
+										
 		`
 
-let winText = `ThatOneKobold is very proud you reached endgame, good job!`
+let winText = `hey, this is the end game screen. you can stop playing now lmao`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -46,8 +69,18 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
-
+//if (buyableEffect("M" , 11) > 1) effect = 1
 	let gain = new Decimal(1)
+	gain = gain.mul(buyableEffect("M" , 11))
+	if (hasUpgrade('M', 11)) gain = gain.times(2)
+	if (hasUpgrade('M', 12)) gain = gain.times(upgradeEffect('M', 12))
+	gain = gain.mul(buyableEffect("M" , 13))
+	if (hasUpgrade('R', 11)) gain = gain.times(upgradeEffect('R', 11)).add(1)
+	if (hasUpgrade('M', 14)) gain = gain.times(2)
+	if (hasUpgrade('M', 15)) gain = gain.times(upgradeEffect('M', 15))
+	if (hasMilestone('I', 1)) gain = gain.pow(1.05)
+	if (hasMilestone('I', 2)) gain = gain.times(3)
+	if (hasMilestone('I',5)) gain = gain.times(tmp["I"].effect)
 	return gain
 }
 
@@ -61,7 +94,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e13"))
+	return player.points.gte(new Decimal("1e45"))
 }
 
 
