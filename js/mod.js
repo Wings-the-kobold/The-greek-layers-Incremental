@@ -13,22 +13,22 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: `0.2.3 - 🧀`,
-	name: "Banana",
+	num: `0.2.6 - 6+7 = 12`,
+	name: "aaaaa",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.1</h3><br>
+	<h2>v0.1</h2><br>
 		- Added things.<br>
 		- Added stuff.<br>
-		<h3>v0.1.1 - the pain begins</h3><br>
+		<h2>v0.1.1 - the pain begins</h2><br>
 		- idk<br>
 		- Added stuff.<br>
-		<h3>v0.1.6 - Reducer era</h3><br>
+		<h2>v0.1.6 - Reducer era</h2><br>
 		- added 2 buyables<br>
 		- new prestige layer! (who tf reads these).<br>
 		- too many bug fixes xd <br>
-		<h3>v0.1.6a</h3><br>
+		<h2>v0.1.6a</h2><br>
 		- fixed everything again askdjngliajg;lk<br>
 		- display on reduction and every other buyable and its effects are now normal<br>
 		<h3>v0.2 - Increasor chaos</h3><br>
@@ -43,11 +43,21 @@ let changelog = `<h1>Changelog:</h1><br>
 		- buttons are easier to read<br>
 		- endgame is now 1e100 -> 1e10 {what was i thinking on that lmao}<br>
 		- Reduction layer buyables boost Multiplier buyables normally<br>
-		<h3>v0.2.3 - Incremented</h3><br>
-		- added a new sub currency for Incresor
-		
-		
-										
+		<h2>v0.2.3 - Incremented</h2><br>
+		- added a new sub currency for Incresor<br>
+		<h2>v0.2.7 - Chaotic bug fixes</h2><br>
+<br>
+		<h3>BUFFED/NERFED</h3><br>
+		- Nerfed Incresor Requirement [15,000 -> 10,000] <br>
+		- Nerfed Scalings for each multiplier buyable ^1.5 -> ^1.4 <br>
+		- Split the 1000 Incresor milestone into the first three milestones, this is a reward for being an impatient freak <br>
+		<br><h3>FIXED</h3><br>
+		- Compounding Buyable works as intended <br>
+		- floating point in the buyables is removed. it was funny while it lasted lmao <br>
+		- autobuyer works! yayy!!!!!
+		<br><h3>ADDED</h3>
+		- a bLuE tExT fOr AbSolUteLy nO rEaSoN<br>
+		- endgame is now 1e15 -> 1e13
 		`
 
 let winText = `hey, this is the end game screen. you can stop playing now lmao`
@@ -69,7 +79,6 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
-//if (buyableEffect("M" , 11) > 1) effect = 1
 	let gain = new Decimal(1)
 	gain = gain.mul(buyableEffect("M" , 11))
 	if (hasUpgrade('M', 11)) gain = gain.times(2)
@@ -89,12 +98,16 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
+
 var displayThings = [
+	`	<br><h4 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;">hi im blue<div></h4><br>
+	
+	`
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e45"))
+	return player.points.gte(new Decimal("1e20"))
 }
 
 

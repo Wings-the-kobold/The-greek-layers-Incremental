@@ -40,16 +40,30 @@ addLayer("M", {
       if (hasUpgrade("I", 13)) keep.push("upgrades");
       layerDataReset(this.layer, keep);
     },
-    autobuyUpgrades() {
-      if (hasMilestone("I",7)) return true
+    update(diff){
+      if(hasMilestone("I", 6)){
+        if(player.M.points.gte(tmp.M.buyables[11].cost)){
+          layers.M.buyables[11].buy()
+        }
+        if(player.M.points.gte(tmp.M.buyables[12].cost)){
+          layers.M.buyables[12].buy()
+        }
+        if(player.M.points.gte(tmp.M.buyables[13].cost)){
+          layers.M.buyables[13].buy()
+        }
+      }
     },
+    
+
     nodeStyle: {'border-radius': '40%'},
 
+    //buyUpgrade(layer, id)
 
   buyables: {
+    
       11: {
         cost(x) {
-          let PowerI = new Decimal(1.2)
+          let PowerI = new Decimal(1.4)
           
           let Calculation = new Decimal(3).mul(Decimal.pow(PowerI, x.pow(1))).div(buyableEffect("R" , 11)).ceil()
            //Calculation = Calculation.add(0.1)
@@ -77,7 +91,7 @@ addLayer("M", {
         },
         buy() {
           player[this.layer].points = player[this.layer].points.sub(this.cost())
-          setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+          addBuyables(this.layer, this.id, 1)
         },
 
 
@@ -92,7 +106,9 @@ addLayer("M", {
         unlocked() {
           return true
         },
-        
+        autobuyUpgrades() {
+      if (hasMilestone("I",6)) return true
+    },
         
       },
         12: {
@@ -123,7 +139,7 @@ addLayer("M", {
         },
         buy() {
           player[this.layer].points = player[this.layer].points.sub(this.cost())
-          setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+          addBuyables(this.layer, this.id, 1)
         },
         effect() {
           let effect = getBuyableAmount(this.layer, this.id);
@@ -135,7 +151,8 @@ addLayer("M", {
         },
         unlocked() {
           return true
-        }
+        },
+       
       },
           13: {
         cost(x) {
@@ -165,7 +182,7 @@ addLayer("M", {
         },
         buy() {
           player[this.layer].points = player[this.layer].points.sub(this.cost())
-          player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+          addBuyables(this.layer, this.id, 1)
         },
      
           effect() {
@@ -175,11 +192,13 @@ addLayer("M", {
         
         unlocked() {
           return true
-        }
+        },
+        
       },
   },
 
   upgrades: {
+    
       11: {
           title: "Basic I",
           description: "Gain 2x more G.M",
@@ -191,8 +210,8 @@ addLayer("M", {
             //if (hasMilestone('I', 4)) effect = effect.mul(2)
           },
           effectDisplay() {
-            if (hasUpgrade('R', 12)) return format(upgradeEffect(this.layer, 11))+"x"
-            else return "2.00x"
+            return format(upgradeEffect(this.layer, this.id))+"x"
+           
           },
           style() {
             return {
@@ -278,7 +297,7 @@ addLayer("M", {
         title: "Incresio",
         description: "Incresors Boosts G.M",
         effect() {
-          return player["I"].points.add(1).log(5).add(1) 
+          return player["I"].points.add(1).log(7).add(1) 
         },
         effectDisplay() { if (hasUpgrade('M', 15)) return format(upgradeEffect(this.layer, this.id))+"x" },
         cost: new Decimal(600000),
@@ -330,7 +349,7 @@ addLayer("M", {
 addLayer("R", {
 name: "Reduction", // This is optional, only used in a few places, If absent it just uses the layer id.
 symbol: "⬇r", // This appears on the layer's node. Default is the id with the first letter capitalized
-position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
 startData() { return {
     unlocked: true,
 points: new Decimal(0),
@@ -345,6 +364,7 @@ exponent: 1, // Prestige currency exponent
 resetDescription: `Reduction reset will do everything Multiplier does as well as its upgrades to gain  `,
 gainMult() { // Calculate the multiplier for main currency from bonuses
     mult = new Decimal(1)
+    if (hasMilestone("I",7)) mult = mult.times(1.2)
     return mult
 
 },
@@ -387,7 +407,7 @@ buyables: {
       },
       buy() {
         player[this.layer].points = player[this.layer].points.sub(this.cost())
-        setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        addBuyables(this.layer, this.id, 1)
       },
         effect() {
             let effect = getBuyableAmount(this.layer, this.id);
@@ -425,7 +445,7 @@ buyables: {
     },
     buy() {
       player[this.layer].points = player[this.layer].points.sub(this.cost())
-      setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id))
+      addBuyables(this.layer, this.id, 1)
     },
       effect() {
         let effect = new Decimal(1);
@@ -479,20 +499,21 @@ layerShown(){
 addLayer("I", {
 name: "Increasor", // This is optional, only used in a few places, If absent it just uses the layer id.
 symbol: "x↑", // This appears on the layer's node. Default is the id with the first letter capitalized
-position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+position: 3, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
 startData() { return {
     unlocked: true,
 points: new Decimal(0),
 
-increment: new Decimal(0),
+increment: new Decimal(1),
 }},
 effect() {
-  effect = new Decimal(1)
-  if (hasMilestone("I",5))return player["I"].increment.log(2).floor()
+  let effect = new Decimal(1)
+  if (hasMilestone("I",5)) effect = player["I"].increment.log(2).max(1).floor()
+  return effect
 },
 
 update(diff) {
-  if (hasMilestone("I", 5)) player["I"].increment = player["I"].increment.add(0.02)
+  if (hasMilestone("I", 5)) player["I"].increment = player["I"].increment.add(0.1)
   
 
 },
@@ -514,7 +535,7 @@ tabFormat: [
 ],
 //*/
 color: "#E18E5F",
-requires: new Decimal("15000"), // Can be a function that takes requirement increases into account
+requires: new Decimal("10000"), // Can be a function that takes requirement increases into account
 resource: "Incresors", // Name of prestige currency
 baseResource: "Multiplier", // Name of resource prestige is based on
 baseAmount() {return player["M"].points}, // Get the current amount of baseResource
@@ -546,7 +567,7 @@ gainExp() { // Calculate the exponent on main currency from bonuses
       11: {
         title: "finally a QoL upgrade",
         description: "gain 50% of Multiplier gain as you would reset on multiplying by 0 every second",
-        cost: new Decimal(5)
+        cost: new Decimal(3)
       },
       12: {
         title: "the best unlock upgrades",
@@ -605,7 +626,9 @@ gainExp() { // Calculate the exponent on main currency from bonuses
     6: {
     requirementDescription: "1000 Incresors",
     effectDescription: "Autobuy all Multiplier buyables",
-    done() { return player["I"].points.gte(1000) }
+    done() { return player["I"].points.gte(1000) },
+    toggles: [["M", "idle"]["M", "auto"]],
+
 },
 7: {
   requirementDescription: "Get all QoL Upgrades",
@@ -625,8 +648,7 @@ layerShown(){
 
 }
 })
-
-
+//primitate
 /*
 addLayer("F", {
 name: "Fixors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -637,7 +659,7 @@ startData() { return {
 points: new Decimal(0),
 }},
 color: "#A13E5F",
-requires: new Decimal(25), // Can be a function that takes requirement increases into account
+requires: new Decimal(20), // Can be a function that takes requirement increases into account
 resource: "Fixations", // Name of prestige currency
 baseResource: "Reduction Points", // Name of resource prestige is based on
 baseAmount() {return player["R"].points}, // Get the current amount of baseResource
@@ -651,15 +673,37 @@ gainMult() { // Calculate the multiplier for main currency from bonuses
 gainExp() { // Calculate the exponent on main currency from bonuses
     return new Decimal(1)
 },
-tabFormat: [
-  "main-display",
-  "prestige-button",
+
+componentStyles: {
+  "prestige-button"() { return {
+    
+    'height':'150px','width':'400px', "border-radius": "10px"
   
+  
+  } }
+
+
+
+
+},
+
+
+
+
+
+
+resetDescription: `
+<h2>Fixors</h2><br> 
+Fixing resets everything Reduction or Incresity does, including their Upgrades and milestones.<br> you will gain `,
+tabFormat: [
+  
+  "prestige-button",
+  "blank",
+  "blank",
+  "main-display",
   "blank",
   "grid",
   "milestones",
-  
-  "blank",
   "blank",
   "upgrades",
   "blank",
@@ -676,7 +720,7 @@ upgrades: {
     return {
       "width": "400px",
       "height": "75px",
-      "border-radius": "30px",
+      "border-radius": "0px",
       "border": "10px",
       "margin": "30px",
       "text-shadow": "0px 0px 10px #000000",
@@ -693,7 +737,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "8px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -710,7 +754,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "2px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -727,7 +771,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "2px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -744,7 +788,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "2px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -762,7 +806,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "2px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -779,7 +823,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "2px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -796,7 +840,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "2px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -812,7 +856,7 @@ style() {
   return {
     "width": "200px",
     "height": "75px",
-    "border-radius": "10px",
+    "border-radius": "0px",
     "border": "2px",
     "margin": "5px",
     "text-shadow": "0px 0px 10px #000000",
@@ -822,19 +866,7 @@ style() {
 
 },
 
-
-
-
-
-
 },
-
-
-
-
-
-
-
 
 challenges: {
 11: {
@@ -883,4 +915,4 @@ row: 3, // Row the layer is in on the tree (0 is the first row)
 branches: ["T","R"],
 layerShown(){return true}
 })
-*/
+//*/
