@@ -41,9 +41,9 @@ addLayer("M", {
       layerDataReset(this.layer, keep);
     },
     autobuyUpgrades() {
-      if (hasMilestone("I",5)) return true
+      if (hasMilestone("I",7)) return true
     },
-
+    nodeStyle: {'border-radius': '40%'},
 
 
   buyables: {
@@ -52,7 +52,7 @@ addLayer("M", {
           let PowerI = new Decimal(1.1)
           
           let Calculation = new Decimal(3).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11)).ceil()
-           Calculation = Calculation.add(0.1)
+           //Calculation = Calculation.add(0.1)
           //the cost scaling of the upgrade
           return Calculation;
         },
@@ -165,12 +165,13 @@ addLayer("M", {
         },
         buy() {
           player[this.layer].points = player[this.layer].points.sub(this.cost())
-          setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id))
+          player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
         },
         effect() {
-          let effect = getBuyableAmount(this.layer, this.id).add(0.5)
-          //if (buyableEffect("M", 13).lt(1)) effect = new Decimal(1);
-          effect = effect.pow(1.1).mul(buyableEffect("R" , 12)).ceil();
+          let effect = player[this.layer].buyables[this.id].pow(1.1).sub(player[this.layer].buyables[this.id]) /* after this point is the multipliers
+          multipliers go here*/ .mul(buyableEffect("R" , 12))                                                 /* ignore this*/.add(1)
+
+
           effect = softcap(effect, new Decimal(150), new Decimal(0.7))
          
           return effect;
@@ -612,7 +613,7 @@ gainExp() { // Calculate the exponent on main currency from bonuses
 7: {
   requirementDescription: "Get all QoL Upgrades",
   effectDescription: "Lower Reduction Requirement Cost by 20%",
-  done() { if (hasUpgrade("I",11) && hasUpgrade("I",12) && hasUpgrade("I",13) ) alert("you got the milestone")},
+  done() { if (hasUpgrade("I",11) && hasUpgrade("I",12) && hasUpgrade("I",13) ) return true /*alert("you got the milestone")*/},
 },
 },
 
