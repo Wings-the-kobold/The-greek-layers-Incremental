@@ -49,9 +49,9 @@ addLayer("M", {
   buyables: {
       11: {
         cost(x) {
-          let PowerI = new Decimal(1.1)
+          let PowerI = new Decimal(1.2)
           
-          let Calculation = new Decimal(3).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11)).ceil()
+          let Calculation = new Decimal(3).mul(Decimal.pow(PowerI, x.pow(1))).div(buyableEffect("R" , 11)).ceil()
            //Calculation = Calculation.add(0.1)
           //the cost scaling of the upgrade
           return Calculation;
@@ -99,7 +99,7 @@ addLayer("M", {
         cost(x) {
           let PowerI = new Decimal(1.4)
           
-          let Calculation = new Decimal(10).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11)) //the cost scaling of the upgrade
+          let Calculation = new Decimal(10).mul(Decimal.pow(PowerI, x.pow(1))).div(buyableEffect("R" , 11)).ceil() //the cost scaling of the upgrade
           return Calculation;
         },
         display() {
@@ -141,7 +141,7 @@ addLayer("M", {
         cost(x) {
           let PowerI = new Decimal(1.4)
           
-          let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11)) //the cost scaling of the upgrade
+          let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11))        .ceil() //the cost scaling of the upgrade
           return Calculation;
         },
         display() {
@@ -167,15 +167,12 @@ addLayer("M", {
           player[this.layer].points = player[this.layer].points.sub(this.cost())
           player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
         },
-        effect() {
-          let effect = player[this.layer].buyables[this.id].pow(1.1).sub(player[this.layer].buyables[this.id]) /* after this point is the multipliers
-          multipliers go here*/ .mul(buyableEffect("R" , 12))                                                 /* ignore this*/.add(1)
-
-
-          effect = softcap(effect, new Decimal(150), new Decimal(0.7))
-         
-          return effect;
-        },
+     
+          effect() {
+            return getBuyableAmount(this.layer, this.id).pow_base(1.1).times(getBuyableAmount("R", 12).add(1))
+          
+          },
+        
         unlocked() {
           return true
         }
@@ -645,7 +642,7 @@ resource: "Fixations", // Name of prestige currency
 baseResource: "Reduction Points", // Name of resource prestige is based on
 baseAmount() {return player["R"].points}, // Get the current amount of baseResource
 type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-exponent: 1.1, // Prestige currency exponent
+exponent: 0.7, // Prestige currency exponent
 gainMult() { // Calculate the multiplier for main currency from bonuses
     mult = new Decimal(1)
     return mult
@@ -843,11 +840,39 @@ challenges: {
 11: {
     name: "Basic Challenge",
     challengeDescription: `Now do it all again! <br> - Does a Fixor reset <br>- No restrictions applied<br>`,
-    canComplete: function() {return player.points.gte("1e9")},
-    goalDescription: "2000 "
+    canComplete: function() {return player["R"].points.gte("25")},
+    goalDescription: "25 reduction points",
+    completionLimit: new Decimal(5),
+    unlocked() {
+      if (hasUpgrade("F",11)) return true
+    },
+    
     //reward
 },
-
+  12: {
+      name: "Anti-Multiplier",
+      challengeDescription: `this upgrade nerf is awful.<br> - Does a Fixor reset <br>- All Buyables are nerfed ^0.5
+      <br>`,
+      canComplete: function() {return player["R"].points.gte("30")},
+      goalDescription: "30 Reduction points",
+      unlocked() {
+        if (hasUpgrade("F",11)) return true
+      },
+      
+      //reward
+  },
+  13: {
+    name: "Time wall",
+    challengeDescription: `ugh i hate you!<br> - Does a Fixor reset <br>- All upgrades from Reduction and Multiplier buyables are dilated to ^0.6, but Increment and Replicand gains get an immense boost of ^2
+    <br>`,
+    canComplete: function() {return player["R"].points.gte("30")},
+    goalDescription: "30 Reduction points",
+    unlocked() {
+      if (hasUpgrade("F",11)) return true
+    },
+    
+    //reward
+},
 },
 
   
