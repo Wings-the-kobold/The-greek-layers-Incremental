@@ -32,6 +32,7 @@ addLayer("M", {
       let gen = new Decimal(1)
       if(hasUpgrade("I", 11)) gen = gen.mul(0.5) // multiplies passive generation by the upgrade effect
       if(hasUpgrade("I", 11)) return gen // returns the correct value
+     // return gen
       },
       doReset(resettingLayer) {
         if (layers[resettingLayer].row <= layers[this.layer].row) return; // just necessary boilerplate
@@ -40,21 +41,25 @@ addLayer("M", {
         if (hasUpgrade("I", 13)) keep.push("upgrades");
         layerDataReset(this.layer, keep);
       },
-      
+      autobuyUpgrades() {
+        if (hasMilestone("I",5)) return true
+      },
 
 
 
     buyables: {
         11: {
           cost(x) {
-            let PowerI = new Decimal(1.5)
+            let PowerI = new Decimal(1.1)
             
-            let Calculation = new Decimal(3).mul(Decimal.pow(PowerI, x.pow(1))).div(buyableEffect("R" , 11)) //the cost scaling of the upgrade
+            let Calculation = new Decimal(3).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11)).ceil()
+             Calculation = Calculation.add(0.1)
+            //the cost scaling of the upgrade
             return Calculation;
           },
           display() {
             return `<h2>Increase G.M gain by +1</h2><br>
-            <h3> +${format(tmp[this.layer].buyables[this.id].effect)} Generated Multiplier boost<h3></b><br>
+            <h3> +${format(tmp[this.layer].buyables[this.id].effect)} Generated Multiplier boost<h3></b><br> 
         <h3>Cost: ${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h3>`
           },
           canAfford() {
@@ -81,6 +86,7 @@ addLayer("M", {
                 let effect = getBuyableAmount(this.layer, this.id);
                 if (buyableEffect("M", 11).lt(1)) effect = new Decimal(1);
                 effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
+                effect = softcap(effect, new Decimal(200), new Decimal(0.5))
                 return effect;
               },
          
@@ -88,12 +94,13 @@ addLayer("M", {
             return true
           },
           
+          
         },
           12: {
           cost(x) {
-            let PowerI = new Decimal(1.5)
+            let PowerI = new Decimal(1.4)
             
-            let Calculation = new Decimal(10).mul(Decimal.pow(PowerI, x.pow(1))).div(buyableEffect("R" , 11)) //the cost scaling of the upgrade
+            let Calculation = new Decimal(10).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11)) //the cost scaling of the upgrade
             return Calculation;
           },
           display() {
@@ -123,6 +130,7 @@ addLayer("M", {
             let effect = getBuyableAmount(this.layer, this.id);
             if (buyableEffect("M", 12).lt(1)) effect = new Decimal(1);
             effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
+            effect = softcap(effect, new Decimal(200), new Decimal(0.5))
             
             return effect;
           },
@@ -134,7 +142,7 @@ addLayer("M", {
           cost(x) {
             let PowerI = new Decimal(1.4)
             
-            let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(1))).div(buyableEffect("R" , 11)) //the cost scaling of the upgrade
+            let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11)) //the cost scaling of the upgrade
             return Calculation;
           },
           display() {
@@ -158,12 +166,13 @@ addLayer("M", {
           },
           buy() {
             player[this.layer].points = player[this.layer].points.sub(this.cost())
-            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id))
           },
           effect() {
-            let effect = getBuyableAmount(this.layer, this.id).add(1);
-            if (buyableEffect("M", 13).lt(1)) effect = new Decimal(1);
-            effect = effect.pow(1.1).sub(getBuyableAmount(this.layer, this.id)).mul(buyableEffect("R" , 12));
+            let effect = getBuyableAmount(this.layer, this.id).add(0.5)
+            //if (buyableEffect("M", 13).lt(1)) effect = new Decimal(1);
+            effect = effect.pow(1.1).mul(buyableEffect("R" , 12)).ceil();
+            effect = softcap(effect, new Decimal(150), new Decimal(0.7))
            
             return effect;
           },
@@ -185,7 +194,7 @@ addLayer("M", {
               //if (hasMilestone('I', 4)) effect = effect.mul(2)
             },
             effectDisplay() {
-              if (hasUpgrade('R', 12)) return format(upgradeEffect(this.layer, this.id))+"x"
+              if (hasUpgrade('R', 12)) return format(upgradeEffect(this.layer, 11))+"x"
               else return "2.00x"
             },
             style() {
@@ -204,7 +213,7 @@ addLayer("M", {
             title: "Produci",
             description: "Multiplier Boosts G.M",
             effect() {
-                return player[this.layer].points.add(1).log(5).add(1) 
+                return player[this.layer].points.add(1).log(10).add(1) 
             },
             effectDisplay() { if (hasUpgrade('M', 12)) return format(upgradeEffect(this.layer, this.id))+"x" },
             cost: new Decimal(400),
@@ -224,7 +233,7 @@ addLayer("M", {
             title: "Weak Produci",
             description: `Multiplier Boosts G.M again, but much weaker.<br>`,
             effect() {
-                return player[this.layer].points.add(1).log(50).add(1)
+                return player[this.layer].points.add(1).log(10).div(10).add(1)
             },
             effectDisplay() { if (hasUpgrade('M', 13)) return format(upgradeEffect(this.layer, this.id))+"x" },
             cost: new Decimal(2000),
@@ -243,7 +252,7 @@ addLayer("M", {
         14: {
           title: "Basic II",
           description: "Gain 2x more G.M",
-          cost: new Decimal(15000),
+          cost: new Decimal(30000),
           effect() {
             //let effect = 2
            //if (hasUpgrade('R', 12)) effect = effect.mul(upgradeEffect('R', 12))
@@ -272,10 +281,10 @@ addLayer("M", {
           title: "Incresio",
           description: "Incresors Boosts G.M",
           effect() {
-            return player[this.layer].points.add(1).log(5).add(1) 
+            return player["I"].points.add(1).log(5).add(1) 
           },
-          effectDisplay() { if (hasUpgrade('M', 12)) return format(upgradeEffect(this.layer, this.id))+"x" },
-          cost: new Decimal(30000),
+          effectDisplay() { if (hasUpgrade('M', 15)) return format(upgradeEffect(this.layer, this.id))+"x" },
+          cost: new Decimal(600000),
           style() {
             return {
             "width": "200px",
@@ -295,7 +304,7 @@ addLayer("M", {
         16: {
           title: "Kaboom",
           description: "Multiplier gain is doubled",
-          cost: new Decimal(1e6),
+          cost: new Decimal("2e6"),
           style() {
             return {
             "width": "200px",
@@ -335,7 +344,7 @@ addLayer("R", {
   baseResource: "Multiplier", // Name of resource prestige is based on
   baseAmount() {return player["M"].points}, // Get the current amount of baseResource
   type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-  exponent: 0.7, // Prestige currency exponent
+  exponent: 1, // Prestige currency exponent
   resetDescription: `Reduction reset will do everything Multiplier does as well as its upgrades to gain  `,
   gainMult() { // Calculate the multiplier for main currency from bonuses
       mult = new Decimal(1)
@@ -345,7 +354,10 @@ addLayer("R", {
   gainExp() { // Calculate the exponent on main currency from bonuses
       return new Decimal(1)
   },
-  
+  autoPrestige() {
+    if (hasMilestone("I",4)) return true
+
+  },
 
   buyables: {
     11: {
@@ -416,7 +428,7 @@ addLayer("R", {
       },
       buy() {
         player[this.layer].points = player[this.layer].points.sub(this.cost())
-        setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id))
       },
         effect() {
           let effect = new Decimal(1);
@@ -477,15 +489,24 @@ addLayer("I", {
 
   increment: new Decimal(0),
   }},
+  effect() {
+    effect = new Decimal(1)
+    if (hasMilestone("I",5))return player["I"].increment.log(2).floor()
+  },
 
+  update(diff) {
+    if (hasMilestone("I", 5)) player["I"].increment = player["I"].increment.add(0.02)
+    
 
- /* tabFormat: [
+  },
+
+  tabFormat: [
     "main-display",
-    ["prestige-button"],
+    "prestige-button",
     
     ["display-text",
-        function() { return `You have ` + format(player.increment) + ` increment<br> your current increment boosts Multiplier by ` },
-       
+        function() { if(hasMilestone("I",5)) return `<br>You have <h3 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;"> ${format(player["I"].increment)}</h3> increment, <br><br>Your current Increment boosts G.M gain by <h3 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;">${format(tmp["I"].effect)}x</h3>`},
+       //#2EAE07
       ],
     "blank",
     
@@ -511,11 +532,23 @@ addLayer("I", {
       return new Decimal(1)
   },
 
+
+
+
+
+
+
+
+
+
+
+
+
     upgrades: {
 
         11: {
           title: "finally a QoL upgrade",
-          description: "gain 50% of Multiplier gain as you would reset for Incresor every second",
+          description: "gain 50% of Multiplier gain as you would reset on multiplying by 0 every second",
           cost: new Decimal(5)
         },
         12: {
@@ -531,6 +564,21 @@ addLayer("I", {
 
     },
     
+    buyables: {
+      11: {
+        
+
+      },
+
+
+    },
+    
+
+
+
+
+
+
     milestones: {
       1: {
         requirementDescription: "Get your first increasor",
@@ -539,7 +587,7 @@ addLayer("I", {
     },
       2: {
       requirementDescription: "Get your first upgrade",
-      effectDescription: "Unlock Increment [NYI]",
+      effectDescription: "Get 3x more G.M",
     done() { if (hasUpgrade("I",11)) return true }
     },
       3: {
@@ -552,11 +600,21 @@ addLayer("I", {
         effectDescription: "Autobuy Reduction points",
         done() { return player["I"].points.gte(100) }
     },
-      5: {
-      requirementDescription: "500 Incresors",
+    5: {
+      requirementDescription: "300 Incresors ",
+      effectDescription: "Unlock Increment",
+      done() { return player["I"].points.gte(300) },
+    },
+      6: {
+      requirementDescription: "1000 Incresors",
       effectDescription: "Autobuy all Multiplier buyables",
-      done() { return player["I"].points.gte(500) }
+      done() { return player["I"].points.gte(1000) }
   },
+  7: {
+    requirementDescription: "Get all QoL Upgrades",
+    effectDescription: "Lower Reduction Requirement Cost by 20%",
+    done() { if (hasUpgrade("I",11) && hasUpgrade("I",12) && hasUpgrade("I",13) ) alert("you got the milestone")},
+},
   },
 
 
@@ -572,23 +630,22 @@ addLayer("I", {
 })
 
 
-//dont worry about this lol
 /*
-addLayer("T", {
-  name: "Exponentiation", // This is optional, only used in a few places, If absent it just uses the layer id.
-  symbol: "x^", // This appears on the layer's node. Default is the id with the first letter capitalized
+addLayer("F", {
+  name: "Fixors", // This is optional, only used in a few places, If absent it just uses the layer id.
+  symbol: "+f", // This appears on the layer's node. Default is the id with the first letter capitalized
   position: 3, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
   startData() { return {
       unlocked: true,
   points: new Decimal(0),
   }},
   color: "#A13E5F",
-  requires: new Decimal("700"), // Can be a function that takes requirement increases into account
-  resource: "Exponentiate", // Name of prestige currency
+  requires: new Decimal(25), // Can be a function that takes requirement increases into account
+  resource: "Fixations", // Name of prestige currency
   baseResource: "Reduction Points", // Name of resource prestige is based on
-  baseAmount() {return player["M"].points}, // Get the current amount of baseResource
-  type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-  exponent: 0.75, // Prestige currency exponent
+  baseAmount() {return player["R"].points}, // Get the current amount of baseResource
+  type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+  exponent: 1.1, // Prestige currency exponent
   gainMult() { // Calculate the multiplier for main currency from bonuses
       mult = new Decimal(1)
       return mult
@@ -597,32 +654,208 @@ addLayer("T", {
   gainExp() { // Calculate the exponent on main currency from bonuses
       return new Decimal(1)
   },
+  tabFormat: [
+    "main-display",
+    "prestige-button",
+    
+    "blank",
+    "grid",
+    "milestones",
+    
+    "blank",
+    "blank",
+    "upgrades",
+    "blank",
 
-    upgrades: {
+    "challenges",
+],
+  
 
-        11: {
-          title: "finally a QoL upgrade",
-          description: "gain 10% of Multiplier every second",
-          cost: new Decimal(10)
-        },
-        12: {
-          title: "the best unlock upgrades",
-          description: "Unlock 3 upgrades from multiplier layer",
-          cost: new Decimal("4.20e69")
-        },
-        13: {
-          title: "i hate this, can i keep everything?",
-          description: "Keep all multiplier buyables on reduction and divide",
-          cost: new Decimal("9e420")
-        },
-
+upgrades: {
+  11: {
+    title: "Unlock Challenges",
+    cost: new Decimal(1),
+    style() {
+      return {
+        "width": "400px",
+        "height": "75px",
+        "border-radius": "30px",
+        "border": "10px",
+        "margin": "30px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#ffffff"
+      }
     },
+    branches: [("F",11), ("F",12), ("F",13), ("F",14)],
+},
+
+12: {
+  title: "Produci Upgrade is ^2 stronger",
+  cost: new Decimal(2),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "8px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+  branches: [("F",12), ("F",15)],
+},
+
+13: {
+  title: "Multiplier exponent becomes ^0.3 -> ^0.4",
+  cost: new Decimal(2),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "2px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+  branches: [("F",13), ("F",16)]
+},
+
+14: {
+  title: "Start generating Replicand",
+  cost: new Decimal(2),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "2px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+  branches: [("F",14), ("F",17)]
+},
+
+15: {
+  title: "Reduction upgrade I is ^1.2 stronger",
+  cost: new Decimal(3),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "2px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+  branches: [("F",15), ("F",18)],
+
+
+},
+16: {
+  title: "Weak Produci exponent becomes ^1 -> ^1.1",
+  cost: new Decimal(3),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "2px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+  branches: [("F",16), ("F",19),("F",18)],
+},
+
+17: {
+  title: "Replicand gain is 2x faster",
+  cost: new Decimal(3),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "2px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+  branches: [("F",17), ("F",19)],
+},
+
+18: {
+  title: "Multiplier Softcap starts +20 upgrades later",
+  cost: new Decimal(5),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "2px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+
+},
+19: {
+  title: "Increment gain is boosted by Replicand at a reduced rate",
+  cost: new Decimal(5),
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "10px",
+      "border": "2px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#ffffff"
+    }
+  },
+
+},
+
+
+
+
+
+
+},
+
+
+
+
+
+
+
+
+challenges: {
+  11: {
+      name: "Basic Challenge",
+      challengeDescription: `Now do it all again! <br> - Does a Fixor reset <br>- No restrictions applied<br>`,
+      canComplete: function() {return player.points.gte("1e9")},
+      goalDescription: "2000 "
+      //reward
+  },
+  
+},
+
     
   
 
 
   row: 3, // Row the layer is in on the tree (0 is the first row)
-  branches: ["I", "T", "M", "R"],
+  branches: ["T","R"],
   layerShown(){return true}
 })
 */

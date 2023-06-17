@@ -124,6 +124,8 @@ You can make almost any value dynamic by using a function in its place, includin
 - passiveGeneration(): **optional**, returns a regular number. You automatically generate your gain times this number every second (does nothing if absent)
         This is good for automating Normal layers.
 
+onPrestige(gain)
+
 - autoPrestige(): **optional**, returns a boolean, if true, the layer will always automatically do a prestige if it can.
         This is good for automating Static layers.
 

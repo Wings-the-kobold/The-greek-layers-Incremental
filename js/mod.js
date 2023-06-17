@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2 - Incresor chaos",
-	name: "QoL update 1",
+	num: `0.2.3 - 🧀`,
+	name: "Banana",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -43,8 +43,8 @@ let changelog = `<h1>Changelog:</h1><br>
 		- buttons are easier to read<br>
 		- endgame is now 1e100 -> 1e10 {what was i thinking on that lmao}<br>
 		- Reduction layer buyables boost Multiplier buyables normally<br>
-		- 
-		
+		<h3>v0.2.3 - Incremented</h3><br>
+		- added a new sub currency for Incresor
 		
 		
 										
@@ -79,6 +79,8 @@ function getPointGen() {
 	if (hasUpgrade('M', 14)) gain = gain.times(2)
 	if (hasUpgrade('M', 15)) gain = gain.times(upgradeEffect('M', 15))
 	if (hasMilestone('I', 1)) gain = gain.pow(1.05)
+	if (hasMilestone('I', 2)) gain = gain.times(3)
+	if (hasMilestone('I',5)) gain = gain.times(tmp["I"].effect)
 	return gain
 }
 
@@ -92,7 +94,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e10"))
+	return player.points.gte(new Decimal("1e45"))
 }
 
 

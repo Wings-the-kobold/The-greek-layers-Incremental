@@ -382,7 +382,7 @@ function gameLoop(diff) {
 }
 
 function hardReset(resetOptions) {
-	if (!confirm("Are you sure you want to do this? You will lose all your progress!")) return
+	if (!confirm("Hey, you sure you want to reset?")) return
 	player = null
 	if(resetOptions) options = null
 	save(true);
@@ -423,6 +423,6 @@ var interval = setInterval(function() {
 	adjustPopupTime(trueDiff)
 	updateParticles(trueDiff)
 	ticking = false
-}, 50)
+}, 25)
 
 setInterval(function() {needCanvasUpdate = true}, 500)

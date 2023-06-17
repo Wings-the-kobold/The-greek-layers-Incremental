@@ -7,18 +7,17 @@ Custom tab layouts can be used to do basically anything in a tab window, especia
 ```js
 tabFormat: [
     "main-display",
-    ["prestige-button"],
+    "prestige-button",
     "blank",
     ["display-text",
-        function() { return 'I have ' + format(player.points) + ' pointy points!' },
-        { "color": "red", "font-size": "32px", "font-family": "Comic Sans MS" }],
+        function() { return 'You have ' + format(player.points) + ' pointy points!' },
     "blank",
     ["toggle", ["c", "beep"]],
     "milestones",
     "blank",
     "blank",
-    "upgrades"
-]
+    "upgrades",
+]],
 ```
 
 It is a list of components, which can be either just a name, or an array with arguments. If it's an array, the first item is the name of the component, the second is the data passed into it, and the third (optional) applies a CSS style to it with a "CSS object", where the keys are CSS attributes.
