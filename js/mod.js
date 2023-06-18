@@ -90,6 +90,7 @@ function getPointGen() {
 	if (hasMilestone('I', 1)) gain = gain.pow(1.05)
 	if (hasMilestone('I', 2)) gain = gain.times(3)
 	if (hasMilestone('I',5)) gain = gain.times(tmp["I"].effect)
+	//if (hasUpgrade('R', 11)) gain = gain.times(1.5)
 	return gain
 }
 

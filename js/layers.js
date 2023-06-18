@@ -19,6 +19,7 @@ addLayer("M", {
       mult = mult.mul(buyableEffect("M" , 12))
       if(hasUpgrade("M", 16)) mult = mult.times(2)
       if (hasMilestone('I', 3)) mult = mult.pow(1.05)
+      //if(hasUpgrade("F", 11)) mult = mult.times(1.5)
       return mult
 
   },
@@ -100,6 +101,7 @@ addLayer("M", {
               if (buyableEffect("M", 11).lt(1)) effect = new Decimal(1);
               effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
               effect = softcap(effect, new Decimal(200), new Decimal(0.5))
+              //if (inChallenge("F", 12)) effect = effect.pow(0.5)
               return effect;
             },
        
@@ -119,7 +121,8 @@ addLayer("M", {
           return Calculation;
         },
         display() {
-          return `<h2>Increase Multiplier gain by +1</h2><br>
+         
+         return `<h2>Increase Multiplier gain by +1</h2><br>
           <h3>  x${format(tmp[this.layer].buyables[this.id].effect)} Multiplier Boost</h3></b><br>
       <h3>Cost: ${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h3>`
         },
@@ -146,6 +149,7 @@ addLayer("M", {
           if (buyableEffect("M", 12).lt(1)) effect = new Decimal(1);
           effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
           effect = softcap(effect, new Decimal(200), new Decimal(0.5))
+          //if (inChallenge("F", 12)) effect = effect.pow(0.5)
           
           return effect;
         },
@@ -186,8 +190,9 @@ addLayer("M", {
         },
      
           effect() {
-            return getBuyableAmount(this.layer, this.id).pow_base(1.1).times(getBuyableAmount("R", 12).add(1))
-          
+            let effect = getBuyableAmount(this.layer, this.id).pow_base(1.1).times(getBuyableAmount("R", 12).add(1))
+            //if (inChallenge("F", 12)) effect = effect.pow(0.5)
+            return effect
           },
         
         unlocked() {
@@ -364,7 +369,8 @@ exponent: 1, // Prestige currency exponent
 resetDescription: `Reduction reset will do everything Multiplier does as well as its upgrades to gain  `,
 gainMult() { // Calculate the multiplier for main currency from bonuses
     mult = new Decimal(1)
-    if (hasMilestone("I",7)) mult = mult.times(1.2)
+    if (hasMilestone("I",7)) mult = mult.div(1.5)
+    //if (hasUpgrade("F",11)) mult = mult.div(2)
     return mult
 
 },
@@ -375,6 +381,20 @@ autoPrestige() {
   if (hasMilestone("I",4)) return true
 
 },
+
+resetDescription: `
+<h2>Reduction</h2><br> 
+Reduce the Multiplier Layer, which resets all Multiplier upgrades and its amount. <br> you will gain 
+ `,
+ componentStyles: {
+  "prestige-button"() { return {
+    
+    'height':'150px','width':'400px', "border-radius": "10px"
+  
+  
+      } 
+    }
+  },
 
 buyables: {
   11: {
@@ -484,7 +504,7 @@ upgrades: {
 row: 1, // Row the layer is in on the tree (0 is the first row)
 branches: ["M", "R"],
 hotkeys: [
-    {key: "R", description: "Press 'R' to Reduce the Multiplier layer back down to 1", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    {key: "r", description: "Press 'R' to Reduce the Multiplier layer back down to 1", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
 ],
 layerShown(){
   if (hasUpgrade('M', 13)) return true
@@ -492,6 +512,8 @@ layerShown(){
   if (hasUpgrade('R', 11)) return true
   if (getBuyableAmount('R', 12).gte(1)) return true
   if (getBuyableAmount('R', 11).gte(1)) return true
+  //if (player["F"].points.gte(1)) return true
+  //if (hasUpgrade('F', 11)) return true
 },
 })
 
@@ -499,31 +521,34 @@ layerShown(){
 addLayer("I", {
 name: "Increasor", // This is optional, only used in a few places, If absent it just uses the layer id.
 symbol: "x↑", // This appears on the layer's node. Default is the id with the first letter capitalized
-position: 3, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+position: 3,
+ // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
 startData() { return {
     unlocked: true,
 points: new Decimal(0),
-
 increment: new Decimal(1),
 }},
 effect() {
   let effect = new Decimal(1)
-  if (hasMilestone("I",5)) effect = player["I"].increment.log(2).max(1).floor()
+  if (hasMilestone("I",5)) effect = player["I"].increment.log(2).pow(1.1).max(1).floor()
   return effect
 },
 
 update(diff) {
-  if (hasMilestone("I", 5)) player["I"].increment = player["I"].increment.add(0.1)
+  if (hasMilestone("I", 5)) player["I"].increment = player["I"].increment.add(0.2)
   
 
 },
-
+resetDescription: `
+<h2>Incresity</h2><br> 
+Perform an Incresity reset, which resets everything Reduction does. <br> you will gain 
+ `,
 tabFormat: [
   "main-display",
   "prestige-button",
   
   ["display-text",
-      function() { if(hasMilestone("I",5)) return `<br>You have <h3 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;"> ${format(player["I"].increment)}</h3> increment, <br><br>Your current Increment boosts G.M gain by <h3 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;">${format(tmp["I"].effect)}x</h3>`},
+      function() { if(hasMilestone("I",5)) return `<br>You have <h3 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;"> ${format(player["I"].increment)}</h3> increment <br><br>Your current Increment boosts G.M gain by <h3 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;">${format(tmp["I"].effect)}x</h3>`},
      //#2EAE07
     ],
   "blank",
@@ -543,6 +568,7 @@ type: "normal", // normal: cost to gain currency depends on amount gained. stati
 exponent: 0.5, // Prestige currency exponent
 gainMult() { // Calculate the multiplier for main currency from bonuses
     mult = new Decimal(1)
+   // if (hasUpgrade("F",11)) mult = mult.times(2)
     return mult
 
 },
@@ -550,17 +576,16 @@ gainExp() { // Calculate the exponent on main currency from bonuses
     return new Decimal(1)
 },
 
+componentStyles: {
+  "prestige-button"() { return {
+    
+    'height':'150px','width':'200px', "border-radius": "10px",
+  
+  
+  } 
+}
 
-
-
-
-
-
-
-
-
-
-
+},
 
   upgrades: {
 
@@ -632,7 +657,7 @@ gainExp() { // Calculate the exponent on main currency from bonuses
 },
 7: {
   requirementDescription: "Get all QoL Upgrades",
-  effectDescription: "Lower Reduction Requirement Cost by 20%",
+  effectDescription: "Divide Reduction Requirement Cost by 1.5",
   done() { if (hasUpgrade("I",11) && hasUpgrade("I",12) && hasUpgrade("I",13) ) return true /*alert("you got the milestone")*/},
 },
 },
@@ -645,26 +670,29 @@ layerShown(){
   if (player[this.layer].points.gte(1)) return true
   if (hasUpgrade('I', 11)) return true
   if (player["M"].points.gte(15000)) return true
-
+  
+  //if (player["F"].points.gte(1)) return true
+  //if (hasUpgrade('F', 11)) return true
+  
 }
 })
-//primitate
-/*
+/*/primitate
 addLayer("F", {
-name: "Fixors", // This is optional, only used in a few places, If absent it just uses the layer id.
-symbol: "+f", // This appears on the layer's node. Default is the id with the first letter capitalized
+name: "Fixate", // This is optional, only used in a few places, If absent it just uses the layer id.
+symbol: "F", // This appears on the layer's node. Default is the id with the first letter capitalized
 position: 3, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
 startData() { return {
     unlocked: true,
 points: new Decimal(0),
+replicand: new Decimal(0),
 }},
-color: "#A13E5F",
+color: "#53DB6E",
 requires: new Decimal(20), // Can be a function that takes requirement increases into account
 resource: "Fixations", // Name of prestige currency
 baseResource: "Reduction Points", // Name of resource prestige is based on
 baseAmount() {return player["R"].points}, // Get the current amount of baseResource
 type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-exponent: 0.7, // Prestige currency exponent
+exponent: 0.5, // Prestige currency exponent
 gainMult() { // Calculate the multiplier for main currency from bonuses
     mult = new Decimal(1)
     return mult
@@ -687,232 +715,368 @@ componentStyles: {
 
 },
 
-
-
-
-
-
 resetDescription: `
-<h2>Fixors</h2><br> 
-Fixing resets everything Reduction or Incresity does, including their Upgrades and milestones.<br> you will gain `,
-tabFormat: [
+<h2>Fixation</h2><br> 
+Fixing resets everything Reduction or Incresity does, including their Upgrades and incresity milestones.<br>in return, you will gain `,
+
+
+tabFormat: {
+  "Fixation": {      
+        content: [
+          "main-display",
+          "prestige-button",
+          
+      ],
   
-  "prestige-button",
-  "blank",
-  "blank",
-  "main-display",
-  "blank",
-  "grid",
-  "milestones",
-  "blank",
-  "upgrades",
-  "blank",
-
-  "challenges",
-],
-
+  },
+  "Challenges": {
+      content: [
+     "challenges",
+     ],
+    
+  },
+  "The Upgrade Tree": {
+    content: [
+   "upgrades",
+   ],  
+},   
+},
 
 upgrades: {
-11: {
-  title: "Unlock Challenges",
-  cost: new Decimal(1),
-  style() {
-    return {
-      "width": "400px",
-      "height": "75px",
-      "border-radius": "0px",
-      "border": "10px",
-      "margin": "30px",
-      "text-shadow": "0px 0px 10px #000000",
-      "color": "#ffffff"
-    }
-  },
-  branches: [("F",11), ("F",12), ("F",13), ("F",14)],
-},
-
-12: {
-title: "Produci Upgrade is ^2 stronger",
-cost: new Decimal(2),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "8px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-branches: [("F",12), ("F",15)],
-},
-
-13: {
-title: "Multiplier exponent becomes ^0.3 -> ^0.4",
-cost: new Decimal(2),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "2px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-branches: [("F",13), ("F",16)]
-},
-
-14: {
-title: "Start generating Replicand",
-cost: new Decimal(2),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "2px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-branches: [("F",14), ("F",17)]
-},
-
-15: {
-title: "Reduction upgrade I is ^1.2 stronger",
-cost: new Decimal(3),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "2px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-branches: [("F",15), ("F",18)],
-
-
-},
-16: {
-title: "Weak Produci exponent becomes ^1 -> ^1.1",
-cost: new Decimal(3),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "2px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-branches: [("F",16), ("F",19),("F",18)],
-},
-
-17: {
-title: "Replicand gain is 2x faster",
-cost: new Decimal(3),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "2px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-branches: [("F",17), ("F",19)],
-},
-
-18: {
-title: "Multiplier Softcap starts +20 upgrades later",
-cost: new Decimal(5),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "2px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-
-},
-19: {
-title: "Increment gain is boosted by Replicand at a reduced rate",
-cost: new Decimal(5),
-style() {
-  return {
-    "width": "200px",
-    "height": "75px",
-    "border-radius": "0px",
-    "border": "2px",
-    "margin": "5px",
-    "text-shadow": "0px 0px 10px #000000",
-    "color": "#ffffff"
-  }
-},
-
-},
-
-},
-
-challenges: {
-11: {
-    name: "Basic Challenge",
-    challengeDescription: `Now do it all again! <br> - Does a Fixor reset <br>- No restrictions applied<br>`,
-    canComplete: function() {return player["R"].points.gte("25")},
-    goalDescription: "25 reduction points",
-    completionLimit: new Decimal(5),
-    unlocked() {
-      if (hasUpgrade("F",11)) return true
-    },
+          11: {
+            title: `
+            (11)<h3> Unlock Challenges.</h3><br>
+            <br>Reducers gain, Incresor gain is increased by 50%
+            <br> Multiplier gain is increased by 40%.
+            <br> G.M gain is increased by 30%
+            <br> You keep Incresity QoL Milestones on Fixate
+            `,
+            cost: new Decimal(1),
+            style() {
+              return {
+                "width": "600px",
+                "height": "75px",
+                "border-radius": "0px",
+                "border": "1px",
+                "margin": "30px",
+                "text-shadow": "10px 20px 50px #ffffff",
+                "color": "#D51159"
+              }
+            },
+            branches: [("F",11), ("F",12), ("F",13), ("F",14)],
+          },
     
-    //reward
-},
-  12: {
-      name: "Anti-Multiplier",
-      challengeDescription: `this upgrade nerf is awful.<br> - Does a Fixor reset <br>- All Buyables are nerfed ^0.5
-      <br>`,
-      canComplete: function() {return player["R"].points.gte("30")},
-      goalDescription: "30 Reduction points",
-      unlocked() {
-        if (hasUpgrade("F",11)) return true
-      },
+          
+
+          12: {
+          title: "Produci Upgrade is ^2 stronger",
+          cost: new Decimal(2),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "8px",
+              "margin": "5px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          branches: [("F",12), ("F",15)],
+          canAfford() {
+            if ( hasUpgrade("F",13) || hasUpgrade("F",14) ) return false
+          },
+          },
+          
+          13: {
+          title: "Multiplier exponent becomes ^0.3 -> ^0.4",
+          cost: new Decimal(2),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "2px",
+              "margin": "5px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          branches: [("F",13), ("F",16)],
+          canAfford() {
+            if ( hasUpgrade("F",12) || hasUpgrade("F",14) ) return false
+          },
+          },
+          
+          14: {
+          title: "Start generating Replicand",
+          cost: new Decimal(2),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "2px",
+              "margin": "5px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          branches: [("F",14), ("F",17)],
+          canAfford() {
+            if ( hasUpgrade("F",12) || hasUpgrade("F",13) ) return false
+          },
+          },
+       
+          
+
+          15: {
+          title: "Reduction upgrade I is ^1.2 stronger",
+          cost: new Decimal(3),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "2px",
+              "margin": "5px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          branches: [("F",15), ("F",18)],
+          canAfford() {
+            if ( hasUpgrade("F",13) || hasUpgrade("F",14) ) return false
+          },
+          
+          },
+
+          16: {
+          title: "Weak Produci exponent becomes ^1 -> ^1.1",
+          cost: new Decimal(3),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "2px",
+              "margin": "5px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          branches: [("F",16), ("F",19),("F",18),("F",20)],
+          
+          canAfford() {
+            if ( hasUpgrade("F",12) || hasUpgrade("F",14) ) return false
+          },
+          },
+          
+          17: {
+          title: "Replicand gain is 2x faster",
+          cost: new Decimal(3),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "2px",
+              "margin": "5px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          branches: [("F",17), ("F",19)],
+          canAfford() {
+            if ( hasUpgrade("F",12) || hasUpgrade("F",13) ) return false
+          },
+          },
       
-      //reward
-  },
-  13: {
-    name: "Time wall",
-    challengeDescription: `ugh i hate you!<br> - Does a Fixor reset <br>- All upgrades from Reduction and Multiplier buyables are dilated to ^0.6, but Increment and Replicand gains get an immense boost of ^2
-    <br>`,
-    canComplete: function() {return player["R"].points.gte("30")},
-    goalDescription: "30 Reduction points",
-    unlocked() {
-      if (hasUpgrade("F",11)) return true
-    },
-    
-    //reward
-},
+          
+
+          18: {
+          title: "Multiplier Softcap starts +20 upgrades later",
+          cost: new Decimal(5),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "2px",
+              "margin": "2px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          
+          },
+
+          19: {
+          title: "Increment gain is boosted by Replicand at a reduced rate",
+          cost: new Decimal(5),
+          style() {
+            return {
+              "width": "200px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "2px",
+              "margin": "2px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#ffffff"
+            }
+          },
+          
+          },
+          21: {
+            title: "Reduction does not reset multiplier upgrades",
+            cost: new Decimal(10),
+            style() {
+              return {
+                "width": "200px",
+                "height": "75px",
+                "border-radius": "0px",
+                "border": "2px",
+                "margin": "5px",
+                "text-shadow": "0px 0px 10px #000000",
+                "color": "#ffffff"
+              }
+            },
+            
+            },
+
+          22: {
+              title: "Going Incresity does not reset multiplier upgrades",
+              cost: new Decimal(10),
+              style() {
+                return {
+                  "width": "200px",
+                  "height": "75px",
+                  "border-radius": "0px",
+                  "border": "2px",
+                  "margin": "10px",
+                  "text-shadow": "0px 0px 10px #000000",
+                  "color": "#ffffff"
+                }
+              },
+              
+              },
+          
 },
 
+     challenges: {
+            11: {
+                name: "Basic Challenge",
+                challengeDescription: ` Now do it all again! <br>- Does a Fixor reset <br>- No restrictions applied<br> `,
+                canComplete: function() {return player["R"].points.gte("25")},
+                goalDescription: `25 reduction points<br>`,
+                completionLimit: new Decimal(5),
+                unlocked() {
+                  if (hasUpgrade("F",11)) return true
+                },
+                style() {
+                  return {
+                    "width": "300px",
+                    "height": "275px",
+                    "border-radius": "15px",
+                    "border": "2px",
+                    "margin": "5px",
+                    "text-shadow": "0px 0px 10px #000000",
+                    "color": "#ffffff"
+                  }
+                },
+                rewardDescription: `2x boost to G.M, additive. 
+                <br> on full completion: keep Autobuyer milestones on fixate`,
+                completionLimit: new Decimal(5),
+                rewardEffect() {
+                  let effect = new Decimal(1)
+                  effect = effect.times(challengeCompletions("F", 12)).times(1.2)
+                  
+                  return effect
+                },
+                rewardDisplay() {
+                  return `<br> Multiplier effect to G.M: ${challengeCompletions("F", 12).add(1)}x`
+                },
+            },
+              12: {
+                  name: "Anti-Multiplier",
+                  challengeDescription: `this upgrade nerf is awful.<br> - Does a Fixor reset <br>- All Multiplier Buyables are nerfed ^0.5
+                  <br>`,
+                  canComplete: function() {return player["R"].points.gte("30")},
+                  goalDescription: `30 Reduction points<br>`,
+                  unlocked() {
+                    if (hasUpgrade("F",11)) return true
+                  },
+                  style() {
+                    return {
+                      "width": "300px",
+                      "height": "300px",
+                      "border-radius": "15px",
+                      "border": "2px",
+                      "margin": "5px",
+                      "text-shadow": "0px 0px 10px #000000",
+                      "color": "#ffffff"
+                    }
+                  },
+                  rewardDescription: "Buyables softcaps are 5% weaker",
+                  completionLimit: new Decimal(5),
+                  rewardEffect() {
+                    let effect = new Decimal(1)
+                    effect = effect.times(challengeCompletions("F", 12)).times(1.05)
+                    
+                    return effect
+                  },
+                  rewardDisplay() {
+                    return `<br> All Multiplier Softcaps are ${challengeCompletions("F", 12)}% weaker`
+                  },
+              },
+              13: {
+                name: "Super Scale",
+                challengeDescription: `
+                This is a bad challenge, and i hate you.<br>
+                - Does a Fixor reset <br> - Reducers scaling is increased ^2 -> ^3 <br>
+                - Multiplier Scaling is increased ^1.3 -> ^1.6 <br>
+                `,
+                canComplete: function() {return player["R"].points.gte("30")},
+                goalDescription: "30 Reduction points",
+                unlocked() {
+                  if (hasUpgrade("F",11)) return true
+                },
+                style() {
+                  return {
+                    "width": "550px",
+                    "height": "325px",
+                    "border-radius": "15px",
+                    "border": "2px",
+                    "margin": "5px",
+                    "text-shadow": "0px 0px 10px #000000",
+                    "color": "#ffffff"
+                  }
+                },
+                rewardDescription: `Lower the cost scalings for Multiplier and Reduction Buyables by -0.02 per completion<br>`,
+                rewardEffect() {
+                  let effect = new Decimal(1)
+                  effect = effect.times(challengeCompletions("F", 13)).times(1.02)
+                  
+                  return effect
+                },
+                rewardDisplay() {
+                  return `<br>- Reduction buyables is reduced to ^2 -> ^${format(challengeEffect("F", 13).add(2))} <br> - Multiplier buyables is reduced to ^1.3 -> ^${format(challengeEffect("F", 13).add(1.3))}`
+                },
+                completionLimit: new Decimal(5),
+              
+            },
+            },
   
 
 
 
 row: 3, // Row the layer is in on the tree (0 is the first row)
 branches: ["T","R"],
-layerShown(){return true}
+layerShown(){
+  if (player["R"].points.gte(20)) return true
+  if (player["F"].points.gte(1)) return true
+  if (hasUpgrade("F",11)) return true 
+
+}
 })
 //*/
