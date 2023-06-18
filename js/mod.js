@@ -44,8 +44,9 @@ let changelog = `<h1>Changelog:</h1><br>
 		- endgame is now 1e100 -> 1e10 {what was i thinking on that lmao}<br>
 		- Reduction layer buyables boost Multiplier buyables normally<br>
 		<h3>v0.2.3 - Incremented</h3><br>
-		- added a new sub currency for Incresor
+		- added a new sub currency for Incresor<br><br>
 		
+		<h1>who tf reads these</h1>
 		
 										
 		`
@@ -95,7 +96,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e45"))
+	if (player.points.gte(new Decimal("1e13"))) return alert("yea you reached endgame")
 }
 
 
