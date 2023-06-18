@@ -90,6 +90,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+ `<br><h4 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;">hi im a floating blue text</h4>`
 ]
 
 // Determines when the game "ends"
