@@ -19,7 +19,7 @@ addLayer("M", {
       mult = mult.mul(buyableEffect("M" , 12))
       if(hasUpgrade("M", 16)) mult = mult.times(2)
       if (hasMilestone('I', 3)) mult = mult.pow(1.05)
-      if(hasUpgrade("F", 11)) mult = mult.times(1.5)
+      //if(hasUpgrade("F", 11)) mult = mult.times(1.5)
       return mult
 
   },
@@ -191,7 +191,7 @@ addLayer("M", {
      
           effect() {
             let effect = getBuyableAmount(this.layer, this.id).pow_base(1.1).times(getBuyableAmount("R", 12).add(1))
-            if (inChallenge("F", 12)) effect = effect.pow(0.5)
+           // if (inChallenge("F", 12)) effect = effect.pow(0.5)
             return effect
           },
         
