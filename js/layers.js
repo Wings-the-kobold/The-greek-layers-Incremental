@@ -1,6 +1,7 @@
 
 
 addLayer("M", {
+<<<<<<< Updated upstream
     name: "Multiplier", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "x", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
@@ -21,6 +22,29 @@ addLayer("M", {
         if(hasUpgrade("M", 16)) mult = mult.times(2)
         if (hasMilestone('I', 3)) mult = mult.pow(1.05)
         return mult
+=======
+  name: "Multiplier", // This is optional, only used in a few places, If absent it just uses the layer id.
+  symbol: "x", // This appears on the layer's node. Default is the id with the first letter capitalized
+  position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+  startData() { return {
+      unlocked: true,
+  points: new Decimal(0),
+  }},
+  color: "#E902AB",
+  requires: new Decimal(10), // Can be a function that takes requirement increases into account
+  resource: "Multiplier", // Name of prestige currency
+  baseResource: "G.M", // Name of resource prestige is based on
+  baseAmount() {return player.points}, // Get the current amount of baseResource
+  type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+  exponent: 0.4, // Prestige currency exponent
+  gainMult() { // Calculate the multiplier for main currency from bonuses
+      mult = new Decimal(1)
+      mult = mult.mul(buyableEffect("M" , 12))
+      if(hasUpgrade("M", 16)) mult = mult.times(2)
+      if (hasMilestone('I', 3)) mult = mult.pow(1.05)
+      if(hasUpgrade("F", 11)) mult = mult.times(1.5)
+      return mult
+>>>>>>> Stashed changes
 
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -169,6 +193,7 @@ addLayer("M", {
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id))
           },
           effect() {
+<<<<<<< Updated upstream
             let effect = getBuyableAmount(this.layer, this.id).add(0.5)
             //if (buyableEffect("M", 13).lt(1)) effect = new Decimal(1);
             effect = effect.pow(1.1).mul(buyableEffect("R" , 12)).ceil();
@@ -179,6 +204,18 @@ addLayer("M", {
           unlocked() {
             return true
           }
+=======
+              let effect = getBuyableAmount(this.layer, this.id);
+              if (buyableEffect("M", 11).lt(1)) effect = new Decimal(1);
+              effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
+              effect = softcap(effect, new Decimal(200), new Decimal(0.5))
+              if (inChallenge("F", 12)) effect = effect.pow(0.5)
+              return effect;
+            },
+       
+        unlocked() {
+          return true
+>>>>>>> Stashed changes
         },
     },
 
@@ -210,6 +247,7 @@ addLayer("M", {
             },
       },
         12: {
+<<<<<<< Updated upstream
             title: "Produci",
             description: "Multiplier Boosts G.M",
             effect() {
@@ -248,6 +286,93 @@ addLayer("M", {
                 "color": "#ffffff"
               }
             },
+=======
+        cost(x) {
+          let PowerI = new Decimal(1.4)
+          
+          let Calculation = new Decimal(10).mul(Decimal.pow(PowerI, x.pow(1))).div(buyableEffect("R" , 11)).ceil() //the cost scaling of the upgrade
+          return Calculation;
+        },
+        display() {
+         
+         return `<h2>Increase Multiplier gain by +1</h2><br>
+          <h3>  x${format(tmp[this.layer].buyables[this.id].effect)} Multiplier Boost</h3></b><br>
+      <h3>Cost: ${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h3>`
+        },
+        canAfford() {
+          return player[this.layer].points.gte(this.cost())
+        },
+        style() {
+          return {
+            "width": "500px",
+            "height": "105px",
+            "border-radius": "10px",
+            "border": "2px",
+            "margin": "5px",
+            "text-shadow": "0px 0px 10px #000000",
+            "color": "#ffffff"
+          }
+        },
+        buy() {
+          player[this.layer].points = player[this.layer].points.sub(this.cost())
+          addBuyables(this.layer, this.id, 1)
+        },
+        effect() {
+          let effect = getBuyableAmount(this.layer, this.id);
+          if (buyableEffect("M", 12).lt(1)) effect = new Decimal(1);
+          effect = effect.add(1).mul(buyableEffect("R" , 12).sub(1));
+          effect = softcap(effect, new Decimal(200), new Decimal(0.5))
+          if (inChallenge("F", 12)) effect = effect.pow(0.5)
+          
+          return effect;
+        },
+        unlocked() {
+          return true
+        },
+       
+      },
+          13: {
+        cost(x) {
+          let PowerI = new Decimal(1.4)
+          
+          let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(1.1))).div(buyableEffect("R" , 11))        .ceil() //the cost scaling of the upgrade
+          return Calculation;
+        },
+        display() {
+          return `<h2>Multiply G.M gain by 10% compounding</h2><br>
+          <h3> x${format(tmp[this.layer].buyables[this.id].effect)} G.M gain</h3></b><br>
+      <h3>${formatWhole(tmp[this.layer].buyables[this.id].cost)} Multiplier</h3>`
+        },
+        canAfford() {
+          return player[this.layer].points.gte(this.cost())
+        },
+        style() {
+          return {
+            "width": "500px",
+            "height": "105px",
+            "border-radius": "10px",
+            "border": "2px",
+            "margin": "5px",
+            "text-shadow": "0px 0px 10px #000000",
+            "color": "#ffffff"
+          }
+        },
+        buy() {
+          player[this.layer].points = player[this.layer].points.sub(this.cost())
+          addBuyables(this.layer, this.id, 1)
+        },
+     
+          effect() {
+            let effect = getBuyableAmount(this.layer, this.id).pow_base(1.1).times(getBuyableAmount("R", 12).add(1))
+            if (inChallenge("F", 12)) effect = effect.pow(0.5)
+            return effect
+          },
+        
+        unlocked() {
+          return true
+        },
+        
+>>>>>>> Stashed changes
       },
         14: {
           title: "Basic II",
@@ -331,6 +456,7 @@ addLayer("M", {
 })
 
 addLayer("R", {
+<<<<<<< Updated upstream
   name: "Reduction", // This is optional, only used in a few places, If absent it just uses the layer id.
   symbol: "⬇r", // This appears on the layer's node. Default is the id with the first letter capitalized
   position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
@@ -349,6 +475,28 @@ addLayer("R", {
   gainMult() { // Calculate the multiplier for main currency from bonuses
       mult = new Decimal(1)
       return mult
+=======
+name: "Reduction", // This is optional, only used in a few places, If absent it just uses the layer id.
+symbol: "⬇r", // This appears on the layer's node. Default is the id with the first letter capitalized
+position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+startData() { return {
+    unlocked: true,
+points: new Decimal(0),
+}},
+color: "#5A66D6",
+requires: new Decimal(3500), // Can be a function that takes requirement increases into account
+resource: "Reduction Points", // Name of prestige currency
+baseResource: "Multiplier", // Name of resource prestige is based on
+baseAmount() {return player["M"].points}, // Get the current amount of baseResource
+type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+exponent: 1, // Prestige currency exponent
+resetDescription: `Reduction reset will do everything Multiplier does as well as its upgrades to gain  `,
+gainMult() { // Calculate the multiplier for main currency from bonuses
+    mult = new Decimal(1)
+    if (hasMilestone("I",7)) mult = mult.div(1.5)
+   // if (hasUpgrade("F",11)) mult = mult.div(2)
+    return mult
+>>>>>>> Stashed changes
 
   },
   gainExp() { // Calculate the exponent on main currency from bonuses
@@ -516,6 +664,7 @@ addLayer("I", {
     "upgrades"
 ],
 //*/
+<<<<<<< Updated upstream
   color: "#E18E5F",
   requires: new Decimal("15000"), // Can be a function that takes requirement increases into account
   resource: "Incresors", // Name of prestige currency
@@ -526,6 +675,19 @@ addLayer("I", {
   gainMult() { // Calculate the multiplier for main currency from bonuses
       mult = new Decimal(1)
       return mult
+=======
+color: "#E18E5F",
+requires: new Decimal("10000"), // Can be a function that takes requirement increases into account
+resource: "Incresors", // Name of prestige currency
+baseResource: "Multiplier", // Name of resource prestige is based on
+baseAmount() {return player["M"].points}, // Get the current amount of baseResource
+type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+exponent: 0.5, // Prestige currency exponent
+gainMult() { // Calculate the multiplier for main currency from bonuses
+    mult = new Decimal(1)
+    //if (hasUpgrade("F",11)) mult = mult.times(2)
+    return mult
+>>>>>>> Stashed changes
 
   },
   gainExp() { // Calculate the exponent on main currency from bonuses
@@ -619,6 +781,7 @@ addLayer("I", {
 
 
 
+<<<<<<< Updated upstream
   row: 1, // Row the layer is in on the tree (0 is the first row)
   branches: ["I", "M"],
   layerShown(){ 
@@ -627,6 +790,17 @@ addLayer("I", {
     if (player["M"].points.gte(15000)) return true
   
   }
+=======
+row: 1, // Row the layer is in on the tree (0 is the first row)
+branches: ["I", "M"],
+layerShown(){ 
+  if (player[this.layer].points.gte(1)) return true
+  if (hasUpgrade('I', 11)) return true
+  if (player["M"].points.gte(15000)) return true
+  //if (player["F"].points.gte(1)) return true
+  //if (hasUpgrade('F', 11)) return true
+}
+>>>>>>> Stashed changes
 })
 
 
@@ -689,6 +863,7 @@ upgrades: {
     branches: [("F",11), ("F",12), ("F",13), ("F",14)],
 },
 
+<<<<<<< Updated upstream
 12: {
   title: "Produci Upgrade is ^2 stronger",
   cost: new Decimal(2),
@@ -851,6 +1026,111 @@ challenges: {
 },
 
     
+=======
+     challenges: {
+            11: {
+                name: "Basic Challenge",
+                challengeDescription: ` Now do it all again! <br>- Does a Fixor reset <br>- No restrictions applied<br> `,
+                canComplete: function() {return player["R"].points.gte("25")},
+                goalDescription: `25 reduction points<br>`,
+                completionLimit: new Decimal(5),
+                unlocked() {
+                  if (hasUpgrade("F",11)) return true
+                },
+                style() {
+                  return {
+                    "width": "300px",
+                    "height": "275px",
+                    "border-radius": "15px",
+                    "border": "2px",
+                    "margin": "5px",
+                    "text-shadow": "0px 0px 10px #000000",
+                    "color": "#ffffff"
+                  }
+                },
+                rewardDescription: `100% boost to G.M, additive. 
+                <br> on full completion: keep Autobuyer milestones on fixate`,
+                completionLimit: new Decimal(5),
+                rewardEffect() {
+                  let effect = new Decimal(1)
+                  effect = effect.times(challengeCompletions("F", 12)).times(1.2)
+                  
+                  return effect
+                },
+                rewardDisplay() {
+                  return `<br> Multiplier effect to G.M: ${challengeCompletions("F", 12)}% weaker`
+                },
+            },
+              12: {
+                  name: "Anti-Multiplier",
+                  challengeDescription: `this upgrade nerf is awful.<br> - Does a Fixor reset <br>- All Multiplier Buyables are nerfed ^0.5
+                  <br>`,
+                  canComplete: function() {return player["R"].points.gte("30")},
+                  goalDescription: `30 Reduction points<br>`,
+                  unlocked() {
+                    if (hasUpgrade("F",11)) return true
+                  },
+                  style() {
+                    return {
+                      "width": "300px",
+                      "height": "300px",
+                      "border-radius": "15px",
+                      "border": "2px",
+                      "margin": "5px",
+                      "text-shadow": "0px 0px 10px #000000",
+                      "color": "#ffffff"
+                    }
+                  },
+                  rewardDescription: "Buyables softcaps are 5% weaker",
+                  completionLimit: new Decimal(5),
+                  rewardEffect() {
+                    let effect = new Decimal(1)
+                    effect = effect.times(challengeCompletions("F", 12)).times(1.05)
+                    
+                    return effect
+                  },
+                  rewardDisplay() {
+                    return `<br> All Multiplier Softcaps are ${challengeCompletions("F", 12)}% weaker`
+                  },
+              },
+              13: {
+                name: "Super Scale",
+                challengeDescription: `
+                This is a bad challenge, and i hate you.<br>
+                - Does a Fixor reset <br> - Reducers scaling is increased ^2 -> ^3 <br>
+                - Multiplier Scaling is increased ^1.3 -> ^1.6 <br>
+                `,
+                canComplete: function() {return player["R"].points.gte("30")},
+                goalDescription: "30 Reduction points",
+                unlocked() {
+                  if (hasUpgrade("F",11)) return true
+                },
+                style() {
+                  return {
+                    "width": "550px",
+                    "height": "325px",
+                    "border-radius": "15px",
+                    "border": "2px",
+                    "margin": "5px",
+                    "text-shadow": "0px 0px 10px #000000",
+                    "color": "#ffffff"
+                  }
+                },
+                rewardDescription: `Lower the cost scalings for Multiplier and Reduction Buyables by -0.02 per completion<br>`,
+                rewardEffect() {
+                  let effect = new Decimal(1)
+                  effect = effect.times(challengeCompletions("F", 13)).times(1.02)
+                  
+                  return effect
+                },
+                rewardDisplay() {
+                  return `<br>- Reduction buyables is reduced to ^2 -> ^${format(challengeEffect("F", 13).add(2))} <br> - Multiplier buyables is reduced to ^1.3 -> ^${format(challengeEffect("F", 13).add(1.3))}`
+                },
+                completionLimit: new Decimal(5),
+              
+            },
+            },
+>>>>>>> Stashed changes
   
 
 
