@@ -229,7 +229,48 @@ addLayer("S", {
   gainExp() { // Calculate the exponent on main currency from bonuses
       return new Decimal(1)
   },
+  infoboxes: {
+    about: {
+      title: "Shifting",
+      body() {
+        return `<h3>Welcome to the first prestige reset of this game. 
+        As you can see, Your upgrades are starting to get really expensive. 
+        But this button can help with the cost of shifting your upgrades and points.
+         </h3>`
+      }
 
+
+    },
+
+    tabFormat: [
+      
+      ["display-text",
+          function() {`you have ${format(player.points)} points` }, //you add this for every currency, it shows the effect 
+         
+        ],
+        "prestige-button",
+      "main-display",
+      "buyables",
+      "upgrades",
+    ],
+
+
+
+  },
+  resetDescription: `
+  <h2>Shift the multipliers!</h2><br><br>
+  `,
+
+
+  componentStyles: {
+    "prestige-button"() { return {
+      
+      'height':'150px','width':'200px', "border-radius": "10px"
+    
+    
+        } 
+      }
+    },
 
   buyables: {
 
@@ -239,6 +280,34 @@ addLayer("S", {
 
     },
 
+
+  upgrades: {
+
+    11: {
+      title: "ShftUpg1",
+      description: `Points boost themselves`,
+      cost: new Decimal(3),
+      effect() {
+        let effect = decimalOne
+        effect = player.points.log(10).min(15)
+        return effect
+
+      },
+
+    },
+    
+
+
+
+
+
+
+
+
+
+
+
+  },
 
 
 
