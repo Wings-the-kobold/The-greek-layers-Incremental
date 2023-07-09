@@ -5,15 +5,15 @@ let modInfo = {
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "",
-	discordLink: "",
+	discordName: "My Twitch stuff ",
+	discordLink: "discord.gg/tJDWU7twvB",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "arbgpo",
+	num: "jfgxgcvn gcv nbgvnbc ",
 	name: "just some upgrades",
 }
 
@@ -60,6 +60,7 @@ function addedPlayerData() { return {
 // Display extra things at the top of the page
 var displayThings = [
 	`<br> hi this is a floatimg text`
+//`<br> also, endgame is exactly 100,000`
 ]
 
 // Determines when the game "ends"

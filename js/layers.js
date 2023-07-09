@@ -8,10 +8,6 @@ addLayer("U", {
      
   }},
     color: "#B8B799",
-    //requires: new Decimal(10), // Can be a function that takes requirement increases into account
-    resource: "points", // Name of prestige currency
-    baseResource: "points", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     
     tabFormat: [
@@ -28,7 +24,7 @@ addLayer("U", {
 
     upgrades: {
       11: {
-        title: `<h2>Upg1</h2><br>`,
+        title: `<h2>Upg1</h2>`,
         cost: new Decimal(10),
         description: `<h3>Generate 1 point per second.`,
        //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
@@ -106,8 +102,11 @@ addLayer("U", {
             return Calculation;
           },
           display() {
-            return `<h3>Rep Upgrade 1</h3><br>
-            +${format(tmp[this.layer].buyables[this.id].effect)} Effect Boost to Upg1</b><br>
+            return `
+          <h2>Rep Upgrade 1</h2>
+          <br>
+        <h2>  +${format(tmp[this.layer].buyables[this.id].effect)} Effect Boost to Upg1</h2>
+          <br>
         <h2>${format(tmp[this.layer].buyables[this.id].cost)} Points</h2>
         <h2>${format(getBuyableAmount(this.layer, this.id))} bought</h2>`
           },
@@ -117,7 +116,7 @@ addLayer("U", {
           style() {
             return {
               "width": "350px",
-              "height": "85px",
+              "height": "115px",
               "border-radius": "10px",
               "border": "0px",
               "margin": "5px",
@@ -154,9 +153,13 @@ addLayer("U", {
             if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
             if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
             if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
-            return ` <h2>Rep Upgrade 2</h2><br> <h2>  x${format(tmp[this.layer].buyables[this.id].effect)} points gain multiplier by 10% compounding </h2><br> <h2>${format(tmp[this.layer].buyables[this.id].cost)} </h2> Points
-
-             <h2>${format(getBuyableAmount(this.layer, this.id))} bought ${scaling}</h2>
+            return ` 
+            <h2>Rep Upgrade 2</h2>
+              <br>
+            <h2>  x${format(tmp[this.layer].buyables[this.id].effect)} points gain </h2>
+              <br>
+            <h2> ${format(tmp[this.layer].buyables[this.id].cost)} Points</h2>
+            <h2>${format(getBuyableAmount(this.layer, this.id))} bought ${scaling}</h2>
      
          
         `
@@ -167,7 +170,7 @@ addLayer("U", {
           style() {
             return {
               "width": "350px",
-              "height": "95px",
+              "height": "115px",
               "border-radius": "10px",
               "border": "0px",
               "margin": "5px",
