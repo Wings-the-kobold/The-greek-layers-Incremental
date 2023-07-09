@@ -1,7 +1,7 @@
 let modInfo = {
-	name: "The ??? Tree",
+	name: "The Meta Upgrades Incremental",
 	id: "mymod",
-	author: "nobody",
+	author: "ThatOneKobold",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
 
@@ -13,16 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "arbgpo",
+	name: "just some upgrades",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
+	<h3>v0.1  [UPDATE 1]</h3><br>
+		- Added a few upgrades<br>
 		- Added stuff.`
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -41,8 +41,11 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
-
-	let gain = new Decimal(1)
+	let gain = new Decimal(0)
+	if (hasUpgrade("U",11)) gain = new Decimal(1)
+	gain = gain.add(buyableEffect("U",11))
+	gain = gain.mul(buyableEffect("U",12))
+	if (hasUpgrade("U",11)) gain = gain.mul(2)
 	return gain
 }
 
@@ -52,11 +55,12 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	`<br> hi this is a floatimg text`
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal(1000000))
 }
 
 
