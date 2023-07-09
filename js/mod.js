@@ -45,7 +45,7 @@ function getPointGen() {
 	if (hasUpgrade("U",11)) gain = new Decimal(1)
 	gain = gain.add(buyableEffect("U",11))
 	gain = gain.mul(buyableEffect("U",12))
-	if (hasUpgrade("U",11)) gain = gain.mul(2)
+	if (hasUpgrade("U",12)) gain = gain.mul(2)
 	return gain
 }
 
@@ -60,7 +60,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal(1000000))
+	return player.points.gte(new Decimal(100000))
 }
 
 
