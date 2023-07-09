@@ -1,6 +1,6 @@
 let modInfo = {
 	name: "The Meta Upgrades Incremental",
-	id: "mymod",
+	id: "mod thing",
 	author: "ThatOneKobold",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "jfgxgcvn gcv nbgvnbc ",
+	num: "0.1.3",
 	name: "just some upgrades",
 }
 
@@ -23,7 +23,10 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Added stuff.
 		<h3>v0.1.1  [BUG FIX 1]</h3><br>
 		- Fixed early game multiplier in point gen<br>
+		<h3>v0.1.3  [REBALANCE 1]</h3><br>
+		- Made upgrades apear sooner, idk about the second repUPG2 though.<br>
 		
+
 		`
 
 let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
@@ -65,7 +68,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal(100000))
+	return player.points.gte(new Decimal(20000))
 }
 
 

@@ -46,7 +46,7 @@ addLayer("U", {
       12: {
         title: `<h2>Upg2</h2>`,
         cost: new Decimal(5000),
-        description: `<h3>Point gain is Doubled</h3>`,
+        description: `<h3>Point gain is increased (2x)</h3>`,
 
         style() {
           return {
@@ -115,8 +115,8 @@ addLayer("U", {
           },
           style() {
             return {
-              "width": "350px",
-              "height": "115px",
+              "width": "250px",
+              "height": "135px",
               "border-radius": "10px",
               "border": "0px",
               "margin": "5px",
@@ -134,7 +134,7 @@ addLayer("U", {
             return effect;
           },
           unlocked() {
-            if (hasUpgrade("U",11) && player.points.gte(new Decimal(15)) || getBuyableAmount(this.layer, this.id).gte(1)) return true
+            if (hasUpgrade("U",11) && player.points.gte(10) || getBuyableAmount(this.layer,this.id).gte(1)) return true
            }
         
         },
@@ -169,8 +169,8 @@ addLayer("U", {
           },
           style() {
             return {
-              "width": "350px",
-              "height": "115px",
+              "width": "250px",
+              "height": "135px",
               "border-radius": "10px",
               "border": "0px",
               "margin": "5px",
@@ -189,7 +189,7 @@ addLayer("U", {
             return effect;
           },
           unlocked() {
-            if (hasUpgrade("U",11) && player.points.gte(new Decimal(200)) || getBuyableAmount(this.layer, this.id).gte(1)) return true
+            if (hasUpgrade("U",11) && player.points.gte(new Decimal(100)) || getBuyableAmount(this.layer, this.id).gte(1)) return true
            }
         
         },
