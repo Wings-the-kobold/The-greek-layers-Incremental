@@ -20,7 +20,11 @@ let VERSION = {
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.1  [UPDATE 1]</h3><br>
 		- Added a few upgrades<br>
-		- Added stuff.`
+		- Added stuff.
+		<h3>v0.1.1  [BUG FIX 1]</h3><br>
+		- Fixed early game multiplier in point gen<br>
+		
+		`
 
 let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
 
