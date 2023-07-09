@@ -1,6 +1,6 @@
 let modInfo = {
 	name: "The Meta Upgrades Incremental",
-	id: "mod thing",
+	id: "TMUI",
 	author: "ThatOneKobold",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
