@@ -22,6 +22,16 @@ addLayer("U", {
     
 
 
+
+
+
+
+
+
+
+
+
+
     upgrades: {
       11: {
         title: `<h2>Upg1</h2>`,
@@ -41,7 +51,11 @@ addLayer("U", {
           }
         },
         currencyInternalName: "points",
+<<<<<<< Updated upstream
         //resetNothing() {return hasUpgrade('S', 15)}
+=======
+        
+>>>>>>> Stashed changes
       },
       12: {
         title: `<h2>Upg2</h2>`,
@@ -64,8 +78,12 @@ addLayer("U", {
         },
 
        unlocked() {
+<<<<<<< Updated upstream
          if (hasUpgrade("U",11) && player.points.gte(new Decimal(this.cost)) || hasUpgrade("U",12) ) return true
          if (hasUpgrade("S",11)) return true
+=======
+         if (hasUpgrade("U",11) && player.points.gte(new Decimal(this.cost)) || hasUpgrade("U",12) || hasUpgrade("S",11)) return true
+>>>>>>> Stashed changes
         },
         currencyInternalName: "points",
         resetNothing() {return hasUpgrade('S', 15)},
@@ -88,6 +106,7 @@ addLayer("U", {
         },
 
         unlocked() {
+<<<<<<< Updated upstream
          if (hasUpgrade("U",12) && player.points.gte(new Decimal(this.cost)) || hasUpgrade("U",13)) return true
          if (hasUpgrade("S",11)) return true
          
@@ -158,10 +177,75 @@ addLayer("U", {
 
         unlocked() {
         if (hasUpgrade("S",11) || player["S"].points.gte(1)) return true
+=======
+         if (hasUpgrade("U",12) && player.points.gte(new Decimal(this.cost)) ||  hasUpgrade("U",13) || hasUpgrade("S",11)) return true
+>>>>>>> Stashed changes
 
          
         },
         currencyInternalName: "points",
+      },
+      14: {
+        title: `<h2>Upg4</h2>`,
+        cost: new Decimal (20000),
+        description: `<h3>You gain 15% more Meter of Waves Per OoMs of Points in current Shift run</h3>`,
+
+        style() {
+          return {
+            "width": "150px",
+            "height": "85px",
+            "border-radius": "10px",
+            "border": "0px",
+            "margin": "5px",
+            "text-shadow": "0px 0px 10px #000000",
+            "color": "#ffffff"
+          }
+        },
+        effect() {
+          let effect = decimalOne
+          
+
+
+          let OoMs = player.points.log(10).floor()
+          effect = new Decimal (1.15).pow(OoMs)
+
+          effect = softcap(effect, new Decimal('1e20'), new Decimal(0.7))
+          effect = softcap(effect, new Decimal('1e50'), new Decimal(0.5))
+          effect = softcap(effect, new Decimal('1e150'), new Decimal(0.3))
+
+
+
+
+
+
+          return effect
+  
+  
+        },
+        effectDisplay() { 
+          
+          if (hasUpgrade('U', 14)) return format(upgradeEffect(this.layer, this.id))+"x" 
+          if (!hasUpgrade('U', 14)) return "???"
+            let softcap = "";
+            //if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+            if (effect.gte(200)) softcap = "(Softcapped)";
+            if (effect.gte(500)) softcap = "(Softcapped+)";
+            if (effect.gte(500)) softcap = "(Softcapped++)"; 
+            return ``
+      
+      },
+
+
+
+
+        unlocked() {
+         if (hasUpgrade('S',11)) return true
+
+         
+        },
+        currencyInternalName: "points",
+
+
       },
     },
 
@@ -203,6 +287,7 @@ addLayer("U", {
           },
           effect(x) {
             let effect = decimalZero
+<<<<<<< Updated upstream
             effect = getBuyableAmount(this.layer, this.id).mul(buyableEffect("U",13))
             
             return effect;
@@ -210,6 +295,14 @@ addLayer("U", {
           unlocked() {
             if (hasUpgrade("U",11) && player.points.gte(10) || getBuyableAmount(this.layer,this.id).gte(1)) return true
             if (hasUpgrade("S",11)) return true
+=======
+            effect = getBuyableAmount(this.layer, this.id)
+            if (getBuyableAmount("U",13).gte(1)) effect = effect.mul(buyableEffect('U',13))
+            return effect;
+          },
+          unlocked() {
+            if (hasUpgrade("U",11) || getBuyableAmount(this.layer,this.id).gte(1) || hasUpgrade("S",11) ) return true
+>>>>>>> Stashed changes
            }
         
         },
@@ -264,23 +357,37 @@ addLayer("U", {
             return effect;
           },
           unlocked() {
+<<<<<<< Updated upstream
             if (hasUpgrade("U",11) && player.points.gte(new Decimal(100)) || getBuyableAmount(this.layer, this.id).gte(1)) return true
             if (hasUpgrade("S",11)) return true
+=======
+            if (hasUpgrade("U",11) && player.points.gte(new Decimal(100)) || getBuyableAmount(this.layer, this.id).gte(1) || hasUpgrade("S",11) || getBuyableAmount(this.layer, 11).gte(6)) return true
+>>>>>>> Stashed changes
            }
         
         },
         13: {
           cost(x) {
+<<<<<<< Updated upstream
             let PowerI = new Decimal(1.8)
         
             let Calculation = new Decimal(2500).mul(Decimal.pow(PowerI, x.pow(1.05))).ceil()
+=======
+            let PowerI = new Decimal(1.6)
+        
+            let Calculation = new Decimal(2500).mul(Decimal.pow(PowerI, x.pow(1.1))).ceil()
+>>>>>>> Stashed changes
             return Calculation;
           },
           display() {
             return `
           <h2>Rep Upgrade 3</h2>
           <br>
+<<<<<<< Updated upstream
         <h2>  x${format(tmp[this.layer].buyables[this.id].effect)} multiplier to repUpg1 </h2>
+=======
+        <h2>  x${format(tmp[this.layer].buyables[this.id].effect)} Effect Boost to Upg1</h2>
+>>>>>>> Stashed changes
           <br>
         <h2>${format(tmp[this.layer].buyables[this.id].cost)} Points</h2>
         <h2>${format(getBuyableAmount(this.layer, this.id))} bought</h2>`
@@ -305,6 +412,7 @@ addLayer("U", {
           },
           effect(x) {
             let effect = decimalZero
+<<<<<<< Updated upstream
             if (!hasUpgrade("S", 12 )) effect = getBuyableAmount(this.layer, this.id).div(10).add(1)
             if (hasUpgrade("S", 12 )) effect = getBuyableAmount(this.layer, this.id).div(5).add(1)
             return effect;
@@ -312,6 +420,14 @@ addLayer("U", {
           unlocked() {
             if (hasUpgrade("U",11) && player.points.gte(10) || getBuyableAmount(this.layer,this.id).gte(1)) return true
             if (hasUpgrade("S",11)) return true
+=======
+            effect = getBuyableAmount(this.layer, this.id).div(10)
+            effect = effect.add(1)
+            return effect;
+          },
+          unlocked() {
+            if (hasUpgrade("U",11) && player.points.gte(2000) || getBuyableAmount(this.layer,this.id).gte(1) || hasUpgrade("S",11) || getBuyableAmount(this.layer, 12).gte(15)) return true
+>>>>>>> Stashed changes
            }
         
         },
@@ -337,7 +453,7 @@ addLayer("S", {
       unlocked: true,
   points: new Decimal(0),
   }},
-  color: "#4BDC13",
+  color: "#5D9B9B ",
   requires: new Decimal(20000), // Can be a function that takes requirement increases into account
   resource: "Meters of Waves", // Name of prestige currency
   baseResource: "points", // Name of resource prestige is based on
@@ -345,11 +461,16 @@ addLayer("S", {
   type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
   exponent: 0.5, // Prestige currency exponent
   gainMult() { // Calculate the multiplier for main currency from bonuses
+<<<<<<< Updated upstream
       mult = new Decimal(1)
       if (hasUpgrade("U",14)) mult = mult.times(1.2).pow(player.points.log(10)).ceil()
 
 
 
+=======
+      let mult = new Decimal(1)
+      if (hasUpgrade("U",14)) mult = mult.times(upgradeEffect("U",14))
+>>>>>>> Stashed changes
       return mult
   },
   gainExp() { // Calculate the exponent on main currency from bonuses
@@ -368,6 +489,29 @@ addLayer("S", {
     
 
     },
+<<<<<<< Updated upstream
+=======
+
+    tabFormat: [
+      
+      ["display-text",
+          function() {`you have ${format(player.points)} points` }, //you add this for every currency, it shows the effect 
+         
+        ],
+        "prestige-button",
+      "main-display",
+      "buyables",
+
+
+
+
+      
+      "upgrades",
+    ],
+
+
+
+>>>>>>> Stashed changes
   },
     tabFormat: {
       "Shifting": {      
@@ -415,10 +559,17 @@ addLayer("S", {
 
     11: {
       cost(x) {
+<<<<<<< Updated upstream
         let PowerI = new Decimal(1.4)
         if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(2)
         if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(200)
         if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20000)
+=======
+        let PowerI = new Decimal(1.25)
+        if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(5)
+        if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(45)
+        if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(105)
+>>>>>>> Stashed changes
         let Calculation = new Decimal(5).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
         return Calculation;
       },
@@ -428,6 +579,7 @@ addLayer("S", {
         if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
         if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
         if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+<<<<<<< Updated upstream
         return ` 
         <h2>Shift Multiplier 1</h2>
           <br>
@@ -546,6 +698,20 @@ addLayer("S", {
           <br>
         <h2> ${format(tmp[this.layer].buyables[this.id].cost)} Meters Of Waves</h2>
         <h2>${format(getBuyableAmount(this.layer, this.id))} bought ${scaling}</h2>
+=======
+        
+        
+        
+        
+        return ` 
+        <h2>shift multiplier 1</h2>
+          <br>
+        <h2>multiply this upgrade by 50% </h2>
+          <br>
+        <h2> ${format(tmp[this.layer].buyables[this.id].cost)} MoW</h2>
+        <h2>${format(getBuyableAmount(this.layer, this.id))} bought ${scaling}</h2>
+        <h2>effect: ${format(getBuyableAmount(this.layer, this.id).mul(0.5).add(1))}x</h2>
+>>>>>>> Stashed changes
  
      
     `
@@ -570,6 +736,7 @@ addLayer("S", {
       },
       effect(x) {
         let effect = new Decimal(1)
+<<<<<<< Updated upstream
         effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.12)).add(1).mul(buyableEffect("S",14))
        
         return effect;
@@ -685,6 +852,14 @@ addLayer("S", {
         return effect;
       },
       unlocked() {
+=======
+        effect = effect.mul(1.5)
+        
+        return effect;
+      },
+      unlocked() {
+        //if () return true
+>>>>>>> Stashed changes
         return true
        }
     
@@ -699,14 +874,29 @@ addLayer("S", {
 
     11: {
       title: "ShftUpg1",
-      description: `Points boost themselves`,
+      description: `Points boost themselves.`,
       cost: new Decimal(3),
       effect() {
         let effect = decimalOne
-        effect = player.points.log(10).min(15)
+        effect = player.points.add(1).log(10).min(15)
+        effect = effect.add(0.1)
+        effect = effect.ceil()
         return effect
 
+
       },
+      effectDisplay() { 
+        
+        if (hasUpgrade('S', 11)) return format(upgradeEffect(this.layer, this.id))+"x" 
+        if (!hasUpgrade('S', 11)) return "???"
+        if (upgradeEffect(this.layer, this.id).gte(15)) return "15x (Hardcapped)"
+    
+    }
+    
+
+
+
+
 
     },
       12: {
@@ -740,7 +930,12 @@ addLayer("S", {
   row: 1, // Row the layer is in on the tree (0 is the first row)
   
   branches: ["S","U"],
+<<<<<<< Updated upstream
   layerShown(){return true}
 })
 
 
+=======
+  layerShown(){if(player.points.gte(20000) || player[this.layer].points.gte(1)|| hasUpgrade("S",11)) return true}
+})
+>>>>>>> Stashed changes

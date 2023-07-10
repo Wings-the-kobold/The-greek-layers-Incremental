@@ -26,7 +26,9 @@ let changelog = `<h1>Changelog:</h1><br>
 		<h3>v0.1.3  [REBALANCE 1]</h3><br>
 		- Made upgrades apear sooner, idk about the second repUPG2 though.<br>
 		
-
+		<h3>v0.2  [UPDATE 2]</h3><br>
+		- added some shifting upgrades
+		- lore?
 		`
 
 let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
@@ -53,11 +55,15 @@ function getPointGen() {
 	gain = gain.add(buyableEffect("U",11))
 	gain = gain.mul(buyableEffect("U",12))
 	if (hasUpgrade("U",12)) gain = gain.mul(2)
+<<<<<<< Updated upstream
 
 	gain = gain.mul(buyableEffect("S",11))
 	if (hasUpgrade("S",13)) gain = gain.pow(1.15)
 	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11).floor())
 	if (hasUpgrade("S",14)) gain = gain.times(upgradeEffect("S",14).floor())
+=======
+	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect('S',11))
+>>>>>>> Stashed changes
 	return gain
 }
 
@@ -73,7 +79,11 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
+<<<<<<< Updated upstream
 	return player.points.gte(new Decimal(1e18))
+=======
+	return player.points.gte(new Decimal('1e10'))
+>>>>>>> Stashed changes
 }
 
 
