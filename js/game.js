@@ -1,4 +1,4 @@
-var player;
+ var player;
 var needCanvasUpdate = true;
 
 // Don't change this
@@ -307,7 +307,7 @@ function completeChallenge(layer, x) {
 	updateChallengeTemp(layer)
 }
 
-VERSION.withoutName = "v" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSION.pre : VERSION.pre ? " Beta " + VERSION.beta : "")
+VERSION.withoutName = "" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSION.pre : VERSION.pre ? " Beta " + VERSION.beta : "")
 VERSION.withName = VERSION.withoutName + (VERSION.name ? ": " + VERSION.name : "")
 
 

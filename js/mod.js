@@ -53,6 +53,11 @@ function getPointGen() {
 	gain = gain.add(buyableEffect("U",11))
 	gain = gain.mul(buyableEffect("U",12))
 	if (hasUpgrade("U",12)) gain = gain.mul(2)
+
+	gain = gain.mul(buyableEffect("S",11))
+	if (hasUpgrade("S",13)) gain = gain.pow(1.15)
+	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11).floor())
+	if (hasUpgrade("S",14)) gain = gain.times(upgradeEffect("S",14).floor())
 	return gain
 }
 
@@ -68,7 +73,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal(20000))
+	return player.points.gte(new Decimal(1e18))
 }
 
 
