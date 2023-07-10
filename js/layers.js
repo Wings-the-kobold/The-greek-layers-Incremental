@@ -76,6 +76,7 @@ addLayer("U", {
        unlocked() {
          if (hasUpgrade("U",11) && player.points.gte(new Decimal(this.cost)) || hasUpgrade("U",12) ) return true
          if (hasUpgrade("S",11)) return true
+         if (getBuyableAmount(this.layer,this.id).gte(1)) return true        
         },
         currencyInternalName: "points",
         resetNothing() {return hasUpgrade('S', 15)},
