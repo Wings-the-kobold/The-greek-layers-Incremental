@@ -827,7 +827,14 @@ addLayer("S", {
   row: 1, // Row the layer is in on the tree (0 is the first row)
   
   branches: ["S","U"],
-  layerShown(){return true}
+  layerShown(){
+    if (hasUpgrade("S",11)) return true
+    if (player.points.gte(20000)) return true
+    if (player["S"].points.gte(1)) return true
+
+
+
+  }
 })
 
 
