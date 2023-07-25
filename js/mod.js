@@ -3,22 +3,22 @@ let modInfo = {
 	id: "TMUI",
 	author: "ThatOneKobold",
 	pointsName: "points",
-	modFiles: ["layers.js", "tree.js"],
+	modFiles: ["layers.js/repression.js", "layers.js/upgrades.js", "layers.js/shifting.js", "tree.js","layers.js/ranks.js"],
 
 	discordName: "My Twitch stuff ",
 	discordLink: "discord.gg/tJDWU7twvB",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 7,  // In hours
+	offlineLimit: 5,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "v0.2",
-	name: "just some upgrades",
+	num: "v0.3",
+	name: "Repression?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.1  [UPDATE 1]</h3><br>
+	<h3>(v0.1)  [UPDATE 1]</h3><br>
 		- Added a few upgrades<br>
 		- Added stuff.
 		<h3>v0.1.1  [BUG FIX 1]</h3><br>
@@ -26,11 +26,24 @@ let changelog = `<h1>Changelog:</h1><br>
 		<h3>v0.1.3  [REBALANCE 1]</h3><br>
 		- Made upgrades apear sooner, idk about the second repUPG2 though.<br>
 		
-		<h3>v0.2  [UPDATE 2]</h3><br>
+		<h3>(v0.2)  [UPDATE 2]</h3><br>
 		- added some shifting upgrades
 		- lore? <br>
 		- added shifting layer <br>
 		- im starting to get lazy <br>
+		<h3>v0.2.5  [BUG FIX 2]</h3><br>
+		- fixed QoL upgrade on ShftUpg5 <br>
+		- 
+		
+		<h3>(v0.3)  [UPDATE 3]</h3><br>
+		- added some shifting upgrades
+		- lore? <br>
+		- added shifting layer <br>
+			<h4> NERFED/BUFFED </h4><br>
+		- shftUpg4 is nerfed from ^0.5 -> log2(x) [just a slight nerf]
+
+
+
 		`
 
 let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
@@ -62,6 +75,7 @@ function getPointGen() {
 	if (hasUpgrade("S",13)) gain = gain.pow(1.15)
 	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11).floor())
 	if (hasUpgrade("S",14)) gain = gain.times(upgradeEffect("S",14).floor())
+	if (hasUpgrade("R",11)) gain = gain.mul(player["R"].pressure.log(3).add(1))
 	return gain
 }
 
@@ -71,13 +85,14 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	`<br> hi this is a floatimg text`
-//`<br> also, endgame is exactly 100,000`
+	`<br> hi this is a floatimg text
+<br>
+  <br> nbh gjvyfcmk hbnvgu`
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal(1e18))
+	return player.points.gte(new Decimal("1e70"))
 }
 
 
