@@ -193,7 +193,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
         "color": "#ffff00"
       }
     },
-    tooltip: `Automatically buy buyables.`,
+    tooltip: `Keep Buyable amounts in shifting resets`,
     
   },
     14: {
@@ -297,7 +297,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
         "color": "#7f6000"
       }
     },
-    tooltip: `keep shftUpg5 when entering repression challenges`,
+    tooltip: `Unlock 5 Shifting upgrades`,
     branches: [("R",13),("R",2)],
   }, //C2
     19: {

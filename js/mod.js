@@ -3,7 +3,7 @@ let modInfo = {
 	id: "TMUI",
 	author: "ThatOneKobold",
 	pointsName: "points",
-	modFiles: ["layers.js/repression.js", "layers.js/upgrades.js", "layers.js/shifting.js", "tree.js","layers.js/ranks.js"],
+	modFiles: ["layers.js/repression.js", "layers.js/upgrades.js", "layers.js/shifting.js", "tree.js","layers.js/ranks.js","layers.js/credits.js"],
 
 	discordName: "My Twitch stuff ",
 	discordLink: "discord.gg/tJDWU7twvB",
@@ -76,6 +76,10 @@ function getPointGen() {
 	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11).floor())
 	if (hasUpgrade("S",14)) gain = gain.times(upgradeEffect("S",14).floor())
 	if (hasUpgrade("R",11)) gain = gain.mul(player["R"].pressure.log(3).add(1))
+	if (hasUpgrade("S",16)) gain = gain.mul(10)
+
+
+
 	return gain
 }
 

@@ -29,7 +29,7 @@ addLayer("U", {
    const keep = [];
    if (tmp[resettingLayer].row <= tmp[this.layer].row) return;
   if (hasUpgrade("S",15)) keep.push("upgrades"); // no reset when same or lower row layer caused a reset
- 
+  if (hasUpgrade("R",13)) keep.push("buyables")
  
   layerDataReset(this.layer, keep);
 },
@@ -390,12 +390,18 @@ addLayer("U", {
           },
           effect(x) {
             let effect = decimalZero
-            if (!hasUpgrade("S", 12 )) effect = getBuyableAmount(this.layer, this.id).div(10).add(1)
-            if (hasUpgrade("S", 12 )) effect = getBuyableAmount(this.layer, this.id).div(5).add(1)
+            let baseFormula = new Decimal(0.1)
+            if (hasUpgrade("S", 12)) baseFormula = baseFormula.mul(1.2)
+            if (hasUpgrade("S", 17)) baseFormula = baseFormula.mul(1.4)
+            effect = getBuyableAmount(this.layer, this.id).mul(baseFormula).add(1)
+            
+    
+           
             return effect;
           },
           unlocked() {
-            if (hasUpgrade("U",11) && player.points.gte(10) || getBuyableAmount(this.layer,this.id).gte(1)) return true
+            if (hasUpgrade("U",12) || getBuyableAmount(this.layer,this.id).gte(1)) return true
+            if (player.points.gte(2000)) return true
             if (hasUpgrade("S",11)) return true
            }
         
