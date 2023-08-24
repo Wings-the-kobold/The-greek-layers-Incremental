@@ -309,10 +309,10 @@ addLayer("U", {
           },
           display() {
             let scaling = "";
-            if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "";
-            if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
+            if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+            if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
             if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-            if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+            if (getBuyableAmount(this.layer, this.id).gte(1000)) scaling = "(Scaling^2)"; 
             return ` 
             <h2>Rep Upgrade 2</h2>
               <br>

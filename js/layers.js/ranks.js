@@ -7,12 +7,17 @@ addLayer("C", {
     }},
     color: "#587246 ",
     requires: new Decimal("1e30"), // Can be a function that takes requirement increases into account
-    resource: "Converted Ranks", // Name of prestige currency
+    resource: "Conversion Ranks", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 1.1, // Prestige currency exponent
-    
+    symbol() {
+      return `
+      <p> 
+      <p class='cBreak' style='font-size:16px'>Conversion Ranks</p>
+      </p>`
+    },
     
     infoboxes: {
   
@@ -87,8 +92,8 @@ addLayer("C", {
     
     branches: ["S"],
     layerShown(){
-      if (hasUpgrade("R",16)) return true
-     
+      //if (hasUpgrade("R",16)) return true
+     return true
   
   
   

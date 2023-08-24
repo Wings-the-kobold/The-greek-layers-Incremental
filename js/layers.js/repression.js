@@ -10,12 +10,12 @@ addLayer("R", {
   effect() {
     let effect = new Decimal(1)
   
-    effect = player["R"].pressure.log(3).add(1)//.floor() //this is to add the effect
+    effect = player["R"].pressure.add(1).log(3) //this is to add the effect
     return effect
   },
   
 
-  color: "#F39F18 ",
+  color: "#520387 ",
   requires: new Decimal("1.45e19"), // Can be a function that takes requirement increases into account
   resource: "Recursivity", // Name of prestige currency
   baseResource: "points", // Name of resource prestige is based on
@@ -38,19 +38,25 @@ addLayer("R", {
     about: {
       title: "Repression",
       body() {
-        return `<h3>It seems you have found a strange press, and it appears to be glowing purple and black, it seems to have a sticker saying “the repressor”. And an image of what it seems... to be some kind of recursive like ore that seems to be like... a fractal like shape?  
-         </h3>
-         <h2>You know what to do</h2>`
+        return `It seems you have found a strange press, and it appears to be glowing purple and black, it seems to have a sticker saying “the repressor”. And an image of what it seems... to be some kind of recursive like ore that seems to be like... a fractal like shape?  
+         
+
+         *You know what to do`
       },
     
 
     },
   },
+  
     tabFormat: {
       "Repression?": {      
             content: [
               "main-display",
-            
+              ["display-text", 
+              function() { return `<h2 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> <h3>It seems you have found a strange press, and it appears to be glowing purple and black, it seems to have a sticker saying “the repressor”. And an image of what it seems... to be some kind of recursive like ore that seems to be like... a fractal like shape?  
+              </h3>
+              <h2>You know what to do</h2> </h2>`}
+            ],
               
               "prestige-button",
               "blank",
@@ -471,7 +477,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
         "color": "#cc0000"
       }
     },
-    tooltip: `Unspent Recursivity boost Shift dimensions 2 and 4`,
+    tooltip: `Unspent Recursivity boost Shift dimensions 1 and 6`,
     branches: [("R",14)],
   }, //D3b
 
@@ -614,9 +620,120 @@ challenges: {
       //goalDescription: `Repress the game to finish this challenge.  `,
       rewardDescription: `Points base exponent becomes 1^ -> ^1.01`,
       canComplete: function() {return player.points.gte(1e18)},
-      
+      style() {
+        return {
+          "width": "300px",
+          "height": "300px",
+          "border-radius": "1px",
+          "border": "5px",
+          "margin": "10px",
+          "text-shadow": "0px 0px 10px #000000",
+          "color": "#f1c232"
+        }
+      },
   },
- 
+  12: {
+    name: "Challenge 2",
+    challengeDescription: `
+    <h3>Dilation (Dil) </h3><br><br>
+    <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “You suck.” </h4> 0/20 <br><br>
+    All Multipliers are dilated to ^0.8
+    
+    
+    `,
+    goal: new Decimal ("1e15"),
+    //goalDescription: `Repress the game to finish this challenge.  `,
+    rewardDescription: `Points is multiplied by 2^completions`,
+    canComplete: function() {return player.points.gte(1e25)},
+    style() {
+      return {
+        "width": "300px",
+        "height": "300px",
+        "border-radius": "1px",
+        "border": "5px",
+        "margin": "10px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#f1c232"
+      }
+    },
+},
+13: {
+  name: "Challenge 3",
+  challengeDescription: `
+  <h3>Anti-Softcap (soft-) </h3><br><br>
+  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “I hate you” </h4> 0/10 <br><br>
+  All softcaps are instead hardcaps, and they start 25% sooner
+  
+  
+  `,
+  goal: new Decimal ("1.85e17"),
+  //goalDescription: `Repress the game to finish this challenge.  `,
+  rewardDescription: `Softcaps starts 1.15x later (add.) [cannot append in challenge]`,
+  canComplete: function() {return player.points.gte(1e18)},
+  style() {
+    return {
+      "width": "300px",
+      "height": "300px",
+      "border-radius": "1px",
+      "border": "5px",
+      "margin": "10px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#f1c232"
+    }
+  },
+},
+14: {
+  name: "Challenge 4",
+  challengeDescription: `
+  <h3>Time-wall (Time) </h3><br><br>
+  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “NG- version?” </h4> 0/10 <br><br>
+  All upgrades except time upgrades,and Upg2 is disabled. 
+
+  
+  
+  `,
+  goal: new Decimal ("1000000"),
+  //goalDescription: `Repress the game to finish this challenge.  `,
+  rewardDescription: `All Time Upgrades are 5% stronger`,
+  canComplete: function() {return player.points.gte(1e18)},
+  style() {
+    return {
+      "width": "300px",
+      "height": "300px",
+      "border-radius": "1px",
+      "border": "5px",
+      "margin": "10px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#f1c232"
+    }
+  },
+},
+15 : {
+  name: "Challenge 5",
+  challengeDescription: `
+  <h3>Super-Scalar (Scale+) </h3><br><br>
+  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “Scale slower please” </h4> 0/10 <br><br>
+  All Repeatable upgrades cost scalings are 40% stronger and they start 2x sooner (100 -> 50)
+
+  
+  
+  `,
+  goal: new Decimal ("1000000"),
+  //goalDescription: `Repress the game to finish this challenge.  `,
+  rewardDescription: `Superscaled scaling starts 10 later`,
+  canComplete: function() {return player.points.gte(1e18)},
+  style() {
+    return {
+      "width": "300px",
+      "height": "300px",
+      "border-radius": "1px",
+      "border": "5px",
+      "margin": "10px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#f1c232"
+    }
+  },
+},
 },
 
 

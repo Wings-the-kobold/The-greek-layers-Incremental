@@ -1,6 +1,3 @@
-
-let maxFormula = decimalOne
-            
 addLayer("S", {
    
 
@@ -13,14 +10,16 @@ addLayer("S", {
     position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
-
-
-        
+    
+    
+    
+    
+    //e: setClickableState(this.layer, this.id, 2),
     points: new Decimal(0),
     time: new Decimal(0),
     mostBuyables: new Decimal(0),
     }},
-    color: "#5D9B9B ",
+    color: "#5D9B9B",
     requires: new Decimal(20000), // Can be a function that takes requirement increases into account
     resource: "Meters of Waves", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
@@ -58,7 +57,9 @@ addLayer("S", {
       return count;
     },
     update(diff) {
-      Decimal.plus(getClickableState("S",11),   )
+      let x = new Decimal(1)
+      Decimal.plus(getClickableState("S",11), x.times(diff))
+      
     },
 
 
@@ -80,7 +81,7 @@ addLayer("S", {
         "Shifting": {      
               content: [
                 "main-display",
-                "infoboxes",
+                ["infoboxes","about"],
                 
                 "prestige-button",
                 "blank",
@@ -98,6 +99,7 @@ addLayer("S", {
         "Shifting Multipliers": {
           content: [
          "buyables",
+         "clickables",
          ],  
   
       },  
@@ -129,19 +131,19 @@ addLayer("S", {
       11: {
         cost(x) {
           let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(2)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(200)
-          if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20000)
+          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
+          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
+          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
           let Calculation = new Decimal(5).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
           if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
           return Calculation;
         },
         display() {
           let scaling = "";
-          //if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
           if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+          if (getBuyableAmount(this.layer, this.id).gte(750)) scaling = "(Scaling^2)"; 
           return ` 
           <h2>Shift Multiplier 1</h2>
             <br>
@@ -175,7 +177,7 @@ addLayer("S", {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.5)).add(1).mul(buyableEffect("S",12))
           if (hasUpgrade("R",12)) effect = effect.log(1.3)
-           effect = effect//.pow(getClickableState("S",16))
+          effect = effect.pow(getClickableState("S",11)).clampMin(1)
           return effect;
         },
         unlocked() {
@@ -186,19 +188,19 @@ addLayer("S", {
       12: {
         cost(x) {
           let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(2)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(200)
-          if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20000)
+          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
+          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
+          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
           let Calculation = new Decimal(25).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
           if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
           return Calculation;
         },
         display() {
           let scaling = "";
-          //if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
           if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+          if (getBuyableAmount(this.layer, this.id).gte(750)) scaling = "(Scaling^2)"; 
           return ` 
           <h2>Shift Multiplier 2</h2>
             <br>
@@ -243,19 +245,19 @@ addLayer("S", {
       13: {
         cost(x) {
           let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(2)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(200)
-          if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20000)
+          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
+          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
+          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
           let Calculation = new Decimal(125).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
           if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
           return Calculation;
         },
         display() {
           let scaling = "";
-          //if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
           if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+          if (getBuyableAmount(this.layer, this.id).gte(750)) scaling = "(Scaling^2)"; 
           return ` 
           <h2>Shift Multiplier 3</h2>
             <br>
@@ -299,19 +301,19 @@ addLayer("S", {
       14: {
         cost(x) {
           let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(2)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(200)
-          if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20000)
+          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
+          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
+          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
           let Calculation = new Decimal(725).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
           if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
           return Calculation;
         },
         display() {
           let scaling = "";
-          //if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
           if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+          if (getBuyableAmount(this.layer, this.id).gte(750)) scaling = "(Scaling^2)"; 
           return ` 
           <h2>Shift Multiplier 4</h2>
             <br>
@@ -355,19 +357,19 @@ addLayer("S", {
       15: {
         cost(x) {
           let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(2)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(200)
-          if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20000)
+          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
+          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
+          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
           let Calculation = new Decimal(3625).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
           if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
           return Calculation;
         },
         display() {
           let scaling = "";
-          //if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
           if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+          if (getBuyableAmount(this.layer, this.id).gte(750)) scaling = "(Scaling^2)"; 
           return ` 
           <h2>Shift Multiplier 5</h2>
             <br>
@@ -411,19 +413,19 @@ addLayer("S", {
       16: {
         cost(x) {
           let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(2)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(200)
-          if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20000)
+          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
+          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
+          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
           let Calculation = new Decimal(15625).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
           if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
           return Calculation;
         },
         display() {
           let scaling = "";
-          //if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(200)) scaling = "(Superscaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
+          if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
           if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-          if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Scaling^2)"; 
+          if (getBuyableAmount(this.layer, this.id).gte(750)) scaling = "(Scaling^2)"; 
           return ` 
           <h2>Shift Multiplier 6</h2>
             <br>
@@ -654,10 +656,11 @@ addLayer("S", {
       11: {
         canClick() {
           if (tmp.S.buyableCount.clampMin(1).log(60).lt(getClickableState(this.layer, this.id))) return false;
-          if (tmp.S.buyableCount.lt()) return false;
+          
+          
           return true;
         },
-        unlocked() { return hasUpgrade("R", 14) },
+       // unlocked() { return hasUpgrade("R", 14) },
         onClick() {
           let formula = tmp.S.buyableCount;
           for (const id in tmp.S.buyables) {
@@ -665,7 +668,9 @@ addLayer("S", {
             setBuyableAmount("S", id, Decimal.dZero);
           }
           player.S.mostBuyables = formula;
+          setClickableState(this.layer, this.id, tmp.S.buyableCount.log(60).clampMin(1))
         },
+       
         style() {
           return {
             "width": "355px",
@@ -686,7 +691,7 @@ display(){
         <br>
         <h3> Requires: Total bought shift multipliers: ${format(formula)} / ${format(player["S"].mostBuyables)} </h3>
         <br>
-        <h3> Currently: ^${format(tmp[this.layer].clickables[this.id].effect)} -> ^${format(formula.add(1).log(60))} </h3>
+        <h3> Currently: ^${format(getClickableState(this.layer, this.id))} -> ^${format(formula.add(1).log(60))} </h3>
         `
       },
 

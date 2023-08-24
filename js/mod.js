@@ -75,7 +75,7 @@ function getPointGen() {
 	if (hasUpgrade("S",13)) gain = gain.pow(1.15)
 	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11).floor())
 	if (hasUpgrade("S",14)) gain = gain.times(upgradeEffect("S",14).floor())
-	if (hasUpgrade("R",11)) gain = gain.mul(player["R"].pressure.log(3).add(1))
+	if (hasUpgrade("R",11)) gain = gain.mul(player["R"].pressure.add(1).log(3))
 	if (hasUpgrade("S",16)) gain = gain.mul(10)
 
 

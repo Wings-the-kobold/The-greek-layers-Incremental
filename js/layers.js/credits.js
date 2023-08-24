@@ -17,7 +17,7 @@ addLayer("N", {
     <h2>People who helped me made this tree</h2>
     
     <h3>escapee - for being the tutor kinda guy </h3> 
-    <h3>oleg - </h3> 
+    <h3>oleg - the script giver</h3> 
     <h3>my motivation - probably shouldnt happen, but here i am </h3> 
     <h3>people who joined my discord server - thank you lol for being with me </h3> 
     <h3> </h3> 
@@ -32,8 +32,8 @@ addLayer("N", {
     
     
     
-    ` }
-    
+    `},
+    "upgrades",
     
 
   ],
