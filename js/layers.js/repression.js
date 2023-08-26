@@ -1,3 +1,6 @@
+var maxSplit = new Decimal(0)
+
+
 addLayer("R", {
   symbol: "R", // This appears on the layer's node. Default is the id with the first letter capitalized
   position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
@@ -10,20 +13,20 @@ addLayer("R", {
   effect() {
     let effect = new Decimal(1)
   
-    effect = player["R"].pressure.add(1).log(3) //this is to add the effect
+    effect = player["R"].pressure.log(3) //this is to add the effect
     return effect
   },
   
 
   color: "#520387 ",
-  requires: new Decimal("1.45e19"), // Can be a function that takes requirement increases into account
+  requires: new Decimal("1.85e18"), // Can be a function that takes requirement increases into account
   resource: "Recursivity", // Name of prestige currency
   baseResource: "points", // Name of resource prestige is based on
   baseAmount() {return player.points}, // Get the current amount of baseResource
   type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-  exponent: 0.3, // Prestige currency exponent
+  exponent: 0.4, // Prestige currency exponent
   gainMult() { // Calculate the multiplier for main currency from bonuses
-      mult = new Decimal(1.5)
+      mult = new Decimal(1)
       
 
 
@@ -34,14 +37,13 @@ addLayer("R", {
       return new Decimal(1)
   },
   infoboxes: {
-
+ 
     about: {
-      title: "Repression",
+      title: "Condensed Tiers",
       body() {
-        return `It seems you have found a strange press, and it appears to be glowing purple and black, it seems to have a sticker saying “the repressor”. And an image of what it seems... to be some kind of recursive like ore that seems to be like... a fractal like shape?  
-         
-
-         *You know what to do`
+        return `<h2 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> <h3>It seems you have found a strange press, and it appears to be glowing purple and black, it seems to have a sticker saying “the repressor”. And an image of what it seems... to be some kind of recursive like ore that seems to be like... a fractal like shape?  
+        </h3>
+        <h2>You know what to do</h2> </h2>`
       },
     
 
@@ -52,40 +54,57 @@ addLayer("R", {
       "Repression?": {      
             content: [
               "main-display",
-              ["display-text", 
-              function() { return `<h2 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> <h3>It seems you have found a strange press, and it appears to be glowing purple and black, it seems to have a sticker saying “the repressor”. And an image of what it seems... to be some kind of recursive like ore that seems to be like... a fractal like shape?  
-              </h3>
-              <h2>You know what to do</h2> </h2>`}
-            ],
+              "infoboxes",
+             
               
               "prestige-button",
               "blank",
               "blank",
-              "buyables",
+              
           ],
       },
 
       "Upgrade Tree": {
         content: [
           ["display-text", 
-          function() { return `<h2 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> THE UPGRADE TREE </h2>`}
+          function() { return `<h2 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> THE UPGRADE TREE </h2>
+          <br> <p>Note: you can only select 2 paths at once, so choose wisely!</p>
+          <br> <p>ab2 is only unlocked by their parents A1 and B2. meaning you have to buy both to unlock it
+          <br> <p>ab2 and any other path that combines the two, counts as "2 paths" </p>
+          <br> <hp style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> Tier Upgrades gets more expensive the deeper you go. </p>
+          <br> <hp style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> Current Tier Cost: 3 </p>
+          `}
+        ],
+        "blank",
+        "blank",
+"clickables",
+        "blank",
+  
+       "upgrades",
+       
+       ],  
+    }, 
+    
+     /*"Challenges?": {
+      content: [
+     function() {if(player["R"].points.gte(1)) return "challenges" 
+      if (hasUpgrade("R",11)) return "challenges"
+      if (hasUpgrade("R",12)) return "challenges"
+      if (hasUpgrade("R",13)) return "challenges"
+      if (hasUpgrade("R",14)) return "challenges" 
+      return "challenges"
+  }
         ],
 
-        "blank",
-        "blank",
-       "upgrades",
-       ],  
-    },  
-    "Challenges?": {
-      content: [
-     "buyables",
-     "challenges",
-     ], 
+     
      },
+  
+*/
+    
 
      "The Genarator?": {
       content: [
-     "milestones",
+     
      ["display-text",
       function() { 
         if(!hasUpgrade("R",11)) return `<h3 style="color:#287233 ; text-shadow: #063770 0px 0px 10px;">hmm... something seems to be missing... maybe go back to the upgrade tree? </h3>`
@@ -93,12 +112,14 @@ addLayer("R", {
       <br>You have <h3 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> ${format(player["R"].pressure)}</h3> Pressure Points 
       <br>
       <br>
-       Which multiplies your Point gain by <h3 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;">${format(tmp["R"].effect)}x 
+       Which multiplies upg1 by <h3 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;">${format(tmp["R"].effect)}x 
        </h3>` //you add this for every currency, it shows the effect 
-     }]
-     ], 
+     }],
     
-     }
+     "buyables",
+    ],
+    
+     },
     
     },
   resetDescription: `
@@ -115,36 +136,69 @@ addLayer("R", {
         } 
       }
     },
-
+  
   
 
 update(diff) {
-if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //this is to increase value, change to any.
+if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //this is to increase value, change to any.
 },
 
+
+
+
+
+ clickables: {
+  11: {
+  display: `Rebuild the repression machine. (respec)`,
+  canClick: true,
+  onClick() {
+    let totalCost = Decimal.dZero;
+    for (const id of player.R.upgrades) {
+      totalCost = totalCost.plus(tmp.R.upgrades[id].cost);
+    }
+  
+    player.R.upgrades = [];
+    player.R.points = player.R.points.plus(totalCost);
+    maxSplit = maxSplit.times(0);
+  },
+  style: {
+      'min-height': "30px",
+      width: "250px"
+  }
+},
+
+},
 
   upgrades: {
     
     11: {
       title: `<h2>A1</h2>`,
-      cost: new Decimal(3),
       
-     //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
-
+      cost: new Decimal(3),
       style() {
         return {
-          "width": "145px",
-          "height": "50px",
+          "width": "140px",
+          "height": "100px",
           "border-radius": "1px",
           "border": "0px",
-          "margin": "15px",
+          "margin": "10px",
           "text-shadow": "0px 0px 10px #000000",
           "color": "#ff0000"
         }
       },
-      tooltip: `unlock Pressure points (unlocked from The Generator)`,
+      tooltip: `unlock Pressure points (unlocked from The Generator).`,
+      canAfford(){
+        if (maxSplit.gte(2)) return false
       
+      },
+      onPurchase() {
+        maxSplit = maxSplit.plus(1)
+  
+      },
     },
+ //A1
+ // unlocks A2 and AB2 [id 15, id 16]
+ 
     12: {
       title: `<h2>B1</h2>`,
       cost: new Decimal(3),
@@ -153,35 +207,29 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
       style() {
         return {
-          "width": "145px",
-          "height": "50px",
+          "width": "140px",
+          "height": "100px",
           "border-radius": "1px",
           "border": "0px",
-          "margin": "15px",
+          "margin": "5px",
           "text-shadow": "0px 0px 10px #000000",
           "color": "#0000ff"
         }
       },
-      tooltip: `Shifting upgrades are <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 2x cheaper </h3> 
-      but divide shift multiplier 1 and 3 by <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> log1.3(x) </h3>`,
+      tooltip: `Shifting upgrades are <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 5x cheaper </h3> 
+      but shift multipliers 1-4 scalings are also <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> 5% faster  </h3>`,
+      canAfford(){
+        if (maxSplit.gte(2)) return false
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      },
+      onPurchase() {
+        maxSplit = maxSplit.plus(1)
+  
+      },
   },
+//B1
+// unlocks B2 and AB2 [id 17, id 16]
+
     13: {
     title: `<h2>C1</h2>`,
     cost: new Decimal(3),
@@ -190,18 +238,27 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "145px",
-        "height": "50px",
-        "border-radius": "1px",
-        "border": "0px",
-        "margin": "15px",
-        "text-shadow": "0px 0px 10px #000000",
+        "width": "140px",
+          "height": "100px",
+          "border-radius": "1px",
+          "border": "0px",
+          "margin": "10px",
+          "text-shadow": "0px 0px 10px #000000",
         "color": "#ffff00"
       }
     },
-    tooltip: `Keep Buyable amounts in shifting resets`,
+    tooltip: `Start all resets with Upg1`, 
+    canAfford(){
+      if (maxSplit.gte(2)) return false
     
+    },
+    onPurchase() {
+      maxSplit = maxSplit.plus(1)
+
+    },
   },
+//C1
+//unlocks C2
     14: {
     title: `<h2>D1</h2>`,
     cost: new Decimal(3),
@@ -210,42 +267,57 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "145px",
-        "height": "50px",
-        "border-radius": "1px",
-        "border": "0px",
-        "margin": "15px",
-        "text-shadow": "0px 0px 10px #000000",
+        "width": "140px",
+          "height": "100px",
+          "border-radius": "1px",
+          "border": "0px",
+          "margin": "10px",
+          "text-shadow": "0px 0px 10px #000000",
         "color": "#ff0074"
       }
     },
     tooltip: `Unlock Shifting Sacrifice. where you sacrifice all multipliers for a multiplier for those shift multipliers`,
+    canAfford(){
+      if (maxSplit.gte(2)) return false
     
+    },
+    onPurchase() {
+      maxSplit = maxSplit.plus(1)
+
+    },
   },
+//D1
 
 
-
-    15: {
+// row 2
+     21: {
     title: `<h2>A2</h2>`,
     cost: new Decimal(15),
+    canAfford(){
+      if (!hasUpgrade("R",11) && maxSplit.gte(4)) return false
     
+    },
+    onPurchase() {
+      maxSplit = maxSplit.plus(1)
+
+    },
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
     style() {
       return {
-        "width": "75px",
-        "height": "50px",
-        "border-radius": "1px",
-        "border": "0px",
-        "margin": "5px",
-        "text-shadow": "0px 0px 10px #000000",
+        "width": "120px",
+          "height": "100px",
+          "border-radius": "1px",
+          "border": "0px",
+          "margin": "10px",
+          "text-shadow": "0px 0px 10px #000000",
         "color": "#660000"
       }
     },
     tooltip: `Increase pressure point gain by 2x`,
     branches: [("R",11)],
-  }, //A2
-    16: {
+   }, //A2
+     22: {
     title: `<h2>AB2</h2>`,
     cost: new Decimal(15),
     
@@ -253,19 +325,29 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "75px",
-        "height": "70px",
-        "border-radius": "1px",
-        "border": "0px",
-        "margin": "10px",
-        "text-shadow": "0px 0px 10px #000000",
+        "width": "120px",
+          "height": "100px",
+          "border-radius": "1px",
+          "border": "0px",
+          "margin": "0px",
+          "text-shadow": "0px 0px 10px #000000",
         "color": "#20124d"
       }
     },
-    tooltip: `Pressure point gain is Multiplied by <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 3x </h3>, and unlock a soft reset for points!`,
+    tooltip: `ShftUpg1 is increased  <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> ^1.00 -> ^1.15 </h3>   `,
     branches: [("R",11),("R",12)],
-  }, //AB2
-    17: {
+    canAfford(){
+      if (!hasUpgrade("R",11) && !hasUpgrade("R",12) && maxSplit.gte(4)) return false
+    
+    },
+    onPurchase() {
+      maxSplit = maxSplit.plus(1)
+
+    },
+    }, 
+    //AB2
+    // this counts as 2 paths being taken
+     23: {
     title: `<h2>B2</h2>`,
     cost: new Decimal(15),
     
@@ -273,20 +355,20 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "75px",
-        "height": "50px",
-        "border-radius": "1px",
-        "border": "5px",
-        "margin": "10px",
-        "text-shadow": "0px 0px 10px #000000",
+        "width": "120px",
+          "height": "100px",
+          "border-radius": "1px",
+          "border": "0px",
+          "margin": "0px",
+          "text-shadow": "0px 0px 10px #000000",
         "color": "#073763"
       }
     },
     
     tooltip: `Shift upgrade 1’s hardcap starts <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 20% later </h3> (based on MoW), divide its effect by <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> /3 </h3>`,
     branches: [("R",12)],
-  }, //B2
-    18: {
+   }, //B2
+     24: {
     title: `<h2>C2</h2>`,
     cost: new Decimal(15),
     
@@ -294,19 +376,20 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "75px",
-        "height": "50px",
-        "border-radius": "1px",
-        "border": "0px",
-        "margin": "10px",
-        "text-shadow": "0px 0px 10px #000000",
+        "width": "120px",
+          "height": "100px",
+          "border-radius": "1px",
+          "border": "0px",
+          "margin": "0px",
+          "text-shadow": "0px 0px 10px #000000",
         "color": "#7f6000"
       }
     },
-    tooltip: `Unlock 5 Shifting upgrades`,
+    tooltip: `Autobuy the first 3 buyables, and unlock another`,
     branches: [("R",13),("R",2)],
-  }, //C2
-    19: {
+    }, //C2
+
+     25: {
     title: `<h2>D2</h2>`,
     cost: new Decimal(15),
     
@@ -314,25 +397,26 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "65px",
-        "height": "50px",
-        "border-radius": "1px",
-        "border": "0px",
-        "margin": "10px",
-        "text-shadow": "0px 0px 10px #000000",
+        "width": "120px",
+          "height": "100px",
+          "border-radius": "1px",
+          "border": "0px",
+          "margin": "0px",
+          "text-shadow": "0px 0px 10px #000000",
         "color": "#cc0000"
       }
     },
     tooltip: `Unspent Recursivity boost Shift dimensions 2 and 4`,
-    branches: [("R",14)],
-  }, //D2
+    branches: [("R",14), ("R",35), ("R",36), ("R",37)],
+   }, //D2
 
 
 
 
 
 
-  21: {
+
+ 31: {
     title: `<h2>A3</h2>`,
     cost: new Decimal(337),
     
@@ -340,41 +424,41 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "75px",
-        "height": "50px",
+        "width": "80px",
+        "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "10px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#cc0000"
       }
     },
-    tooltip: `Increase pressure point gain by 2x again`,
-    branches: [("R",15)],
+    tooltip: `Increase pressure point gain by 16x`,
+    branches: [("R",21)],
   }, //A3
 
-  22: {
-    title: `<h2>AB3</h2>`,
+32: {
+    title: `AB3 `,
     cost: new Decimal(337),
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
     style() {
       return {
-        "width": "75px",
-        "height": "70px",
+        "width": "80px",
+        "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "5px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#351c75"
       }
     },
-    tooltip: `shftUpg3 exponent boost becomes <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> ^1.15 -> ^1.2</h3>`,       
-    branches: [("R",16)],
+    tooltip: `shftUpg3 exponent boost becomes <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> ^1.15 -> ^1.3</h3>`,       
+    branches: [("R",22)],
   }, //AB3
 
-  23: {
+  33: {
     title: `<h2>B3</h2>`,
     cost: new Decimal(337),
     
@@ -382,11 +466,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "75px",
-        "height": "50px",
+        "width": "80px",
+        "height": "80px",
         "border-radius": "1px",
-        "border": "5px",
-        "margin": "10px",
+        "border": "0px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#0b5394"
       }
@@ -394,11 +478,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
     //<h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;">
     //make Reapeatable Upgrades 2 and 3’s effect and cost scaling 14% stronger.
 
-    tooltip: `boost RepUpg 2 and 3's  <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> effect </h3> and <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> cost scaling </h3> by 1.15x`,
-    branches: [("R",17)],
+    tooltip: `boost RepUpg 2 and 3's  <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> effect </h3> and <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> cost scaling </h3> by ^1.15`,
+    branches: [("R",23)],
   }, //B3
 
-  24: {
+  34: {
     title: `<h2>C3</h2>`,
     cost: new Decimal(337),
     
@@ -406,19 +490,20 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "75px",
-        "height": "50px",
+        "width": "80px",
+        "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "10px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#bf9000"
       }
     },
     tooltip: `Generate 33% of Meteres Of Waves per second.`,
-    branches: [("R",18)],
+    branches: [("R",24)],
   }, //C3
-  25: {
+
+  35: {
     title: `<h2>CD3</h2>`,
     cost: new Decimal(337),
     
@@ -426,20 +511,20 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "75px",
-        "height": "50px",
+        "width": "80px",
+        "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "10px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#e69138"
       }
     },
-    tooltip: `Autobuy shift dimensions`,
-    branches: [("R",19)],
+    tooltip: `Unlock shifting challenges, and autobuy shift multipliers`,
+    branches: [("R",24)],
   }, //CD3
 
-  26: {
+  36: {
     title: `<h2>D3a</h2>`,
     cost: new Decimal(337),
     
@@ -447,11 +532,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "65px",
-        "height": "50px",
+        "width": "80px",
+        "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "5px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#fe0166"
       }
@@ -460,7 +545,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
     branches: [("R",19)],
   }, //D3a
 
-  27: {
+  37: {
     title: `<h2>D3b</h2>`,
     cost: new Decimal(337),
     
@@ -468,77 +553,90 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "65px",
-        "height": "50px",
+        "width": "80px",
+        "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "10px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#cc0000"
       }
     },
     tooltip: `Unspent Recursivity boost Shift dimensions 1 and 6`,
-    branches: [("R",14)],
+    branches: [("R",19)],
   }, //D3b
 
 
 
-  
-
-  28: {
-    title: `<h2>ABC4</h2>`,
-    cost: new Decimal(337),
+  41: {
+    title: `<h2>A4</h2>`,
+    cost: new Decimal(500000),
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
     style() {
       return {
-        "width": "175px",
+        "width": "100px",
+        "height": "50px",
+        "border-radius": "1px",
+        "border": "5px",
+        "margin": "0px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#cc0000"
+      }
+    },
+    //<h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;">
+    //make Reapeatable Upgrades 2 and 3’s effect and cost scaling 14% stronger.
+
+    tooltip: `<p>pressure point gain is increased by 32x</p>`,
+    branches: ["R",31],
+  }, //A5
+  42: {
+    title: `<h2>AB4</h2>`,
+    cost: new Decimal(500000),
+    
+   //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
+
+    style() {
+      return {
+        "width": "100px",
+        "height": "50px",
+        "border-radius": "1px",
+        "border": "5px",
+        "margin": "0px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#674ea7"
+      }
+    },
+    //<h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;">
+    //make Reapeatable Upgrades 2 and 3’s effect and cost scaling 14% stronger.
+
+    tooltip: `Boost upg2 by <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 10x </h3> but All repUpg's are <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> 10% weaker </h3>`,
+    branches: ["R",32],
+  }, 
+  43: {
+    title: `<h2>B4</h2>`,
+    cost: new Decimal(1.12e8),
+    
+   //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
+
+    style() {
+      return {
+        "width": "100px",
         "height": "50px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "10px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#32a69f"
       }
     },
     tooltip: `Unlock ???, And keep BC4 on all resets.`,
-    branches: [("R",21), ("R",24),("R",23)],
-    unlocked() {
-      if ((hasUpgrade("R",21)) && (hasUpgrade("R",23)) && (hasUpgrade("R",24))) return true
-      //21, 23, 24
-      //return
-
-
-    },
-  }, //ABC4
-
-  29: {
-    title: `<h2>d4(ab)</h2>`,
-    cost: new Decimal(1.15e7),
+    branches: [("R",34)],
     
-   //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
-    style() {
-      return {
-        "width": "175px",
-        "height": "70px",
-        "border-radius": "1px",
-        "border": "0px",
-        "margin": "5px",
-        "text-shadow": "0px 0px 10px #000000",
-        "color": "#351c75"
-      }
-    },
-    tooltip: `shftUpg3 exponent boost becomes <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> ^1.15 -> ^1.2</h3>`,       
-    branches: [("R",26), ("R",27)],
-    unlocked() {
-      if ((hasUpgrade("R",26)) && (hasUpgrade("R",27))) return true
-      //return true
-
-    }
-  }, //d4(ab)
-  31: {
+  }, //B4
+  44: {
     title: `<h2>BC4</h2>`,
     cost: new Decimal(113569),
     
@@ -546,11 +644,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
     style() {
       return {
-        "width": "175px",
+        "width": "100px",
         "height": "50px",
         "border-radius": "1px",
         "border": "5px",
-        "margin": "10px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#94ff66"
       }
@@ -559,42 +657,121 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
     //make Reapeatable Upgrades 2 and 3’s effect and cost scaling 14% stronger.
 //The Negative effects of The Blue path is 20% weaker, but C3's effect is divided by 3.3  
     tooltip: `The Negative effects of The Blue path is <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 20% weaker </h3> and <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> cost scaling </h3> by 1.15x`,
-    branches: [("R",24),("R", 23)],
+    branches: [("R",34),("R", 33)],
     unlocked() {
       if ((hasUpgrade("R",23)) && (hasUpgrade("R",24))) return true
-
+      return true
 
     },
 
 
 
-  }, //D5
-  32: {
+  },
+  45: {
     title: `<h2>C4</h2>`,
     cost: new Decimal(113569),
+    
+  
+
+    style() {
+      return {
+        "width": "100px",
+        "height": "50px",
+        "border-radius": "1px",
+        "border": "5px",
+        "margin": "5px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#f1c232"
+      }
+    },
+   
+    tooltip: `<p>Automatically buys shift dimensions 1-6 </p>`,
+    branches: [("R",34)],
+  },
+  46: {
+    title: `<h2>D4(ab)</h2>`,
+    cost: new Decimal(1.15e7),
+    
+   
+
+    style() {
+      return {
+        "width": "100px",
+        "height": "70px",
+        "border-radius": "1px",
+        "border": "0px",
+        "margin": "10px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#351c75"
+      }
+    },
+    tooltip: `raise all shift multipliers effects by ^1.15`,       
+    branches: [("R",36), ("R",37)],
+    unlocked() {
+      if ((hasUpgrade("R",26)) && (hasUpgrade("R",27))) return true
+      return true
+
+    }
+  }, //d4(ab)
+  
+
+
+
+
+
+  51: {
+    title: `<h2>A5</h2>`,
+    cost: new Decimal(1e15),
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
     style() {
       return {
-        "width": "175px",
+        "width": "120px",
         "height": "50px",
         "border-radius": "1px",
         "border": "5px",
-        "margin": "10px",
+        "margin": "0px",
         "text-shadow": "0px 0px 10px #000000",
-        "color": "#f1c232"
+        "color": "#cc0000"
       }
     },
     //<h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;">
     //make Reapeatable Upgrades 2 and 3’s effect and cost scaling 14% stronger.
 
-    tooltip: `boost RepUpg 2 and 3's  <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> effect </h3> and <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> cost scaling </h3> by 1.15x`,
-    branches: ["R",24],
-  }, //D5
+    tooltip: `<p>pressure point formula is better [log3(Pressure) -> Pressure^0.3]</p>`,
+    branches: ["R",41],
+  }, //A5
+  52: {
+    title: `<h2>ABC5</h2>`,
+    cost: new Decimal(1e25),
+    
+   //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
+
+    style() {
+      return {
+        "width": "120px",
+        "height": "50px",
+        "border-radius": "1px",
+        "border": "5px",
+        "margin": "0px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#32a69f"
+      }
+    },
+    //<h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;">
+    //make Reapeatable Upgrades 2 and 3’s effect and cost scaling 14% stronger.
+
+    tooltip: `Finish TMUI's 0.4 update`,
+    branches: [("R",43),("R",41) ,("R",45)],
+  }, 
+  
+  
+ 
+//#32a69f for abc5
   
 
-
+/**/
 
 
 
@@ -607,18 +784,21 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(0.1) //t
 
 
 challenges: {
+  
   11: {
       name: "Challenge 1",
-      challengeDescription: `
+      challengeDescription() { return `
       <h3>Anti-upgrade (noUpg) </h3><br><br>
-      <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “We didn’t need it anyway” </h4> 0/50 <br><br>
-      All Pre-Shifting Upgrades are temporarily disabled. all but the three rep Upgrades is the only ones available
+      <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “We didn’t need it anyway” </h4> ${challengeCompletions(layer, id)}/20 <br><br>
+      There are only the 3 rep upgrades and Upg1
       
       
-      `,
-      goal: new Decimal ("1e18"),
+      `
+    },
+      completionLimit: new Decimal(20),
+      goal: new Decimal ("1e10"),
       //goalDescription: `Repress the game to finish this challenge.  `,
-      rewardDescription: `Points base exponent becomes 1^ -> ^1.01`,
+      rewardDescription: `Points base exponent is added (+0.02)`,
       canComplete: function() {return player.points.gte(1e18)},
       style() {
         return {
@@ -631,7 +811,27 @@ challenges: {
           "color": "#f1c232"
         }
       },
+     onEnter() {
+      doReset("R")
+
+     },
+     onExit() {
+      player["S"].points = player["S"].points.add(1)
+
+     }
   },
+
+
+
+
+
+
+
+
+
+
+
+
   12: {
     name: "Challenge 2",
     challengeDescription: `
@@ -643,8 +843,8 @@ challenges: {
     `,
     goal: new Decimal ("1e15"),
     //goalDescription: `Repress the game to finish this challenge.  `,
-    rewardDescription: `Points is multiplied by 2^completions`,
-    canComplete: function() {return player.points.gte(1e25)},
+    rewardDescription: `Upg2 effect is multiplied by 2 each completion`,
+    canComplete: function() {return player.points.gte(1000000)},
     style() {
       return {
         "width": "300px",
@@ -656,6 +856,10 @@ challenges: {
         "color": "#f1c232"
       }
     },
+    onEnter() {
+      doReset("R")
+
+     }
 },
 13: {
   name: "Challenge 3",
@@ -681,6 +885,10 @@ challenges: {
       "color": "#f1c232"
     }
   },
+  onEnter() {
+    doReset("R")
+
+   }
 },
 14: {
   name: "Challenge 4",
@@ -708,6 +916,7 @@ challenges: {
     }
   },
 },
+/*
 15 : {
   name: "Challenge 5",
   challengeDescription: `
@@ -733,8 +942,15 @@ challenges: {
       "color": "#f1c232"
     }
   },
+
+  onEnter() {
+    doReset("S")
+
+   }
+},*/
 },
-},
+
+
 
 
 
@@ -766,9 +982,9 @@ row: 2, // Row the layer is in on the tree (0 is the first row)
     if (hasUpgrade("R",12)) return true
     if (hasUpgrade("R",13)) return true
     if (hasUpgrade("R",14)) return true
-    if (player.points.gte("5.15e19")) return true
+    if (player.points.gte("1e18")) return true
     if (player["R"].points.gte(1)) return true
-
+    return true
 
 
   },
@@ -777,6 +993,8 @@ row: 2, // Row the layer is in on the tree (0 is the first row)
     return `
     <p> 
     <p class='cBreak' style='font-size:16px'>Repression</p>
+    </p>
+    <p class='cBreak' style='font-size:13px'>[Node #02]</p>
     </p>`
   },
 

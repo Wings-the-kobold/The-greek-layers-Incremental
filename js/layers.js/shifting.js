@@ -1,11 +1,4 @@
 addLayer("S", {
-   
-
-
-
-
-
-
     symbol: "S", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
@@ -131,11 +124,14 @@ addLayer("S", {
       11: {
         cost(x) {
           let PowerI = new Decimal(1.4)
+          let repressdownEffect = new Decimal(1)
+          if (hasUpgrade("R",12)) repressdownEffect = 1.05
+          if (!hasUpgrade("R",12)) repressdownEffect = 1
           if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
           if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
           if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(5).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
+          let Calculation = new Decimal(5).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
+          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
           return Calculation;
         },
         display() {
@@ -176,8 +172,8 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.5)).add(1).mul(buyableEffect("S",12))
-          if (hasUpgrade("R",12)) effect = effect.log(1.3)
-          effect = effect.pow(getClickableState("S",11)).clampMin(1)
+        
+          if (getClickableState("S",11)) effect = effect.pow(getClickableState("S",11)).clampMin(1)
           return effect;
         },
         unlocked() {
@@ -188,11 +184,14 @@ addLayer("S", {
       12: {
         cost(x) {
           let PowerI = new Decimal(1.4)
+          let repressdownEffect = new Decimal(1)
+          if (hasUpgrade("R",12)) repressdownEffect = 1.05
+          if (!hasUpgrade("R",12)) repressdownEffect = 1
           if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
           if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
           if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(25).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
+          let Calculation = new Decimal(25).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
+          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
           return Calculation;
         },
         display() {
@@ -233,7 +232,7 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.25)).add(1).mul(buyableEffect("S",13))
-          if (hasUpgrade("R",12)) effect = effect.log(1.3)
+         
          
           return effect;
         },
@@ -245,11 +244,14 @@ addLayer("S", {
       13: {
         cost(x) {
           let PowerI = new Decimal(1.4)
+          let repressdownEffect = new Decimal(1)
+          if (hasUpgrade("R",12)) repressdownEffect = 1.05
+          if (!hasUpgrade("R",12)) repressdownEffect = 1
           if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
           if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
           if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(125).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
+          let Calculation = new Decimal(125).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
+          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
           return Calculation;
         },
         display() {
@@ -290,7 +292,6 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.12)).add(1).mul(buyableEffect("S",14))
-          if (hasUpgrade("R",12)) effect = effect.log(1.3)
           return effect;
         },
         unlocked() {
@@ -301,11 +302,14 @@ addLayer("S", {
       14: {
         cost(x) {
           let PowerI = new Decimal(1.4)
+          let repressdownEffect = new Decimal(1)
+          if (hasUpgrade("R",12)) repressdownEffect = 1.05
+          if (!hasUpgrade("R",12)) repressdownEffect = 1
           if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
           if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
           if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(725).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
+          let Calculation = new Decimal(625).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
+          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
           return Calculation;
         },
         display() {
@@ -346,7 +350,7 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.06)).add(1).mul(buyableEffect("S",15))
-          if (hasUpgrade("R",12)) effect = effect.log(1.3)
+          
           return effect;
         },
         unlocked() {
@@ -360,8 +364,8 @@ addLayer("S", {
           if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
           if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
           if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(3625).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
+          let Calculation = new Decimal(3125).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
+          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
           return Calculation;
         },
         display() {
@@ -402,7 +406,7 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.06)).add(1).mul(buyableEffect("S",16))
-          if (hasUpgrade("R",12)) effect = effect.log(1.3)
+          
           return effect;
         },
         unlocked() {
@@ -417,7 +421,7 @@ addLayer("S", {
           if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
           if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
           let Calculation = new Decimal(15625).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(2)
+          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
           return Calculation;
         },
         display() {
@@ -458,7 +462,7 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.02)).add(1)
-          if (hasUpgrade("R",12)) effect = effect.log(1.3)
+          
          
           return effect;
         },
@@ -478,20 +482,22 @@ addLayer("S", {
         cost: new Decimal(3),
         effect() {
           let effect = decimalOne
-          effect = player.points.add(1).log(10).min(15)
+          effect = decimalOne 
+          effect = player.points.add(1).log(10)
           effect = effect.add(0.1)
-          effect = effect.ceil()
-          return effect
+          effect = effect.ceil().min(15)
+          
+          return effect.minus(1)
   
   
         },
         effectDisplay() { 
           
-          if (hasUpgrade('S', 11)) return format(upgradeEffect(this.layer, this.id))+"x" 
+          if (hasUpgrade('S', 11) && !upgradeEffect(this.layer, this.id).gte(15)) return format(upgradeEffect(this.layer, this.id))+"x" 
           if (!hasUpgrade('S', 11)) return "???"
-          if (upgradeEffect(this.layer, this.id).gte(15)) return "15x (Hardcapped)"
+          if (upgradeEffect(this.layer, this.id).gte(15)) return "15.00x (Hardcapped)"
       
-      }
+      },
       
   
   
@@ -511,7 +517,7 @@ addLayer("S", {
     },
     14: {
       title: "ShftUpg4",
-      description: `Meters Of Waves Boost points`,
+      description: `Meters Of Waves Boosts Upg 2`,
       cost: new Decimal(825),
       effect() {
         let effect = decimalOne
@@ -541,7 +547,7 @@ addLayer("S", {
   },
   16: {
     title: "ShftUpg6",
-    description: `multiply points by 100x`,
+    description: `multiply points by 20x`,
 
 
 
@@ -559,12 +565,12 @@ addLayer("S", {
       }
     },
 
-    cost: new Decimal(2e11),
+    cost: new Decimal(1e9),
   },
   17: {
     title: "ShftUpg7",
     description: `RepUpg3 is 40% stronger`,
-    cost: new Decimal(7.15e14),
+    cost: new Decimal(1e14),
 
 
 
@@ -580,70 +586,7 @@ addLayer("S", {
       }
     },
   },
-  18: {
-    title: "TimeUpg1",
-    description: `Time spent this shifting boosts points gain`,
-
-
-
-
-
-    cost: new Decimal(2e18),
-    style() {
-      return {
-        "width": "150px",
-        "height": "85px",
-        "border-radius": "20px",
-        "border": "0px",
-        "margin": "5px",
-        "text-shadow": "0px 0px 10px #000000",
-        "color": "#ffffff"
-      }
-    },
-
-
-  },
-  19: {
-    title: "TimeUpg2",
-    description: `Time spent this shift reset boosts MoW gain`,
-
-
-
-
-
-    cost: new Decimal(6.6e23),
-    style() {
-      return {
-        "width": "150px",
-        "height": "85px",
-        "border-radius": "20px",
-        "border": "0px",
-        "margin": "5px",
-        "text-shadow": "0px 0px 10px #000000",
-        "color": "#ffffff"
-      }
-    },
-
-  },
-  21: {
-    title: "ShftUpgExt1",
-    description: `add 3 Normal upgrades to Main`,
-    cost: new Decimal(7.58e30),
-
-
-    style() {
-      return {
-        "width": "200px",
-        "height": "85px",
-        "border-radius": "50px",
-        "border": "0px",
-        "margin": "5px",
-        "text-shadow": "0px 0px 10px #000000",
-        "color": "#ffffff"
-      }
-    },
-
-  },
+  
 
 
 
@@ -655,20 +598,24 @@ addLayer("S", {
     clickables: {
       11: {
         canClick() {
-          if (tmp.S.buyableCount.clampMin(1).log(60).lt(getClickableState(this.layer, this.id))) return false;
-          
+          if (tmp.S.buyableCount.clampMin(1).log(70).lt(getClickableState(this.layer, this.id))) return false
+          if (buyableEffect("S",11).gt(1)) return true
           
           return true;
         },
-       // unlocked() { return hasUpgrade("R", 14) },
+        unlocked() {return hasUpgrade("R", 14)},
         onClick() {
           let formula = tmp.S.buyableCount;
+          if (buyableEffect("S",11).gt(1)) {
           for (const id in tmp.S.buyables) {
             if (id === this.id) continue;
             setBuyableAmount("S", id, Decimal.dZero);
           }
           player.S.mostBuyables = formula;
-          setClickableState(this.layer, this.id, tmp.S.buyableCount.log(60).clampMin(1))
+          setClickableState(this.layer, this.id, tmp.S.buyableCount.log(70).clampMin(1))
+          setBuyableAmount("S",11 , new Decimal(0))
+        
+        } else return `Hey!`
         },
        
         style() {
@@ -684,6 +631,7 @@ addLayer("S", {
         },
 display(){ 
   let formula = tmp.S.buyableCount;
+  
  // value you have to the right
  return `<h1>Shifting Sacrifice</h1> <br>
         <br>
@@ -691,7 +639,7 @@ display(){
         <br>
         <h3> Requires: Total bought shift multipliers: ${format(formula)} / ${format(player["S"].mostBuyables)} </h3>
         <br>
-        <h3> Currently: ^${format(getClickableState(this.layer, this.id))} -> ^${format(formula.add(1).log(60))} </h3>
+        <h3> Currently: ^${format(getClickableState(this.layer, this.id))} -> ^${format(formula.add(1).log(70))} </h3>
         `
       },
 
@@ -731,6 +679,12 @@ display(){
       if (hasUpgrade("R",12)) return true
       if (hasUpgrade("R",13)) return true
       if (hasUpgrade("R",14)) return true
+      if (inChallenge("R",11)) return true
+      if (inChallenge("R",12)) return true
+      if (inChallenge("R",13)) return true
+      if (inChallenge("R",14)) return true
+      if (inChallenge("R",15)) return true
+      if (inChallenge("R",16)) return true
 
   
     },
@@ -738,7 +692,10 @@ display(){
       return `
       <p> 
       <p class='cBreak' style='font-size:16px'>Shifting</p>
-      </p>`
+      </p>
+      <p class='cBreak' style='font-size:13px'>[Node #01]</p>
+    </p>`
+      
     },
   
   })

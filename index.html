@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="css/tree-node.css" />
 
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
-
+	<link href='https://fonts.googleapis.com/css?family=Nova Mono' rel='stylesheet'>
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
 	<script src="js/technical/break_eternity.js"></script>
 	<script src="js/technical/layerSupport.js"></script>
@@ -43,7 +43,7 @@
 		<canvas id="treeCanvas" class="canvas" v-if="!(tmp.gameEnded && !player.keepGoing)"></canvas>
 
 		<div v-if="false" id="loadingSection" class="fullWidth">
-			<h1>Loading... (If this takes too long it means there was a serious error!)←</h1>
+			<h1>Hi i have a lifespan for about 0.2 seconds, ←</h1>
 		</div>
 		<div class="vl" v-if="player.navTab !== 'none' && tmp.other.splitScreen && player.tab!='none' && !(tmp.gameEnded && !player.keepGoing)"></div>
 		<div v-if="(tmp.gameEnded && !player.keepGoing)" class="fullWidth">
@@ -64,7 +64,7 @@
 				Prestige Tree server</a><br>
 			<br><br>
 		</div>
-
+        
 		<div id="treeOverlay" v-if="!(tmp.gameEnded && !player.keepGoing) && (player.tab === 'none' || tmp.other.splitScreen || !readData(layoutInfo.showTree))" class="treeOverlay" onscroll="resizeCanvas()"
 			v-bind:class="{ 
 			fullWidth: (player.tab == 'none' || player.navTab == 'none'), 
@@ -74,7 +74,12 @@
 			<div id="version" onclick="showTab('changelog-tab')" class="overlayThing" style="margin-right: 13px" >
 				{{VERSION.withoutName}}</div>
 			<button
-			v-if="((player.navTab == 'none' && (tmp[player.tab].row == 'side' || tmp[player.tab].row == 'otherside' || player[player.tab].prevTab)) || player[player.navTab]?.prevTab)"				class="other-back overlayThing" onclick="goBack(player.navTab == 'none' ? player.tab : player.navTab)">←</button>
+			v-if="((player.navTab == 'none' && (tmp[player.tab].row == 'side' || tmp[player.tab].row == 'otherside' || player[player.tab].prevTab)) || player[player.navTab]?.prevTab)"				class="other-back overlayThing" onclick="goBack(player.navTab == 'none' ? player.tab : player.navTab)">←</button> 
+			
+			</body>
+			
+<body onload="load()" onmousemove="updateMouse(event)">
+ 
 			<img id="optionWheel" class="overlayThing" v-if="player.tab!='options-tab'" src="options_wheel.png"
 				onclick="showTab('options-tab')"></img>
 			<div id="info" v-if="player.tab!='info-tab'" class="overlayThing" onclick="showTab('info-tab')"><br>i</div>
@@ -92,11 +97,15 @@
 				</ul>
 			</div>
 			<overlay-head v-if="!(tmp.gameEnded && !player.keepGoing)"></overlay-head>
+			
 			<div class="sideLayers">
 				<div v-for="(node, index) in OTHER_LAYERS['side']">
 					<tree-node :layer='node' :abb='tmp[node].symbol' :size="'small'" :key="'side' + index"></tree-node>
 				</div>
+
+				
 			</div>
+			
 		</div>
 		
 		<div v-if="!(tmp.gameEnded && !player.keepGoing) && (player.tab === 'none' || tmp.other.splitScreen)" id="treeTab"  onscroll="resizeCanvas()" 
@@ -107,7 +116,7 @@
 			<layer-tab :layer="player.navTab == 'none' ? player.tab : player.navTab" :key="'left'"></layer-tab>
 			<bg :layer="player.navTab == 'none' ? player.tab : player.navTab" ></bg>
 		</div>
-
+		
 		<!-- Popups -->
 		<div class="popup-container">
 			<transition-group name="fade">
@@ -136,4 +145,89 @@
 		<div class = "bg2" v-bind:style = "tmp.backgroundStyle"></div>
 
 	</div>
-</body>
+	
+</body><!--- animated text section --->
+<!---			<div> 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content=
+        "width=device-width, initial-scale=1.0" />
+    
+      
+    <style>
+       span:: {
+            content: "Quote Thing";
+            animation: animate infinite 500s;
+            padding-left: 1px;
+        } 
+        @keyframes animate {
+            0% {
+                content: "why am i so dumb????????";
+            }
+            5% {
+                content: "idk why i put this here";
+            }
+            10% {
+                content: "Hi, im a floatimg text! how are you?";
+            }
+			15% {
+                content: "nbh gjvyfcmk hbnvgu";
+            }
+			20% {
+                content: "Stop! Its Kobold time!!!!";
+            }
+			25% {
+                content: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+            }
+			30% {
+                content: "Im a floating text, not a news ticker!";
+            }
+			35% {
+                content: "Hey, Hey hunger, Fuck you!";
+            }
+			40% {
+                content: "What you doin? :D";
+            }
+			45% {
+                content: "I probably suck at building mods";
+            }
+			50% {
+                content: "How did this get here?";
+            }
+			55% {
+                content: "Little did they know that i am a floating text";
+            }
+			60% {
+                content: "[insert random kobold quote here]";
+            }
+			65% {
+                content: "Reject everything, Embrance dragon, Become kobold. ";
+            }
+			70% {
+                content: "srfiohb g iuher9 hf gsdb rsgnh rgthk hjdfgh87ewryg kberfjh ie4r 789y";
+            }
+			75% {
+                content: "this is totally auto generated";
+            }
+			80% {
+                content: "say abc123 if you have bad mobile advertisements!\n luckily i have something to prevent those nasty things from happening.\n you see, i am coming into your house, and blowing up your internet so you will no longer have to deal with those annoying ads!\n trust me, it will work ";
+            }
+			85% {
+                content: "The person who created this mod is very supid";
+            }
+			90% {
+                content: "Did you wait 5 minutes?";
+            }
+			95% {
+                content: "this tree is not bad, i promise!";
+            }
+			100% {
+                content: "idk im running out of quote ideas";
+            }
+        }
+    </style>
+</head> 
+<body>
+ <p>Random Quote: <span> </span></p>
+</body>--->
+	</div>

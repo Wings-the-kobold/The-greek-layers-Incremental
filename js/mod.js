@@ -8,12 +8,12 @@ let modInfo = {
 	discordName: "My Twitch stuff ",
 	discordLink: "discord.gg/tJDWU7twvB",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 5,  // In hours
+	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "v0.3",
+	num: "v0.3 - Repression?",
 	name: "Repression?",
 }
 
@@ -35,14 +35,25 @@ let changelog = `<h1>Changelog:</h1><br>
 		- fixed QoL upgrade on ShftUpg5 <br>
 		- 
 		
-		<h3>(v0.3)  [UPDATE 3]</h3><br>
+		<h3>(v0.3)  [UPDATE 3]	</h3><br>
 		- added some shifting upgrades
 		- lore? <br>
-		- added shifting layer <br>
-			<h4> NERFED/BUFFED </h4><br>
+		
+		- Buffed shtfUpg2 <br>
+		
 		- shftUpg4 is nerfed from ^0.5 -> log2(x) [just a slight nerf]
+		- offline time reduced from 5 hours to 1 hour
 
-
+		<h3>(v0.4)  [UPDATE 4]	</h3><br>
+		- added some shifting upgrades
+		- Changed lots and lots of displays,  <br>
+		- Upg1,Upg2,ShftUpg1 now properly displays their values <br>
+		- reworded almost every upgrade <br>
+		- Buffed shtfUpg2 <br>
+		- Upg1,Upg2,ShftUpg1 now properly displays their values <br>
+		- reworded almost every upgrade <br>
+		
+		- offline time reduced from 5 hours to 1 hour
 
 		`
 
@@ -58,40 +69,100 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return true
+	if (hasUpgrade("U",11)) return true; 
 }
 
 // Calculate points/sec!
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
-	let gain = new Decimal(0)
-	if (hasUpgrade("U",11)) gain = new Decimal(1)
-	gain = gain.add(buyableEffect("U",11))
-	gain = gain.mul(buyableEffect("U",12))
-	if (hasUpgrade("U",12)) gain = gain.mul(2)
-
+	let gain = new Decimal(1)
+	
+	gain = (upgradeEffect("U",11))
+	
+	if (hasUpgrade("U",12)) gain = gain.times(upgradeEffect("U",12))
+	gain = gain.times(buyableEffect("U",12))
 	gain = gain.mul(buyableEffect("S",11))
 	if (hasUpgrade("S",13)) gain = gain.pow(1.15)
-	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11).floor())
-	if (hasUpgrade("S",14)) gain = gain.times(upgradeEffect("S",14).floor())
-	if (hasUpgrade("R",11)) gain = gain.mul(player["R"].pressure.add(1).log(3))
-	if (hasUpgrade("S",16)) gain = gain.mul(10)
+	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11))
+	
+	
+	if (hasUpgrade("S",16)) gain = gain.mul(20)
 
 
 
-	return gain
+	return gain.minus(1)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	
 }}
+
+var Progress;
+
+function progression() {
+	    
+		/*layer: just started */ 
+let currentProgress = 0
+/*part: first upgrade is bought */
+if (hasUpgrade("U",11)) {
+	
+currentProgress = 1
+	}	
+
+/*part: all upgrades are bought */
+if (hasUpgrade("U",11) && hasUpgrade("U",12)&& hasUpgrade("U",13)&& hasUpgrade("U",14)&& hasUpgrade("U",15)) 
+{
+	
+currentProgress = 2
+	}
+
+
+
+/*layer: shifting */
+if (player.points.gte(20000) || player["S"].points.gte(1)|| hasUpgrade("S",11)) {currentProgress = 3}
+     
+if (buyableEffect("S",11).gt(1)) {currentProgress=4}
+
+
+
+/*layer: repression */
+
+
+
+
+
+
+
+
+
+	
+
+	/*after everything has been checked, set variables */ 
+ Progress = currentProgress;
+return currentProgress
+}
+
+
+
+
+
+
 
 // Display extra things at the top of the page
 var displayThings = [
-	`<br> hi this is a floatimg text
-<br>
-  <br> nbh gjvyfcmk hbnvgu`
+
+	
+
+	//if (pr)
+
+
+
+
+
+
+	() => !hasUpgrade("U", 11) ? `(Locked)<br>something gleams with power...` : `<br> ` 
 ]
 
 // Determines when the game "ends"
