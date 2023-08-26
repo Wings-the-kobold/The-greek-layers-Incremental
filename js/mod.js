@@ -101,7 +101,8 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	if (player.points.gte(new Decimal("1e13"))) return alert("you got the milestone")
+	if (player.points.gte(new Decimal("1e18"))) return true
+	alert("you got the milestone")
 }
 
 
