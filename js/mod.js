@@ -91,7 +91,12 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
- `<br><h4 style="color:#2287EC ; text-shadow: #063770 0px 0px 10px;">hi im a floating blue text</h4>`
+ `<br>Hey, this game is currently in the archive, i will soon be putting it back once i feel like doing this mod, <br>
+  <a href=https://raw.githack.com/Wings-the-kobold/The-greek-layers-incremental/Meta-Upgrades-Incremental-(Tree-ver.)/index.html>Click here to go to TMUI, TMT version<a>
+  <br> <a href=https://scratch.mit.edu/projects/852049398/>Click here to go to one of my non-TMT mods, [Incremental Prestige Layers]<a>
+  <br><br> <a href=https://www.youtube.com/watch?v=xvFZjo5PgG0>Click here to get free discord nitro<a>
+  <br> <a href= https://www.discord.gg/tJDWU7twvB>Click here to join the kobold pack! (also to get updates for my future mods and game updates!)<a>
+  `
 ]
 
 // Determines when the game "ends"
