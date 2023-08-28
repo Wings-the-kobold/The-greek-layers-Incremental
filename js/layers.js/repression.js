@@ -294,7 +294,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     title: `<h2>A2</h2>`,
     cost: new Decimal(15),
     canAfford(){
-      if (!hasUpgrade("R",11) && maxSplit.gte(4)) return false
+      if (hasUpgrade("R",11) && maxSplit.gte(4)) return true
     
     },
     onPurchase() {
