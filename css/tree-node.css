@@ -8,7 +8,7 @@
 	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
 	font-size: 40px;
 	font-family: "Lucida Console", "Courier New", monospace;
-	color: rgba(0, 0, 0, 0.5);
+	color: rgb(10, 7, 24);
 	text-shadow: var(--hqProperty3);
 	padding: 0;
 	margin: 0 10px 0 10px;
@@ -31,6 +31,7 @@
 	color: rgba(0, 0, 0, 0.5);
 	text-shadow: var(--hqProperty3);
 	padding: 0;
+	transform: rotate(90deg);
 }
 
 .smallNode {
@@ -40,18 +41,21 @@
 }
 
 .resetNotify {
-	box-shadow: var(--hqProperty2a), 0 0 8px #ffffff;
+	box-shadow: var(--hqProperty2a), 0 0 20px #dbcf2e;
+	transform: rotate(360deg);
+	
 }
 
 .treeNode.can:hover {
-	transform: scale(1.15, 1.15);
+	transform: scale(1.35, 1.35);
+	
 	box-shadow: var(--hqProperty2a), 0 0 20px var(--points);
 }
 
 .notify {
 	transform: scale(1.05, 1.05);
 	border-color: rgba(0, 0, 0, 0.125);
-	box-shadow: var(--hqProperty2a), 0 0 20px #ff0000;
+	transform: rotate(360deg);
 }
 
 

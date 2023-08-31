@@ -1,6 +1,6 @@
 addLayer("U", {
     name: "Upgrades", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "U", // This appears on the layer's node. Default is the id with the first letter capitalized
+    
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
       unlocked: true,
@@ -31,7 +31,7 @@ respec() {
    const keep = [];
   if (tmp[resettingLayer].row <= tmp[this.layer].row) return;
   if (hasUpgrade("S",15)) keep.push("upgrades"); // no reset when same or lower row layer caused a reset
-  if (hasUpgrade("R",13)) keep.push(upgrades('11'));
+  if (hasUpgrade("R",13)) keep.push(upgrades("U",11));
   //if (!hasUpgrade("R",13)) keep.pop("buyables");
   if (inChallenge("R",11)) keep.pop("upgrades");
  
@@ -46,7 +46,7 @@ respec() {
       11: {
         title: `<h2>Upg1</h2>`,
         cost: new Decimal(10),
-        description() {return `<h3>Start Generating ${format(upgradeEffect(this.layer,this.id).minus(1))} point per second.`},
+        description() {return `<h3>Start Generating ${format(upgradeEffect(this.layer,this.id))} point per second.`},
        //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
         
         style() {
@@ -61,7 +61,7 @@ respec() {
           }
         },
         currencyInternalName: "points",
-        //resetNothing() {return hasUpgrade('S', 15)}
+        resetNothing() {return hasUpgrade("S", 15)},
         effect() {
           let final = new Decimal(2)
           final = final.plus(buyableEffect("U",11))
@@ -367,11 +367,11 @@ respec() {
             player.points = player.points.sub(this.cost())
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
           },
-          effect(x) {
+          effect() {
             let effect = decimalZero
             let baseFormula = new Decimal(0.1)
-            if (hasUpgrade("S", 12)) baseFormula = baseFormula.mul(1.2)
-            if (hasUpgrade("S", 17)) baseFormula = baseFormula.mul(1.4)
+            if (hasUpgrade("S", 12)) baseFormula = baseFormula.mul(1.4)
+           // if (hasUpgrade("S", 17)) baseFormula = baseFormula.mul(1.5)
             effect = getBuyableAmount(this.layer, this.id).mul(baseFormula).add(1)
             
     

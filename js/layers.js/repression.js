@@ -1,5 +1,6 @@
-var maxSplit = new Decimal(0)
-
+var currentPath = new Decimal(0)
+var row1MaxSplit = new Decimal(2)
+var row2MaxSplit = new Decimal(4) 
 
 addLayer("R", {
   symbol: "R", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -159,7 +160,8 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
   
     player.R.upgrades = [];
     player.R.points = player.R.points.plus(totalCost);
-    maxSplit = maxSplit.times(0);
+    currentPath = currentPath.times(0);
+   
   },
   style: {
       'min-height': "30px",
@@ -188,11 +190,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
       },
       tooltip: `unlock Pressure points (unlocked from The Generator).`,
       canAfford(){
-        if (maxSplit.gte(2)) return false
+        if (currentPath.eq(row1MaxSplit)) return false
       
       },
       onPurchase() {
-        maxSplit = maxSplit.plus(1)
+        currentPath = currentPath.plus(1)
   
       },
     },
@@ -217,13 +219,13 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
         }
       },
       tooltip: `Shifting upgrades are <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 5x cheaper </h3> 
-      but shift multipliers 1-4 scalings are also <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> 5% faster  </h3>`,
+      but shift multipliers 1-4 scalings are also raised by <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;">  ^1.05  </h3>`,
       canAfford(){
-        if (maxSplit.gte(2)) return false
+        if (currentPath.gte(row1MaxSplit)) return false
       
       },
       onPurchase() {
-        maxSplit = maxSplit.plus(1)
+        currentPath = currentPath.plus(1)
   
       },
   },
@@ -249,11 +251,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     },
     tooltip: `Start all resets with Upg1`, 
     canAfford(){
-      if (maxSplit.gte(2)) return false
+      if (currentPath.gte(row1MaxSplit)) return false
     
     },
     onPurchase() {
-      maxSplit = maxSplit.plus(1)
+      currentPath = currentPath.plus(1)
 
     },
   },
@@ -278,11 +280,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     },
     tooltip: `Unlock Shifting Sacrifice. where you sacrifice all multipliers for a multiplier for those shift multipliers`,
     canAfford(){
-      if (maxSplit.gte(2)) return false
+      if (currentPath.eq(row1MaxSplit)) return false
     
     },
     onPurchase() {
-      maxSplit = maxSplit.plus(1)
+      currentPath = currentPath.plus(1)
 
     },
   },
@@ -294,11 +296,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     title: `<h2>A2</h2>`,
     cost: new Decimal(15),
     canAfford(){
-      if (hasUpgrade("R",11) && maxSplit.gte(4)) return true
-    
+      if (!currentPath.eq(row2MaxSplit) ) return true
+      
     },
     onPurchase() {
-      maxSplit = maxSplit.plus(1)
+      currentPath = currentPath.plus(1)
 
     },
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
@@ -317,6 +319,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     tooltip: `Increase pressure point gain by 2x`,
     branches: [("R",11)],
    }, //A2
+
      22: {
     title: `<h2>AB2</h2>`,
     cost: new Decimal(15),
@@ -337,11 +340,11 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     tooltip: `ShftUpg1 is increased  <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> ^1.00 -> ^1.15 </h3>   `,
     branches: [("R",11),("R",12)],
     canAfford(){
-      if (!hasUpgrade("R",11) && !hasUpgrade("R",12) && maxSplit.gte(4)) return false
+      if (hasUpgrade("R",11) && hasUpgrade("R",12)) return true; else return false
     
     },
     onPurchase() {
-      maxSplit = maxSplit.plus(1)
+    
 
     },
     }, 
@@ -410,12 +413,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     branches: [("R",14), ("R",35), ("R",36), ("R",37)],
    }, //D2
 
-
-
-
-
-
-
+//row 3
  31: {
     title: `<h2>A3</h2>`,
     cost: new Decimal(337),
@@ -566,8 +564,7 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     branches: [("R",19)],
   }, //D3b
 
-
-
+  //row 4
   41: {
     title: `<h2>A4</h2>`,
     cost: new Decimal(500000),
@@ -714,10 +711,6 @@ if (hasUpgrade("R",11)) player["R"].pressure = player["R"].pressure.add(diff) //
     }
   }, //d4(ab)
   
-
-
-
-
 
   51: {
     title: `<h2>A5</h2>`,

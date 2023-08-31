@@ -1,5 +1,5 @@
 addLayer("S", {
-    symbol: "S", // This appears on the layer's node. Default is the id with the first letter capitalized
+    
     position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -31,6 +31,12 @@ addLayer("S", {
         return new Decimal(1)
     },
 
+    
+
+
+
+
+
     update(diff){
       //random stuff
       player["S"].time=player["S"].time.add(diff)
@@ -38,7 +44,7 @@ addLayer("S", {
     },
 
     doReset(resetLayer){
-      if(tmp[resetLayer].name==tmp.S.name) player.S.whateverTime=new Decimal(0)
+      if(tmp[resetLayer].name==tmp.S.name) player.S.time=new Decimal(0)
       if(tmp[resetLayer].row>this.row) layerDataReset("S", true)
     },
 
@@ -56,20 +62,7 @@ addLayer("S", {
     },
 
 
-    infoboxes: {
-  
-      about: {
-        title: "Shifting",
-        body() {
-          return `<h3>Welcome to the first prestige reset of this game. 
-          As you can see, Your upgrades are starting to get really expensive. 
-          But this button can help with the cost of shifting your upgrades and points.
-           </h3>`
-        },
-      
-  
-      },
-    },
+    
       tabFormat: {
         "Shifting": {      
               content: [
@@ -77,6 +70,11 @@ addLayer("S", {
                 ["infoboxes","about"],
                 
                 "prestige-button",
+                ["display-text",
+      function() { 
+        if(hasUpgrade("S",17)) return `<h3> Due to ShftUpg7, your current time spent this shifting is boosting point gain by </h3>`
+        
+     }],
                 "blank",
                 "blank",
                 "blank",
@@ -86,7 +84,9 @@ addLayer("S", {
                 "blank",
                 "blank",
                 "upgrades",
+                
             ],
+            
         },
   
         "Shifting Multipliers": {
@@ -482,12 +482,12 @@ addLayer("S", {
         cost: new Decimal(3),
         effect() {
           let effect = decimalOne
-          effect = decimalOne 
+          let hardcap = new Decimal(15)
+
           effect = player.points.add(1).log(10)
-          effect = effect.add(0.1)
-          effect = effect.ceil().min(15)
+         /* hardcap  */ effect = effect.ceil().min(hardcap)
           
-          return effect.minus(1)
+          return effect//.minus(1)
   
   
         },
@@ -507,7 +507,7 @@ addLayer("S", {
       },
         12: {
           title: "ShftUpg2",
-          description: `repUpg3 is 10% stronger`,
+          description: `repUpg3 is 40% stronger`,
           cost: new Decimal(40),
       },
       13: {
@@ -542,7 +542,7 @@ addLayer("S", {
 
   15: {
     title: "ShftUpg5",
-    description: `Keep most of the upgrades on Shifting`,
+    description: `Keep Upg1 on Shifting resets`,
     cost: new Decimal(7500),
   },
   16: {
@@ -553,17 +553,7 @@ addLayer("S", {
 
 
 
-    style() {
-      return {
-        "width": "150px",
-        "height": "85px",
-        "border-radius": "20px",
-        "border": "0px",
-        "margin": "5px",
-        "text-shadow": "0px 0px 10px #000000",
-        "color": "#ffffff"
-      }
-    },
+    
 
     cost: new Decimal(1e9),
   },
@@ -574,25 +564,14 @@ addLayer("S", {
 
 
 
-    style() {
-      return {
-        "width": "150px",
-        "height": "85px",
-        "border-radius": "20px",
-        "border": "0px",
-        "margin": "5px",
-        "text-shadow": "0px 0px 10px #000000",
-        "color": "#ffffff"
-      }
+ 
     },
+
+
+
+
+
   },
-  
-
-
-
-
-    },
-  
 
   
     clickables: {
@@ -615,7 +594,7 @@ addLayer("S", {
           setClickableState(this.layer, this.id, tmp.S.buyableCount.log(70).clampMin(1))
           setBuyableAmount("S",11 , new Decimal(0))
         
-        } else return `Hey!`
+        } else return alert("Hey! stop it! you cant get this upgrade!~")
         },
        
         style() {

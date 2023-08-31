@@ -3,7 +3,7 @@ let modInfo = {
 	id: "TMUI",
 	author: "ThatOneKobold",
 	pointsName: "points",
-	modFiles: ["layers.js/repression.js", "layers.js/upgrades.js", "layers.js/shifting.js", "tree.js","layers.js/ranks.js","layers.js/credits.js"],
+	modFiles: ["layers.js/repression.js", "layers.js/upgrades.js", "layers.js/shifting.js", "tree.js","layers.js/ranks.js","credits.js"],
 
 	discordName: "My Twitch stuff ",
 	discordLink: "discord.gg/tJDWU7twvB",
@@ -78,7 +78,7 @@ function getPointGen() {
 		return new Decimal(0)
 	let gain = new Decimal(1)
 	
-	gain = (upgradeEffect("U",11))
+	if (hasUpgrade("U",11) && !player.points.eq(0) ) gain = (upgradeEffect("U",11)); else player.points = player.points.plus(0.1)
 	
 	if (hasUpgrade("U",12)) gain = gain.times(upgradeEffect("U",12))
 	gain = gain.times(buyableEffect("U",12))
@@ -91,7 +91,7 @@ function getPointGen() {
 
 
 
-	return gain.minus(1)
+	return gain//.minus(1)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values

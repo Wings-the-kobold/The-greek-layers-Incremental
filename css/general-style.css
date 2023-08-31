@@ -3,8 +3,8 @@ body {
 	color: var(--color);
 	overflow: hidden;
 	--background: #0f0f0f;
-	--color: #dfdfdf;
-	--points: #ffffff;
+	--color: #8d90f4;
+	--points: #8d90f4;
 	background: var(--background)
 }
 
@@ -16,26 +16,28 @@ h1, h2, h3, b, input {
 
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */
 .locked {
-	background-color: #bf8f8f;
+	background-color: #bb0505;
 	cursor: not-allowed;
 }
 
 /* Can meens can be clicked/bought/etc */
 .can {
 	cursor: pointer;
+	
 }
 
 .can:hover {
 	transform: scale(1.15, 1.15);
+	transform: rotateZ(30);
 	box-shadow: 0 0 20px var(--points)
 }
 
 .bought {
-	background-color: #77bf5f;
+	background-color: #0db2ff9a;
 	cursor: default;
 }
 
 #points {
 	color: var(--points);
-	text-shadow: 0 0 10px var(--points);
+	text-shadow: 0 0 1px var(--points);
 }
