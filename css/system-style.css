@@ -1,7 +1,7 @@
 * {
 	transition-duration: 0.5s;
 	text-align: center;
-	font-family: "Inconsolata", monospace;
+	font-family: "Nova Mono";
 	font-weight: bold;
 	table-align: center;
 	margin: auto;
@@ -209,7 +209,7 @@ ul {
 	z-index: 10000;
 	pointer-events:auto;
 	position: absolute;
-	right: 55px;
+	right: 100px;
 	top: 65px;
 	background-color: transparent;
 }

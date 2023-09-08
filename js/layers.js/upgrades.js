@@ -7,7 +7,10 @@ addLayer("U", {
       resetTime: true,
      
   }},
-    color: "#B8B799",
+    
+   
+  
+  color: "#B8B799",
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     
     tabFormat: [
@@ -24,21 +27,27 @@ respec() {
 
 },
 
-    
+doReset(resettingLayer) {
+  
+  if(tmp[resettingLayer].row>this.row) {
+   layerDataReset(this.layer)
+   if (hasUpgrade("S",15)) player.U.upgrades.push("11")
+   
+   }
+   
+//if (inChallenge("R",11)) keep.pop("upgrades"); //ignore this
+  
+},
  tooltip: "View Upgrades",
 
- doReset(resettingLayer) {
-   const keep = [];
-  if (tmp[resettingLayer].row <= tmp[this.layer].row) return;
-  if (hasUpgrade("S",15)) keep.push("upgrades"); // no reset when same or lower row layer caused a reset
-  if (hasUpgrade("R",13)) keep.push(upgrades("U",11));
-  //if (!hasUpgrade("R",13)) keep.pop("buyables");
-  if (inChallenge("R",11)) keep.pop("upgrades");
- 
-  layerDataReset(this.layer, keep);
+
+
+automate() {
+  if (hasUpgrade("R",24)) buyBuyable("U",11)
+  if (hasUpgrade("R",24)) buyBuyable("U",12)
+  if (hasUpgrade("R",24)) buyBuyable("U",13)
+
 },
-
-
 
 
 
@@ -63,9 +72,9 @@ respec() {
         currencyInternalName: "points",
         resetNothing() {return hasUpgrade("S", 15)},
         effect() {
-          let final = new Decimal(2)
+          let final = new Decimal(1)
           final = final.plus(buyableEffect("U",11))
-          if (hasUpgrade("R",11)) final = final.mul(player["R"].pressure.add(1).log(3))
+          if (hasUpgrade("R",11)) final = final.mul(player["R"].pressure.log(3))
           return final
         },
       },
@@ -137,7 +146,7 @@ respec() {
          if (hasUpgrade("R",12)) return true
          if (hasUpgrade("R",13)) return true
          if (hasUpgrade("R",14)) return true
-         if (player.points.gte("5.15e19")) return true
+        
          if (player["R"].points.gte(1)) return true
      
         },
@@ -235,7 +244,7 @@ respec() {
           cost(x) {
             let PowerI = new Decimal(1.55)
         
-            let Calculation = new Decimal(15).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
+            let Calculation = new Decimal(15).mul(Decimal.pow(PowerI, x)).ceil()
             return Calculation;
           },
           display() {
@@ -252,8 +261,8 @@ respec() {
           },
           style() {
             return {
-              "width": "250px",
-              "height": "135px",
+              "width": "270px",
+              "height": "165px",
               "border-radius": "10px",
               "border": "0px",
               "margin": "5px",
@@ -262,36 +271,43 @@ respec() {
             }
           },
           buy() {
-            player.points = player.points.sub(this.cost())
-            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            
+            if (!hasUpgrade("R", 24)) player.points = player.points.minus(this.cost());
+            addBuyables(this.layer, this.id, 1);
           },
           effect(x) {
             let effect = decimalZero
-            effect = getBuyableAmount(this.layer, this.id).mul(buyableEffect("U",13))
+            effect = Decimal.mul(getBuyableAmount(this.layer, this.id),(buyableEffect("U",13)))
+            
             
             return effect;
           },
+          automate() {
+            
+            
+          },
+          
           unlocked() {
             if (hasUpgrade("U",11) && player.points.gte(10) || getBuyableAmount(this.layer,this.id).gte(1)) return true
             if (hasUpgrade("S",11)) return true
            }
-        
+           
         },
         12: {
           cost(x) {
-            let PowerI = new Decimal(1.25)
-            if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(1.5)
-            if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(3)
-            if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(20)
+            let PowerI = new Decimal(1.21)
+            if (player[this.layer].buyables[12].gte(100)) PowerI = new Decimal(1.84)
+            if (player[this.layer].buyables[12].gte(500)) PowerI = new Decimal(3)
+            if (player[this.layer].buyables[12].gte(1000)) PowerI = new Decimal(5); 
             let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
             return Calculation;
           },
           display() {
             let scaling = "";
-            if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-            if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
-            if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-            if (getBuyableAmount(this.layer, this.id).gte(1000)) scaling = "(Scaling^2)"; 
+            if (player[this.layer].buyables[12].gte(0)) scaling = "";
+            if (player[this.layer].buyables[12].gte(100)) scaling = "(Super scaling)";
+            if (player[this.layer].buyables[12].gte(500)) scaling = "(Hyper scaling)";
+            if (player[this.layer].buyables[12].gte(1000)) scaling = "(Scaling^2)"; 
             return ` 
             <h2>Rep Upgrade 2</h2>
               <br>
@@ -308,18 +324,18 @@ respec() {
           },
           style() {
             return {
-              "width": "250px",
-              "height": "135px",
+              "width": "270px",
+              "height": "165px",
               "border-radius": "10px",
-              "border": "0px",
-              "margin": "5px",
+              "border": "5px",
+              "margin": "0px",
               "text-shadow": "0px 0px 10px #000000",
               "color": "#ffffff"
             }
           },
           buy() {
-            player.points = player.points.sub(this.cost())
-            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            if (!hasUpgrade("R", 24)) player.points = player.points.minus(this.cost());
+            addBuyables(this.layer, this.id, 1);
           },
           effect(x) {
             let effect = new Decimal(1.1)
@@ -328,7 +344,7 @@ respec() {
             return effect;
           },
           unlocked() {
-            if (hasUpgrade("U",11) && player.points.gte(new Decimal(100)) || getBuyableAmount(this.layer, this.id).gte(1)) return true
+            if (hasUpgrade("U",11) && player.points.gte(new Decimal(100)) || player[this.layer].buyables[12].gte(1)) return true
             if (hasUpgrade("S",11)) return true
            }
         
@@ -337,7 +353,7 @@ respec() {
           cost(x) {
             let PowerI = new Decimal(1.8)
         
-            let Calculation = new Decimal(2500).mul(Decimal.pow(PowerI, x.pow(1.05))).ceil()
+            let Calculation = new Decimal(2500).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
             return Calculation;
           },
           display() {
@@ -355,7 +371,7 @@ respec() {
           style() {
             return {
               "width": "250px",
-              "height": "135px",
+              "height": "165px",
               "border-radius": "10px",
               "border": "0px",
               "margin": "5px",
@@ -364,8 +380,8 @@ respec() {
             }
           },
           buy() {
-            player.points = player.points.sub(this.cost())
-            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            if (!hasUpgrade("R", 24)) player.points = player.points.minus(this.cost());
+            addBuyables(this.layer, this.id, 1);
           },
           effect() {
             let effect = decimalZero
@@ -385,63 +401,7 @@ respec() {
            }
         
         },
-        /*
-        14: {
-          cost(x) {
-            let PowerI = new Decimal(5)
-            if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(6)
-            if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(46556)
-            if (getBuyableAmount(this.layer,this.id).gte(1000)) PowerI = new Decimal(1.03e28)
-            let Calculation = new Decimal(1e10).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-            return Calculation;
-          },
-          display() {
-            let scaling = "";
-            if (getBuyableAmount(this.layer, this.id).gte(0)) scaling = "(Scaled)";
-            if (getBuyableAmount(this.layer, this.id).gte(100)) scaling = "(Superscaled)";
-            if (getBuyableAmount(this.layer, this.id).gte(500)) scaling = "(Hyperscaled)";
-            if (getBuyableAmount(this.layer, this.id).gte(1000)) scaling = "(Scaling^2)"; 
-            return ` 
-            <h2>Rep Upgrade 2</h2>
-              <br>
-            <h2>  x${format(tmp[this.layer].buyables[this.id].effect)} points gain </h2>
-              <br>
-            <h2> ${format(tmp[this.layer].buyables[this.id].cost)} Points</h2>
-            <h2>${format(getBuyableAmount(this.layer, this.id))} bought ${scaling}</h2>
-     
-         
-        `
-          },
-          canAfford() {
-            return player.points.gte(this.cost())
-          },
-          style() {
-            return {
-              "width": "250px",
-              "height": "135px",
-              "border-radius": "10px",
-              "border": "0px",
-              "margin": "5px",
-              "text-shadow": "0px 0px 10px #000000",
-              "color": "#ffffff"
-            }
-          },
-          buy() {
-            player.points = player.points.sub(this.cost())
-            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-          },
-          effect(x) {
-            let effect = new Decimal(1.1)
-            effect = effect.pow(getBuyableAmount(this.layer, this.id))
-            if (hasUpgrade("U",13)) effect = effect.mul(1.2)
-            return effect;
-          },
-          unlocked() {
-            if (hasUpgrade("U",11) && player.points.gte(new Decimal(1e10)) || getBuyableAmount(this.layer, this.id).gte(1)) return true
-            if (player["R"]) return true
-           }
-        
-        },*/
+      
     },
 
 

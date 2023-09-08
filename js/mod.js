@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "v0.3 - Repression?",
+	num: "v0.4.0a - Repression?",
 	name: "Repression?",
 }
 
@@ -44,14 +44,10 @@ let changelog = `<h1>Changelog:</h1><br>
 		- shftUpg4 is nerfed from ^0.5 -> log2(x) [just a slight nerf]
 		- offline time reduced from 5 hours to 1 hour
 
-		<h3>(v0.4)  [UPDATE 4]	</h3><br>
-		- added some shifting upgrades
-		- Changed lots and lots of displays,  <br>
-		- Upg1,Upg2,ShftUpg1 now properly displays their values <br>
-		- reworded almost every upgrade <br>
-		- Buffed shtfUpg2 <br>
-		- Upg1,Upg2,ShftUpg1 now properly displays their values <br>
-		- reworded almost every upgrade <br>
+		<h3>(v0.4.0a)   [UPDATE 4]	</h3><br>
+		- Added a new layer, Repression!
+		- Theres only 2 rows of upgrades! im njot done with this, so please sit tight!
+		- Visual Update!
 		
 		- offline time reduced from 5 hours to 1 hour
 

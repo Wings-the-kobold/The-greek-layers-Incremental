@@ -154,7 +154,8 @@ function layerDataReset(layer, keep = []) {
 	player[layer].upgrades = []
 	player[layer].milestones = []
 	player[layer].achievements = []
-
+	//player[layer].buyables = []
+	// this is what was causing this issue
 	for (thing in storedData) {
 		player[layer][thing] =storedData[thing]
 	}

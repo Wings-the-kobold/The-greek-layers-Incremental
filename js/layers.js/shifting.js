@@ -43,9 +43,13 @@ addLayer("S", {
       //more random stuff
     },
 
-    doReset(resetLayer){
+    doReset(resetLayer){  
+     
       if(tmp[resetLayer].name==tmp.S.name) player.S.time=new Decimal(0)
-      if(tmp[resetLayer].row>this.row) layerDataReset("S", true)
+      if(tmp[resetLayer].row>this.row) {
+        layerDataReset(this.layer)
+        if (hasUpgrade("R",13)) player.S.upgrades.push("15")
+        }
     },
 
     buyableCount() {
@@ -173,7 +177,7 @@ addLayer("S", {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.5)).add(1).mul(buyableEffect("S",12))
         
-          if (getClickableState("S",11)) effect = effect.pow(getClickableState("S",11)).clampMin(1)
+          if (getClickableState("S",11) && hasUpgrade("R",14)) effect = effect.pow(getClickableState("S",11)).clampMin(1)
           return effect;
         },
         unlocked() {
@@ -349,6 +353,7 @@ addLayer("S", {
         },
         effect(x) {
           let effect = new Decimal(1)
+          if (hasUpgrade("R",25)) effect
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.06)).add(1).mul(buyableEffect("S",15))
           
           return effect;
@@ -477,16 +482,19 @@ addLayer("S", {
     upgrades: {
   
       11: {
+        hardcap: new Decimal(15),
         title: "ShftUpg1",
         description: `Points boost themselves.`,
         cost: new Decimal(3),
         effect() {
           let effect = decimalOne
           let hardcap = new Decimal(15)
-
+          if (hasUpgrade("R",23)) hardcap = hardcap.times(2.7)
           effect = player.points.add(1).log(10)
          /* hardcap  */ effect = effect.ceil().min(hardcap)
-          
+          if (hasUpgrade("R",22)) effect = effect.pow(1.15)
+          if (hasUpgrade("R",23)) effect = effect.div(1.5)
+
           return effect//.minus(1)
   
   
@@ -495,8 +503,8 @@ addLayer("S", {
           
           if (hasUpgrade('S', 11) && !upgradeEffect(this.layer, this.id).gte(15)) return format(upgradeEffect(this.layer, this.id))+"x" 
           if (!hasUpgrade('S', 11)) return "???"
-          if (upgradeEffect(this.layer, this.id).gte(15)) return "15.00x (Hardcapped)"
-      
+          return (upgradeEffect(this.layer, this.id).gte(this.hardcap)) ? `${format(upgradeEffect(this.layer, this.id))}x (hardcapped)` : `${format(upgradeEffect(this.layer, this.id))}x (hardcapped)`
+         
       },
       
   
