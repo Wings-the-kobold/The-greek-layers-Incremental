@@ -45,12 +45,13 @@ let changelog = `<h1>Changelog:</h1><br>
 		- offline time reduced from 5 hours to 1 hour
 
 		<h3>(v0.4.0a)   [UPDATE 4]	</h3><br>
-		- Added a new layer, Repression!
-		- Theres only 2 rows of upgrades! im njot done with this, so please sit tight!
-		- Visual Update!
-		
-		- offline time reduced from 5 hours to 1 hour
-
+		- Added a new layer, Repression!<br>
+		- Theres only 2 rows of upgrades! im njot done with this, so please sit tight!<br>
+		- Visual Update!<br>
+		- TONS OF BUG FIXES
+		- offline time reduced from 5 hours to 1 hour<br>
+		- Nova Mono my beloved <br>
+		- added credits because this update took a long bit [ 5 months ]
 		`
 
 let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
