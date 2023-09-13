@@ -2,10 +2,10 @@
 /* Prestige button */
 .reset {
 	height: 120px;
-	width: 200px;
+	width: 180px;
 	border-radius: 25%;
 	border: 4px solid;
-	border-color: rgb(6, 23, 107);
+	border-color: rgba(0, 0, 0, 0.125);
 }
 
 .tabButton {
@@ -22,9 +22,8 @@
 }
 
 .tabButton:hover {
-	transform: scale(1.12, 1.12);
+	transform: scale(1.1, 1.1);
 	text-shadow: 0 0 7px var(--color);
-    
 }
 
 .tooltip { 
@@ -38,13 +37,13 @@
     margin-bottom: 5px;
     transform: translateX(-50%);
     padding: 7px;
-    font-family: "Lucida Console", "Courier New", monospace;
+    font-family: "Nova mono";
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
     opacity: 0;
     transition: opacity 0.5s;
-    color: rgb(#3be229);
+  
     position: absolute;
     z-index: 20000;
   

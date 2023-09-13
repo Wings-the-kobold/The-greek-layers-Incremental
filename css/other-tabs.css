@@ -65,6 +65,7 @@
 	color: var(--points);
 	text-shadow: 0 0 10px var(--points);
 	cursor: pointer;
+	font-family: 'Cabin'
 }
 
 #version:hover {

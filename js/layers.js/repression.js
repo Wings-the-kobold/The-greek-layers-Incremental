@@ -14,13 +14,13 @@ addLayer("R", {
   effect() {
     let effect = new Decimal(1)
   
-    effect = player["R"].pressure.log(3) //this is to add the effect
+    effect = player["R"].pressure.add(1).log(3) //this is to add the effect
     return effect
   },
   
 
   color: "#520387 ",
-  requires: new Decimal("3.65e19"), // Can be a function that takes requirement increases into account
+  requires: new Decimal("3.65e18"), // Can be a function that takes requirement increases into account
   resource: "Recursivity", // Name of prestige currency
   baseResource: "points", // Name of resource prestige is based on
   baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -143,7 +143,7 @@ update(diff) {
   diff = new Decimal(diff)
   let boost = new Decimal(1)
   if (hasUpgrade("R",21)) boost = boost.times(2)
-
+  if (hasUpgrade("R",31)) boost = boost.times(16)
   if (hasUpgrade("R",11)) player["R"].pressure= player["R"].pressure.add(diff.times(boost)) 
 
 },
@@ -202,7 +202,7 @@ update(diff) {
       },
       onPurchase() {
         player.R.currentPath = player.R.currentPath.plus(1)
-  
+        alert("H(U*F_{B(Y*H")
       },
     },
  //A1
@@ -309,10 +309,6 @@ update(diff) {
       return (hasUpgrade("R",11) && !hasUpgrade("R",22)) 
       
       
-    },
-    onPurchase() {
-      //currentPath = currentPath.plus(1)
-
     },
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
@@ -423,27 +419,24 @@ canAfford() {
      25: {
     title: `<h2>D2</h2>`,
     cost: new Decimal(15),
-    
-   //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
+  
    canAfford() {
     return (hasUpgrade("R",14)) 
-  
-  
   },
-  upgradeEffect() {
+  effect() {
     let effect = new Decimal(1)
-    if (hasUpgrade("R",25)) effect = effect.mul(player["R"].points.sqrt(3))
+    if (hasUpgrade("R",25)) effect = effect.mul(player["R"].points.sqrt(3)).add(1)
     return effect
   },
-    style() {
-      return {
-        "width": "120px",
-          "height": "100px",
-          "border-radius": "1px",
-          "border": "0px",
-          "margin": "0px",
-          "text-shadow": "0px 0px 10px #000000",
-        "color": "#cc0000"
+  style() {
+    return {
+      "width": "120px",
+      "height": "100px",
+      "border-radius": "1px",
+      "border": "0px",
+      "margin": "0px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#cc0000"
       }
     },
     tooltip() {return (hasUpgrade("R",25))
@@ -464,7 +457,7 @@ canAfford() {
 
 
 
-   /*
+  
 //row 3
   31: {
     title: `<h2>A3</h2>`,
@@ -485,6 +478,11 @@ canAfford() {
     },
     tooltip: `Increase pressure point gain by 16x`,
     branches: [("R",21)],
+    canAfford(){
+      return (hasUpgrade("R",21)) 
+      
+      
+    },
   }, //A3
 
   32: {
@@ -503,6 +501,11 @@ canAfford() {
         "text-shadow": "0px 0px 10px #000000",
         "color": "#351c75"
       }
+    },
+    canAfford(){
+      return (hasUpgrade("R",22)) 
+      
+      
     },
     tooltip: `shftUpg3 exponent boost becomes <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> ^1.15 -> ^1.3</h3>`,       
     branches: [("R",22)],
@@ -527,7 +530,11 @@ canAfford() {
     },
     //<h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;">
     //make Reapeatable Upgrades 2 and 3’s effect and cost scaling 14% stronger.
-
+    canAfford(){
+      return (hasUpgrade("R",23)) 
+      
+      
+    },
     tooltip: `boost RepUpg 2 and 3's  <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> effect </h3> and <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> cost scaling </h3> by ^1.15`,
     branches: [("R",23)],
   }, //B3
@@ -535,7 +542,11 @@ canAfford() {
   34: {
     title: `<h2>C3</h2>`,
     cost: new Decimal(337),
-    
+    canAfford(){
+      return (hasUpgrade("R",24)) 
+      
+      
+    },
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
     style() {
@@ -556,7 +567,11 @@ canAfford() {
   35: {
     title: `<h2>CD3</h2>`,
     cost: new Decimal(337),
-    
+    canAfford(){
+      return (hasUpgrade("R",24) && hasUpgrade("R",25)) 
+      
+      
+    },
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
     style() {
@@ -579,7 +594,11 @@ canAfford() {
     cost: new Decimal(337),
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
-
+   canAfford(){
+    return (hasUpgrade("R",26)) 
+    
+    
+  },
     style() {
       return {
         "width": "80px",
@@ -600,7 +619,11 @@ canAfford() {
     cost: new Decimal(337),
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
-
+   canAfford(){
+    return (hasUpgrade("R",27)) 
+    
+    
+  },
     style() {
       return {
         "width": "80px",
@@ -616,6 +639,7 @@ canAfford() {
     branches: [("R",19)],
   }, //D3b
 
+ /*
   //row 4
   41: {
     title: `<h2>A4</h2>`,

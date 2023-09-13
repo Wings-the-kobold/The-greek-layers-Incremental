@@ -5,7 +5,7 @@ let modInfo = {
 	pointsName: "points",
 	modFiles: ["layers.js/repression.js", "layers.js/upgrades.js", "layers.js/shifting.js", "tree.js","layers.js/ranks.js","credits.js"],
 
-	discordName: "My Twitch stuff ",
+	discordName: "Join the kobold pack!",
 	discordLink: "discord.gg/tJDWU7twvB",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "v0.4.0a - Repression?",
+	num: "v0.4.0b - The uh... yes",
 	name: "Repression?",
 }
 
@@ -80,7 +80,8 @@ function getPointGen() {
 	if (hasUpgrade("U",12)) gain = gain.times(upgradeEffect("U",12))
 	gain = gain.times(buyableEffect("U",12))
 	gain = gain.mul(buyableEffect("S",11))
-	if (hasUpgrade("S",13)) gain = gain.pow(1.15)
+	gain = gain.pow(hasUpgrade("R", 32) && hasUpgrade("S", 13) ? 1.3 : 1.15)
+
 	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11))
 	
 	

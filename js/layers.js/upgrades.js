@@ -74,7 +74,8 @@ automate() {
         effect() {
           let final = new Decimal(1)
           final = final.plus(buyableEffect("U",11))
-          if (hasUpgrade("R",11)) final = final.mul(player["R"].pressure.log(3))
+          if (hasUpgrade("R",11)) final = final.mul(player["R"].pressure.add(1).log(3))
+         // if (hasUpgrade("U",15)) final = final.add(upgradeEffect("U",15))
           return final
         },
       },
@@ -88,6 +89,7 @@ automate() {
         effect() {
           let final = new Decimal(2)
           if (hasUpgrade("S",14)) final = final.times(upgradeEffect("S",14))
+          //if (hasUpgrade("U",15)) final = final.times(upgradeEffect("U",15))
           return final
         },
 
@@ -194,47 +196,7 @@ automate() {
         },
         currencyInternalName: "points",
       },
-      15: { 
-        title: `<h2>Upg5</h2>`,
-        cost: new Decimal (1.85e7),
-        description: `<h3>Meters of waves boosts upg2 </h3>`,
-        effect() {
-            let OoMs = player["S"].points.add(1).log(10)
-            let effect = new Decimal (1)
-
-            effect = effect.mul(OoMs)
-
-        },
-
-
-        resetNothing() {return hasUpgrade('S', 15)},
-
-        style() {
-          return {
-            "width": "150px",
-            "height": "85px",
-            "border-radius": "10px",
-            "border": "0px",
-            "margin": "5px",
-            "text-shadow": "0px 0px 10px #000000",
-            "color": "#ffffff"
-          }
-        },
-
-        unlocked() {
-         if (inChallenge("R",11)) return false 
-         if (hasUpgrade("S",11) || player["S"].points.gte(1)) return true
-         if (hasUpgrade("R",11)) return true
-         if (hasUpgrade("R",12)) return true
-         if (hasUpgrade("R",13)) return true
-         if (hasUpgrade("R",14)) return true
-         if (player.points.gte("5.15e19")) return true
-         if (player["R"].points.gte(1)) return true
-
-         
-        },
-        currencyInternalName: "points",
-      },
+      
       
     },
 
@@ -243,7 +205,7 @@ automate() {
         11: {
           cost(x) {
             let PowerI = new Decimal(1.55)
-        
+           
             let Calculation = new Decimal(15).mul(Decimal.pow(PowerI, x)).ceil()
             return Calculation;
           },
@@ -275,10 +237,10 @@ automate() {
             if (!hasUpgrade("R", 24)) player.points = player.points.minus(this.cost());
             addBuyables(this.layer, this.id, 1);
           },
-          effect(x) {
+          effect() {
             let effect = decimalZero
             effect = Decimal.mul(getBuyableAmount(this.layer, this.id),(buyableEffect("U",13)))
-            
+            if(hasUpgrade("R",33)) effect = effect.pow(1.15)
             
             return effect;
           },
@@ -296,10 +258,12 @@ automate() {
         12: {
           cost(x) {
             let PowerI = new Decimal(1.21)
+            let nerfs = new Decimal(1)
+            if(hasUpgrade("R",33)) nerfs=nerfs.pow(1.15)
             if (player[this.layer].buyables[12].gte(100)) PowerI = new Decimal(1.84)
             if (player[this.layer].buyables[12].gte(500)) PowerI = new Decimal(3)
             if (player[this.layer].buyables[12].gte(1000)) PowerI = new Decimal(5); 
-            let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
+            let Calculation = new Decimal(200).mul(Decimal.pow(PowerI, x.pow(nerfs))).ceil()
             return Calculation;
           },
           display() {
@@ -337,10 +301,11 @@ automate() {
             if (!hasUpgrade("R", 24)) player.points = player.points.minus(this.cost());
             addBuyables(this.layer, this.id, 1);
           },
-          effect(x) {
+          effect() {
             let effect = new Decimal(1.1)
             effect = effect.pow(getBuyableAmount(this.layer, this.id))
             if (hasUpgrade("U",13)) effect = effect.mul(1.2)
+            if(hasUpgrade("R",33)) effect = effect.pow(1.15)
             return effect;
           },
           unlocked() {
@@ -352,8 +317,9 @@ automate() {
         13: {
           cost(x) {
             let PowerI = new Decimal(1.8)
-        
-            let Calculation = new Decimal(2500).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
+            let nerfs = new Decimal(1)
+            if(hasUpgrade("R",33)) nerfs=nerfs.pow(1.15)
+            let Calculation = new Decimal(2500).mul(Decimal.pow(PowerI, x.pow(nerfs))).ceil()
             return Calculation;
           },
           display() {
@@ -389,7 +355,7 @@ automate() {
             if (hasUpgrade("S", 12)) baseFormula = baseFormula.mul(1.4)
            // if (hasUpgrade("S", 17)) baseFormula = baseFormula.mul(1.5)
             effect = getBuyableAmount(this.layer, this.id).mul(baseFormula).add(1)
-            
+            if(hasUpgrade("R",33)) effect=effect.pow(1.15)
     
            
             return effect;

@@ -40,7 +40,8 @@ addLayer("S", {
     update(diff){
       //random stuff
       player["S"].time=player["S"].time.add(diff)
-      //more random stuff
+      let x = new Decimal(1)
+      Decimal.plus(getClickableState("S",11), x.times(diff))//more random stuff
     },
 
     doReset(resetLayer){  
@@ -59,11 +60,7 @@ addLayer("S", {
       }
       return count;
     },
-    update(diff) {
-      let x = new Decimal(1)
-      Decimal.plus(getClickableState("S",11), x.times(diff))
-      
-    },
+    
 
 
     
@@ -351,12 +348,14 @@ addLayer("S", {
           player["S"].points = player["S"].points.sub(this.cost())
          addBuyables(this.layer, this.id, new Decimal(1))
         },
-        effect(x) {
+        effect() {
+          //this is in buyable 4, or id 14
           let effect = new Decimal(1)
-          if (hasUpgrade("R",25)) effect
+         
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.06)).add(1).mul(buyableEffect("S",15))
-          
-          return effect;
+          if (hasUpgrade("R",25)) effect = effect.mul(upgradeEffect("R",25))
+
+          return effect
         },
         unlocked() {
           return true
@@ -520,7 +519,12 @@ addLayer("S", {
       },
       13: {
         title: "ShftUpg3",
-        description: `Points gain base becomes ^1 -> ^1.15`,
+        description() {
+         return (hasUpgrade("R",22)) ? `Points gain base becomes ^1.15 -> ^1.3` : `Points gain base becomes ^1 -> ^1.15`
+          
+
+
+        },
         cost: new Decimal(200),
     },
     14: {
