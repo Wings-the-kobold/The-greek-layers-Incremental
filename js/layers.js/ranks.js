@@ -1,4 +1,4 @@
- /*addLayer("C", {
+addLayer("C", {
      // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
@@ -49,45 +49,100 @@
         }
       },
  
-      milestones: {
-        1: {
+    milestones: {
+      1: {
             requirementDescription: "At Rank 1:",
             effectDescription: "Multiply Points by 5x Compounding per rank",
             done() { return player["C"].points.gte(1) }
         },
-        2: {
+      2: {
             requirementDescription: "At Rank 2:",
             effectDescription: "RepUpg2 is 20% stronger based on ranks starting at 2",
             done() { return player["C"].points.gte(2) }
         },
-        3: {
+      3: {
             requirementDescription: "At Rank 3:",
             effectDescription: "repUpg1, repUpg2, and repUpg3 no longer spends amount",
             done() { return player["C"].points.gte(3) }
         },
-        4: {
+      4: {
           requirementDescription: "At Rank 4:",
           effectDescription: "repUpg1, repUpg2, and repUpg3 no longer spends amount",
           done() { return player["C"].points.gte(4) }
       },
-        5: {
+      5: {
         requirementDescription: "At Rank 5:",
         effectDescription: "repUpg1, repUpg2, and repUpg3 no longer spends amount",
         done() { return player["C"].points.gte(5) }
       
     },
-        6: {
+      6: {
       requirementDescription: "At Rank 10:",
       effectDescription: "repUpg1, repUpg2, and repUpg3 no longer spends amount",
       done() { return player["C"].points.gte(9) }
     
     },
-    7: {
-      requirementDescription: "At Rank 15:",
-      effectDescription: "First",
-      done() { return player["C"].points.gte(9) }
-    
-    },
+      7: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      8: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      9: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      11: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      12: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      13: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      14: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      15: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      16: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+      17: {
+        requirementDescription: "At Rank 15:",
+        effectDescription: "First",
+        done() { return player["C"].points.gte(9) }
+      
+      },
+
   },
 
 
@@ -100,13 +155,37 @@
     branches: ["R"],
     layerShown(){
       //if (hasUpgrade("R",16)) return true
-      return true
+      let totalCompletions = new Decimal(challengeCompletions("R", 11))
+      totalCompletions= totalCompletions.plus(challengeCompletions("R", 12))
+      totalCompletions= totalCompletions.plus(challengeCompletions("R", 13))
+      totalCompletions= totalCompletions.plus(challengeCompletions("R", 14))
+      if (totalCompletions.gte(10)) return true; else return false
   
   
   
     }
   })
  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   addLayer("CT", {
     // This appears on the layer's node. Default is the id with the first letter capitalized
    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
@@ -209,7 +288,7 @@
    branches: ["C"],
    layerShown(){
      //if (hasUpgrade("R",16)) return true
-     return true
+     return false
  
  
  
@@ -218,4 +297,4 @@
 
 
 
-*/
+

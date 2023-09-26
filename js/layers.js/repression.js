@@ -1031,7 +1031,7 @@ challenges: {
      let threshold = player.points.gte(sc.goal) // add any currency here
      return threshold 
     },
-//if (hasChallenge("R",13) && !inChallenge("R",13)) softchain.times(challengeEffect("R", 13))
+
   style() {
     return {
       "width": "300px",
@@ -1052,18 +1052,19 @@ challenges: {
    }
 },
 
+/*
 14: {
   name: "Challenge 4",
-  challengeDescription() {`
+  challengeDescription() {return `
   <h3>Time-wall (Time) </h3><br><br>
-  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “NG- version?” </h4> 0/10 <br><br>
- Everything is disabled including the repression tree, except for Upg2,Upg1,RepUpg1 and TimeUpg1, as you cannot resp
+  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “NG- version?” </h4> ${challengeCompletions("R", 14)}/10 <br><br>
+ EVERYTHING is Disabled. except for Upg2,Upg1,RepUpg1 and TimeUpg1.
 
   
   
   `}, 
   rewardDescription() {
-   return  `All Time Upgrades are ${challengeEffect("R",14)} stronger`
+   return  `TimeUpg1 is x${format(challengeEffect("R",14).plus(1))} stronger`
   },
  
  goal() {
@@ -1100,20 +1101,16 @@ challenges: {
   {
     let effect = new Decimal(1)
     let x = new Decimal(challengeCompletions("R", 14))
-    if (hasChallenge("R",12)) effect = Decimal.mul(x , 0.05)
+    if (hasChallenge("R",12)) effect = Decimal.mul(x , 2)
     return effect
   
   },
 
 
-  unlocked() {
-    return false
 
-
-  },
 
 },
-
+*/
 },
 
 

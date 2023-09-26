@@ -194,7 +194,7 @@ addLayer("S", {
           return effect;
         },
         unlocked() {
-          if (inChallenge("R",14)) return false
+          if (inChallenge("R",14)) return false; else return true
   
         },
       
@@ -255,7 +255,7 @@ addLayer("S", {
           return effect;
         },
         unlocked() {
-          if (inChallenge("R",14)) return false
+          if (inChallenge("R",14)) return false; else return true
   
         },
       
@@ -316,7 +316,7 @@ addLayer("S", {
           return effect;
         },
         unlocked() {
-          if (inChallenge("R",14)) return false
+          if (inChallenge("R",14)) return false; else return true
   
         },
       
@@ -379,7 +379,7 @@ addLayer("S", {
           return effect
         },
         unlocked() {
-          if (inChallenge("R",14)) return false
+          if (inChallenge("R",14)) return false; else return true
   
         },
       
@@ -437,7 +437,7 @@ addLayer("S", {
           return effect;
         },
         unlocked() {
-          if (inChallenge("R",14)) return false
+          if (inChallenge("R",14)) return false; else return true
   
         },
       
@@ -495,7 +495,7 @@ addLayer("S", {
           return effect;
         },
         unlocked() {
-          if (inChallenge("R",14)) return false
+          if (inChallenge("R",14)) return false; else return true
   
         },
       
@@ -531,7 +531,7 @@ addLayer("S", {
          
       },
       unlocked() {
-        if (inChallenge("R",14)) return false
+        if (inChallenge("R",14)) return false; else return true
 
       },
   
@@ -545,7 +545,7 @@ addLayer("S", {
           description: `repUpg3 is 40% stronger`,
           cost: new Decimal(40),
           unlocked() {
-            if (inChallenge("R",14)) return false
+            if (inChallenge("R",14)) return false; else return true
     
           },
       },
@@ -559,7 +559,7 @@ addLayer("S", {
         },
         cost: new Decimal(200),
         unlocked() {
-          if (inChallenge("R",14)) return false
+          if (inChallenge("R",14)) return false; else return true
   
         },
     },
@@ -582,7 +582,7 @@ addLayer("S", {
     
     },
     unlocked() {
-      if (inChallenge("R",14)) return false
+      if (inChallenge("R",14)) return false; else return true
 
     },
   },
@@ -597,7 +597,7 @@ addLayer("S", {
     description: `Keep Upg1 on Shifting resets`,
     cost: new Decimal(7500),
     unlocked() {
-      if (inChallenge("R",14)) return false
+      if (inChallenge("R",14)) return false; else return true
 
     },
   },
@@ -605,7 +605,7 @@ addLayer("S", {
     title: "ShftUpg6",
     description: `multiply points by 20x`,
     unlocked() {
-        if (inChallenge("R",14)) return false
+        if (inChallenge("R",14)) return false; else return true
 
       },
 
@@ -622,8 +622,9 @@ addLayer("S", {
     cost: new Decimal(1e14),
 
     effect() {
-      return player["S"].time.log(10).pow(2).add(1)
-
+      let effect = new Decimal(1)
+      effect =player["S"].time.add(1).log(10).pow(2).add(1)
+      return effect
 
     },
    

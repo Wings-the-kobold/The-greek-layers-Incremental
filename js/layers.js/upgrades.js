@@ -401,10 +401,11 @@ automate() {
             return effect;
           },
           unlocked() {
-            if (inChallenge("R",11) || inChallenge("R",14)) return false
+            if (inChallenge("R",11)) return false
+            
             if (hasUpgrade("U",11) && player.points.gte(new Decimal(100)) || player[this.layer].buyables[12].gte(1)) return true
             if (hasUpgrade("S",11)) return true
-           
+            if (inChallenge("R",14)) return false; else return true
            }
         
         },
@@ -455,11 +456,11 @@ automate() {
             return effect;
           },
           unlocked() {
-            if (inChallenge("R",14)) return false
+            
             if (hasUpgrade("U",12) || getBuyableAmount(this.layer,this.id).gte(1)) return true
             if (player.points.gte(2000)) return true
             if (hasUpgrade("S",11)) return true
-            
+            if (inChallenge("R",14)) return false; else return true
            }
         
         },

@@ -88,21 +88,25 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 	let gain = new Decimal(1)
-	
 	if (hasUpgrade("U",11) && !player.points.eq(0) ) gain = (upgradeEffect("U",11)); else player.points = player.points.plus(0.1)
+
+
+	if (!inChallenge("R",14)) {
+		
+		
+		gain = gain.mul(buyableEffect("S",11))
+		gain = gain.pow(hasUpgrade("R", 32) && hasUpgrade("S", 13) ? 1.3 : 1.15)
+
+		if (hasUpgrade("S",11) ) gain = gain.times(upgradeEffect("S",11))
+	
+		
+		if (hasUpgrade("S",16)) gain = gain.mul(20)
+		
+	} 
 	
 	if (hasUpgrade("U",12)) gain = gain.times(upgradeEffect("U",12))
-	gain = gain.times(buyableEffect("U",12))
-	if (!inChallenge("R",14)) gain = gain.mul(buyableEffect("S",11))
-	gain = gain.pow(hasUpgrade("R", 32) && hasUpgrade("S", 13) ? 1.3 : 1.15)
-
-	if (hasUpgrade("S",11) ) gain = gain.times(upgradeEffect("S",11))
-	if (challengeCompletions("R", 11))
 	
-	if (hasUpgrade("S",16)) gain = gain.mul(20)
 	if (hasChallenge("R",11)) gain = gain.pow(challengeEffect("R",11))
-
-
 	return gain//.minus(1)
 }
 
