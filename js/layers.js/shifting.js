@@ -569,7 +569,7 @@ addLayer("S", {
       cost: new Decimal(825),
       effect() {
         let effect = decimalOne
-        effect = player["S"].points.log(2)
+        effect = player["S"].points.log(2).max(1)
         effect = effect.floor()
         return effect
   
