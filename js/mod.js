@@ -69,7 +69,7 @@ let changelog = `<h1>changelog thing</h1><br>
 
 		<h3>v0.5.2  [BUG FIX 2]</h3><br><br>
 		- Fixed shifting upgrades magically disapearing<br>
-		- Fixed ShftUpg4 returning 0
+		- Fixed ShftUpg4 returning 0 since it didnt have .max(1), since its effect log2(1) is 0.
 		- i accidentally deleted the code for RepUpg2's Boost in getPointGen(), so uh, sorry!
 		<br><br>
 
