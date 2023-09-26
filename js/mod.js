@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "v0.5.1 - its totally not broken :3",
+	num: `v0.5.2 - NOWW its not broken ;3`,
 	name: "Repression?",
 }
 
@@ -70,18 +70,8 @@ let changelog = `<h1>changelog thing</h1><br>
 		<h3>v0.5.2  [BUG FIX 2]</h3><br><br>
 		- Fixed shifting upgrades magically disapearing<br>
 		- Fixed ShftUpg4 returning 0
+		- i accidentally deleted the code for RepUpg2's Boost in getPointGen(), so uh, sorry!
 		<br><br>
-
-		<h3>(v0.6)   [UPDATE 6]	</h3><br>
-		- Rebalanced alot of things<br>
-		- added visual effects to Upg4, and rewrote ShftUpg7 -> TimeUpg1<br>
-		- Added some challenges<br>
-		- nerfed D2 (sqrt3(R) -> log5(R))<br>
-		- buffed A2 (2x -> 4x Ibs gain)<br>
-		- reworded softcaps to softchains and hardcaps to roofchains<br>
-		- adjusted repUpg2's scaling by a little bit<br>
-		- added softchains to Upg2, Upg4 <br>
-		- nerfed shifting sacrifice (log70 -> log100)
 
 		`
 
@@ -110,7 +100,7 @@ function getPointGen() {
 
 	if (!inChallenge("R",14)) {
 		
-		
+		gain = gain.times(buyableEffect("U",12)) 
 		gain = gain.mul(buyableEffect("S",11))
 		gain = gain.pow(hasUpgrade("R", 32) && hasUpgrade("S", 13) ? 1.3 : 1.15)
 
