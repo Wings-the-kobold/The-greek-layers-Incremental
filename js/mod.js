@@ -13,26 +13,29 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "v0.4.0b - The uh... yes",
+	num: "v0.5 - THE AAAAAAA",
 	name: "Repression?",
 }
 
-let changelog = `<h1>Changelog:</h1><br>
-	<h3>(v0.1)  [UPDATE 1]</h3><br>
+let changelog = `<h1>changelog thing</h1><br>
+	<h3>(v0.1)  [UPDATE 1]</h3><br><br>
 		- Added a few upgrades<br>
-		- Added stuff.
-		<h3>v0.1.1  [BUG FIX 1]</h3><br>
-		- Fixed early game multiplier in point gen<br>
-		<h3>v0.1.3  [REBALANCE 1]</h3><br>
-		- Made upgrades apear sooner, idk about the second repUPG2 though.<br>
+		- Added stuff.<br><br>
+
+		<h3>v0.1.1  [BUG FIX 1]</h3><br><br>
+		- Fixed early game multiplier in point gen<br><br>
+
+		<h3>v0.1.3  [REBALANCE 1]</h3><br><br>
+		- Made upgrades apear sooner, idk about the second repUPG2 though.<br><br>
 		
 		<h3>(v0.2)  [UPDATE 2]</h3><br>
 		- added some shifting upgrades
 		- lore? <br>
 		- added shifting layer <br>
-		- im starting to get lazy <br>
+		- im starting to get lazy <br><br>
+
 		<h3>v0.2.5  [BUG FIX 2]</h3><br>
-		- fixed QoL upgrade on ShftUpg5 <br>
+		- fixed QoL upgrade on ShftUpg5 <br><br>
 		- 
 		
 		<h3>(v0.3)  [UPDATE 3]	</h3><br>
@@ -42,16 +45,27 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Buffed shtfUpg2 <br>
 		
 		- shftUpg4 is nerfed from ^0.5 -> log2(x) [just a slight nerf]
-		- offline time reduced from 5 hours to 1 hour
+		- offline time reduced from 5 hours to 1 hour<br><br>
 
 		<h3>(v0.4.0a)   [UPDATE 4]	</h3><br>
 		- Added a new layer, Repression!<br>
 		- Theres only 2 rows of upgrades! im njot done with this, so please sit tight!<br>
 		- Visual Update!<br>
-		- TONS OF BUG FIXES
+		- TONS OF BUG FIXES<br>
 		- offline time reduced from 5 hours to 1 hour<br>
 		- Nova Mono my beloved <br>
-		- added credits because this update took a long bit [ 5 months ]
+		- added credits because this update took a long bit [ 5 months ]<br><br>
+
+		<h3>(v0.5)   [UPDATE 5]	</h3><br>
+		- Rebalanced alot of things<br>
+		- added visual effects to Upg4, and rewrote ShftUpg7 -> TimeUpg1<br>
+		- Added some challenges<br>
+		- nerfed D2 (sqrt3(R) -> log5(R))<br>
+		- buffed A2 (2x -> 4x Ibs gain)<br>
+		- reworded softcaps to softchains and hardcaps to roofchains<br>
+		- adjusted repUpg2's scaling by a little bit<br>
+		- added softchains to Upg2, Upg4 <br>
+		- nerfed shifting sacrifice (log70 -> log100)
 		`
 
 let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
@@ -79,14 +93,14 @@ function getPointGen() {
 	
 	if (hasUpgrade("U",12)) gain = gain.times(upgradeEffect("U",12))
 	gain = gain.times(buyableEffect("U",12))
-	gain = gain.mul(buyableEffect("S",11))
+	if (!inChallenge("R",14)) gain = gain.mul(buyableEffect("S",11))
 	gain = gain.pow(hasUpgrade("R", 32) && hasUpgrade("S", 13) ? 1.3 : 1.15)
 
-	if (hasUpgrade("S",11)) gain = gain.times(upgradeEffect("S",11))
-	
+	if (hasUpgrade("S",11) ) gain = gain.times(upgradeEffect("S",11))
+	if (challengeCompletions("R", 11))
 	
 	if (hasUpgrade("S",16)) gain = gain.mul(20)
-
+	if (hasChallenge("R",11)) gain = gain.pow(challengeEffect("R",11))
 
 
 	return gain//.minus(1)

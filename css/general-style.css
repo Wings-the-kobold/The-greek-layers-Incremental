@@ -35,9 +35,11 @@ h1, h2, h3, b, input {
 .bought {
 	background-color: #0db2ff9a;
 	cursor: default;
+	
 }
 
 #points {
 	color: var(--points);
 	text-shadow: 0 0 1px var(--points);
+	
 }

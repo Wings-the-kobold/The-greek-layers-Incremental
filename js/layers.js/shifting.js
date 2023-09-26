@@ -32,9 +32,23 @@ addLayer("S", {
     },
 
     
+    passiveGeneration(diff){
+      let mult = new Decimal(0)
+  
+  
+  
+    if (hasUpgrade("R",34)) mult = mult.add(0.33)
+    return mult
+       },
 
-
-
+       automate() {
+        if (hasUpgrade("R",35)) buyBuyable("S",11)
+        if (hasUpgrade("R",35)) buyBuyable("S",12)
+        if (hasUpgrade("R",35)) buyBuyable("S",13)
+        if (hasUpgrade("R",35)) buyBuyable("S",14)
+        if (hasUpgrade("R",35)) buyBuyable("S",15)
+        if (hasUpgrade("R",35)) buyBuyable("S",16)
+      },
 
 
     update(diff){
@@ -45,8 +59,8 @@ addLayer("S", {
     },
 
     doReset(resetLayer){  
-     
-      if(tmp[resetLayer].name==tmp.S.name) player.S.time=new Decimal(0)
+      
+      if(tmp[resetLayer].name==tmp.S.name) player.S.time=new Decimal(1)
       if(tmp[resetLayer].row>this.row) {
         layerDataReset(this.layer)
         if (hasUpgrade("R",13)) player.S.upgrades.push("15")
@@ -73,7 +87,7 @@ addLayer("S", {
                 "prestige-button",
                 ["display-text",
       function() { 
-        if(hasUpgrade("S",17)) return `<h3> Due to ShftUpg7, your current time spent this shifting is boosting point gain by </h3>`
+        if(hasUpgrade("S",17)) return `<h3> Due to ShftUpg7, your current time spent this shifting is boosting RepUpg1 by  ${format(upgradeEffect("S",17))}x </h3>`
         
      }],
                 "blank",
@@ -158,7 +172,7 @@ addLayer("S", {
         style() {
           return {
             "width": "305px",
-            "height": "135px",
+            "height": "155px",
             "border-radius": "10px",
             "border": "0px",
             "margin": "5px",
@@ -175,11 +189,14 @@ addLayer("S", {
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.5)).add(1).mul(buyableEffect("S",12))
         
           if (getClickableState("S",11) && hasUpgrade("R",14)) effect = effect.pow(getClickableState("S",11)).clampMin(1)
+          if (hasUpgrade("R",37)) effect = effect.mul(upgradeEffect("R",37))
+          if (inChallenge("R",12)) effect = effect.pow(0.8)
           return effect;
         },
         unlocked() {
-          return true
-         }
+          if (inChallenge("R",14)) return false
+  
+        },
       
       },
       12: {
@@ -218,7 +235,7 @@ addLayer("S", {
         style() {
           return {
             "width": "305px",
-            "height": "135px",
+            "height": "145px",
             "border-radius": "10px",
             "border": "0px",
             "margin": "5px",
@@ -233,13 +250,14 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.25)).add(1).mul(buyableEffect("S",13))
-         
+          if (inChallenge("R",12)) effect = effect.pow(0.8)
          
           return effect;
         },
         unlocked() {
-          return true
-         }
+          if (inChallenge("R",14)) return false
+  
+        },
       
       },
       13: {
@@ -278,7 +296,7 @@ addLayer("S", {
         style() {
           return {
             "width": "305px",
-            "height": "135px",
+            "height": "145px",
             "border-radius": "10px",
             "border": "0px",
             "margin": "5px",
@@ -293,11 +311,14 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.12)).add(1).mul(buyableEffect("S",14))
+          if (hasUpgrade("R",36)) effect = effect.mul(upgradeEffect("R",36))
+          if (inChallenge("R",12)) effect = effect.pow(0.8)
           return effect;
         },
         unlocked() {
-          return true
-         }
+          if (inChallenge("R",14)) return false
+  
+        },
       
       },
       14: {
@@ -336,7 +357,7 @@ addLayer("S", {
         style() {
           return {
             "width": "305px",
-            "height": "135px",
+            "height": "145px",
             "border-radius": "10px",
             "border": "0px",
             "margin": "5px",
@@ -354,12 +375,13 @@ addLayer("S", {
          
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.06)).add(1).mul(buyableEffect("S",15))
           if (hasUpgrade("R",25)) effect = effect.mul(upgradeEffect("R",25))
-
+          if (inChallenge("R",12)) effect = effect.pow(0.8)
           return effect
         },
         unlocked() {
-          return true
-         }
+          if (inChallenge("R",14)) return false
+  
+        },
       
       },
       15: {
@@ -395,7 +417,7 @@ addLayer("S", {
         style() {
           return {
             "width": "305px",
-            "height": "135px",
+            "height": "145px",
             "border-radius": "10px",
             "border": "0px",
             "margin": "5px",
@@ -410,12 +432,14 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.06)).add(1).mul(buyableEffect("S",16))
-          
+          if (hasUpgrade("R",36)) effect = effect.mul(upgradeEffect("R",36))
+          if (inChallenge("R",12)) effect = effect.pow(0.8)
           return effect;
         },
         unlocked() {
-          return true
-         }
+          if (inChallenge("R",14)) return false
+  
+        },
       
       },
       16: {
@@ -466,13 +490,14 @@ addLayer("S", {
         effect(x) {
           let effect = new Decimal(1)
           effect = effect.mul(getBuyableAmount(this.layer, this.id).mul(0.02)).add(1)
-          
-         
+          if (hasUpgrade("R",37)) effect = effect.mul(upgradeEffect("R",37))
+          if (inChallenge("R",12)) effect = effect.pow(0.8)
           return effect;
         },
         unlocked() {
-          return true
-         }
+          if (inChallenge("R",14)) return false
+  
+        },
       
       },
     },
@@ -488,7 +513,7 @@ addLayer("S", {
         effect() {
           let effect = decimalOne
           let hardcap = new Decimal(15)
-          if (hasUpgrade("R",23)) hardcap = hardcap.times(2.7)
+          if (hasUpgrade("R",23)) hardcap = hardcap.times(2)
           effect = player.points.add(1).log(10)
          /* hardcap  */ effect = effect.ceil().min(hardcap)
           if (hasUpgrade("R",22)) effect = effect.pow(1.15)
@@ -502,10 +527,13 @@ addLayer("S", {
           
           if (hasUpgrade('S', 11) && !upgradeEffect(this.layer, this.id).gte(15)) return format(upgradeEffect(this.layer, this.id))+"x" 
           if (!hasUpgrade('S', 11)) return "???"
-          return (upgradeEffect(this.layer, this.id).gte(this.hardcap)) ? `${format(upgradeEffect(this.layer, this.id))}x (hardcapped)` : `${format(upgradeEffect(this.layer, this.id))}x (hardcapped)`
+          return (upgradeEffect(this.layer, this.id).gte(this.hardcap)) ? `${format(upgradeEffect(this.layer, this.id))}x (roofchained)` : `${format(upgradeEffect(this.layer, this.id))}x (roofchained)`
          
       },
-      
+      unlocked() {
+        if (inChallenge("R",14)) return false
+
+      },
   
   
   
@@ -516,6 +544,10 @@ addLayer("S", {
           title: "ShftUpg2",
           description: `repUpg3 is 40% stronger`,
           cost: new Decimal(40),
+          unlocked() {
+            if (inChallenge("R",14)) return false
+    
+          },
       },
       13: {
         title: "ShftUpg3",
@@ -526,6 +558,10 @@ addLayer("S", {
 
         },
         cost: new Decimal(200),
+        unlocked() {
+          if (inChallenge("R",14)) return false
+  
+        },
     },
     14: {
       title: "ShftUpg4",
@@ -542,9 +578,13 @@ addLayer("S", {
           
         if (hasUpgrade('S', 14)) return format(upgradeEffect(this.layer, this.id))+"x" 
         if (!hasUpgrade('S', 14)) return "???"
-        if (upgradeEffect(this.layer, this.id).gte(15)) return "15x (Hardcapped)"
+        if (upgradeEffect(this.layer, this.id).gte(15)) return `15x (Hardcapped)`
     
-    }
+    },
+    unlocked() {
+      if (inChallenge("R",14)) return false
+
+    },
   },
 
 
@@ -556,11 +596,18 @@ addLayer("S", {
     title: "ShftUpg5",
     description: `Keep Upg1 on Shifting resets`,
     cost: new Decimal(7500),
+    unlocked() {
+      if (inChallenge("R",14)) return false
+
+    },
   },
   16: {
     title: "ShftUpg6",
     description: `multiply points by 20x`,
+    unlocked() {
+        if (inChallenge("R",14)) return false
 
+      },
 
 
 
@@ -570,13 +617,17 @@ addLayer("S", {
     cost: new Decimal(1e9),
   },
   17: {
-    title: "ShftUpg7",
-    description: `RepUpg3 is 40% stronger`,
+    title: `<h4 style="color: #Fe02f3; font-family: Nova Mono">TimeUpg1<h4>`,
+    description: `Time spent this shifting boosts Upg1`,
     cost: new Decimal(1e14),
 
+    effect() {
+      return player["S"].time.log(10).pow(2).add(1)
 
 
- 
+    },
+   
+
     },
 
 
@@ -589,10 +640,9 @@ addLayer("S", {
     clickables: {
       11: {
         canClick() {
-          if (tmp.S.buyableCount.clampMin(1).log(70).lt(getClickableState(this.layer, this.id))) return false
-          if (buyableEffect("S",11).gt(1)) return true
+          if (tmp.S.buyableCount.clampMin(1).log(100).lt(getClickableState(this.layer, this.id))) return false
+          if (tmp.S.buyableCount.add(1).log(100).gte(1)) return true
           
-          return true;
         },
         unlocked() {return hasUpgrade("R", 14)},
         onClick() {
@@ -603,10 +653,10 @@ addLayer("S", {
             setBuyableAmount("S", id, Decimal.dZero);
           }
           player.S.mostBuyables = formula;
-          setClickableState(this.layer, this.id, tmp.S.buyableCount.log(70).clampMin(1))
+          setClickableState(this.layer, this.id, tmp.S.buyableCount.log(100).clampMin(1))
           setBuyableAmount("S",11 , new Decimal(0))
         
-        } else return alert("Hey! stop it! you cant get this upgrade!~")
+        } else alert("Hey! stop it! you cant get this upgrade!~")
         },
        
         style() {
@@ -630,7 +680,7 @@ display(){
         <br>
         <h3> Requires: Total bought shift multipliers: ${format(formula)} / ${format(player["S"].mostBuyables)} </h3>
         <br>
-        <h3> Currently: ^${format(getClickableState(this.layer, this.id))} -> ^${format(formula.add(1).log(70))} </h3>
+        <h3> Currently: ^${format(getClickableState(this.layer, this.id))} -> ^${format(formula.add(1).log(100))} </h3>
         `
       },
 
@@ -638,7 +688,12 @@ display(){
 
 
 
-      },
+      unlocked() {
+        if (inChallenge("R",14)) return false
+
+      },  
+    
+    },
 
 
     },

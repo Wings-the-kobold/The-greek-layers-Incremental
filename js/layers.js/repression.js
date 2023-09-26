@@ -28,8 +28,8 @@ addLayer("R", {
   exponent: 0.4, // Prestige currency exponent
   gainMult() { // Calculate the multiplier for main currency from bonuses
       mult = new Decimal(1)
+      //this is to prevent players from accidentally leaving challenges
       
-
 
 
       return mult
@@ -85,21 +85,24 @@ addLayer("R", {
        ],  
     }, 
     
-     /*"Challenges?": {
+     "Challenges?": {
       content: [
-     function() {if(player["R"].points.gte(1)) return "challenges" 
-      if (hasUpgrade("R",11)) return "challenges"
-      if (hasUpgrade("R",12)) return "challenges"
-      if (hasUpgrade("R",13)) return "challenges"
-      if (hasUpgrade("R",14)) return "challenges" 
-      return "challenges"
+        ["display-text",
+      function() { 
+        if(hasUpgrade("R",35) || (!inChallenge("R",11) || !inChallenge("R",12)|| !inChallenge("R",13)|| !inChallenge("R",14)|| !inChallenge("R",15)|| !inChallenge("R",16))) return `<h3 style="color:#287233 ; text-shadow: #063770 0px 0px 10px;">...wonder what this could be? </h3>` //you add this for every currency, it shows the effect 
+     }],
+     function() {
+      if (hasUpgrade("R",35) || inChallenge("R",11) || inChallenge("R",12)|| inChallenge("R",13)|| inChallenge("R",14)|| inChallenge("R",15)|| inChallenge("R",16)) return "challenges"
+      
+     
+
   }
         ],
 
      
      },
   
-*/
+
     
 
      "The Genarator?": {
@@ -162,11 +165,11 @@ update(diff) {
       totalCost = totalCost.plus(tmp.R.upgrades[id].cost);
      // doDataLayerReset()
     }
-  
-    player.R.upgrades = [];
+    //if (hasUpgrade("R",35)) player.R.upgrades.push("35")
+    player.R.upgrades =  [];
     player.R.points = player.R.points.plus(totalCost);
     player.R.currentPath = player.R.currentPath.times(0);
-   
+    
   },
   style: {
       'min-height': "40px",
@@ -197,12 +200,12 @@ update(diff) {
       },
       tooltip: `unlock Pressure points (unlocked from The Generator).`,
       canAfford(){
-        if (player.R.currentPath.eq(row1MaxSplit)) return false
+        if (player.R.currentPath.gte(row1MaxSplit)) return false
         
       },
       onPurchase() {
         player.R.currentPath = player.R.currentPath.plus(1)
-        alert("H(U*F_{B(Y*H")
+        
       },
     },
  //A1
@@ -297,7 +300,7 @@ update(diff) {
   },
 //D1
 
-
+//
 
 
 
@@ -339,7 +342,7 @@ update(diff) {
           "height": "100px",
           "border-radius": "1px",
           "border": "0px",
-          "margin": "0px",
+          "margin": "10px",
           "text-shadow": "0px 0px 10px #000000",
         "color": "#20124d"
       }
@@ -375,7 +378,7 @@ update(diff) {
           "height": "100px",
           "border-radius": "1px",
           "border": "0px",
-          "margin": "0px",
+          "margin": "10px",
           "text-shadow": "0px 0px 10px #000000",
         "color": "#073763"
       }
@@ -387,7 +390,7 @@ canAfford() {
 
 },
 
-    tooltip: `Shift upgrade 1’s hardcap starts <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 170% later </h3> (based on MoW), divide its effect by <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> /1.5 </h3>`,
+    tooltip: `Shift upgrade 1’s roofchain starts <h3 style="color:#5eab30 ; text-shadow: #2c2559 2px 2px 20px;"> 100% later </h3>, but divide its effect by <h3 style="color:#ff0000 ; text-shadow: #2c2559 2px 2px 20px;"> /1.5 </h3>`,
     branches: [("R",12)],
    }, //B2
 
@@ -407,7 +410,7 @@ canAfford() {
           "height": "100px",
           "border-radius": "1px",
           "border": "0px",
-          "margin": "0px",
+          "margin": "10px",
           "text-shadow": "0px 0px 10px #000000",
         "color": "#7f6000"
       }
@@ -425,7 +428,7 @@ canAfford() {
   },
   effect() {
     let effect = new Decimal(1)
-    if (hasUpgrade("R",25)) effect = effect.mul(player["R"].points.sqrt(3)).add(1)
+    if (hasUpgrade("R",25)) effect = effect.mul(player["R"].points.log(5)).add(1)
     return effect
   },
   style() {
@@ -434,7 +437,7 @@ canAfford() {
       "height": "100px",
       "border-radius": "1px",
       "border": "0px",
-      "margin": "0px",
+      "margin": "10px",
       "text-shadow": "0px 0px 10px #000000",
       "color": "#cc0000"
       }
@@ -471,7 +474,7 @@ canAfford() {
         "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "0px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#cc0000"
       }
@@ -497,7 +500,7 @@ canAfford() {
         "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "0px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#351c75"
       }
@@ -523,7 +526,7 @@ canAfford() {
         "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "0px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#0b5394"
       }
@@ -543,7 +546,7 @@ canAfford() {
     title: `<h2>C3</h2>`,
     cost: new Decimal(337),
     canAfford(){
-      return (hasUpgrade("R",24)) 
+      return (hasUpgrade("R",24)&& !hasUpgrade("R",35)) 
       
       
     },
@@ -555,7 +558,7 @@ canAfford() {
         "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "0px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#bf9000"
       }
@@ -568,7 +571,9 @@ canAfford() {
     title: `<h2>CD3</h2>`,
     cost: new Decimal(337),
     canAfford(){
-      return (hasUpgrade("R",24) && hasUpgrade("R",25)) 
+      let neighboringActive = false
+      if ((hasUpgrade("R",34) || hasUpgrade("R",36)) || (hasUpgrade("R",34) && hasUpgrade("R",36))) neighboringActive = true
+      return (hasUpgrade("R",24) && hasUpgrade("R",25) && neighboringActive==false) 
       
       
     },
@@ -580,24 +585,34 @@ canAfford() {
         "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "0px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#e69138"
       }
     },
     tooltip: `Unlock shifting challenges, and autobuy shift multipliers`,
-    branches: [("R",24)],
+    branches: [("R",24),("R",25)],
   }, //CD3
-
+ 
   36: {
     title: `<h2>D3a</h2>`,
     cost: new Decimal(337),
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
    canAfford(){
-    return (hasUpgrade("R",26)) 
+
+    return (!player.R.currentPath.gte(row1MaxSplit) && hasUpgrade("R",25) && !hasUpgrade("R",35) ) 
+   
     
+  },
+  onPurchase() {
+    player.R.currentPath = player.R.currentPath.plus(0.5)
     
+  },
+  effect() {
+    let effect = new Decimal(1)
+    if (hasUpgrade("R",36)) effect = effect.mul(player["R"].points.log(5)).add(1)
+    return effect
   },
     style() {
       return {
@@ -605,12 +620,15 @@ canAfford() {
         "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "0px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#fe0166"
       }
     },
-    tooltip: `Unspent recursivity boost Shift dimensions 3 and 5`,
+    tooltip() {return (hasUpgrade("R",36))
+    ? `Unspent Recursivity boost Shift dimensions 3 and 5. <br> currently: x${format(upgradeEffect("R",36))}` 
+    : `Unspent Recursivity boost Shift dimensions 3 and 5.`
+    },
     branches: [("R",19)],
   }, //D3a
 
@@ -620,9 +638,26 @@ canAfford() {
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
    canAfford(){
-    return (hasUpgrade("R",27)) 
+    
+    return (!player.R.currentPath.gte(row1MaxSplit) && hasUpgrade("R",25) && !hasUpgrade("R",35) 
     
     
+    
+    
+    ) 
+ 
+    
+    
+  },
+
+  onPurchase() {
+    player.R.currentPath = player.R.currentPath.plus(0.5)
+    
+  },
+  effect() {
+    let effect = new Decimal(1)
+    if (hasUpgrade("R",37)) effect = effect.mul(player["R"].points.log(5)).add(1)
+    return effect
   },
     style() {
       return {
@@ -630,12 +665,15 @@ canAfford() {
         "height": "80px",
         "border-radius": "1px",
         "border": "0px",
-        "margin": "0px",
+        "margin": "5px",
         "text-shadow": "0px 0px 10px #000000",
         "color": "#cc0000"
       }
     },
-    tooltip: `Unspent Recursivity boost Shift dimensions 1 and 6`,
+    tooltip() {return (hasUpgrade("R",37))
+     ? `Unspent Recursivity boost Shift dimensions 1 and 6. <br> currently: x${format(upgradeEffect("R",37))}` 
+     : `Unspent Recursivity boost Shift dimensions 1 and 6.`
+     },
     branches: [("R",19)],
   }, //D3b
 
@@ -643,7 +681,7 @@ canAfford() {
   //row 4
   41: {
     title: `<h2>A4</h2>`,
-    cost: new Decimal(500000),
+    cost: new Decimal(1e9),
     
    //</h3> <br><br><h3 style="color:#3d5706 ; text-shadow: #2c2559 2px 2px 20px;"> (Permanent)</h3>`,
 
@@ -858,17 +896,28 @@ challenges: {
       name: "Challenge 1",
       challengeDescription() { return `
       <h3>Anti-upgrade (noUpg) </h3><br><br>
-      <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “We didn’t need it anyway” </h4> ${challengeCompletions(layer, id)}/20 <br><br>
-      There are only the 3 rep upgrades and Upg1
-      
+      <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “We didn’t need it anyway” </h4> ${challengeCompletions(this.layer, this.id)}/20 <br><br>
+      All Pre-Shifting Upgrades are temporarily removed. (does not include Upg1) <br> 
+      reward: Points gain is raised: ^${challengeEffect("R",11)}
       
       `
     },
       completionLimit: new Decimal(20),
-      goal: new Decimal ("1e10"),
-      //goalDescription: `Repress the game to finish this challenge.  `,
-      rewardDescription: `Points base exponent is added (+0.02)`,
-      canComplete: function() {return player.points.gte(1e18)},
+      goal() {
+        let x = new Decimal(challengeCompletions(this.layer, this.id))
+       // x = x.add(1)
+    
+        let base = new Decimal(1e19)
+        let power = new Decimal(10)
+        let calc = new Decimal(base).mul(Decimal.pow(power, x))
+        return calc;
+       },
+       canComplete() {
+        var sc = tmp[this.layer].challenges[this.id]
+        
+         let threshold = player.points.gte(sc.goal) // add any currency here
+         return threshold 
+        },
       style() {
         return {
           "width": "300px",
@@ -880,40 +929,57 @@ challenges: {
           "color": "#f1c232"
         }
       },
-     onEnter() {
-      doReset("R")
+    
+    
+    rewardEffect()
+    {
+      let effect = new Decimal(1)
+      let x = new Decimal(challengeCompletions("R", 11))
+      if (hasChallenge("R",11)) effect = effect.add(Decimal.mul(x , 0.02)   )
+      return effect
+      
+    }
+    
 
-     },
-     onExit() {
-      player["S"].points = player["S"].points.add(1)
 
-     }
+
+
   },
-
-
-
-
-
-
-
-
-
-
-
 
   12: {
     name: "Challenge 2",
-    challengeDescription: `
+    challengeDescription() {
+      return `
     <h3>Dilation (Dil) </h3><br><br>
-    <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “You suck.” </h4> 0/20 <br><br>
-    All Multipliers are dilated to ^0.8
+    <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “You suck.” </h4> ${challengeCompletions(this.layer, this.id)}/20 <br><br>
+    Upgrades, RepUpgs, Shift multipliers, are all dilated to ^0.8
     
     
-    `,
-    goal: new Decimal ("1e15"),
-    //goalDescription: `Repress the game to finish this challenge.  `,
-    rewardDescription: `Upg2 effect is multiplied by 2 each completion`,
-    canComplete: function() {return player.points.gte(1000000)},
+    `} ,
+    completionLimit: new Decimal(20),
+    rewardDescription() {
+    
+      return  `Upg2 effect is multiplied by ${challengeEffect("R",12)} each completion`
+  
+  
+  
+  },
+   goal() {
+        let x = new Decimal(challengeCompletions(this.layer, this.id))
+       // x = x.add(1)
+    
+        let base = new Decimal(1e18) //where it starts
+        let power = new Decimal(15)
+        let calc = new Decimal(base).mul(Decimal.pow(power, x))
+        return calc;
+       },
+       canComplete() {
+         var sc = tmp[this.layer].challenges[this.id]
+        
+         let threshold = player.points.gte(sc.goal) // add any currency here
+         return threshold 
+        },
+
     style() {
       return {
         "width": "300px",
@@ -925,24 +991,47 @@ challenges: {
         "color": "#f1c232"
       }
     },
-    onEnter() {
-      doReset("R")
-
-     }
+    rewardEffect()
+    {
+      let effect = new Decimal(1)
+      let x = new Decimal(challengeCompletions("R", 12))
+      if (hasChallenge("R",12)) effect = Decimal.pow(x , 2)
+      return effect
+    
+    },
 },
 13: {
   name: "Challenge 3",
-  challengeDescription: `
-  <h3>Anti-Softcap (soft-) </h3><br><br>
-  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “I hate you” </h4> 0/10 <br><br>
-  All softcaps are instead hardcaps, and they start 25% sooner
+  challengeDescription(){ return `
+  <h3>superchain (chain+) </h3><br><br>
+  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “I hate you” </h4>  ${challengeCompletions(this.layer, this.id)}/10 <br><br>
+  All softchains are instead roofchains, and they start 30% sooner
   
   
-  `,
-  goal: new Decimal ("1.85e17"),
-  //goalDescription: `Repress the game to finish this challenge.  `,
-  rewardDescription: `Softcaps starts 1.15x later (add.) [cannot append in challenge]`,
-  canComplete: function() {return player.points.gte(1e18)},
+  `},
+  completionLimit: new Decimal(10),
+  rewardDescription(){ 
+    let finBoost = new Decimal(challengeCompletions("R",13))
+    if (hasChallenge("R",13) && !inChallenge("R",13)) finBoost = finBoost.mul(0.2)
+    if (!inChallenge("R",13) ) return `Upg2 softchain starts x${format(challengeEffect("R",13))} later [cannot append in challenge]`
+    else return `Upg2 softchain boost is disabled!`
+  },
+  goal() {
+    let x = new Decimal(challengeCompletions(this.layer, this.id))
+    x = x.add(1)
+
+    let base = new Decimal(1.69e19) //where it starts
+    let power = new Decimal(9).plus(challengeCompletions("R",13)) //how it scales
+    let calc = new Decimal(base).mul(Decimal.pow(power, x))
+    return calc;
+   },
+   canComplete() {
+     var sc = tmp[this.layer].challenges[this.id]
+    
+     let threshold = player.points.gte(sc.goal) // add any currency here
+     return threshold 
+    },
+//if (hasChallenge("R",13) && !inChallenge("R",13)) softchain.times(challengeEffect("R", 13))
   style() {
     return {
       "width": "300px",
@@ -954,25 +1043,44 @@ challenges: {
       "color": "#f1c232"
     }
   },
-  onEnter() {
-    doReset("R")
+  rewardEffect() {
+    let finBoost = new Decimal(challengeCompletions("R",13))
+    if (hasChallenge("R",13) && !inChallenge("R",13)) finBoost= finBoost.mul(0.3).add(1)
+    // finBoost = new Decimal(1)
+    return finBoost
 
    }
 },
+
 14: {
   name: "Challenge 4",
-  challengeDescription: `
+  challengeDescription() {`
   <h3>Time-wall (Time) </h3><br><br>
   <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “NG- version?” </h4> 0/10 <br><br>
-  All upgrades except time upgrades,and Upg2 is disabled. 
+ Everything is disabled including the repression tree, except for Upg2,Upg1,RepUpg1 and TimeUpg1, as you cannot resp
 
   
   
-  `,
-  goal: new Decimal ("1000000"),
-  //goalDescription: `Repress the game to finish this challenge.  `,
-  rewardDescription: `All Time Upgrades are 5% stronger`,
-  canComplete: function() {return player.points.gte(1e18)},
+  `}, 
+  rewardDescription() {
+   return  `All Time Upgrades are ${challengeEffect("R",14)} stronger`
+  },
+ 
+ goal() {
+      let x = new Decimal(challengeCompletions(this.layer, this.id))
+     // x = x.add(1)
+  
+      let base = new Decimal(10000000) //where it starts
+      let power = new Decimal(20)
+      let calc = new Decimal(base).mul(Decimal.pow(power, x))
+      return calc;
+     },
+     canComplete() {
+       var sc = tmp[this.layer].challenges[this.id]
+      
+       let threshold = player.points.gte(sc.goal) // add any currency here
+       return threshold 
+      },
   style() {
     return {
       "width": "300px",
@@ -984,39 +1092,28 @@ challenges: {
       "color": "#f1c232"
     }
   },
-},
-/*
-15 : {
-  name: "Challenge 5",
-  challengeDescription: `
-  <h3>Super-Scalar (Scale+) </h3><br><br>
-  <h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;"> “Scale slower please” </h4> 0/10 <br><br>
-  All Repeatable upgrades cost scalings are 40% stronger and they start 2x sooner (100 -> 50)
-
-  
-  
-  `,
-  goal: new Decimal ("1000000"),
-  //goalDescription: `Repress the game to finish this challenge.  `,
-  rewardDescription: `Superscaled scaling starts 10 later`,
-  canComplete: function() {return player.points.gte(1e18)},
-  style() {
-    return {
-      "width": "300px",
-      "height": "300px",
-      "border-radius": "1px",
-      "border": "5px",
-      "margin": "10px",
-      "text-shadow": "0px 0px 10px #000000",
-      "color": "#f1c232"
-    }
-  },
-
   onEnter() {
-    doReset("S")
+    player.U.upgrades.push("12")
+    player.S.upgrades.push("17")
+  },
+  rewardEffect()
+  {
+    let effect = new Decimal(1)
+    let x = new Decimal(challengeCompletions("R", 14))
+    if (hasChallenge("R",12)) effect = Decimal.mul(x , 0.05)
+    return effect
+  
+  },
 
-   }
-},*/
+
+  unlocked() {
+    return false
+
+
+  },
+
+},
+
 },
 
 
