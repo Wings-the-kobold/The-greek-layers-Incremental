@@ -1,14 +1,14 @@
 let modInfo = {
-	name: "The Quantum Tree",
-	id: "mymod",
-	author: "nobody",
-	pointsName: "Particles",
-	modFiles: ["layers.js", "tree.js"],
+	name: "The Quantum Energy Tree",
+	id: "TQET (The Origional)",
+	author: "ThatOneKobold",
+	pointsName: "Energy",
+	modFiles: ["Acceleration.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
+	offlineLimit: 10000000,  // In hours
 }
 
 // Set your version in num and name
@@ -37,26 +37,61 @@ function canGenPoints(){
 	return true
 }
 
+
+
+
+function addedPlayerData() { return {
+	EnergyNerf: new Decimal(0.3),
+	SizeDilation: new Decimal(500)
+  }}
+  
+  	let antiEnergy = () => player.points.pow(0.5);
+  	let antiCollision = () => tmp.antiEnergy.add(1).log(5).pow(1.5).max;
 // Calculate points/sec!
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
+
+	
+
+
 	let gain = new Decimal(1)
+
+
+	gain = gain.div(500) // Size Dilation Nerf
+	if (gain.gte(1)) gain = gain.pow(0.3) // Adjusted Power
+	gain = gain.div(tmp.antiCollision) //Anti-Collision
 	return gain
 }
 
-// You can add non-layer related variables that should to into "player" and be saved here, along with default values
-function addedPlayerData() { return {
-}}
 
-// Display extra things at the top of the page
-var displayThings = [
-]
+
+// player variables and nerfs go here
+
+  
+  // wherever tmp is calculated, add these lines
+  
+  
+  // back to mod.js
+  var displayThings = [
+	
+	() => `Size Dilation: Time is ${format(player.SizeDilation)}x Slower <br>`,
+	() => `AdjustedPower: Energy gain is ^${format(player.EnergyNerf)} if above 1`,
+	() => `Anti-Collision: You have ${format(tmp.antiEnergy = antiEnergy())} Anti-Energy, which makes Energy gain /${format(tmp.antiCollision = antiCollision())}`
+
+  ]
+
+
+
+
+
+
+
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("1e10"))
 }
 
 

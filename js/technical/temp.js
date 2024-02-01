@@ -42,6 +42,9 @@ function setupTemp() {
 		tmp[layer].computedNodeStyle = []
 		setupBuyables(layer)
 		tmp[layer].trueGlowColor = []
+		
+		tmp.antiEnergy = antiEnergy();
+ 		tmp.antiCollision = antiCollision();
 	}
 
 	tmp.other = {
