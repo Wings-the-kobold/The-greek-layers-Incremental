@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: `v0.5.2 - NOWW its not broken ;3`,
-	name: "Repression?",
+	num: `V0.6 - how long has it been?`,
+	name: "Condensed Ranks",
 }
 
 let changelog = `<h1>changelog thing</h1><br>
@@ -47,7 +47,7 @@ let changelog = `<h1>changelog thing</h1><br>
 		- shftUpg4 is nerfed from ^0.5 -> log2(x) [just a slight nerf]
 		- offline time reduced from 5 hours to 1 hour<br><br>
 
-		<h3>(v0.4.0a)   [UPDATE 4]	</h3><br>
+		<h3>(v0.4)  [UPDATE 4]	</h3><br>
 		- Added a new layer, Repression!<br>
 		- Theres only 2 rows of upgrades! im njot done with this, so please sit tight!<br>
 		- Visual Update!<br>
@@ -73,6 +73,33 @@ let changelog = `<h1>changelog thing</h1><br>
 		- i accidentally deleted the code for RepUpg2's Boost in getPointGen(), so uh, sorry!
 		<br><br>
 
+		<h3>(v0.6)   [UPDATE 6]	</h3><br>
+		- Added Conversion Ranks!<br>
+		- ROW 4 UPGRADES????? (Added row 4 upgrades)
+		- Buffed AB1 path! <br>
+		- NEW LORE?!?!?! <br>
+		^1.00 -> ^1.15 ( -> ^1.35)    <br>
+		^1.15 -> ^1.3 ( -> ^1.4)      <br>
+		 [ REBALANCED ] <br><br>
+		- Rebalanced Challenges <br>
+		Challege1 effect: +0.01 -> +0.02 <br>
+		- Buffed B1's positive effect and slightly adjusted its negative effect <br>
+		( shifting upgrades are 5 -> 14x cheaper, but shift multipliers 1-4 cost scalings are raised ^1.05 -> ^1.08 )<br>
+		- Buffed CD3 🤣 (lmao an Unlock Upgrade got buffed)
+		- Pressure Point multiplier boost persists without owning it
+
+		 [FIXED] <br><br>
+		- RepUpgrades now unlock in chronological order
+		- cost scalings no longer jump costs (fixed scaling)
+		- fixed D1 path boosting without any buyables owned 
+		- fixed buyables not showing in chronological time
+		- made RepUpg1 appear a lot sooner
+
+		[CHANGED] <br><br>
+		- Pressure points now Show for when you buy A1 for the first time
+		- Shifting upgrades are in another tab!
+		- Repression Prestige button hides on entering Any Challenges
+		
 		`
 
 let winText = `Yeah, this is the endgame screen, congrats for winning this mod. now you can go and touch grass`
@@ -102,7 +129,7 @@ function getPointGen() {
 		
 		gain = gain.times(buyableEffect("U",12)) 
 		gain = gain.mul(buyableEffect("S",11))
-		gain = gain.pow(hasUpgrade("R", 32) && hasUpgrade("S", 13) ? 1.3 : 1.15)
+		gain = gain.pow(hasUpgrade("R", 32) && hasUpgrade("S", 13) ? 1.4 : 1.15)
 
 		if (hasUpgrade("S",11) ) gain = gain.times(upgradeEffect("S",11))
 	
@@ -119,7 +146,10 @@ function getPointGen() {
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-	
+
+
+
+
 }}
 
 var Progress;

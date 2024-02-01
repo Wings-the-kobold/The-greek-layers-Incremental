@@ -22,7 +22,7 @@ addLayer("S", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade("U",14)) mult = mult.times(1.2).pow(player.points.log(10)).ceil()
-  
+        if (hasUpgrade("R",43)) mult = mult.div(10)
   
   
         return mult
@@ -56,6 +56,9 @@ addLayer("S", {
       player["S"].time=player["S"].time.add(diff)
       let x = new Decimal(1)
       Decimal.plus(getClickableState("S",11), x.times(diff))//more random stuff
+
+
+
     },
 
     doReset(resetLayer){  
@@ -75,19 +78,36 @@ addLayer("S", {
       return count;
     },
     
-
+    infoboxes: {
+ 
+      about: {
+        title: "The Shifted Rift.",
+        body() {
+          return `<h4 style="color:#D95030 ; text-shadow: #063770 0px 0px 10px;">Welcome to the first prestige reset of the game.<h4> 
+           As you can see, Your upgrades are starting to get really expensive. 
+           However, While on your journey, You discover a powerful yet strange substance, it feels sticky and gooey.
+           You are in question of this strange substance, but it seems to glow a light blue aura. 
+           As you pick it up, the ground is in chaos, dismemberance, and discord as the ground is cracking out of line, Reality seems to be shifting on its own.
+           It's effects leaves you in deep fear as it shakes desperatly and dramatically for attention. its dangers is the broken lair beneath.
+           You decide... activate its use? and let it destroy everything you have? <br>
+           [Resets base features like repUpgs and Upgs]
+           `
+        },
+      },
+    },
+//
 
     
       tabFormat: {
         "Shifting": {      
               content: [
                 "main-display",
-                ["infoboxes","about"],
+                ["infobox","about"],
                 
                 "prestige-button",
                 ["display-text",
       function() { 
-        if(hasUpgrade("S",17)) return `<h3> Due to ShftUpg7, your current time spent this shifting is boosting RepUpg1 by  ${format(upgradeEffect("S",17))}x </h3>`
+        if(hasUpgrade("S",17)) return `<br> <h3> Due to ShftUpg7, your current time spent this shifting is boosting RepUpg1 by  ${format(upgradeEffect("S",17))}x </h3>`
         
      }],
                 "blank",
@@ -98,12 +118,18 @@ addLayer("S", {
                 "blank",
                 "blank",
                 "blank",
-                "upgrades",
                 
             ],
             
         },
-  
+        "Upgrades": {
+          content: [
+            "upgrades",
+
+          ],
+          
+
+        },
         "Shifting Multipliers": {
           content: [
          "buyables",
@@ -117,7 +143,6 @@ addLayer("S", {
     <h2>Shift the multipliers!</h2><br><br>
     `,
   
-  
     componentStyles: {
       "prestige-button"() { return {
         
@@ -127,10 +152,6 @@ addLayer("S", {
           } 
         }
       },
-  
-
-
-
 
 
 
@@ -138,16 +159,67 @@ addLayer("S", {
   
       11: {
         cost(x) {
-          let PowerI = new Decimal(1.4)
+          
           let repressdownEffect = new Decimal(1)
-          if (hasUpgrade("R",12)) repressdownEffect = 1.05
+          if (hasUpgrade("R",12)) repressdownEffect = 1.1
           if (!hasUpgrade("R",12)) repressdownEffect = 1
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
-          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(5).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
-          return Calculation;
+          
+          
+          base = new Decimal(5)
+          let cost = new Decimal(5)
+          let scaleplus = new Decimal(100)
+          let scaleplusplus = new Decimal(500)
+          let scaleplusplusplus = new Decimal(750)
+          // scale formulas
+          v_ = base.mul(Decimal.pow(1.4, x))// prescaling, or base scaling
+
+          if (getBuyableAmount(this.layer,this.id).lte(scaleplus)) cost = v_ 
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(20,repressdownEffect) , x))    .mul(scaleplus.pow_base(1.4/20))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(4000,repressdownEffect) , x))     .mul(scaleplusplus.pow_base(1.4/4000))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplusplus))  
+          cost = base.mul(Decimal.pow(Decimal.pow(160000000 , repressdownEffect) , x)) .mul(scaleplusplusplus.pow_base(1.4/160000000)) 
+
+          if (hasUpgrade("R",12)) cost = cost.div(14)
+          return cost;
+  
+      /*
+          0-99: cost = 5*1.4^amount
+          100-499: cost = 5*20^amount * 5*1.4^100 / 5*20^100  
+          500-749: cost = 5*4000^amount * 5*1.4^500 / 5*4000^500
+          750+: cost = 5*160m^amount * 5*1.4^750 / 5*160m^750
+              |                                   | (Condensing!)
+              V                                   V
+          sc : 5* 1.4^x
+          sc+ : 5*1.4^100 / 5*20^100 ----------> (1.4/20)^100
+          sc++ : * 5*1.4^500 / 5*4000^500 -----------> (1.4/4 000)^500
+          sc+++ : 5*1.4^750 / 5*160m^750 -----------> (1.4/160 000 000)^750
+              |                                   | (adding the base scales and its start)
+              V                                   V
+          5*1.4^amount * 1
+          5*20^amount * (1.4/20)^scaleplus          
+          5*4000^amount * (1.4/4 000)^scaleplusplus
+          5*160000000^amount * (1.4/160 000 000)^scaleplusplusplus
+              |                                   | (converting to TMT)
+              V                                   V
+          cost = base.mul(1.4).pow(x)
+          cost = base.mul(20).pow(x)   .mul((1.4).div(20) ).pow(scaleplus))
+          cost = base.mul(4000).pow(x)  .mul((1.4).div(4000)).pow(scaleplusplus))
+          cost = base.mul(160000000).pow(x)  .mul((1.4).div(160000000)).pow(scaleplusplusplus))
+              |                                   | (adding onto the scale check)
+              V                                   V
+          
+          if (getBuyableAmount(this.layer,this.id).lt(scaleplus)) cost = v_
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplus)) cost = base.mul(20).pow(x)    .mul((1.4).div(20) ).pow(scaleplus))
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplus)) cost = base.mul(4000).pow(x)     .mul((1.4).div(4000)).pow(scaleplusplus))
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplusplus))  cost = base.mul(160000000).pow(x)  .mul((1.4).div(160000000)).pow(scaleplusplusplus))
+              
+    
+    */    //polishing and final
         },
         display() {
           let scaling = "";
@@ -201,16 +273,33 @@ addLayer("S", {
       },
       12: {
         cost(x) {
-          let PowerI = new Decimal(1.4)
           let repressdownEffect = new Decimal(1)
-          if (hasUpgrade("R",12)) repressdownEffect = 1.05
+          if (hasUpgrade("R",12)) repressdownEffect = 1.1
           if (!hasUpgrade("R",12)) repressdownEffect = 1
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
-          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(25).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
-          return Calculation;
+          
+          
+          base = new Decimal(25)
+          let cost = decimalOne
+
+          let scaleplus = new Decimal(100)
+          let scaleplusplus = new Decimal(500)
+          let scaleplusplusplus = new Decimal(750)
+          // scale formulas
+          v_ = base.mul(Decimal.pow(1.4, x))// prescaling, or base scaling
+
+          if (getBuyableAmount(this.layer,this.id).lte(scaleplus)) cost = v_ 
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(20,repressdownEffect) , x))    .mul(scaleplus.pow_base(1.4/20))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(4000,repressdownEffect) , x))     .mul(scaleplusplus.pow_base(1.4/4000))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplusplus))  
+          cost = base.mul(Decimal.pow(Decimal.pow(160000000 , repressdownEffect) , x)) .mul(scaleplusplusplus.pow_base(1.4/160000000)) 
+
+          if (hasUpgrade("R",12)) cost = cost.div(14)
+          return cost;
         },
         display() {
           let scaling = "";
@@ -262,16 +351,33 @@ addLayer("S", {
       },
       13: {
         cost(x) {
-          let PowerI = new Decimal(1.4)
           let repressdownEffect = new Decimal(1)
-          if (hasUpgrade("R",12)) repressdownEffect = 1.05
+          if (hasUpgrade("R",12)) repressdownEffect = 1.1
           if (!hasUpgrade("R",12)) repressdownEffect = 1
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
-          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(125).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
-          return Calculation;
+          
+          
+          base = new Decimal(125)
+          let cost = decimalOne
+
+          let scaleplus = new Decimal(100)
+          let scaleplusplus = new Decimal(500)
+          let scaleplusplusplus = new Decimal(750)
+          // scale formulas
+          v_ = base.mul(Decimal.pow(1.4, x))// prescaling, or base scaling
+
+          if (getBuyableAmount(this.layer,this.id).lte(scaleplus)) cost = v_ 
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(20,repressdownEffect) , x))    .mul(scaleplus.pow_base(1.4/20))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(4000,repressdownEffect) , x))     .mul(scaleplusplus.pow_base(1.4/4000))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplusplus))  
+          cost = base.mul(Decimal.pow(Decimal.pow(160000000 , repressdownEffect) , x)) .mul(scaleplusplusplus.pow_base(1.4/160000000)) 
+
+          if (hasUpgrade("R",12)) cost = cost.div(14)
+          return cost;
         },
         display() {
           let scaling = "";
@@ -323,16 +429,33 @@ addLayer("S", {
       },
       14: {
         cost(x) {
-          let PowerI = new Decimal(1.4)
           let repressdownEffect = new Decimal(1)
           if (hasUpgrade("R",12)) repressdownEffect = 1.05
           if (!hasUpgrade("R",12)) repressdownEffect = 1
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
-          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(625).mul(Decimal.pow(PowerI, x.pow(repressdownEffect))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
-          return Calculation;
+          
+          
+          base = new Decimal(625)
+          let cost = decimalOne
+
+          let scaleplus = new Decimal(100)
+          let scaleplusplus = new Decimal(500)
+          let scaleplusplusplus = new Decimal(750)
+          // scale formulas
+          v_ = base.mul(Decimal.pow(1.4, x))// prescaling, or base scaling
+
+          if (getBuyableAmount(this.layer,this.id).lte(scaleplus)) cost = v_ 
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(20,repressdownEffect) , x))    .mul(scaleplus.pow_base(1.4/20))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplus)) 
+          cost = base.mul(Decimal.pow(Decimal.pow(4000,repressdownEffect) , x))     .mul(scaleplusplus.pow_base(1.4/4000))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplusplus))  
+          cost = base.mul(Decimal.pow(Decimal.pow(160000000 , repressdownEffect) , x)) .mul(scaleplusplusplus.pow_base(1.4/160000000)) 
+
+          if (hasUpgrade("R",12)) cost = cost.div(14)
+          return cost;
         },
         display() {
           let scaling = "";
@@ -386,13 +509,30 @@ addLayer("S", {
       },
       15: {
         cost(x) {
-          let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
-          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(3125).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
-          return Calculation;
+          
+          
+          base = new Decimal(3125)
+          let cost = decimalOne
+
+          let scaleplus = new Decimal(100)
+          let scaleplusplus = new Decimal(500)
+          let scaleplusplusplus = new Decimal(750)
+          // scale formulas
+          v_ = base.mul(Decimal.pow(1.4, x))// prescaling, or base scaling
+
+          if (getBuyableAmount(this.layer,this.id).lte(scaleplus)) cost = v_ 
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplus)) 
+          cost = base.mul(Decimal.pow(20 , x))    .mul(scaleplus.pow_base(1.4/20))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplus)) 
+          cost = base.mul(Decimal.pow(4000 , x))     .mul(scaleplusplus.pow_base(1.4/4000))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplusplus))  
+          cost = base.mul(Decimal.pow(160000000 , x)) .mul(scaleplusplusplus.pow_base(1.4/160000000)) 
+
+          if (hasUpgrade("R",12)) cost = cost.div(14)
+          return cost;
         },
         display() {
           let scaling = "";
@@ -444,13 +584,29 @@ addLayer("S", {
       },
       16: {
         cost(x) {
-          let PowerI = new Decimal(1.4)
-          if (getBuyableAmount(this.layer,this.id).gte(100)) PowerI = new Decimal(20)
-          if (getBuyableAmount(this.layer,this.id).gte(500)) PowerI = new Decimal(4000)
-          if (getBuyableAmount(this.layer,this.id).gte(750)) PowerI = new Decimal(160000000)
-          let Calculation = new Decimal(15625).mul(Decimal.pow(PowerI, x.pow(1))).ceil()
-          if (hasUpgrade("R",12)) Calculation = Calculation.div(5)
-          return Calculation;
+          base = new Decimal(3125)
+          let cost = decimalOne
+
+          let scaleplus = new Decimal(100)
+          let scaleplusplus = new Decimal(500)
+          let scaleplusplusplus = new Decimal(750)
+          // scale formulas
+          v_ = base.mul(Decimal.pow(1.4, x))// prescaling, or base scaling
+
+          if (getBuyableAmount(this.layer,this.id).lte(scaleplus)) cost = v_ 
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplus)) 
+          cost = base.mul(Decimal.pow(20 , x))    .mul(scaleplus.pow_base(1.4/20))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplus)) 
+          cost = base.mul(Decimal.pow(4000 , x))     .mul(scaleplusplus.pow_base(1.4/4000))
+
+          if (getBuyableAmount(this.layer,this.id).gt(scaleplusplusplus))  
+          cost = base.mul(Decimal.pow(160000000 , x)) .mul(scaleplusplusplus.pow_base(1.4/160000000)) 
+
+          if (hasUpgrade("R",12)) cost = cost.div(14)
+          return cost;
+          
         },
         display() {
           let scaling = "";
@@ -503,20 +659,45 @@ addLayer("S", {
     },
   
   
-    upgrades: {
-  
+    upgrades:  
+    
+    { 
       11: {
-        hardcap: new Decimal(15),
+        /*hardcap() {
+        let roofchain = new Decimal(15)
+        let r2Eff = new Decimal(0)
+        if (hasMilestone("C", 2)) r2Eff = Decimal.mul(3, player["C"].points.sub(1))   
+        roofchain = roofchain.plus(r2Eff)
+      
+        if (hasUpgrade("R",23)) roofchain = roofchain.times(2)
+         return roofchain
+        },*/
+
         title: "ShftUpg1",
         description: `Points boost themselves.`,
         cost: new Decimal(3),
         effect() {
-          let effect = decimalOne
-          let hardcap = new Decimal(15)
-          if (hasUpgrade("R",23)) hardcap = hardcap.times(2)
+          let effect = decimalOne  
+
+          /*     all the hardcap stuff      */
+          let roofchain = new Decimal(15)
+        let r2Eff = new Decimal(0)
+        //Conversion rank 2, Conversion ranks adds onto shftupg1    
+    
+        if (hasMilestone("C", 2)) r2Eff = Decimal.mul(3, player["C"].points.sub(1))   
+        roofchain = roofchain.plus(r2Eff)
+      
+        if (hasUpgrade("R",23)) roofchain = roofchain.times(2)
+
+          /*     all the hardcap stuff      */
+
+
+
+
           effect = player.points.add(1).log(10)
-         /* hardcap  */ effect = effect.ceil().min(hardcap)
-          if (hasUpgrade("R",22)) effect = effect.pow(1.15)
+         /* hardcap  */ effect = effect.ceil().min(roofchain)
+         
+          if (hasUpgrade("R",22)) effect = effect.pow(1.35)
           if (hasUpgrade("R",23)) effect = effect.div(1.5)
 
           return effect//.minus(1)
@@ -524,10 +705,20 @@ addLayer("S", {
   
         },
         effectDisplay() { 
-          
-          if (hasUpgrade('S', 11) && !upgradeEffect(this.layer, this.id).gte(15)) return format(upgradeEffect(this.layer, this.id))+"x" 
+          let roofchain = new Decimal(15)
+          let r2Eff = new Decimal(0)
+          //Conversion rank 2, Conversion ranks adds onto shftupg1    
+      
+          if (hasMilestone("C", 2)) r2Eff = Decimal.mul(3, player["C"].points.sub(1))   
+          roofchain = roofchain.plus(r2Eff)
+        
+          if (hasUpgrade("R",23)) roofchain = roofchain.times(2)
+
+
+
+          //if (hasUpgrade('S', 11) && !upgradeEffect(this.layer, this.id).gte(this.hardcap)) return format(upgradeEffect(this.layer, this.id))+"x" 
           if (!hasUpgrade('S', 11)) return "???"
-          return (upgradeEffect(this.layer, this.id).gte(this.hardcap)) ? `${format(upgradeEffect(this.layer, this.id))}x (roofchained)` : `${format(upgradeEffect(this.layer, this.id))}x (roofchained)`
+          return (upgradeEffect(this.layer, this.id).gte(roofchain)) ? `${format(upgradeEffect(this.layer, this.id))}x (roofchained)` : `${format(upgradeEffect(this.layer, this.id))}x `
          
       },
       unlocked() {
@@ -540,7 +731,7 @@ addLayer("S", {
   
   
       },
-        12: {
+      12: {
           title: "ShftUpg2",
           description: `repUpg3 is 40% stronger`,
           cost: new Decimal(40),
@@ -552,7 +743,7 @@ addLayer("S", {
       13: {
         title: "ShftUpg3",
         description() {
-         return (hasUpgrade("R",22)) ? `Points gain base becomes ^1.15 -> ^1.3` : `Points gain base becomes ^1 -> ^1.15`
+         return (hasUpgrade("R",22)) ? `Points gain base becomes ^1.15 -> ^1.45` : `Points gain base becomes ^1 -> ^1.15`
           
 
 
@@ -562,8 +753,8 @@ addLayer("S", {
           if (inChallenge("R",14)) return false; else return true
   
         },
-    },
-    14: {
+      },
+      14: {
       title: "ShftUpg4",
       description: `Meters Of Waves Boosts Upg 2`,
       cost: new Decimal(825),
@@ -585,14 +776,8 @@ addLayer("S", {
       if (inChallenge("R",14)) return false; else return true
 
     },
-  },
-
-
-
-
-
-
-  15: {
+      },
+      15: {
     title: "ShftUpg5",
     description: `Keep Upg1 on Shifting resets`,
     cost: new Decimal(7500),
@@ -600,8 +785,8 @@ addLayer("S", {
       if (inChallenge("R",14)) return false; else return true
 
     },
-  },
-  16: {
+      },
+      16: {
     title: "ShftUpg6",
     description: `multiply points by 20x`,
     unlocked() {
@@ -615,8 +800,8 @@ addLayer("S", {
     
 
     cost: new Decimal(1e9),
-  },
-  17: {
+      },
+      17: {
     title: `<h4 style="color: #Fe02f3; font-family: Nova Mono">TimeUpg1<h4>`,
     description: `Time spent this shifting boosts Upg1`,
     cost: new Decimal(1e14),
@@ -624,6 +809,7 @@ addLayer("S", {
     effect() {
       let effect = new Decimal(1)
       effect =player["S"].time.add(1).log(10).pow(2).add(1)
+      if (hasChallenge("R",14)) effect = effect.mul(challengeEffect("R",14))
       return effect
 
     },
@@ -631,11 +817,7 @@ addLayer("S", {
 
     },
 
-
-
-
-
-  },
+ },
 
   
     clickables: {
@@ -691,6 +873,7 @@ display(){
 
       unlocked() {
         if (inChallenge("R",14)) return false
+        return hasUpgrade("R",14)
 
       },  
     

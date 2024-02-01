@@ -35,8 +35,11 @@ clickables: {
     my hunger - fuck you<br>
     my dumb brain for coming up with this idea: <br>
       - hepiville [ for the antimatter dimensions references ] <br>
-      - mrredshark77 [inspiring the dumb kobold to make this game based off <h2>[incremental mass (Rewritten) ]</h2> <br>
+      - mrredshark77 [inspiring the dumb kobold to make this game based off <h2>[incremental mass (Rewritten) ]<br>
       - my hunger [ fuck you ] <br>
+      - yay :P [ help to rebalance some things ] <br>
+      
+      </h2> 
     </p>`
   
       
