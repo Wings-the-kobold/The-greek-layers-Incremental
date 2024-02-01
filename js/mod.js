@@ -3,7 +3,7 @@ let modInfo = {
 	id: "TQET (The Origional)",
 	author: "ThatOneKobold",
 	pointsName: "Energy",
-	modFiles: ["Acceleration.js", "tree.js"],
+	modFiles: ["layers.js/Acceleration.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
@@ -42,11 +42,20 @@ function canGenPoints(){
 
 function addedPlayerData() { return {
 	EnergyNerf: new Decimal(0.3),
-	SizeDilation: new Decimal(500)
+	SizeDilation: new Decimal(500),
+	AbsorbedTime: new Decimal(0)
   }}
   
-  	let antiEnergy = () => player.points.pow(0.5);
-  	let antiCollision = () => tmp.antiEnergy.add(1).log(5).pow(1.5).max;
+  function antiEnergy() {
+	let eff = player.points.add(1).pow(0.5)
+	return eff
+	}
+	function antiCollision() {
+	let eff = (antiEnergy()).log(5).add(1).pow(2.5)
+	return eff
+	}
+
+	
 // Calculate points/sec!
 function getPointGen() {
 	if(!canGenPoints())
@@ -56,12 +65,14 @@ function getPointGen() {
 	
 
 
-	let gain = new Decimal(1)
+	let gain = new Decimal(3)
 
 
 	gain = gain.div(500) // Size Dilation Nerf
 	if (gain.gte(1)) gain = gain.pow(0.3) // Adjusted Power
-	gain = gain.div(tmp.antiCollision) //Anti-Collision
+
+	if (antiCollision().gte(1)) gain = gain.div(antiCollision()) //Anti-Collision
+
 	return gain
 }
 
@@ -77,9 +88,11 @@ function getPointGen() {
   var displayThings = [
 	
 	() => `Size Dilation: Time is ${format(player.SizeDilation)}x Slower <br>`,
-	() => `AdjustedPower: Energy gain is ^${format(player.EnergyNerf)} if above 1`,
-	() => `Anti-Collision: You have ${format(tmp.antiEnergy = antiEnergy())} Anti-Energy, which makes Energy gain /${format(tmp.antiCollision = antiCollision())}`
-
+	() => {if (getPointGen().gte(1)) return `AdjustedPower: Energy gain is ^${format(player.EnergyNerf)} if above 1`},
+	() => `Anti-Collision: You have ${format(antiEnergy())} Anti-Energy, which makes Energy gain /${format(antiCollision())}`,
+	() => `Quantized Time: You have ${'(amount)'} Absorbed Time, which makes energy gain /${'(effect)'}`,
+	//() => `Energy Dissapation: you are losing 50% of your energy gain every gametime second due via "Cooldown" `,
+	//() => `<br>Power Storage Unit: you can hold only 1e10 of energy (Energy Hardcap)`,
   ]
 
 
