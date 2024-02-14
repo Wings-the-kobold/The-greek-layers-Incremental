@@ -50,11 +50,18 @@ function addedPlayerData() { return {
 	let eff = player.points.add(1).pow(0.5)
 	return eff
 	}
-	function antiCollision() {
+  function antiCollision() {
 	let eff = (antiEnergy()).log(5).add(1).pow(2.5)
 	return eff
 	}
-
+  function QuantizedTime(diff) {
+		//random stuff
+		player.AbsorbedTime=player.AbsorbedTime.add(diff).div(player.SizeDilation)
+		let increment = player.AbsorbedTime
+		let eff = new Decimal(1)
+		if (increment.gt(0)) eff = Decimal.log(2,increment).pow(2).pow(increment)
+		return eff
+	}
 	
 // Calculate points/sec!
 function getPointGen() {
@@ -72,7 +79,7 @@ function getPointGen() {
 	if (gain.gte(1)) gain = gain.pow(0.3) // Adjusted Power
 
 	if (antiCollision().gte(1)) gain = gain.div(antiCollision()) //Anti-Collision
-
+	gain = QuantizedTime()
 	return gain
 }
 
@@ -80,7 +87,6 @@ function getPointGen() {
 
 // player variables and nerfs go here
 
-  
   // wherever tmp is calculated, add these lines
   
   
@@ -90,7 +96,7 @@ function getPointGen() {
 	() => `Size Dilation: Time is ${format(player.SizeDilation)}x Slower <br>`,
 	() => {if (getPointGen().gte(1)) return `AdjustedPower: Energy gain is ^${format(player.EnergyNerf)} if above 1`},
 	() => `Anti-Collision: You have ${format(antiEnergy())} Anti-Energy, which makes Energy gain /${format(antiCollision())}`,
-	() => `Quantized Time: You have ${'(amount)'} Absorbed Time, which makes energy gain /${'(effect)'}`,
+	() => `Quantized Time: You have ${format(player.AbsorbedTime)} Absorbed Time, which makes energy gain /${QuantizedTime()}`,
 	//() => `Energy Dissapation: you are losing 50% of your energy gain every gametime second due via "Cooldown" `,
 	//() => `<br>Power Storage Unit: you can hold only 1e10 of energy (Energy Hardcap)`,
   ]
