@@ -43,7 +43,7 @@ function canGenPoints(){
 function addedPlayerData() { return {
 	EnergyNerf: new Decimal(0.3),
 	SizeDilation: new Decimal(500),
-	AbsorbedTime: new Decimal(0)
+	AbsorbedTime: new Decimal(1)
   }}
   
   function antiEnergy() {
@@ -54,12 +54,13 @@ function addedPlayerData() { return {
 	let eff = (antiEnergy()).log(5).add(1).pow(2.5)
 	return eff
 	}
-  function QuantizedTime(diff) {
+	function QuantizedTime(diff) {
 		//random stuff
-		player.AbsorbedTime=player.AbsorbedTime.add(diff).div(player.SizeDilation)
-		let increment = player.AbsorbedTime
+		player.AbsorbedTime=player.AbsorbedTime.add(1).div(player.SizeDilation)
+		let increment = player.AbsorbedTime.add(diff)
+		increment = increment.div(player.SizeDilation)
 		let eff = new Decimal(1)
-		if (increment.gt(0)) eff = Decimal.log(2,increment).pow(2).pow(increment)
+		if (increment.gt(1)) eff = Decimal.log(2,increment).pow(2).pow(increment)
 		return eff
 	}
 	
@@ -75,11 +76,11 @@ function getPointGen() {
 	let gain = new Decimal(3)
 
 
-	gain = gain.div(500) // Size Dilation Nerf
+	gain = gain.div(player.SizeDilation) // Size Dilation Nerf
 	if (gain.gte(1)) gain = gain.pow(0.3) // Adjusted Power
 
 	if (antiCollision().gte(1)) gain = gain.div(antiCollision()) //Anti-Collision
-	gain = QuantizedTime()
+	gain = gain.div(QuantizedTime())
 	return gain
 }
 
