@@ -7,7 +7,7 @@ var colors = {
 		2: "#bfbfbf",//Branch color 2
 		3: "#7f7f7f",//Branch color 3
 		color: "#dfdfdf",
-		points: "#ffffff",
+		points: "#ffb300",
 		locked: "#bf8f8f",
 		background: "#0f0f0f",
 		background_tooltip: "rgba(0, 0, 0, 0.75)",
