@@ -71,7 +71,7 @@ addLayer("SR", {
     buyables: {
         11: {
             cost(x) { return new Decimal(5).mul(x).pow(1.5) },
-            display() { return `+3 to Base Solarity Gain`},
+            display() { return `+3 to Base Solarity Gain, <br> Cost: ${format(this.cost)}`},
             canAfford() { return player[this.layer].points.gte(this.cost())},
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
