@@ -184,7 +184,42 @@ addLayer("S", {
              
           },
 
-          
+          11: {
+            cost(x) {
+              let scale = new Decimal(1.4)
+              let base = new Decimal(225)
+              let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
+              return Calculation;
+            },
+            display() {
+              return `
+            <h2>Multiply #${getBuyableAmount(this.layer, this.id)}</h2>
+            <br>
+          <h2>  xa${format(tmp[this.layer].buyables[this.id].effect)} to Solarity Gain</h2>
+            <br>
+          <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solarity</h2> <br>
+
+          <h3> Requires Plasmate #15 </h3>
+          `
+            },
+            canAfford() {
+              return player.points.gte(this.cost())
+            },
+            buy() {
+              if (player.points.gte(this.cost)) player.points = player.points.minus(this.cost());
+              addBuyables(this.layer, this.id, 1);
+            },
+            effect() {
+              let effect = decimalOne
+              effect = effect.mul(getBuyableAmount(this.layer, this.id)).pow(1.1)
+              return effect;
+            },
+            unlocked() {
+              if (hasUpgrade("S",12)) return true
+
+            }
+             
+          },
         
     },
 
