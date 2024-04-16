@@ -13,8 +13,53 @@ addLayer("S", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.1, // Prestige currency exponent 
+
+    tabFormat: {
+        "March 8th, 2024": {      
+              content: [
+                "main-display",
+                ["infobox","about"],
+                
+                "prestige-button",
+                "upgrades",
+                ["display-text",
+      function() { 
+        return ` <h3> Your Current Solar Rays Boost Solarity gain by ${format(Decimal.pow( player[this.layer].points.root(40),2),3  )}x</h3>`
+        
+     }],
+                "blank",
+                "blank",
+                "blank",
+                "blank",
+                "blank",
+                "blank",
+                "blank",
+                "blank",
+                
+            ],
+            
+        },
+        "Upgrades": {
+          content: [
+            "buyables",
+
+          ],
+          
+
+        },
+       
+      },
+
+
+
+
+
+
+
     prestigeButtonText() {
-        return `Gain Solar rays by ^0.1 of Solarity, Then Reset Solarity.<br> (Requires at least 1 Solarity)<br> +${format(getNextAt(this.layer,canMax=true))} Solar Rays<br> `
+        let exponent = 0.1
+        if (hasUpgrade("S",11)) exponent = 0.15
+        return `Gain Solar rays by ^${exponent} of Solarity, Then Reset Solarity.<br> (Requires at least 1 Solarity)<br> +${format(getNextAt(this.layer,canMax=true))} Solar Rays<br> `
     },
     canReset() {
         return true
@@ -29,9 +74,16 @@ addLayer("S", {
     },
     getNextAt() {
         if (player.points.gt(1)) {
-            gain = new Decimal(player.points.pow(0.1)).sub(1)
+          if (hasUpgrade("S",11)) {
+            gain = new Decimal(player.points.pow(0.15)).sub(1)
+
+          } else {
+              gain = new Decimal(player.points.pow(0.1)).sub(1)
+
+          }
             
-        } else {
+            
+        } else  {
             gain = new Decimal(player.points.pow(0.1)).mul(0)
         }
        
@@ -51,8 +103,51 @@ addLayer("S", {
         return new Decimal(1)
     },
 
-    
 
+    upgrades:
+    {
+        11: {
+            fullDisplay() {
+                return `<h2>Intricity</h2> <br>
+                Requires: Plasmate #5 <br><br>
+                
+                +0.05 Solar Ray Gain Exponent <br> 
+                Cost: 22 Solar Rays
+                
+                `
+            },
+            cost: new Decimal(22),
+            canAfford() {
+                if (getBuyableAmount("S",11).gte(5) && player["S"].points.gte(this.cost)) return true
+
+            },
+            unlocked() {
+              if (getBuyableAmount("S",11).gte(5)) return true
+            }
+        },
+
+        12: {
+          fullDisplay() {
+              return `<h2>Polarize</h2> <br>
+              Requires: Plasmate #10 <br><br>
+              
+              -5 to Root formula of solar rays bonus <br> 
+              Cost: 105 Solar Rays
+              
+              `
+          },
+          cost: new Decimal(105),
+          canAfford() {
+              if (getBuyableAmount("S",11).gte(10) && player["S"].points.gte(this.cost)) return true
+
+          },
+          unlocked() {
+            if (hasUpgrade("S",11)) return true
+          }
+      },
+
+
+    },
 
 
 
@@ -88,6 +183,8 @@ addLayer("S", {
            
              
           },
+
+          
         
     },
 

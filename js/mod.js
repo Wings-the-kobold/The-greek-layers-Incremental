@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
+	num: "0.1 0-0",
 	name: "Literally nothing",
 }
 
@@ -43,6 +43,10 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	gain = gain.mul(Decimal.pow(player["S"].points.root(40),2).sub(1))
+	gain = gain.plus(buyableEffect("S",11))
+
+
 	return gain
 }
 
@@ -52,6 +56,29 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	function () {
+		if (getBuyableAmount("S",11).gte(5)) {			
+			return `Next Unlock at Solarizor Upgrade (NYI)`
+		} 
+		else if (player["S"].points.gte(5) || getBuyableAmount("S",11).gte(2)){
+			return `Next Unlock at Plasmate #5`
+
+		} else {
+			return `Next Unlock at 5 Solar Rays`
+
+		}
+
+
+
+	}
+	
+
+
+
+
+
+
+
 ]
 
 // Determines when the game "ends"
