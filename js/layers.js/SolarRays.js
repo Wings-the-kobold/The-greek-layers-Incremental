@@ -12,7 +12,7 @@ addLayer("S", {
     baseResource: "Solarity", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.1, // Prestige currency exponent 
+   
 
     tabFormat: {
         "March 8th, 2024": {      
@@ -24,7 +24,11 @@ addLayer("S", {
                 "upgrades",
                 ["display-text",
       function() { 
-        return ` <h3> Your Current Solar Rays Boost Solarity gain by ${format(Decimal.pow( player[this.layer].points.root(40),2),3  )}x</h3>`
+        if (hasUpgrade("S",12)) {
+          
+          effect = Decimal.pow( player[this.layer].points.root(40),2)
+        }
+        return ` <h3> Your Current Solar Rays Boost Solarity gain by ${format(  )}x</h3>`
         
      }],
                 "blank",
@@ -145,7 +149,28 @@ addLayer("S", {
             if (hasUpgrade("S",11)) return true
           }
       },
+      
+      13: {
+        fullDisplay() {
+            return `<h2>Polarize</h2> <br>
+            Requires: Multiply #5 <br><br>
+            
+            ^0.05 of Solarity boosts themselves <br> 
+            Cost: 355 Solar Rays `
+        },
+        cost: new Decimal(105),
+        canAfford() {
+            if (getBuyableAmount("S",11).gte(10) && player["S"].points.gte(this.cost)) return true
 
+        },
+        effect() {
+          let effect = new Decimal(1)
+          effect = player.points.pow(0.05)
+        },
+        unlocked() {
+          if (hasUpgrade("S",11)) return true
+        }
+    },
 
     },
 

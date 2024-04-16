@@ -27,8 +27,8 @@ function constructNodeStyle(layer){
 
 function challengeStyle(layer, id) {
 	if (player[layer].activeChallenge == id && canCompleteChallenge(layer, id)) return "canComplete"
-	else if (hasChallenge(layer, id)) return "done"
-    return "locked"
+	else if (hasChallenge(layer, id)) return "Finish Challenge"
+    return "Locked"
 }
 
 function challengeButtonText(layer, id) {
@@ -46,8 +46,6 @@ function achievementStyle(layer, id){
     style.push(ach.style)
     return style
 }
-
-
 
 function updateWidth() {
 	let screenWidth = window.innerWidth

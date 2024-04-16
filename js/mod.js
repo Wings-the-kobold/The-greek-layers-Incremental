@@ -45,7 +45,7 @@ function getPointGen() {
 	let gain = new Decimal(1)
 	gain = gain.mul(Decimal.pow(player["S"].points.root(40),2).sub(1))
 	gain = gain.plus(buyableEffect("S",11))
-
+	if (hasUpgrade("S",13)) gain = gain.mul(upgradeEffect("S",13))
 
 	return gain
 }
@@ -57,8 +57,11 @@ function addedPlayerData() { return {
 // Display extra things at the top of the page
 var displayThings = [
 	function () {
+
+
+
 		if (getBuyableAmount("S",11).gte(5)) {			
-			return `Next Unlock at Solarizor Upgrade (NYI)`
+			return `Next Unlock at Solarizor Upgrade`
 		} 
 		else if (player["S"].points.gte(5) || getBuyableAmount("S",11).gte(2)){
 			return `Next Unlock at Plasmate #5`
