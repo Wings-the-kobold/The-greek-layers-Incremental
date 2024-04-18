@@ -156,7 +156,7 @@ getNextAt() {
                 },
             },
 */
-
+            
             challenges: {
                 11: {
                     name: "Start Up Solar Light Generation",
@@ -169,11 +169,10 @@ getNextAt() {
                     `
                   },
                     onEnter() {
-                    layerDataReset(0,("S",11),("S",12),("S",13),("S",14))
-                       player.points = player.points.mul(0)
+                        
                     },
                     onExit() {
-                    layerDataReset(0,("S",11),("S",12),("S",13),("S",14))
+                    layerDataReset(0)
                        player.points = player.points.mul(0)
                      },
                     canComplete() {return false},

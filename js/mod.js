@@ -80,7 +80,7 @@ var displayThings = [
 
 		if (hasUpgrade("S",14) || player["GL"].points.gte(1)) {			 
 			if (inChallenge("GL",11)) return `Next Unlock at 6 Centre Points [NYI] <br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(getPointGen().pow(0.5).pow(0.2).sub(1),3)} Golden Light Per Second...  </h4>`
-			else return `Next Unlock at 6 Centre Points <br><br> Self Note: Fix Solarizor (DONT FORGET THIS MESSAGE)`
+			else return `Next Unlock at 6 Centre Points <br><br> Self Note: Fix Solarizor, And Solar Light Generator (DONT FORGET THIS MESSAGE)`
 		} 
 		else if (getBuyableAmount("S",11).gte(5)) {			
 			return `Next Unlock at Solarizor Upgrade`
