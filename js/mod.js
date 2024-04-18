@@ -3,7 +3,7 @@ let modInfo = {
 	id: "mymod",
 	author: "nobody",
 	pointsName: "Solarity",
-	modFiles: ["layers.js/SolarRays.js", "tree.js"],
+	modFiles: ["layers.js/SolarRays.js", "layers.js/GoldenRays.js","tree.js"],
 
 	discordName: "",
 	discordLink: "",
@@ -18,6 +18,10 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3 Fix 1, Balance 1</h3><br>
+Second layer has been added...<br>
+- 3 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.
+
 
 <h3>v0.2 Fix 0, Balance 1</h3><br>
 First layer has been added...<br>
