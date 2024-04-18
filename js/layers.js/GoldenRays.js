@@ -38,10 +38,10 @@ addLayer("GL", {
     exponent() { return hasUpgrade("S", 11) ? 0.15 : 0.1; },
 
     passiveGeneration(diff){
-        if (inChallenge("SC",1)) {
-            let mult = player.points.pow(0.5)
+        if (inChallenge("GL",11)) {
+            let mult = getPointGen()
              mult = mult.pow(0.2)
-             return mult
+             return mult.sub(1)
         } else { 
         return 0
         
@@ -91,8 +91,9 @@ getNextAt() {
                 "main-display",
                 ["infobox","about"],
                 
-                "prestige-button",
-                "upgrades",
+                 
+                
+                "challenges",
                 ["display-text",
       function() { 
         
@@ -114,7 +115,7 @@ getNextAt() {
         "Centrality of Reality ": {
           content: [
             "buyables",
-
+            "upgrades",
           ],
           
 
@@ -157,15 +158,44 @@ getNextAt() {
 */
 
             challenges: {
-
-                
-            }
-
+                11: {
+                    name: "Start Up Solar Light Generation",
+                    fullDisplay() { return `
+                    <p> Solarity Gain is ^0.5; and ^0.2 of Solarity Generation Generates Solar Light</p>
+                    
+                    When Stopping generation, Reset Solar Rays, Solar Ray Upgrades, Solar Modifiers, and Solarity. <br>
+                    (Note: Starting generation does NOT reset lower layers!)<br><br>
+                    [ Requires Solarizor ]  <br>
+                    `
+                  },
+                    onEnter() {
+                    layerDataReset(0,("S",11),("S",12),("S",13),("S",14))
+                       player.points = player.points.mul(0)
+                    },
+                    onExit() {
+                    layerDataReset(0,("S",11),("S",12),("S",13),("S",14))
+                       player.points = player.points.mul(0)
+                     },
+                    canComplete() {return false},
+                    style() {
+                      return {
+                        "width": "500px",
+                        "height": "275px",
+                        "border-radius": "1px",
+                        "border": "5px",
+                        "margin": "10px",
+                        "text-shadow": "0px 0px 10px #000000",
+                        "color": "#f1c232"
+                      }
+                    },    
+            },
+        },
 
 
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "", description: "Press A to Accelerate the Energy ", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){ if (hasUpgrade("S",14)) return true}
+    branches: ["S","GL"],
+    layerShown(){ if (hasUpgrade("S",14) || inChallenge("GL",11) || player["GL"].points.gte(1)) return true}
 })

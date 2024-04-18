@@ -9,7 +9,7 @@ body {
 }
 
 /* General text */
-h1, h2, h3, b, input {
+h1, h2, h3,h4,p, b, input {
 	display: inline;
 	font-family: "Righteous"
 }

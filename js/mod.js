@@ -53,16 +53,20 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 	
-	gain = buyableEffect("S",12)
-	gain = gain.mul(buyableEffect("S",11))
-	if (hasUpgrade("S",13)) gain = gain.mul(upgradeEffect("S",13))
+	gain = buyableEffect("S",12).max(1)
+	gain = gain.plus(buyableEffect("S",11)).max(1)
+	if (hasUpgrade("S",13)) gain = gain.mul(upgradeEffect("S",13)).max(1)
 	if (hasUpgrade("S",12)) {
-			gain = gain.mul(player["S"].points.sqrt(35)).plus(1)
+			gain = gain.pow(player["S"].points.root(35)).max(1)
+			gain = gain.mul(player["S"].points.root(25)).max(1)
 			
 			} else {
-			gain = gain.mul(player["S"].points.sqrt(40)).plus(1)
+			gain = gain.pow(player["S"].points.root(40)).max(1)
+			gain = gain.mul(player["S"].points.root(30)).max(1)
 			}
-	
+	if (inChallenge("GL",11)) gain = gain.pow(0.5)
+
+
 	return gain
 }
 
@@ -74,8 +78,9 @@ function addedPlayerData() { return {
 var displayThings = [
 	function () {
 
-		if (hasUpgrade("S",14)) {			
-			return `Next Unlock at 6 Centre Points [NYI]`
+		if (hasUpgrade("S",14) || player["GL"].points.gte(1)) {			 
+			if (inChallenge("GL",11)) return `Next Unlock at 6 Centre Points [NYI] <br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(getPointGen().pow(0.5).pow(0.2).sub(1),3)} Golden Light Per Second...  </h4>`
+			else return `Next Unlock at 6 Centre Points <br><br> Self Note: Fix Solarizor (DONT FORGET THIS MESSAGE)`
 		} 
 		else if (getBuyableAmount("S",11).gte(5)) {			
 			return `Next Unlock at Solarizor Upgrade`

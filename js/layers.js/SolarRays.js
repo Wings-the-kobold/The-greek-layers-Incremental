@@ -25,13 +25,15 @@ addLayer("S", {
                 ["display-text",
       function() { 
         let gain = new Decimal(0)
+        let gain2 = new Decimal(1)
         if (hasUpgrade("S",12)) {
-          gain = player["S"].points.sqrt(35)
-          
+          gain = player["S"].points.root(35).max(1)
+          gain2 = gain2.mul(player["S"].points.root(25)).max(1)
           } else {
-          gain = player["S"].points.sqrt(40)
+          gain = player["S"].points.root(40).max(1)
+          gain2 = gain2.mul(player["S"].points.root(30)).max(1)
           }
-        return `<h3> Your Current Solar Rays Boost Solarity gain by ${format(gain)}x</h3>`
+        return `<h3> Solar Rays Boost Solarity by ^${format(gain,3)} and x${format(gain2,3)}</h3>`
 
      }],
                 "blank",
@@ -78,16 +80,16 @@ addLayer("S", {
 getResetGain() {
   if (player.points.lt(1)) return Decimal.dZero;
 
-  let gain = Decimal.pow(player.points.minus(1), tmp.S.exponent);
+  let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
   if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
   return gain;
 },
 
 
 getNextAt() {
-  if (player.points.lt(1)) return Decimal.dZero;
+  if (player.points.lt(1)) return Decimal.dOne;
   
-  let gain = Decimal.pow(player.points.minus(1), tmp.S.exponent);
+  let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
   if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
   return gain;
 
