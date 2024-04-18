@@ -425,6 +425,6 @@ var interval = setInterval(function() {
 	adjustPopupTime(trueDiff)
 	updateParticles(trueDiff)
 	ticking = false
-}, 3)
+}, 80)
 
 setInterval(function() {needCanvasUpdate = true}, 1)

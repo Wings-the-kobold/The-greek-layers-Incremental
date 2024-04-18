@@ -13,14 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1 0-0",
-	name: "Literally nothing",
+	num: "0.2 F0-B0",
+	name: "Yeh",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.1</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+
+<h3>v0.2 Fix 0, Balance 1</h3><br>
+First layer has been added...<br>
+- 3 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.
+
+	<h3>v0.1 Fix 0, Balance 0</h3><br>
+		First layer has been added...<br>
+		- 3 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.`
 
 let winText = `The Eclipse is over... You have gotten Everything...`
 
@@ -43,10 +48,17 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	gain = gain.mul(Decimal.pow(player["S"].points.root(40),2).sub(1))
-	gain = gain.plus(buyableEffect("S",11))
+	
+	gain = buyableEffect("S",12)
+	gain = gain.mul(buyableEffect("S",11))
 	if (hasUpgrade("S",13)) gain = gain.mul(upgradeEffect("S",13))
-
+	if (hasUpgrade("S",12)) {
+			gain = gain.mul(player["S"].points.sqrt(35)).plus(1)
+			
+			} else {
+			gain = gain.mul(player["S"].points.sqrt(40)).plus(1)
+			}
+	
 	return gain
 }
 
@@ -58,9 +70,10 @@ function addedPlayerData() { return {
 var displayThings = [
 	function () {
 
-
-
-		if (getBuyableAmount("S",11).gte(5)) {			
+		if (hasUpgrade("S",14)) {			
+			return `Next Unlock at 6 Centre Points [NYI]`
+		} 
+		else if (getBuyableAmount("S",11).gte(5)) {			
 			return `Next Unlock at Solarizor Upgrade`
 		} 
 		else if (player["S"].points.gte(5) || getBuyableAmount("S",11).gte(2)){
@@ -86,7 +99,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e20"))
+	return false
 }
 
 

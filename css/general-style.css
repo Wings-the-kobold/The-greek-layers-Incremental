@@ -2,21 +2,21 @@
 body {
 	color: var(--color);
 	overflow: hidden;
-	--background: #0f0f0f;
+	--background: #542a11;
 	--color: #dfdfdf;
-	--points: #ffffff;
+	--points: #d9822c;
 	background: var(--background)
 }
 
 /* General text */
 h1, h2, h3, b, input {
 	display: inline;
-	font-family: "Lucida Console", "Courier New", monospace
+	font-family: "Righteous"
 }
 
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */
 .locked {
-	background-color: #bf8f8f;
+	background-color: #582e02d5;
 	cursor: not-allowed;
 }
 
@@ -31,7 +31,7 @@ h1, h2, h3, b, input {
 }
 
 .bought {
-	background-color: #77bf5f;
+	background-color: #da971b;
 	cursor: default;
 }
 

@@ -5,7 +5,7 @@
 	width: 180px;
 	border-radius: 25%;
 	border: 4px solid;
-	border-color: rgba(0, 0, 0, 0.125);
+	border-color: rgba(235, 145, 9, 0.848);
 }
 
 .tabButton {
@@ -37,7 +37,7 @@
     margin-bottom: 5px;
     transform: translateX(-50%);
     padding: 7px;
-    font-family: "Lucida Console", "Courier New", monospace;
+    font-family: "Righteous", "Courier New", monospace;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -50,7 +50,7 @@
     background-color: var(--background_tooltip);
     color: var(--points);
     content: attr(tooltip);
-    font-size:14px;
+    font-size:11px;
 
 }
 
