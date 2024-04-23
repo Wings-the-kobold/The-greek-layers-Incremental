@@ -442,11 +442,7 @@ setBuyableAmount("S", 12, new Decimal(0) )
 if (r = false) 
 	return;
 else {
-	player.S.upgrades.pop()
-	player.S.upgrades.pop()
-	player.S.upgrades.pop()
-	player.S.upgrades.pop()
-
+	player.S.upgrades = []
 }
 
 }

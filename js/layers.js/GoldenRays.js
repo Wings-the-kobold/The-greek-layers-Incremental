@@ -8,14 +8,14 @@ addLayer("GL", {
         Solarlight: new Decimal(0),
         Solarlightcap: new Decimal(2000),
         Solar_Shards: new Decimal(0),
-        CenterPoints: new Decimal(0)
+       
     }},
     color: "#F0FA64",
    // Can be a function that takes requirement increases into account
     resource: "Solar Light", // Name of prestige currency
     baseResource: "Solarity", // Prestige currency uses this "base currency"
     baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     //exponent: 0.2, // Prestige currency exponent
    // gainMult() { // Calculate the multiplier for main currency from bonuses
    //     mult = new Decimal(1)
@@ -32,24 +32,14 @@ addLayer("GL", {
          update(diff) {
           if (getClickableState("GL", 11) == true && player["GL"].Solarlight.lt(player["GL"].Solarlightcap) ) {
             let mult = tmp.pointGen.times(diff)
-            player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.pow(0.1).sub(1)).max(0)
+            player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.pow(0.1).sub(1)).clampMin(0)
              
         }
         },
          
 
 
-        
-        
-        doReset(resetLayer){  
       
-          if(tmp[resetLayer].row < this.row) layerDataReset(resetLayer)
-          if(tmp[resetLayer].row > this.row) {
-            layerDataReset(this.layer)
-            //if (hasUpgrade("R",13)) player.S.upgrades.push("15")
-            }
-        },
-
 
 
 
@@ -70,10 +60,12 @@ addLayer("GL", {
      }],
      ["display-text",
      function() { 
-       
+      if (player["GL"].Solar_Shards.gte(1))
        return `You have ${format(player["GL"].Solar_Shards )} Solar Shards. `
 
     }],
+
+    // player["GL"].CenterPoints
      "blank",
      "blank",
                 //"main-display",
@@ -83,11 +75,13 @@ addLayer("GL", {
                 ["clickable",11],
                 ["clickable",12],
                 
+             
                 "blank",
-                "blank",
-                "blank",
-                "blank",
-                "blank",
+               "blank",
+               "upgrades",
+              
+                
+                
                 "blank",
                 "blank",
                 "blank",
@@ -98,78 +92,19 @@ addLayer("GL", {
         "Centrality of Reality ": {
           content: [
             "buyables",
-            "upgrades",
-            
-            //["clickable",13],
           ],
           
 
         },
        
       },
-      getResetGain() {
-        let gain = new Decimal(1)
-        gain = gain.mul(player["GL"].Solarlight.pow(0.4))
-      
-        
-      
-        return gain;
-      },
-      
-      
-      getNextAt() {
-        let gain = new Decimal(1)
-        gain = gain.mul(player["GL"].Solarlight.pow(0.4))     
-        return gain;
-      },
-
-
-      prestigeButtonText() {
-        let exponent = 0.1
-        if (hasUpgrade("S",11)) exponent = 0.15
-        return `Gain Solar rays by ^${exponent} of Solarity, Then Reset Solarity.<br> (Requires at least 1 Solarity)<br> +${format(getNextAt(this.layer))} Solar Rays<br> `
-        
-        style() { return (getClickableState("GL", 11)) ? {
-          "width": "300px",
-          "height": "100px",
-          "border-radius": "20px",
-          "border": "10px",
-          "margin": "25px",
-          "text-shadow": "0px 0px 10px #000000",
-          
-        } : {
-          "width": "200px",
-          "height": "40px",
-          "border-radius": "20px",
-          "border": "10px",
-          "margin": "25px",
-          "text-shadow": "0px 0px 10px #000000",
-          
-        }
-        
-      },   
     
-    
-    
-    
-      },
+
+   
 
 
 
 
-      /* 
-      let gain = new Decimal(1)
-      gain = gain.mul(player["GL"].Solarlight.pow(0.4))
-      
-      
-      
-      
-      
-      
-      
-      
-      */
-      
 
 
 
@@ -177,27 +112,113 @@ addLayer("GL", {
 
 
 // if (player["GL"].Solar_shards.gte(1))
-/*
+    tooltip: () => `<p>Open Layer 2, Main Layer</p>`,
  upgrades: {
-                11: {
-                    title:"Chasm-1",
-                    description: "5x Energy Gain",
-                    cost: new Decimal(5),
-                },
-                12: {
-                    title: "Chasm-2",
-                    description: "3x Acceleron Gain",
-                    cost: new Decimal(10),
-                    
-                },
-                13: {
-                    title: "Heterogenic-1",
-                    description: "Accelerons boost Energy Gain",
-                    cost: new Decimal(20),
-                    
-                },
+          11: {
+            fullDisplay() {
+                return `<h2>Shardism</h2> <br>
+                
+                Plasmates Cost is ^0.9 and then /3 <br> <br>
+                Cost: 13.5 Solar Shards
+                
+                `
             },
-*/
+            cost: new Decimal(13.5),
+
+            
+            canAfford() {
+                if (player["GL"].Solar_Shards.gte(13.5)) return true
+            },
+            onPurchase() {
+              player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(13.5)
+            }, 
+            unlocked() {
+            return true
+            },
+            style() {
+              return {
+                "width": "150px",
+                "height": "75px",
+                "border-radius": "0px",
+                "border": "0px",
+                "margin": "5px",
+                "text-shadow": "0px 0px 10px #000000",
+                "color": "#3a3337"
+              }
+            },
+        },
+
+          12: {
+            fullDisplay() {
+                return `<h2>Scorch</h2> <br>
+               
+                
+                Multiplys Cost is ^0.9 and then /3 <br> <br>
+                Cost: 22 Solar Rays
+                `
+            },
+            cost: new Decimal(22),
+            canAfford() {
+              if (player["GL"].Solar_Shards.gte(22)) return true
+
+          },
+          onPurchase() {
+            player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(22)
+          }, 
+            unlocked() {
+              return true
+              },
+            style() {
+              return {
+                "width": "150px",
+                "height": "75px",
+                "border-radius": "0px",
+                "border": "0px",
+                "margin": "5px",
+                "text-shadow": "0px 0px 10px #000000",
+                "color": "#3a3337"
+              }
+            },
+        },
+          13: {
+          fullDisplay() {
+              return `<h2>Intricity</h2> <br>
+              
+              
+              ^0.09 of Solarity Boosts themselves <br> <br>
+              Cost: 75 Solar Rays
+              
+              `
+          },
+          cost: new Decimal(75),
+          onPurchase() {
+            player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(75)
+          }, 
+          canAfford() {
+            if (player["GL"].Solar_Shards.gte(75)) return true
+        },
+          unlocked() {
+            return true
+            },
+          style() {
+            return {
+              "width": "150px",
+              "height": "75px",
+              "border-radius": "0px",
+              "border": "0px",
+              "margin": "5px",
+              "text-shadow": "0px 0px 10px #000000",
+              "color": "#3a3337"
+            }
+          },
+      },
+
+
+
+            },
+
+
+            
 
             clickables: {
                 11: {
@@ -219,10 +240,11 @@ addLayer("GL", {
                         
                       }
                       if (getClickableState("GL", 11) == false) 
-                      doReset(1)
+                      layer1Reset()
 
                     },
-                canClick() {return true},
+                    branches: ["11", "12"],
+                canClick() {if (hasUpgrade("S",14)) return true},
                 style() {
                   return (getClickableState("GL", 11)) ? {
                     "width": "500px",
@@ -251,11 +273,14 @@ addLayer("GL", {
 
                 12: {
                   display() {
+                    let gain = player["GL"].Solarlight.pow(0.4)
+
                     let Inactive = `<h3>CONVERTARY [LAYER 2 RESET]</h3><br> <br>(Requires Solar Light Generation)`
                     let Active = `
                     Convert ALL of your Solar Light into ^0.4 of golden light. <br> 
                     Then reset Solar Upgrades, Solarity, Solar Rays, And Solar Modifiers. 
-                    <br> Convertary will Award +${format(player["GL"].Solarlight.pow(0.4))} Solar Shards, Before Resetting Solar Light
+                    <br> Convertary will Award +${format(gain)} Solar Shards, Before Resetting Solar Light
+                    
                     `
                     return getClickableState("GL", 11) ? Active : Inactive  
 
@@ -268,9 +293,10 @@ addLayer("GL", {
 
 
                   player["GL"].Solar_Shards = player["GL"].Solar_Shards.plus(gain)
+                  // player["GL"].CenterPoints = player["GL"].CenterPoints.plus(1)
                   player["GL"].Solarlight = player["GL"].Solarlight.mul(0)
                   setClickableState("GL", 11, !getClickableState("GL", 11))
-                  doReset(this.layer)
+                  layer1Reset()
 
 
 
@@ -317,12 +343,9 @@ addLayer("GL", {
     ],
     branches: ["S","GL"],
     layerShown(){ 
+      hasCurrency = new Decimal(1)
+      if ( hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solarlight.gte(1))   return true; 
 
-
-      if (hasUpgrade("S",14)) return true; 
-      else if (player["GL"].Solar_shards .gte(1)) return true;
-      else if (player["GL"].Solarlight.gte(1) ) return true;
-      else return false;
     }
 }
 

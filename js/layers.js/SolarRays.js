@@ -13,7 +13,7 @@ addLayer("S", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
    
-
+    tooltip: () => `<p>Open Layer 1, Main Layer</p>`,
     tabFormat: {
         "March 8th, 2024": {      
               content: [
@@ -60,22 +60,7 @@ addLayer("S", {
       },
 
 
-
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
-    prestigeButtonText() {
+      prestigeButtonText() {
         let exponent = 0.1
         if (hasUpgrade("S",11)) exponent = 0.15
         return `Gain Solar rays by ^${exponent} of Solarity, Then Reset Solarity.<br> (Requires at least 1 Solarity)<br> +${format(getNextAt(this.layer))} Solar Rays<br> `
@@ -84,7 +69,6 @@ addLayer("S", {
         return true
     },
     exponent() { return hasUpgrade("S", 11) ? 0.15 : 0.1; },
-
 
 
 getResetGain() {
@@ -105,6 +89,13 @@ getNextAt() {
 
 },
 
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
 
 
 
@@ -121,14 +112,6 @@ getNextAt() {
             
         }}
     },
-    gainMult() { // Calculate the multiplier for main currency from bonuses
-        mult = new Decimal(1)
-        return mult
-    },
-    gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
-    },
-
 
     upgrades:
     {
@@ -142,6 +125,7 @@ getNextAt() {
                 
                 `
             },
+           
             cost: new Decimal(22),
             canAfford() {
                 if (getBuyableAmount("S",11).gte(5) && player["S"].points.gte(this.cost)) return true
