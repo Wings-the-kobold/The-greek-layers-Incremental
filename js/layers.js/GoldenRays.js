@@ -237,8 +237,15 @@ addLayer("GL", {
         {key: "", description: "Press A to Accelerate the Energy ", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     branches: ["S","GL"],
-    layerShown(){ if ( 
-      hasUpgrade("S",14) || player["GL"].Solar_shards.gte(1) || player["GL"].Solarlight.gte(1) ) return true
-    else return false
+    layerShown(){ 
+
+
+      if (hasUpgrade("S",14)) return true
+      if( player["GL"].Solar_shards.gte(1)) return true 
+      if (player["GL"].Solarlight.gte(1) ) return true
+
+
     }
-})
+}
+
+)
