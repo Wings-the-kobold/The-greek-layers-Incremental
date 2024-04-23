@@ -17,10 +17,17 @@ addLayer("S", {
     tabFormat: {
         "March 8th, 2024": {      
               content: [
-                "main-display",
-                ["infobox","about"],
                 
+                ["infobox","about"],
+                ["display-text",
+                function() { 
+                  
+                  return `You have ${format(player.S.points)} Solar Rays.`
+          
+               }],
+               "blank",
                 "prestige-button",
+                "blank",
                 "upgrades",
                 ["display-text",
       function() { 

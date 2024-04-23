@@ -124,7 +124,7 @@ addLayer("GL", {
                 `
             },
             cost: new Decimal(13.5),
-
+            //currencyInternalName: player["GL"].Solar_Shards,
             
             canAfford() {
                 if (player["GL"].Solar_Shards.gte(13.5)) return true
@@ -191,6 +191,14 @@ addLayer("GL", {
               `
           },
           cost: new Decimal(75),
+
+          
+
+
+
+
+
+
           onPurchase() {
             player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(75)
           }, 
@@ -239,8 +247,13 @@ addLayer("GL", {
                         player.points = player.points.mul(0)
                         
                       }
-                      if (getClickableState("GL", 11) == false) 
-                      layer1Reset()
+                      if (getClickableState("GL", 11) == false)  {
+                      let currentSOLARLIGHT = player.GL.Solarlight
+                        layer1Reset()
+                        player.GL.Solarlight = currentSOLARLIGHT
+                        currentSOLARLIGHT = currentSOLARLIGHT.mul(0).plus(1)
+                      }
+                      
 
                     },
                     branches: ["11", "12"],
@@ -293,6 +306,7 @@ addLayer("GL", {
 
 
                   player["GL"].Solar_Shards = player["GL"].Solar_Shards.plus(gain)
+                  player["GL"].points = player["GL"].points.plus(gain)
                   // player["GL"].CenterPoints = player["GL"].CenterPoints.plus(1)
                   player["GL"].Solarlight = player["GL"].Solarlight.mul(0)
                   setClickableState("GL", 11, !getClickableState("GL", 11))
