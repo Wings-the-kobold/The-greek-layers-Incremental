@@ -171,7 +171,7 @@ function addPoints(layer, gain) {
 function generatePoints(layer, diff) {
 	addPoints(layer, tmp[layer].resetGain.times(diff))
 }
-// run(layers["GL"].onPrestige, layers["GL"], gain)
+// run(layers["GL"].onPrestige, layers["GL"], gainh)
 function doReset(layer, force=false) {
 	if (tmp[layer].type == "none") return
 	let row = tmp[layer].row
@@ -432,13 +432,23 @@ setInterval(function() {needCanvasUpdate = true}, 1)
 
 
 
-function layer1Reset() {
-tmp.S.points = tmp.S.points.mul(0).plus(1)
-tmp.S.Solarlight = tmp.S.Solarlight.mul(0)
-tmp.points = tmp.points.mul(0)
-tmp.S.splice("upgrades")
-setBuyableAmount("S", 11, 0)
-setBuyableAmount("S", 12, 0)	
+function layer1Reset(r=true) {
+player["S"].points = player["S"].points.mul(0).plus(1)
+player["GL"].Solarlight = player["GL"].Solarlight.mul(0)
+player.points = player.points.mul(0)
+setBuyableAmount("S", 11, new Decimal(0)   )
+setBuyableAmount("S", 12, new Decimal(0) )	
+
+if (r = false) 
+	return;
+else {
+	player.S.upgrades.pop()
+	player.S.upgrades.pop()
+	player.S.upgrades.pop()
+	player.S.upgrades.pop()
+
+}
+
 }
 
 

@@ -15,7 +15,7 @@ addLayer("GL", {
     resource: "Solar Light", // Name of prestige currency
     baseResource: "Solarity", // Prestige currency uses this "base currency"
     baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     //exponent: 0.2, // Prestige currency exponent
    // gainMult() { // Calculate the multiplier for main currency from bonuses
    //     mult = new Decimal(1)
@@ -37,6 +37,23 @@ addLayer("GL", {
         }
         },
          
+
+
+        
+        
+        doReset(resetLayer){  
+      
+          if(tmp[resetLayer].row < this.row) layerDataReset(resetLayer)
+          if(tmp[resetLayer].row > this.row) {
+            layerDataReset(this.layer)
+            //if (hasUpgrade("R",13)) player.S.upgrades.push("15")
+            }
+        },
+
+
+
+
+
 
 
   
@@ -90,7 +107,68 @@ addLayer("GL", {
         },
        
       },
+      getResetGain() {
+        let gain = new Decimal(1)
+        gain = gain.mul(player["GL"].Solarlight.pow(0.4))
+      
+        
+      
+        return gain;
+      },
+      
+      
+      getNextAt() {
+        let gain = new Decimal(1)
+        gain = gain.mul(player["GL"].Solarlight.pow(0.4))     
+        return gain;
+      },
 
+
+      prestigeButtonText() {
+        let exponent = 0.1
+        if (hasUpgrade("S",11)) exponent = 0.15
+        return `Gain Solar rays by ^${exponent} of Solarity, Then Reset Solarity.<br> (Requires at least 1 Solarity)<br> +${format(getNextAt(this.layer))} Solar Rays<br> `
+        
+        style() { return (getClickableState("GL", 11)) ? {
+          "width": "300px",
+          "height": "100px",
+          "border-radius": "20px",
+          "border": "10px",
+          "margin": "25px",
+          "text-shadow": "0px 0px 10px #000000",
+          
+        } : {
+          "width": "200px",
+          "height": "40px",
+          "border-radius": "20px",
+          "border": "10px",
+          "margin": "25px",
+          "text-shadow": "0px 0px 10px #000000",
+          
+        }
+        
+      },   
+    
+    
+    
+    
+      },
+
+
+
+
+      /* 
+      let gain = new Decimal(1)
+      gain = gain.mul(player["GL"].Solarlight.pow(0.4))
+      
+      
+      
+      
+      
+      
+      
+      
+      */
       
 
 
@@ -120,6 +198,7 @@ addLayer("GL", {
                 },
             },
 */
+
             clickables: {
                 11: {
                     display() {
@@ -140,7 +219,7 @@ addLayer("GL", {
                         
                       }
                       if (getClickableState("GL", 11) == false) 
-                      doReset(this.layer)
+                      doReset(1)
 
                     },
                 canClick() {return true},
@@ -240,11 +319,10 @@ addLayer("GL", {
     layerShown(){ 
 
 
-      if (hasUpgrade("S",14)) return true
-      if( player["GL"].Solar_shards.gte(1)) return true 
-      if (player["GL"].Solarlight.gte(1) ) return true
-
-
+      if (hasUpgrade("S",14)) return true; 
+      else if (player["GL"].Solar_shards .gte(1)) return true;
+      else if (player["GL"].Solarlight.gte(1) ) return true;
+      else return false;
     }
 }
 
