@@ -3,7 +3,7 @@ body {
 	color: var(--color);
 	overflow: hidden;
 	--background: #542a11;
-	--color: #dfdfdf;
+	--color: #fd6b27;
 	--points: #d9822c;
 	background: var(--background)
 }
@@ -37,5 +37,5 @@ h1, h2, h3,h4,p, b, input {
 
 #points {
 	color: var(--points);
-	text-shadow: 0 0 10px var(--points);
+	text-shadow: 0 0 100px var(--points);
 }

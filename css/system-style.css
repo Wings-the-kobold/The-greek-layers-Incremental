@@ -1,8 +1,8 @@
 * {
-	transition-duration: 0.5s;
-	text-align: center;
+	transition-duration: 1.5s;
+	text-align: left;
 	font-family: "Righteous";
-	font-weight: bold;
+	
 	table-align: center;
 	margin: auto;
 	-webkit-text-size-adjust: none;
@@ -131,7 +131,7 @@ td {
 }
 
 .instant {
-	transition-duration: 0s !important
+	transition-duration: 1s !important
 }
 
 .fast {
@@ -165,7 +165,7 @@ ul {
 	min-width: 100%;
 	overflow-y: auto;
 	overflow-x: auto;
-	transition-duration: 0s
+	transition-duration: 1s
 }
 
 .tooltipBox { 

@@ -50,7 +50,7 @@
 	padding-top: 44px;
 	left: -244px;
 	width: 200px;
-	transition: left .3s ease;
+	transition: left 3.3s cubic-bezier(0.895, 0.03, 0.685, 0.22);
 }
 
 #discord:hover #discord-links {
@@ -62,7 +62,7 @@
 	right: 4px;
 	top: 4px;
 	text-align: right;
-	color: var(--points);
+	color: rgb(194, 134, 36);
 	text-shadow: 0 0 10px var(--points);
 	cursor: pointer;
 }

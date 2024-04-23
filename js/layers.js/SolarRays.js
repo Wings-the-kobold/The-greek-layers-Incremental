@@ -125,9 +125,9 @@ getNextAt() {
         11: {
             fullDisplay() {
                 return `<h2>Intricity</h2> <br>
-                Requires:<br> Plasmate #5 <br><br>
+                Requires:<br> Plasmate #5 <br><br> <br> 
                 
-                +0.05 Solar Ray Gain Exponent <br> 
+                +0.05 Solar Ray Gain Exponent <br> <br>
                 Cost: 22 Solar Rays
                 
                 `
@@ -138,7 +138,7 @@ getNextAt() {
 
             },
             unlocked() {
-              if (getBuyableAmount("S",11).gte(5)) return true
+              if (getBuyableAmount("S",11).gte(5) || inChallenge("GL",11)) return true
             },
             style() {
               return {
@@ -156,9 +156,9 @@ getNextAt() {
         12: {
           fullDisplay() {
               return `<h2>Polarize</h2> <br>
-              Requires:<br> Plasmate #10 <br><br>
+              Requires:<br> Plasmate #10 <br><br><br> 
               
-              -5 to Root formula of solar rays bonus <br> 
+              -5 to Root formula of solar rays bonus <br><br>
               Cost: 105 Solar Rays
               
               `
@@ -169,7 +169,7 @@ getNextAt() {
               else return false
           },
           unlocked() {
-            if (hasUpgrade("S",11)) return true
+            if (hasUpgrade("S",11) || inChallenge("GL",11)) return true
           },
           style() {
             return {
@@ -190,16 +190,16 @@ getNextAt() {
           if (hasUpgrade("S",13)) enter = format(upgradeEffect("S",13) )
           else enter = "???"
             return `<h2>Gravitation</h2> <br>
-            Requires:<br>  Multiply #20 <br><br>
+            Requires:<br>  Multiply #20 <br><br><br> 
             
-            ^0.05 of Solarity boosts themselves <br> 
+            ^0.05 of Solarity boosts themselves <br>
 
             <br> Gravitations effect is ${enter}<br>
             `
         },
         cost: new Decimal(0),
         canAfford() {
-            if (getBuyableAmount("S",12).gte(20) && player["S"].points.gte(this.cost)) return true
+            if (getBuyableAmount("S",12).gte(20) && player["S"].points.gte(this.cost) ) return true
             else return false
         },
         effect() {
@@ -207,7 +207,7 @@ getNextAt() {
           return effect = player.points.pow(0.05)
         },
         unlocked() {
-          if (hasUpgrade("S",12)) return true
+          if (hasUpgrade("S",12) || inChallenge("GL",11)) return true
         },
         style() {
           return {
@@ -244,10 +244,10 @@ getNextAt() {
         return player["S"].points.log(15).plus(1)
       },
       unlocked() {
-        if (hasUpgrade("S",13)) return true
+        if (hasUpgrade("S",13) || inChallenge("GL",11)) return true
       },
       onPurchase() {
-        player["S"].points = player["S"].points.mul(0)
+        player["S"].points = player["S"].points.mul(0).add(1)
       },
       style() {
         return {
@@ -340,7 +340,7 @@ getNextAt() {
               return effect;
             },
             unlocked() {
-              if (hasUpgrade("S",12)) return true
+              if (hasUpgrade("S",12) || inChallenge("GL",11)) return true
 
             },
             style() {

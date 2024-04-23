@@ -176,7 +176,7 @@ var systemComponents = {
 
     'back-button': {
         template: `
-        <button v-bind:class="back" onclick="goBack()">←</button>
+        <button v-bind:class="back" onclick="goBack()">Close</button>
         `
     },
 

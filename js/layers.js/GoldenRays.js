@@ -8,98 +8,64 @@ addLayer("GL", {
         Solarlight: new Decimal(0),
         Solarlightcap: new Decimal(2000),
         Solar_Shards: new Decimal(0),
-        CentrePoints: new Decimal(0)
+        CenterPoints: new Decimal(0)
     }},
     color: "#F0FA64",
-    requires() {
-      let base = new Decimal(1)
-      let scale = new Decimal (1.1)
-      base = scale.pow(player[this.layer].points)
-        return base
-    } , // Can be a function that takes requirement increases into account
+   // Can be a function that takes requirement increases into account
     resource: "Solar Light", // Name of prestige currency
     baseResource: "Solarity", // Prestige currency uses this "base currency"
     baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.2, // Prestige currency exponent
-    gainMult() { // Calculate the multiplier for main currency from bonuses
-        mult = new Decimal(1)
-        mult = mult.pow(0.3)
-        return mult
-    },
-    gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
-    },
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    //exponent: 0.2, // Prestige currency exponent
+   // gainMult() { // Calculate the multiplier for main currency from bonuses
+   //     mult = new Decimal(1)
+    //    mult = mult.pow(0.3)
+    //    return mult
+    //},
+    //gainExp() { // Calculate the exponent on main currency from bonuses
+    //    return new Decimal(1)
+   // },
 
 
-    canReset() {
-        return false
-    },
-    exponent() { return hasUpgrade("S", 11) ? 0.15 : 0.1; },
-
-    passiveGeneration(diff){
-        if (inChallenge("GL",11)) {
-            let mult = getPointGen()
-             mult = mult.pow(0.2)
-             return mult.sub(1)
-        } else { 
-        return 0
-        
-        
-        }
-    
-    
-    
-      
-    
-         },
-
-getResetGain() {
-  if (player.points.lt(1)) return Decimal.dZero;
-
-  let gain = Decimal.pow(player.points.minus(1), tmp.S.exponent);
-  if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
-  return gain;
-},
-
-
-getNextAt() {
+ 
   
+         update(diff) {
+          if (getClickableState("GL", 11) == true && player["GL"].Solarlight.lt(player["GL"].Solarlightcap) ) {
+            let mult = tmp.pointGen.times(diff)
+            player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.pow(0.1).sub(1)).max(0)
+             
+        }
+        },
+         
 
-},
 
-
-
-
-
-
-    componentStyles: {
-        "prestige-button"() { return {
-            "border-radius":"0px",
-            "width": "400px",
-            "height": "75px",
-            "border-radius": "0px",
-            "border": "0px",
-            "margin": "5px",
-            "text-shadow": "0px 0px 10px #000000",
-            
-        }}
-    },
+  
     tabFormat: {
         "Solarity of Disparity": {      
               content: [
-                "main-display",
-                ["infobox","about"],
                 
-                 
                 
-                "challenges",
                 ["display-text",
       function() { 
         
-        return `<h3> ^0.5 of Solarity is being used to make ^0.2 of Solar Light</h3>`
+        return `You Have Generated ${format(player["GL"].Solarlight)} / ${format(player["GL"].Solarlightcap)} Solar Light`
 
      }],
+     ["display-text",
+     function() { 
+       
+       return `You have ${format(player["GL"].Solar_Shards )} Solar Shards. `
+
+    }],
+     "blank",
+     "blank",
+                //"main-display",
+                ["infobox","about"],
+                
+                 
+                ["clickable",11],
+                ["clickable",12],
+                
                 "blank",
                 "blank",
                 "blank",
@@ -116,6 +82,8 @@ getNextAt() {
           content: [
             "buyables",
             "upgrades",
+            
+            //["clickable",13],
           ],
           
 
@@ -127,14 +95,10 @@ getNextAt() {
 
 
 
-      prestigeButtonText() {
-        
-        return `Compress all Solar Light to gain {{amount}} Solarite <br> `
-    },
+    
 
 
-
-
+// if (player["GL"].Solar_shards.gte(1))
 /*
  upgrades: {
                 11: {
@@ -156,45 +120,125 @@ getNextAt() {
                 },
             },
 */
-            
-            challenges: {
+            clickables: {
                 11: {
-                    name: "Start Up Solar Light Generation",
-                    fullDisplay() { return `
-                    <p> Solarity Gain is ^0.5; and ^0.2 of Solarity Generation Generates Solar Light</p>
-                    
-                    When Stopping generation, Reset Solar Rays, Solar Ray Upgrades, Solar Modifiers, and Solarity. <br>
-                    (Note: Starting generation does NOT reset lower layers!)<br><br>
-                    [ Requires Solarizor ]  <br>
-                    `
-                  },
-                    onEnter() {
-                        
-                    },
-                    onExit() {
-                    layerDataReset(0)
-                       player.points = player.points.mul(0)
-                     },
-                    canComplete() {return false},
-                    style() {
-                      return {
-                        "width": "500px",
-                        "height": "275px",
-                        "border-radius": "1px",
-                        "border": "5px",
-                        "margin": "10px",
-                        "text-shadow": "0px 0px 10px #000000",
-                        "color": "#f1c232"
-                      }
-                    },    
-            },
-        },
+                    display() {
+                      let Inactive = `<h2>Start Up Solar Light Generation </h2> <br>[ Requires Solarizor ]<br>`
+                      let Active = `<h2> Using ^0.5 of Solarity gain to generate ^0.2 of Solar Light...</h2><br>
+                     When Stopping generation, Reset Solar Upgrades, Solarity, Solar Rays, And Solar Modifiers.  <br>
+                    <p>(Note: Starting generation does NOT reset lower layers!)</p><br><br>
+                      <br>`
+                      return getClickableState("GL", 11) ? Active : Inactive  
 
+                    },
+                    onClick() {
+                      const currentState = getClickableState("GL", 11)
+                      setClickableState("GL", 11, !currentState)
+
+                      if (getClickableState("GL", 11) == true ) {
+                        player.points = player.points.mul(0)
+                        
+                      }
+                      if (getClickableState("GL", 11) == false) 
+                      doReset(this.layer)
+
+                    },
+                canClick() {return true},
+                style() {
+                  return (getClickableState("GL", 11)) ? {
+                    "width": "500px",
+                    "height": "50px",
+                    "border-radius": "0px",
+                    "border": "0px",
+                    "margin": "25px",
+                    "text-shadow": "0px 0px 10px #000000",
+                    
+                  } : {
+                    "width": "300px",
+                    "height": "40px",
+                    "border-radius": "20px",
+                    "border": "10px",
+                    "margin": "25px",
+                    "text-shadow": "0px 0px 10px #000000",
+                    
+                  }
+                    },   
+                    
+                    
+                },
+
+
+                // DOWN HERE IS A CONVERTARY RESET.
+
+                12: {
+                  display() {
+                    let Inactive = `<h3>CONVERTARY [LAYER 2 RESET]</h3><br> <br>(Requires Solar Light Generation)`
+                    let Active = `
+                    Convert ALL of your Solar Light into ^0.4 of golden light. <br> 
+                    Then reset Solar Upgrades, Solarity, Solar Rays, And Solar Modifiers. 
+                    <br> Convertary will Award +${format(player["GL"].Solarlight.pow(0.4))} Solar Shards, Before Resetting Solar Light
+                    `
+                    return getClickableState("GL", 11) ? Active : Inactive  
+
+                  },
+                  onClick() {
+                    let gain = new Decimal(1)
+                    gain = gain.mul(player["GL"].Solarlight.pow(0.4))
+
+
+
+
+                  player["GL"].Solar_Shards = player["GL"].Solar_Shards.plus(gain)
+                  player["GL"].Solarlight = player["GL"].Solarlight.mul(0)
+                  setClickableState("GL", 11, !getClickableState("GL", 11))
+                  doReset(this.layer)
+
+
+
+                  },
+              canClick() {return getClickableState("GL", 11)},
+              style() { return (getClickableState("GL", 11)) ? {
+                      "width": "300px",
+                      "height": "100px",
+                      "border-radius": "20px",
+                      "border": "10px",
+                      "margin": "25px",
+                      "text-shadow": "0px 0px 10px #000000",
+                      
+                    } : {
+                      "width": "200px",
+                      "height": "40px",
+                      "border-radius": "20px",
+                      "border": "10px",
+                      "margin": "25px",
+                      "text-shadow": "0px 0px 10px #000000",
+                      
+                    }
+                    
+                  },   
+                  
+                  
+              },
+
+                // END OF CLICKABLE CODE
+
+
+
+
+
+
+
+            },
+
+           
 
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "", description: "Press A to Accelerate the Energy ", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     branches: ["S","GL"],
-    layerShown(){ if (hasUpgrade("S",14) || inChallenge("GL",11) || player["GL"].points.gte(1)) return true}
+    layerShown(){ if ( 
+      hasUpgrade("S",14) || player["GL"].Solar_shards.gte(1) || player["GL"].Solarlight.gte(1) ) return true
+    else return false
+    }
 })

@@ -366,7 +366,7 @@ function doPopup(type = "none", text = "This is a test popup.", title = "", time
 			popupType = "achievement-popup"
 			break;
 		case "challenge":
-			popupTitle = "Challenge Complete";
+			popupTitle = "Good Job lol";
 			popupType = "challenge-popup"
 			break;
 		default:

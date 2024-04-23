@@ -8,7 +8,7 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	offlineLimit: 40,  // In hours
 }
 
 // Set your version in num and name
@@ -64,7 +64,7 @@ function getPointGen() {
 			gain = gain.pow(player["S"].points.root(40)).max(1)
 			gain = gain.mul(player["S"].points.root(30)).max(1)
 			}
-	if (inChallenge("GL",11)) gain = gain.pow(0.5)
+	if (getClickableState("GL", 11)) gain = gain.pow(0.5)
 
 
 	return gain
@@ -79,8 +79,8 @@ var displayThings = [
 	function () {
 
 		if (hasUpgrade("S",14) || player["GL"].points.gte(1)) {			 
-			if (inChallenge("GL",11)) return `Next Unlock at 6 Centre Points [NYI] <br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(getPointGen().pow(0.5).pow(0.2).sub(1),3)} Golden Light Per Second...  </h4>`
-			else return `Next Unlock at 6 Centre Points <br><br> Self Note: Fix Solarizor, And Solar Light Generator (DONT FORGET THIS MESSAGE)`
+			if (getClickableState("GL", 11)) return `Next Unlock at 6 Center Points [NYI] <br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1),3)} Golden Light Per Second...  </h4>`
+			else return `Next Unlock at 6 Center Points <br><br> Self Note: Fix Solarizor, And Solar Light Generator (DONT FORGET THIS MESSAGE)`
 		} 
 		else if (getBuyableAmount("S",11).gte(5)) {			
 			return `Next Unlock at Solarizor Upgrade`

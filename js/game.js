@@ -126,7 +126,7 @@ function canReset(layer)
 		return false
 }
 
-function rowReset(row, layer) {
+function rowReset(row, layer) { //here is i found what resets the layers
 	for (lr in ROW_LAYERS[row]){
 		if(layers[lr].doReset) {
 			if (!isNaN(row)) Vue.set(player[lr], "activeChallenge", null) // Exit challenges on any row reset on an equal or higher row
@@ -171,7 +171,7 @@ function addPoints(layer, gain) {
 function generatePoints(layer, diff) {
 	addPoints(layer, tmp[layer].resetGain.times(diff))
 }
-
+// run(layers["GL"].onPrestige, layers["GL"], gain)
 function doReset(layer, force=false) {
 	if (tmp[layer].type == "none") return
 	let row = tmp[layer].row
@@ -229,7 +229,7 @@ function doReset(layer, force=false) {
 }
 
 function resetRow(row) {
-	if (prompt('Are you sure you want to reset this row? It is highly recommended that you wait until the end of your current run before doing this! Type "I WANT TO RESET THIS" to confirm')!="I WANT TO RESET THIS") return
+	//if (prompt('Are you sure you want to reset this row? It is highly recommended that you wait until the end of your current run before doing this! Type "I WANT TO RESET THIS" to confirm')!="I WANT TO RESET THIS") return
 	let pre_layers = ROW_LAYERS[row-1]
 	let layers = ROW_LAYERS[row]
 	let post_layers = ROW_LAYERS[row+1]
@@ -428,3 +428,24 @@ var interval = setInterval(function() {
 }, 80)
 
 setInterval(function() {needCanvasUpdate = true}, 1)
+
+
+
+
+function layer1Reset() {
+tmp.S.points = tmp.S.points.mul(0).plus(1)
+tmp.S.Solarlight = tmp.S.Solarlight.mul(0)
+tmp.points = tmp.points.mul(0)
+tmp.S.splice("upgrades")
+setBuyableAmount("S", 11, 0)
+setBuyableAmount("S", 12, 0)	
+}
+
+
+
+
+
+
+
+
+
