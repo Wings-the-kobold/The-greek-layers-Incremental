@@ -89,7 +89,7 @@ addLayer("GL", {
             ],
             
         },
-        "Centrality of Reality ": {
+        "Light Modifiers": {
           content: [
             "buyables",
           ],
@@ -125,13 +125,9 @@ addLayer("GL", {
             },
             cost: new Decimal(13.5),
             //currencyInternalName: player["GL"].Solar_Shards,
-            
-            canAfford() {
-                if (player["GL"].Solar_Shards.gte(13.5)) return true
-            },
-            onPurchase() {
-              player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(13.5)
-            }, 
+            currencyDisplayName: "Solar Shards",
+            currencyInternalName: "Solar_Shards",
+            currencyLayer: "GL",
             unlocked() {
             return true
             },
@@ -147,24 +143,19 @@ addLayer("GL", {
               }
             },
         },
-
           12: {
             fullDisplay() {
                 return `<h2>Scorch</h2> <br>
                
                 
                 Multiplys Cost is ^0.9 and then /3 <br> <br>
-                Cost: 22 Solar Rays
+                Cost: 22 Solar Shards
                 `
             },
             cost: new Decimal(22),
-            canAfford() {
-              if (player["GL"].Solar_Shards.gte(22)) return true
-
-          },
-          onPurchase() {
-            player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(22)
-          }, 
+            currencyDisplayName: "Solar Shards",
+            currencyInternalName: "Solar_Shards",
+            currencyLayer: "GL",
             unlocked() {
               return true
               },
@@ -181,24 +172,26 @@ addLayer("GL", {
             },
         },
           13: {
-          fullDisplay() {
-              return `<h2>Intricity</h2> <br>
-              
-              
-              ^0.09 of Solarity Boosts themselves <br> <br>
-              Cost: 75 Solar Rays
-              
-              `
+            fullDisplay() {
+              let enter
+              if (hasUpgrade("GL",13)) enter = format(upgradeEffect("S",13) )
+              else enter = "???"
+                return `<h2>Leverage</h2> <br> 
+                
+                ^0.09 of Solarity boosts themselves <br>
+    
+                <br> Gravitations effect is ${enter}<br>
+                `
+            },
+          effect() {
+            let effect = new Decimal(1)
+            return effect = player.points.pow(0.09)
           },
           cost: new Decimal(75),
-
-          
-
-
-
-
-
-
+          currencyDisplayName: "Solar Shards",
+            currencyInternalName: "Solar_Shards",
+            currencyLayer: "GL",
+  
           onPurchase() {
             player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(75)
           }, 
@@ -220,12 +213,116 @@ addLayer("GL", {
             }
           },
       },
+          14: {
+        fullDisplay() {
+            return `<h2>Annular:</h2> <br>
+            Requires: <br>
+            Shardism <br>
+            Scorch <br>
+            Leverage <br>
+            [red color]: Instability...
+            
+            Boost Range: <br> 
+            ^0.9 ~ ^1.17 to Solarity <br>
+            Cost: 105 Solar Shards
+            
+            `
+        },
+        unlocked() {if ( hasUpgrade("GL",11) && hasUpgrade("GL",12) && hasUpgrade("GL",13) ) return true},
+        branches: ["11","12","13"],
+        cost: new Decimal(75),
+        currencyDisplayName: "Solar Shards",
+          currencyInternalName: "Solar_Shards",
+          currencyLayer: "GL",
+        
+        onPurchase() {
+          player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(75)
+        }, 
+        canAfford() {
+          if (player["GL"].Solar_Shards.gte(75)) return true
+      },
+      
+        unlocked() {
+          return true
+          },
+        style() {
+          return {
+            "width": "150px",
+            "height": "75px",
+            "border-radius": "0px",
+            "border": "0px",
+            "margin": "50px",
+            "text-shadow": "0px 0px 10px #000000",
+            "color": "#3a3337"
+          }
+        },
+    },
+        //to do: make Effecter Upgrades.
+
+
+
+
+          
+
+
+
 
 
 
             },
 
+ buyables: { 
+  11: {
+    cost(x) {
+      let scale = new Decimal(1.2)
+      let base = new Decimal(5)
+      let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
+      return Calculation;
+    },
+    display() {
+      return `
+    <h2>Phaser #${getBuyableAmount(this.layer, this.id)}</h2>
+    <br>
+  <h2>  +${format(tmp[this.layer].buyables[this.id].effect)} to Plasmates base. </h2>
+    <br>
+  <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solar Shards</h2>
+  <br>
+  <p> Requires Plasmate #3 <p>
+  `
+    },
+    canAfford() {
+      return player["GL"].Solar_Shards.gte(this.cost()) && getBuyableAmount("S",11).gte(3)
+    },
+    buy() {
+      if (player["GL"].Solar_Shards.gte(this.cost)) player["GL"].Solar_Shards = player["GL"].Solar_Shards.minus(this.cost());
+      addBuyables(this.layer, this.id, 1);
+    },
+    effect() {
+      let effect = decimalOne
+      effect = effect.mul(getBuyableAmount(this.layer, this.id))
+      return effect;
+    },
+    style() {
+      return {
+        "width": "305px",
+        "height": "155px",
+        "border-radius": "10px",
+        "border": "0px",
+        "margin": "5px",
+        "text-shadow": "0px 0px 10px #000000",
+        "color": "#ffffff"
+      }
+    },
+   
+     
+  },
 
+  
+
+
+
+
+ },
             
 
             clickables: {
@@ -343,6 +440,7 @@ addLayer("GL", {
 
 
 
+                
 
 
 

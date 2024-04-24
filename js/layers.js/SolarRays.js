@@ -88,7 +88,7 @@ getResetGain() {
 
 
 getNextAt() {
-  if (player.points.lt(1)) return Decimal.dOne;
+  if (player.points.lt(1)) return Decimal.dZero;
   
   let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
   if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
@@ -272,7 +272,13 @@ getNextAt() {
               let scale = new Decimal(1.35)
               let base = new Decimal(5)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
+              if (hasUpgrade("GL",11)) Calculation = Calculation.pow(0.9).div(3)
+              
               return Calculation;
+            },
+            unlocked() {
+              if (player["S"].points.gte(1) || player["GL"].Solar_Shards.gte(1)) return true
+
             },
             display() {
               return `
@@ -293,6 +299,7 @@ getNextAt() {
             effect() {
               let effect = decimalOne
               effect = effect.mul(getBuyableAmount(this.layer, this.id)).mul(3)
+              if (getBuyableAmount("GL", 11).gte(1)) effect = effect.mul(getBuyableAmount("GL", 11).gte(1))
               return effect;
             },
             style() {
@@ -315,6 +322,7 @@ getNextAt() {
               let scale = new Decimal(1.4)
               let base = new Decimal(500)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
+              if (hasUpgrade("GL",12)) Calculation = Calculation.pow(0.9).div(3)
               return Calculation;
             },
             display() {
@@ -341,7 +349,7 @@ getNextAt() {
               return effect;
             },
             unlocked() {
-              if (hasUpgrade("S",12) || inChallenge("GL",11)) return true
+              if (hasUpgrade("S",12)) return true
 
             },
             style() {

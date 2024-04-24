@@ -13,23 +13,33 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2 F0-B0",
+	num: "0.2 F2-B0",
 	name: "Yeh",
 }
 
-let changelog = `<h1>Changelog:</h1><br>
-<h3>v0.3 Fix 1, Balance 1</h3><br>
+let changelog = `
+<h1>Changelog:</h1><br><br>
+
+
+
+<h3>v0.2 Fix 2, Balance 0</h3><br>
 Second layer has been added...<br>
-- 3 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.
+- 2 Clickables that Reset 1st layer!<br>
+- A new Conversion rate system and Light cap stuff<br>
+- You ONLY gain solar shards in a very unique and special way.<br>
+Fix2: Fixed PointGen() issues/boosts not responding very well (it was an "x= value bug) <br>
+
+	<br><br>
 
 
-<h3>v0.2 Fix 0, Balance 1</h3><br>
-First layer has been added...<br>
-- 3 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.
+<h3>v0.1 Fix 1, Balance 0</h3><br>
+	 Fix 1: Fixed Solar Rays Reset lol<br>
+	 <br><br>
 
-	<h3>v0.1 Fix 0, Balance 0</h3><br>
-		First layer has been added...<br>
-		- 3 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.`
+<h3>v0.1 Fix 0, Balance 0</h3><br>
+	First layer has been added...<br>
+		- 3 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.<br>	
+		`
 
 let winText = `The Eclipse is over... You have gotten Everything...`
 
@@ -52,17 +62,20 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	
-	gain = buyableEffect("S",12).max(1)
-	gain = gain.plus(buyableEffect("S",11)).max(1)
+
+	gain = gain.plus(buyableEffect("S",11)).clampMin(1)
+	gain = gain.mul(buyableEffect("S",12).clampMin(1))
 	if (hasUpgrade("S",13)) gain = gain.mul(upgradeEffect("S",13)).max(1)
+	if (hasUpgrade("GL",13)) gain = gain.mul(upgradeEffect("GL",13)).max(1)
+
+
 	if (hasUpgrade("S",12)) {
-			gain = gain.pow(player["S"].points.root(35)).max(1)
-			gain = gain.mul(player["S"].points.root(25)).max(1)
+			gain = gain.pow(player["S"].points.root(35)).clampMin(1)
+			gain = gain.mul(player["S"].points.root(25)).clampMin(1)
 			
 			} else {
-			gain = gain.pow(player["S"].points.root(40)).max(1)
-			gain = gain.mul(player["S"].points.root(30)).max(1)
+			gain = gain.pow(player["S"].points.root(40)).clampMin(1)
+			gain = gain.mul(player["S"].points.root(30)).clampMin(1)
 			}
 	if (getClickableState("GL", 11)) gain = gain.pow(0.5)
 
@@ -79,8 +92,8 @@ var displayThings = [
 	function () {
 
 		if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
-			if (getClickableState("GL", 11)) return `Next Unlock at 75 Solar Shards <br><br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1),3)} Golden Light Per Second...  </h4>`
-			else return `Next Unlock at 75 Solar Shards<br><br> Self Note: Fix Solarizor, And Solar Light Generator (DONT FORGET THIS MESSAGE)`
+			if (getClickableState("GL", 11)) return `Next Unlock at Coronal Upgrade <br><br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1),3)} Golden Light Per Second...  </h4>`
+			else return `Next Unlock at Coronal Upgrade<br><br> Self Note: Fix Solarizor, And Solar Light Generator (DONT FORGET THIS MESSAGE)`
 		} 
 		else if (getBuyableAmount("S",11).gte(5)) {			
 			return `Next Unlock at Solarizor Upgrade`
