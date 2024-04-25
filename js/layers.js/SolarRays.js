@@ -83,7 +83,9 @@ getResetGain() {
 
   let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
   if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
+  if (hasUpgrade("GL",15)) gain = gain.times(upgradeEffect("GL",15))
   return gain;
+
 },
 
 
@@ -92,6 +94,9 @@ getNextAt() {
   
   let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
   if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
+  if (hasUpgrade("GL",15)) gain = gain.times(upgradeEffect("GL",15))
+
+
   return gain;
 
 },
@@ -272,8 +277,21 @@ getNextAt() {
               let scale = new Decimal(1.35)
               let base = new Decimal(5)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
+
+              
+
+
+
+
+
+
+
               if (hasUpgrade("GL",11)) Calculation = Calculation.pow(0.9).div(3)
               
+
+
+
+
               return Calculation;
             },
             unlocked() {
@@ -298,8 +316,14 @@ getNextAt() {
             },
             effect() {
               let effect = decimalOne
-              effect = effect.mul(getBuyableAmount(this.layer, this.id)).mul(3)
-              if (getBuyableAmount("GL", 11).gte(1)) effect = effect.mul(getBuyableAmount("GL", 11).gte(1))
+              let base = new Decimal(3)
+              if (getBuyableAmount("GL", 11).gte(1)) base = base.mul(getBuyableAmount("GL", 11).plus(1))
+              effect = effect.mul(getBuyableAmount(this.layer, this.id)).mul(base)
+
+
+
+
+              
               return effect;
             },
             style() {
@@ -322,8 +346,24 @@ getNextAt() {
               let scale = new Decimal(1.4)
               let base = new Decimal(500)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
-              if (hasUpgrade("GL",12)) Calculation = Calculation.pow(0.9).div(3)
+              if (getBuyableAmount("S",12).gte(25)) Calculation = Calculation.mul(Decimal.pow(3, getBuyableAmount("S",12).div(25).floor()))
+
+              if (hasUpgrade("GL",12)) Calculation = Calculation.pow(0.9)//.div(3)
+
+              
+
+
+
               return Calculation;
+
+
+
+
+
+
+
+
+
             },
             display() {
               return `
@@ -334,6 +374,8 @@ getNextAt() {
           <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solarity</h2> <br>
 
           <h3> [Requires Plasmate #15] </h3>
+
+          <p> Note: The Cost is Doubled Every 25 Bought. <b>
           `
             },
             canAfford() {

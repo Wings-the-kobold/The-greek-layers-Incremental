@@ -1,9 +1,9 @@
 let modInfo = {
 	name: "The Great Eclipse Incremental",
-	id: "mymod",
-	author: "nobody",
+	id: "OINOINOIN",
+	author: "ThatOneKobold",
 	pointsName: "Solarity",
-	modFiles: ["layers.js/SolarRays.js", "layers.js/GoldenRays.js","tree.js"],
+	modFiles: ["layers.js/SolarRays.js", "layers.js/GoldenRays.js","layers.js/Centerality.js","tree.js"],
 
 	discordName: "",
 	discordLink: "",
@@ -13,14 +13,22 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2 F2-B0",
+	num: "0.3 F2-B1",
 	name: "Yeh",
 }
 
 let changelog = `
 <h1>Changelog:</h1><br><br>
 
+<h3>v0.3 Fix 2, Balance 1</h3><br>
+CENTER THESE BALLS IN YOUR MOUTH!<br>
+- A prestige mechanic where its based off of Modifier Score! [A * B] = Output <br>
+- Some unique challenges via "Upgrade Checks"! <br>
+- Effector Upgrades which provides powerful Synergy!<br>
+Bal1: Multiply Scaling Doubles every 25 bought, idk this was meant to be harder or something lol <br>
 
+
+	<br><br>
 
 <h3>v0.2 Fix 2, Balance 0</h3><br>
 Second layer has been added...<br>
@@ -28,6 +36,7 @@ Second layer has been added...<br>
 - A new Conversion rate system and Light cap stuff<br>
 - You ONLY gain solar shards in a very unique and special way.<br>
 Fix2: Fixed PointGen() issues/boosts not responding very well (it was an "x= value bug) <br>
+
 
 	<br><br>
 
@@ -77,7 +86,18 @@ function getPointGen() {
 			gain = gain.pow(player["S"].points.root(40)).clampMin(1)
 			gain = gain.mul(player["S"].points.root(30)).clampMin(1)
 			}
-	if (getClickableState("GL", 11)) gain = gain.pow(0.5)
+
+	if (hasUpgrade("GL",14)) gain = gain.pow(upgradeEffect("GL",14))
+	if (getClickableState("GL", 11) == true) gain = gain.pow(0.5)
+
+
+
+
+
+
+
+
+
 
 
 	return gain
@@ -91,9 +111,14 @@ function addedPlayerData() { return {
 var displayThings = [
 	function () {
 
-		if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
+		if (hasUpgrade("GL",15)) {
+			if (getClickableState("GL", 11)) return `Next Unlock at Shade, and 10+ Center Points <br><br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1),3)} Golden Light Per Second...  </h4>`
+			else return `Next Unlock at Shade, and 10+ Center Points<br><br> Self Note: Create Clickable Which Resets Solar Shards and Solar Rays for a Center point`
+		}
+
+		else if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
 			if (getClickableState("GL", 11)) return `Next Unlock at Coronal Upgrade <br><br> (also btw ur gain is divided by /${format(getPointGen().pow(0.5))}) <br> <h4> Generating ${format(Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1),3)} Golden Light Per Second...  </h4>`
-			else return `Next Unlock at Coronal Upgrade<br><br> Self Note: Fix Solarizor, And Solar Light Generator (DONT FORGET THIS MESSAGE)`
+			else return `Next Unlock at Coronal Upgrade`
 		} 
 		else if (getBuyableAmount("S",11).gte(5)) {			
 			return `Next Unlock at Solarizor Upgrade`

@@ -1,6 +1,6 @@
 addLayer("GL", {
     name: "Compression", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "G+", // This appears on the layer's node. Default is the id with the first letter capitalized
+    symbol: "Sol+", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -8,7 +8,7 @@ addLayer("GL", {
         Solarlight: new Decimal(0),
         Solarlightcap: new Decimal(2000),
         Solar_Shards: new Decimal(0),
-       
+        Time: new Decimal(0)
     }},
     color: "#F0FA64",
    // Can be a function that takes requirement increases into account
@@ -30,11 +30,16 @@ addLayer("GL", {
  
   
          update(diff) {
+          let mult = new Decimal(0)
           if (getClickableState("GL", 11) == true && player["GL"].Solarlight.lt(player["GL"].Solarlightcap) ) {
-            let mult = tmp.pointGen.times(diff)
-            player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.pow(0.1).sub(1)).clampMin(0)
-             
+          mult = Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1).times(diff)
         }
+        player["GL"].Solarlight = player["GL"].Solarlight.plus(mult).clampMin(0)
+
+        if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
+
+        
+
         },
          
 
@@ -174,30 +179,24 @@ addLayer("GL", {
           13: {
             fullDisplay() {
               let enter
-              if (hasUpgrade("GL",13)) enter = format(upgradeEffect("S",13) )
+              if (hasUpgrade("GL",13)) enter = format(upgradeEffect("GL",13) )
               else enter = "???"
-                return `<h2>Leverage</h2> <br> 
+                return `<h2>Leverage</h2> <br> <br><br>
                 
                 ^0.09 of Solarity boosts themselves <br>
-    
-                <br> Gravitations effect is ${enter}<br>
+                Cost: 35 Solar Shards <br> 
+                <br> Leverage's effect is ${enter}<br>
                 `
             },
           effect() {
             let effect = new Decimal(1)
             return effect = player.points.pow(0.09)
           },
-          cost: new Decimal(75),
+          cost: new Decimal(35),
           currencyDisplayName: "Solar Shards",
             currencyInternalName: "Solar_Shards",
             currencyLayer: "GL",
-  
-          onPurchase() {
-            player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(75)
-          }, 
-          canAfford() {
-            if (player["GL"].Solar_Shards.gte(75)) return true
-        },
+
           unlocked() {
             return true
             },
@@ -215,18 +214,31 @@ addLayer("GL", {
       },
           14: {
         fullDisplay() {
-            return `<h2>Annular:</h2> <br>
+          
+          
+          let enter;
+          let change; 
+              if (hasUpgrade("GL",14)) enter = format(upgradeEffect("GL",14),3)
+              if (hasUpgrade("GL",14)) change = `Oscillating... <br>Annular's Effect is ^${enter}`
+              else change = `Cost: 105 Solar Shards`
+            
+              return `
+              <h2>Annular:</h2> <br>
+            [red color]: Instability... <br><br>
             Requires: <br>
             Shardism <br>
             Scorch <br>
-            Leverage <br>
-            [red color]: Instability...
+            Leverage <br><br>
             
+            
+
             Boost Range: <br> 
-            ^0.9 ~ ^1.17 to Solarity <br>
-            Cost: 105 Solar Shards
+            ^0.9 ~ ^1.17 to Solarity <br><br>
             
-            `
+            ${change}`
+           
+
+
         },
         unlocked() {if ( hasUpgrade("GL",11) && hasUpgrade("GL",12) && hasUpgrade("GL",13) ) return true},
         branches: ["11","12","13"],
@@ -235,20 +247,16 @@ addLayer("GL", {
           currencyInternalName: "Solar_Shards",
           currencyLayer: "GL",
         
-        onPurchase() {
-          player["GL"].Solar_Shards = player["GL"].Solar_Shards.sub(75)
-        }, 
-        canAfford() {
-          if (player["GL"].Solar_Shards.gte(75)) return true
-      },
-      
-        unlocked() {
-          return true
-          },
+        effect() {
+          
+          return Decimal.plus(1.035, sin(player["GL"].Time.div(5))*0.135)
+
+        },
+        
         style() {
           return {
-            "width": "150px",
-            "height": "75px",
+            "width": "200px",
+            "height": "170px",
             "border-radius": "0px",
             "border": "0px",
             "margin": "50px",
@@ -257,6 +265,60 @@ addLayer("GL", {
           }
         },
     },
+          15: {
+      fullDisplay() {
+        
+        
+        let enter;
+        let change; 
+            if (hasUpgrade("GL",15)) enter = format(upgradeEffect("GL",15),3)
+            if (hasUpgrade("GL",15)) change = `Oscillating... <br>Coronal's Effect is ${enter}`
+            else change = `[Get Requirements to Unlock!]`
+          
+            return `
+            <h2>Coronal:</h2> <br>
+          [red color]: Uncomfortibility <br><br>
+          Requires:<br> Phaser #10<br> Plasmate #35<br> Multiply #70 <br><br>
+
+          
+          
+
+          Boost Range: <br> 
+          0.4x - 5.4x to Solar Rays<br><br>
+          
+          ${change}`
+         
+
+
+      },
+      unlocked() {if ( hasUpgrade("GL",11) && hasUpgrade("GL",12) && hasUpgrade("GL",13) ) return true},
+      branches: ["14"],
+      canAfford() {
+        if (hasUpgrade("GL",14) && getBuyableAmount("S",11).gte(35) && getBuyableAmount("S",12).gte(70) && getBuyableAmount("GL",11).gte(10)) return true
+        else return false
+      },
+     
+
+
+      effect() {
+        
+        return Decimal.plus(0.4, cos(player["GL"].Time.div(5))*5).abs().clampMin(0.4).clampMax(5.4)
+
+      },
+      
+      style() {
+        return {
+          "width": "290px",
+          "height": "170px",
+          "border-radius": "0px",
+          "border": "0px",
+          "margin": "50px",
+          "text-shadow": "0px 0px 10px #000000",
+          "color": "#3a3337"
+        }
+      },
+  },
+    
         //to do: make Effecter Upgrades.
 
 
@@ -462,3 +524,20 @@ addLayer("GL", {
 }
 
 )
+
+
+
+
+
+
+// SIDE LAYER BELOW
+
+
+
+
+
+
+
+
+
+
