@@ -9,7 +9,8 @@ addLayer("C", {
         Highest: new Decimal(0),
         requirement: new Decimal(2000),
         EffectorTier: new Decimal(0), 
-        checkUpgrades: new Decimal(0),      
+        checkUpgrades: new Decimal(0),  
+    
     }},
     color: "#1f2129",
    // Can be a function that takes requirement increases into account
@@ -137,18 +138,28 @@ addLayer("C", {
           content: [
             "buyables",
             "upgrades",
-            ["clickable",[21]],
+            
           ],
           
-  
-        },
+          
 
         //if (player.C.EffectorTier.gte(2)) {
         
 
           
         },
-        
+
+        "Darkness?": {
+                    content: [
+                      "buyables",
+                      "upgrades",
+                      ["clickable",21],["clickable",22],
+                    ],
+                  
+          
+                },
+
+      },
        
      
     
@@ -555,18 +566,23 @@ style() {
             display() {
               let text = ``
               let textActive = ``
+              let rewardDisplay = ``
               if (getClickableState("C", 21)) text = `Goal: Plasmate #40 <br>`
               if (getClickableState("C", 21)) textActive = `[ACTIVE]`
+              else text = `Enter Upgrade Check. #001`
+             
+             
               if (player.C.checkUpgrades.gte(1)) rewardDisplay = `^1.25 to Solarity Gain, and Automate Plasmate buyable, they also no longer spend anything.`
 
+              return `
+              <h1>Formality...</h1><br> ${textActive}
+              ^0.666 to Solarity<br>^0.666 to Solar Rays<br>^0.666 to Plasmate's effect <br>
+              require:
+              Phaser #15
+              Plasmate #60
+              Multiply #325
+              ${text}
 
-              else text = `Enter Upgrade Check. #001`
-               return `
-               <h1>Formality...</h1><br> ${textActive}
-              ^0.666 to Solarity<br>^0.666 to Solar Rays<br>^0.666 to Plasmate's effect
-
-               ${text}
-              <br>
               ${rewardDisplay}
 
                `
@@ -586,18 +602,24 @@ style() {
 
             },
         canClick() {
-          if (player.C.checkUpgrades.lte(1)){
-            if (!getClickableState("C", 21) && player.C.checkUpgrades.lte(1)) return true
-            else if (getClickableState("C", 21) && getBuyableAmount("S",11).gte(40)) { return true }
-            else return false
-           } 
-          else return false
-          
-
+        //check if it has the check upgrade or is not in the check upgrade
+        if (getClickableState(this.layer,this.id) == false && player.C.checkUpgrades.lt(1)) 
+        {
+        //check if it has the requirements to enter unless it is in the check upgrade 
+        if (getBuyableAmount("S",11).gte(60) && getBuyableAmount("S",12).gte(325) && getBuyableAmount("GL",11).gte(15)){
+            return true
+          }
+         } 
+        // check if its inside the check upgrade  
+        else if (getClickableState(this.layer,this.id) == true && player.C.checkUpgrades.lt(1))
+        {                                                                       
+          //check if it meets the requirements to complete the upgrade check.
+          if (getBuyableAmount("S",11).gte(40)) return true                                              
+        }                                                                    
         },
         style() { return {
                 "width": "135px",
-                "height": "200px",
+                "height": "250px",
                 "border-radius": "20px",
                 "border": "10px",
                 "margin": "0px",
@@ -608,43 +630,39 @@ style() {
             
             
         },
-      15: {
+      22: {
           display() {
             let text = ``
-            if (getClickableState("GL", 14)) text = `Goal: Plasmate #50 <br> `
-            else text = `Enter Upgrade Check. #001`
-             return `
-             <h3>Alternity.../h3><br> <br>
-             <br>
-             <br>
+            let textActive = ``
+            let rewardDisplay = ``
+            if (getClickableState("C", 21)) text = `Goal: Plasmate #40 <br>`
+            if (getClickableState("C", 21)) textActive = `[ACTIVE]`
+            else text = `Enter Upgrade Check. #002`
+           
+           
+            if (player.C.checkUpgrades.gte(1)) rewardDisplay = `Reduce Meta Scaling power by 35% and Automate Multiply buyable, they also no longer spend anything.`
 
-             ^0.666 to Solarity, Solar Rays, Plasmate's Effect, and Multiply's effect  <br>
+            return `
+            <h1>Heirarchy</h1><br> ${textActive}
+            Meta Scaling starts instantly <br>Meta Scaling also affects Plasmate <br> ^0.666 to Multiply's effect <br>
+            require:
+            Phaser #20
+            Plasmate #250
+            Multiply #325
+            ${text}
 
-             Goal: 
-             
-
-
-
-
-
-
-
-
-
-
-
-
+            ${rewardDisplay}
 
              `
             
 
           },
           onClick() {
-          
-          layer1Reset()
-          const currentState = getClickableState("GL", 14)
-          setClickableState("C", 14, !currentState)
-          
+          if (getClickableState("C", this.id) && getBuyableAmount("S",11).gte(40) && player.C.checkUpgrades.lt(1)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
+          if (!getClickableState("C", this.id)) {layer1Reset()}
+
+          const currentState = getClickableState("C", this.id)
+          setClickableState("C", this.id, !currentState)
           
 
 
@@ -652,29 +670,30 @@ style() {
 
           },
       canClick() {
-        if (!getClickableState("GL", 14) || (getClickableState("GL", 14) && getBuyableAmount("S",11).gte(50) )) return true
-
-
-
+      //check if it has the check upgrade or is not in the check upgrade
+      if (getClickableState(this.layer,this.id) == false && player.C.checkUpgrades.lt(1)) 
+      {
+      //check if it has the requirements to enter unless it is in the check upgrade 
+      if (getBuyableAmount("S",11).gte(60) && getBuyableAmount("S",12).gte(325) && getBuyableAmount("GL",11).gte(15)){
+          return true
+        }
+       } 
+      // check if its inside the check upgrade  
+      else if (getClickableState(this.layer,this.id) == true && player.C.checkUpgrades.lt(1))
+      {                                                                       
+        //check if it meets the requirements to complete the upgrade check.
+        if (getBuyableAmount("S",11).gte(40)) return true                                              
+      }                                                                    
       },
-      style() { return (this.canClick()) ? {
-              "width": "300px",
-              "height": "100px",
-              "border-radius": "20px",
-              "border": "10px",
-              "margin": "0px",
-              "text-shadow": "0px 0px 10px #000000",
-              
-            } : {
-              "width": "250px",
-              "height": "40px",
+      style() { return {
+              "width": "135px",
+              "height": "250px",
               "border-radius": "20px",
               "border": "10px",
               "margin": "0px",
               "text-shadow": "0px 0px 10px #000000",
               
             }
-            
           },   
           
           

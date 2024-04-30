@@ -180,6 +180,9 @@ getNextAt() {
     },
 
 
+    automate() {
+      if (player.C.checkUpgrades.gte(1)) buyBuyable("S",11)
+    },
 
 
     componentStyles: {
@@ -387,7 +390,7 @@ getNextAt() {
               return player[this.layer].points.gte(this.cost())
             },
             buy() {
-              if (player[this.layer].points.gte(this.cost)) player[this.layer].points = player[this.layer].points.minus(this.cost());
+              if (player.S.points.gte(this.cost) && player.C.checkUpgrades.lt(1)) player.S.points = player.S.points.minus(this.cost());
               addBuyables(this.layer, this.id, 1);
             },
             effect() {
