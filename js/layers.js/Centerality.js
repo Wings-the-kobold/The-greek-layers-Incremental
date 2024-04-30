@@ -65,8 +65,8 @@ addLayer("C", {
       return `You have ${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score. <br>
       `
      }],
-     
-     
+     "blank",
+     "clickables",
      
     
 
@@ -75,12 +75,7 @@ addLayer("C", {
 
 
 
-    ["clickable",11],
-    "blank",
-    "blank",
-    ["clickable",13],
-    "blank",
-    ["clickable",12],
+    
     // player["GL"].CenterPoints
     ["display-text",
      function() { 
@@ -122,7 +117,7 @@ addLayer("C", {
                 
              
                 "blank",
-               "blank",
+                "blank",
                
               
                 
@@ -134,32 +129,31 @@ addLayer("C", {
             ],
             
         },
+
+
+
         "Darkness?": {
           content: [
             "buyables",
             "upgrades",
+            "blank",
+            "blank",
+            "blank",
+            "blank",
+            "blank",
+            "blank",
             
           ],
           
-          
+  
+        },
 
         //if (player.C.EffectorTier.gte(2)) {
         
 
           
         },
-
-        "Darkness?": {
-                    content: [
-                      "buyables",
-                      "upgrades",
-                      ["clickable",21],["clickable",22],
-                    ],
-                  
-          
-                },
-
-      },
+        
        
      
     
@@ -553,7 +547,7 @@ style() {
                   "height": "235px",
                   "border-radius": "0px",
                   "border": "10px",
-                  "margin": "0px",
+                  "margin": "33px",
                   "text-shadow": "0px 0px 10px #000000",
                   
                 }
@@ -567,22 +561,22 @@ style() {
               let text = ``
               let textActive = ``
               let rewardDisplay = ``
-              if (getClickableState("C", 21)) text = `Goal: Plasmate #40 <br>`
-              if (getClickableState("C", 21)) textActive = `[ACTIVE]`
-              else text = `Enter Upgrade Check. #001`
+              if (getClickableState("C", 21)) text = `^0.666 to Solarity<br>^0.666 to Solar Rays<br>^0.666 to Plasmate's effect <br>
+              require:
+              Phaser #15
+              Plasmate #60
+              Multiply #325 <br> Goal: Plasmate #40 <br> `
+              else if (player.C.checkUpgrades.lt(1)) text = `Enter Upgrade Check. #001`
+              else text = `Check Upgrade Completed!`
+              if (getClickableState("C", 21)) textActive = `[ACTIVE] `
+             
              
              
               if (player.C.checkUpgrades.gte(1)) rewardDisplay = `^1.25 to Solarity Gain, and Automate Plasmate buyable, they also no longer spend anything.`
 
               return `
-              <h1>Formality...</h1><br> ${textActive}
-              ^0.666 to Solarity<br>^0.666 to Solar Rays<br>^0.666 to Plasmate's effect <br>
-              require:
-              Phaser #15
-              Plasmate #60
-              Multiply #325
-              ${text}
-
+              <h1>Formality...</h1><br> ${textActive}              
+              ${text} <br>
               ${rewardDisplay}
 
                `
@@ -616,17 +610,7 @@ style() {
           //check if it meets the requirements to complete the upgrade check.
           if (getBuyableAmount("S",11).gte(40)) return true                                              
         }                                                                    
-        },
-        style() { return {
-                "width": "135px",
-                "height": "250px",
-                "border-radius": "20px",
-                "border": "10px",
-                "margin": "0px",
-                "text-shadow": "0px 0px 10px #000000",
-                
-              }
-            },   
+        },  
             
             
         },
@@ -635,24 +619,30 @@ style() {
             let text = ``
             let textActive = ``
             let rewardDisplay = ``
-            if (getClickableState("C", 21)) text = `Goal: Plasmate #40 <br>`
-            if (getClickableState("C", 21)) textActive = `[ACTIVE]`
-            else text = `Enter Upgrade Check. #002`
-           
-           
-            if (player.C.checkUpgrades.gte(1)) rewardDisplay = `Reduce Meta Scaling power by 35% and Automate Multiply buyable, they also no longer spend anything.`
+            let textActiveGoal = ``
+            if (!getClickableState("C", 22)) text = `Enter Upgrade Check #002
 
-            return `
-            <h1>Heirarchy</h1><br> ${textActive}
-            Meta Scaling starts instantly <br>Meta Scaling also affects Plasmate <br> ^0.666 to Multiply's effect <br>
-            require:
+            Meta Scaling starts instantly <br>Meta Scaling also affects Plasmate <br> ^0.666 to Multiply's effect
+
+            Requires:
             Phaser #20
             Plasmate #250
-            Multiply #325
+            Multiply #325 <br>
+            `
+            else text = `Check Upgrade Completed!`
+            if (getClickableState("C", 22)) textActive = `[ACTIVE]`
+            if (getClickableState("C", 22)) textActiveGoal = `Goal: Multiply #115`
+            else textActiveGoal = ``
+            // Goal: Plasmate #40 <br>
+           
+           
+            if (player.C.checkUpgrades.gte(2)) rewardDisplay = `Reduce Meta Scaling power by 35% and Automate Multiply buyable, they also no longer spend anything.`
+            else rewardDisplay = ``
+            return `
+            <h1>Heirarchy...</h1><br> ${textActive}
             ${text}
-
+            ${textActiveGoal}
             ${rewardDisplay}
-
              `
             
 
@@ -686,14 +676,14 @@ style() {
       }                                                                    
       },
       style() { return {
-              "width": "135px",
-              "height": "250px",
-              "border-radius": "20px",
-              "border": "10px",
-              "margin": "0px",
-              "text-shadow": "0px 0px 10px #000000",
-              
-            }
+        "width": "135px",
+        "height": "250px",
+        "border-radius": "5px",
+        "border": "5px",
+        "margin": "0px",
+        "text-shadow": "0px 0px 10px #000000",
+        "border-color":"rgb(240, 117, 16)",
+      }
           },   
           
           
