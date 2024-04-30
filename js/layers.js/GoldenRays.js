@@ -31,14 +31,21 @@ addLayer("GL", {
   
          update(diff) {
           let mult = new Decimal(0)
+          let speed = new Decimal(1)
           if (getClickableState("GL", 11) == true && player["GL"].Solarlight.lt(player["GL"].Solarlightcap) ) {
+            
           mult = Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1).times(diff)
-        }
-        player["GL"].Solarlight = player["GL"].Solarlight.plus(mult).clampMin(0)
+          if (hasUpgrade("C",16)) speed = speed.times(3.14)
+        } 
+        
+        player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.times(speed)).clampMin(0)
+
+
+
 
         if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
-
         
+        if (hasUpgrade("C",16)) player.GL.Solarlightcap = Decimal.mul(2000, 3.14)
 
         },
          

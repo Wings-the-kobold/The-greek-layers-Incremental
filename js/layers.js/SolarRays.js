@@ -33,14 +33,18 @@ addLayer("S", {
       function() { 
         let gain = new Decimal(0)
         let gain2 = new Decimal(1)
+        let capped = ``
         if (hasUpgrade("S",12)) {
-          gain = player["S"].points.root(35).max(1)
+          gain = player["S"].points.root(35).clampMax(2).clampMin(1)
           gain2 = gain2.mul(player["S"].points.root(25)).max(1)
           } else {
-          gain = player["S"].points.root(40).max(1)
+          gain = player["S"].points.root(40).clampMax(2).clampMin(1)
           gain2 = gain2.mul(player["S"].points.root(30)).max(1)
           }
-        return `<h3> Solar Rays Boost Solarity by ^${format(gain,3)} and x${format(gain2,3)}</h3>`
+
+
+          if (gain==2) capped = `(capped)`
+        return `<h3> Solar Rays Boost the following: <br><br> Solarity by ^${format(gain,3)} ${capped}<br> x${format(gain2,3)} solarity</h3>`
 
      }],
                 "blank",
@@ -57,8 +61,38 @@ addLayer("S", {
         },
         "Solar Modifiers ": {
           content: [
-            "buyables",
+            ["display-text",
+      function() { 
 
+
+        let antiscale =  Decimal.add(
+          2, getBuyableAmount("S",12).sub(300).div(25) 
+         )
+        let textA = `Nerf 1: <p> Every 25 of 'Multiply' Purchases multiplies its Buyables cost by 3 <p><br>` 
+        let textB = `Nerf 2: <p> Every 100 of 'Multiply' Purchases multiplies its Buyables cost by 9 <p><br>`
+        let textC = `Nerf 3: <p> After 200 of 'Multiply' its costs scales ^2.5 faster <p><br>` 
+        let textD = `Meta Nerf: <p> After 300 of 'Multiply' its costs scale is x${antiscale}`  
+        
+
+       
+
+
+
+        let display = ``
+        if (getBuyableAmount("S",12).gte(25)) 
+        display = `${textA}`
+        if (getBuyableAmount("S",12).gte(100)) 
+        display = `${textA} <br> ${textB}`
+        if (getBuyableAmount("S",12).gte(200)) 
+        display = `${textA} <br> ${textB} <br> ${textC}`
+        if (getBuyableAmount("S",12).gte(300)) 
+        display = `${textA} <br> ${textB} <br> ${textC} <br> ${textD}`
+
+        return display
+
+     }],
+            "buyables",
+    /**/
           ],
           
 
@@ -68,10 +102,32 @@ addLayer("S", {
 
 
       prestigeButtonText() {
+        let nerf = getResetGain(this.layer)  .pow(1.501501502)
+        
+              let nerfText = ``
+              if (getClickableState("C", 21)) nerfText = `+${format(nerf)} -> `
+             
+
         let exponent = 0.1
         if (hasUpgrade("S",11)) exponent = 0.15
-        return `Gain Solar rays by ^${exponent} of Solarity, Then Reset Solarity.<br> (Requires at least 1 Solarity)<br> +${format(getNextAt(this.layer))} Solar Rays<br> `
-    },
+        return `Gain Solar rays by ^${exponent} of Solarity, Then Reset Solarity.<br>
+         (Requires at least 1 Solarity)<br>
+         ${nerfText} +${format(getNextAt(this.layer))} Solar Rays<br>
+         
+         `
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      },
     canReset() {
         return true
     },
@@ -82,8 +138,17 @@ getResetGain() {
   if (player.points.lt(1)) return Decimal.dZero;
 
   let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
+
   if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
   if (hasUpgrade("GL",15)) gain = gain.times(upgradeEffect("GL",15))
+  if (player.C.EffectorTier.gte(2)) gain = gain.times(player.S.points.log(4).clampMin(1))
+  if (hasUpgrade("C",12)) gain = gain.times(4)
+  if (hasUpgrade("C",13)) gain = gain.times(2)
+  if (hasUpgrade("C",14)) gain = gain.pow(1.05)
+
+  if (getClickableState("C", 21)) gain = gain.pow(0.666)
+
+
   return gain;
 
 },
@@ -95,7 +160,12 @@ getNextAt() {
   let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
   if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
   if (hasUpgrade("GL",15)) gain = gain.times(upgradeEffect("GL",15))
+  if (player.C.EffectorTier.gte(2)) gain = gain.times(player.S.points.log(4).clampMin(1))
+  if (hasUpgrade("C",12)) gain = gain.times(4)
+  if (hasUpgrade("C",13)) gain = gain.times(2.5)
+  if (hasUpgrade("C",14)) gain = gain.pow(1.05)
 
+  if (getClickableState("C", 21)) gain = gain.pow(0.666)
 
   return gain;
 
@@ -144,7 +214,7 @@ getNextAt() {
 
             },
             unlocked() {
-              if (getBuyableAmount("S",11).gte(5) || inChallenge("GL",11)) return true
+              if (getBuyableAmount("S",11).gte(5) || player.C.EffectorTier.gte(1)) return true
             },
             style() {
               return {
@@ -175,7 +245,7 @@ getNextAt() {
               else return false
           },
           unlocked() {
-            if (hasUpgrade("S",11) || inChallenge("GL",11)) return true
+            if (hasUpgrade("S",11) || player.C.EffectorTier.gte(2)) return true
           },
           style() {
             return {
@@ -213,7 +283,7 @@ getNextAt() {
           return effect = player.points.pow(0.05)
         },
         unlocked() {
-          if (hasUpgrade("S",12) || inChallenge("GL",11)) return true
+          if (hasUpgrade("S",12) || player.C.EffectorTier.gte(3)) return true
         },
         style() {
           return {
@@ -250,7 +320,7 @@ getNextAt() {
         return player["S"].points.log(15).plus(1)
       },
       unlocked() {
-        if (hasUpgrade("S",13) || inChallenge("GL",11)) return true
+        if (hasUpgrade("S",13) || player.C.EffectorTier.gte(4)) return true
       },
       onPurchase() {
         player["S"].points = player["S"].points.mul(0).add(1)
@@ -268,8 +338,8 @@ getNextAt() {
       },
   },
     },
-
-
+    
+//if (player.C.checkUpgrades.gte(1))
 
     buyables: {
         11: {
@@ -299,12 +369,18 @@ getNextAt() {
 
             },
             display() {
+              let nerf = tmp[this.layer].buyables[this.id].effect.pow(1.501501502)
+              let nerfText = ``
+              if (getClickableState("C", 21)) nerfText = `+${format(nerf)} -> `
+
+
               return `
             <h2>Plasmate #${getBuyableAmount(this.layer, this.id)}</h2>
             <br>
-          <h2>  +${format(tmp[this.layer].buyables[this.id].effect)} to Solarity Gain</h2>
+          <h2> ${nerfText} +${format(tmp[this.layer].buyables[this.id].effect)} to Solarity Gain</h2>
             <br>
           <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solar Rays</h2>
+
           `
             },
             canAfford() {
@@ -319,11 +395,10 @@ getNextAt() {
               let base = new Decimal(3)
               if (getBuyableAmount("GL", 11).gte(1)) base = base.mul(getBuyableAmount("GL", 11).plus(1))
               effect = effect.mul(getBuyableAmount(this.layer, this.id)).mul(base)
+              if (player.C.EffectorTier.gte(3)) effect = effect.mul(player.S.points.log(9).clampMin(1))
 
 
-
-
-              
+              if (getClickableState("C", 21)) effect = effect.pow(0.666)
               return effect;
             },
             style() {
@@ -346,8 +421,27 @@ getNextAt() {
               let scale = new Decimal(1.4)
               let base = new Decimal(500)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
-              if (getBuyableAmount("S",12).gte(25)) Calculation = Calculation.mul(Decimal.pow(3, getBuyableAmount("S",12).div(25).floor()))
 
+              if (getBuyableAmount("S",12).gte(25)) Calculation = Calculation.mul(Decimal.pow(3, getBuyableAmount("S",12).div(25).floor()))
+              if (getBuyableAmount("S",12).gte(100)) Calculation = Calculation.mul(Decimal.pow(9, getBuyableAmount("S",12).div(100).floor()))
+
+              if (getBuyableAmount("S",12).gte(200)) Calculation = Calculation.mul(Decimal.pow(2.11, getBuyableAmount("S",12).sub(200)))
+              if (getBuyableAmount("S",12).gte(300)) 
+              Calculation =
+               Calculation.mul(
+              Decimal.pow( 
+                Decimal.add(
+                  2, getBuyableAmount("S",12).sub(300).div(25) 
+                 ), 
+                getBuyableAmount("S",12).sub(300)
+            
+            
+               )
+            
+            
+            )
+              
+              
               if (hasUpgrade("GL",12)) Calculation = Calculation.pow(0.9)//.div(3)
 
               
@@ -374,8 +468,6 @@ getNextAt() {
           <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solarity</h2> <br>
 
           <h3> [Requires Plasmate #15] </h3>
-
-          <p> Note: The Cost is Doubled Every 25 Bought. <b>
           `
             },
             canAfford() {
@@ -388,6 +480,7 @@ getNextAt() {
             effect() {
               let effect = decimalOne
               effect = Decimal.pow(1.1,getBuyableAmount(this.layer, this.id))
+              if (player.C.EffectorTier.gte(4)) effect = effect.mul(player.S.points.log(16).clampMin(1))
               return effect;
             },
             unlocked() {
@@ -397,7 +490,7 @@ getNextAt() {
             style() {
               return {
                 "width": "305px",
-                "height": "155px",
+                "height": "170px",
                 "border-radius": "10px",
                 "border": "0px",
                 "margin": "5px",

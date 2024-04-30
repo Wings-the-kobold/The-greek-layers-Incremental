@@ -433,17 +433,23 @@ setInterval(function() {needCanvasUpdate = true}, 1)
 
 
 function layer1Reset(r=true) {
-player["S"].points = player["S"].points.mul(0).plus(1)
+	let resetPoints = 0
+if (player.C.EffectorTier.gte(5)) { keepPoints = 1 }
+else if (player.C.EffectorTier.gte(4)) { player.S.upgrades = [11,12,13,14] }
+else if (player.C.EffectorTier.gte(3)) { player.S.upgrades = [11,12,13] }
+else if (player.C.EffectorTier.gte(2)) { player.S.upgrades = [11,12]}
+else if (player.C.EffectorTier.gte(1)) { player.S.upgrades = [11]}
+else { player.S.upgrades = [] }
+
+
+player["S"].points = player["S"].points.mul(resetPoints).plus(1)
+
 player["GL"].Solarlight = player["GL"].Solarlight.mul(0)
 player.points = player.points.mul(0)
 setBuyableAmount("S", 11, new Decimal(0)   )
 setBuyableAmount("S", 12, new Decimal(0) )	
 
-if (r = false) 
-	return;
-else {
-	player.S.upgrades = []
-}
+
 
 }
 
