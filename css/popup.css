@@ -3,12 +3,12 @@
 	border-radius: 7px;
 	width: 300px;
 	min-height: 60px;
-	color: #000000;
+	color: #e78925;
 	display: block;
 	margin-top: 30px;
 	padding-top: 15px;
 	padding-bottom: 15px;
-	border-color: rgba(0, 0, 0, 0.25);
+	border-color: rgba(214, 96, 18, 0.926);
 }
 
 
@@ -24,7 +24,7 @@
 }
 
 .milestone-popup {
-	background: #D1C23C;
+	background: #ff7700;
 }
 
 .fade-enter-active, .fade-leave-active {

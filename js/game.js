@@ -399,14 +399,14 @@ var interval = setInterval(function() {
 	if (tmp.gameEnded&&!player.keepGoing) return;
 	ticking = true
 	let now = Date.now()
-	let diff = (now - player.time) / 1e3
+	let diff = ((now - player.time) / 1e3)
 	let trueDiff = diff
 	if (player.offTime !== undefined) {
 		if (player.offTime.remain > modInfo.offlineLimit * 3600) player.offTime.remain = modInfo.offlineLimit * 3600
 		if (player.offTime.remain > 0) {
 			let offlineDiff = Math.max(player.offTime.remain / 10, diff)
 			player.offTime.remain -= offlineDiff
-			diff += offlineDiff
+			diff += offlineDiff 
 		}
 		if (!options.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
 	}
@@ -432,10 +432,10 @@ setInterval(function() {needCanvasUpdate = true}, 1)
 
 
 
-function layer1Reset(r=true) {
+function layer1Reset(keepUpgrades=false) {
 	let resetPoints = 0
-if (player.C.EffectorTier.gte(5)) { keepPoints = 1 }
-else if (player.C.EffectorTier.gte(4)) { player.S.upgrades = [11,12,13,14] }
+if (player.C.EffectorTier.gte(5)) { resetPoints = 1 }
+else if (player.C.EffectorTier.gte(4) || keepUpgrades == true) { player.S.upgrades = [11,12,13,14] }
 else if (player.C.EffectorTier.gte(3)) { player.S.upgrades = [11,12,13] }
 else if (player.C.EffectorTier.gte(2)) { player.S.upgrades = [11,12]}
 else if (player.C.EffectorTier.gte(1)) { player.S.upgrades = [11]}
@@ -448,13 +448,47 @@ player["GL"].Solarlight = player["GL"].Solarlight.mul(0)
 player.points = player.points.mul(0)
 setBuyableAmount("S", 11, new Decimal(0)   )
 setBuyableAmount("S", 12, new Decimal(0) )	
+}
+
+
+
+function layer2Reset(keepUpgrades=false) {
+player.C.EffectorTier = player.C.EffectorTier.mul(0)
+player.GL.Solar_Shards = player.GL.Solar_Shards.mul(0)
+player.C.checkUpgrades = player.C.checkUpgrades.mul(0)
+player.C.CenterPoints = player.C.CenterPoints.mul(0)
+player.C.Highest = player.C.Highest.mul(0)
+player.C.Score = player.C.Score.mul(0)
+
+player.C.upgrades = []
+player.GL.upgrades = []
+
+setBuyableAmount("GL", 11, new Decimal(0) )
+
+layer1Reset(false)
+
 
 
 
 }
 
+function EclipsiumReset() {
+	player.C.EffectorTier = player.C.EffectorTier.mul(0)
+	player.GL.Solar_Shards = player.GL.Solar_Shards.root(3).floor()
+	
+	player.C.CenterPoints = player.C.CenterPoints.root(3)
+	setBuyableAmount("GL", 11, getBuyableAmount("GL",11).root(2).floor() )
+	player.GL.upgrades = []
+	player.C.Highest = player.C.Highest.mul(0)
+    player.C.Score = player.C.Score.mul(0)
 
 
+	if (player.E.EclipseTier.gte(4) && player.C.checkUpgrades.neq(2)) player.C.checkUpgrades = player.C.checkUpgrades.sub(1)
+	if (player.E.EclipseTier.gte(3) && player.C.checkUpgrades.neq(1)) player.C.checkUpgrades = player.C.checkUpgrades.sub(1)
+	else if (player.C.checkUpgrades.gte(1)) player.C.checkUpgrades = player.C.checkUpgrades.sub(1)
+	
+	layer1Reset(false)
+}
 
 
 

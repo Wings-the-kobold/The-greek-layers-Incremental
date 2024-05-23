@@ -54,7 +54,7 @@ td {
 
 .treeThing {
 	margin: 0 10px 0 10px;
-	vertical-align: middle;
+	vertical-align: left;
 }
 
 .can.upg:hover {

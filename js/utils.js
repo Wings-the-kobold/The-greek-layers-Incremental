@@ -369,6 +369,10 @@ function doPopup(type = "none", text = "This is a test popup.", title = "", time
 			popupTitle = "Good Job lol";
 			popupType = "challenge-popup"
 			break;
+		case "msg":
+			popupTitle = "";
+			popupType = "default-popup"
+			break;
 		default:
 			popupTitle = "Something Happened?";
 			popupType = "default-popup"

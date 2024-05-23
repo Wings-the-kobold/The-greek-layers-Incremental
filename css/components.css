@@ -127,14 +127,14 @@
 	width: 80px;
 	border-radius: 15%;
 	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
+	border-color: rgba(214, 90, 90, 0.849);
 	font-size: 10px;
 	overflow: visible;
 	
 }
 
 .tile.can:hover {
-	box-shadow: 0 0 10px var(--points);
+	box-shadow: 10 10 10px var(--points);
 	transform: scale(1.1, 1.1);
 	z-index: 7;
 }
@@ -144,7 +144,7 @@
 	width: 200px;
 	border-radius: 25%;
 	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
+	border-color: rgba(203, 112, 46, 0.708);
 }
 
 /* Used for respec button and similar */

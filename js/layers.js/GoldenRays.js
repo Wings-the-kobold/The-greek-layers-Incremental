@@ -36,29 +36,42 @@ addLayer("GL", {
             
           mult = Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1).times(diff)
           if (hasUpgrade("C",16)) speed = speed.times(3.14)
+
+
+
+
         } 
         
         player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.times(speed)).clampMin(0)
 
 
-
+        if ( player["GL"].Solarlight.gt(player["GL"].Solarlightcap)) { player["GL"].Solarlight = player["GL"].Solarlightcap }
+        // so that it does not go above
 
         if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
         
-        if (hasUpgrade("C",16)) player.GL.Solarlightcap = Decimal.mul(2000, 3.14)
+
+
+
+        let Base = new Decimal(2000)
+
+        // Increasing Solar Light Cap
+
+        let eff1 = new Decimal(1)
+        if (hasMilestone("E",1)) Base = Base.mul(player.E.TopLVL.pow_base(1.75))
+
+
+
+
+        if (hasUpgrade("C",23)) Base = Base.mul(3.14)
+        if (hasUpgrade("E",11)) Base = Base.mul(upgradeEffect("E",11))
+       
+        player.GL.Solarlightcap = Base
+
+
 
         },
-         
-
-
-      
-
-
-
-
-
-
-  
+          
     tabFormat: {
         "Solarity of Disparity": {      
               content: [
@@ -91,9 +104,6 @@ addLayer("GL", {
                 "blank",
                "blank",
                "upgrades",
-              
-                
-                
                 "blank",
                 "blank",
                 "blank",
@@ -110,19 +120,7 @@ addLayer("GL", {
         },
        
       },
-    
-
-   
-
-
-
-
-
-
-
-    
-
-
+     
 // if (player["GL"].Solar_shards.gte(1))
     tooltip: () => `<p>Open Layer 2, Main Layer</p>`,
  upgrades: {
@@ -219,19 +217,19 @@ addLayer("GL", {
             }
           },
       },
-          14: {
+          21: {
         fullDisplay() {
           
           
           let enter;
           let change; 
-              if (hasUpgrade("GL",14)) enter = format(upgradeEffect("GL",14),3)
-              if (hasUpgrade("GL",14)) change = `Oscillating... <br>Annular's Effect is ^${enter}`
+              if (hasUpgrade("GL",21)) enter = format(upgradeEffect("GL",21),3)
+              if (hasUpgrade("GL",21)) change = `Oscillating... <br>Annular's Effect is ^${enter}`
               else change = `Cost: 105 Solar Shards`
             
               return `
               <h2>Annular:</h2> <br>
-            [red color]: Instability... <br><br>
+              <h3 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;"> Instability... </h3><br><br>
             Requires: <br>
             Shardism <br>
             Scorch <br>
@@ -247,12 +245,13 @@ addLayer("GL", {
 
 
         },
+
         unlocked() {if ( hasUpgrade("GL",11) && hasUpgrade("GL",12) && hasUpgrade("GL",13) ) return true},
         branches: ["11","12","13"],
-        cost: new Decimal(75),
+        cost: new Decimal(105),
         currencyDisplayName: "Solar Shards",
-          currencyInternalName: "Solar_Shards",
-          currencyLayer: "GL",
+        currencyInternalName: "Solar_Shards",
+        currencyLayer: "GL",
         
         effect() {
           
@@ -266,25 +265,25 @@ addLayer("GL", {
             "height": "170px",
             "border-radius": "0px",
             "border": "0px",
-            "margin": "50px",
+            "margin": "15px",
             "text-shadow": "0px 0px 10px #000000",
             "color": "#3a3337"
           }
         },
     },
-          15: {
+          31: {
       fullDisplay() {
         
         
         let enter;
         let change; 
-            if (hasUpgrade("GL",15)) enter = format(upgradeEffect("GL",15),3)
-            if (hasUpgrade("GL",15)) change = `Oscillating... <br>Coronal's Effect is ${enter}`
+            if (hasUpgrade("GL",31)) enter = format(upgradeEffect("GL",31),3)
+            if (hasUpgrade("GL",31)) change = `Oscillating... <br>Coronal's Effect is ${enter}`
             else change = `[Get Requirements to Unlock!]`
           
             return `
             <h2>Coronal:</h2> <br>
-          [red color]: Uncomfortibility <br><br>
+            <h3 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;">Uncomfortibility </h3> <br><br>
           Requires:<br> Phaser #10<br> Plasmate #35<br> Multiply #70 <br><br>
 
           
@@ -298,8 +297,8 @@ addLayer("GL", {
 
 
       },
-      unlocked() {if ( hasUpgrade("GL",11) && hasUpgrade("GL",12) && hasUpgrade("GL",13) ) return true},
-      branches: ["14"],
+      unlocked() {if (hasUpgrade("GL",21) ) return true},
+      branches: ["21"],
       canAfford() {
         if (hasUpgrade("GL",14) && getBuyableAmount("S",11).gte(35) && getBuyableAmount("S",12).gte(70) && getBuyableAmount("GL",11).gte(10)) return true
         else return false
@@ -319,7 +318,7 @@ addLayer("GL", {
           "height": "170px",
           "border-radius": "0px",
           "border": "0px",
-          "margin": "50px",
+          "margin": "35px",
           "text-shadow": "0px 0px 10px #000000",
           "color": "#3a3337"
         }
@@ -369,6 +368,7 @@ addLayer("GL", {
     effect() {
       let effect = decimalOne
       effect = effect.mul(getBuyableAmount(this.layer, this.id))
+      effect = effect.mul(getBuyableAmount("E", 11).add(1))
       return effect;
     },
     style() {
@@ -420,7 +420,7 @@ addLayer("GL", {
                         currentSOLARLIGHT = currentSOLARLIGHT.mul(0).plus(1)
                       }
                       
-
+                      
                     },
                     branches: ["11", "12"],
                 canClick() {if (hasUpgrade("S",14)) return true},
@@ -453,6 +453,7 @@ addLayer("GL", {
                 12: {
                   display() {
                     let gain = player["GL"].Solarlight.pow(0.4)
+                    if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(2))
 
                     let Inactive = `<h3>CONVERTARY [LAYER 2 RESET]</h3><br> <br>(Requires Solar Light Generation)`
                     let Active = `
@@ -467,7 +468,7 @@ addLayer("GL", {
                   onClick() {
                     let gain = new Decimal(1)
                     gain = gain.mul(player["GL"].Solarlight.pow(0.4))
-
+                    if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(2))
 
 
 
@@ -525,7 +526,7 @@ addLayer("GL", {
     branches: ["S","GL"],
     layerShown(){ 
       hasCurrency = new Decimal(1)
-      if ( hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solarlight.gte(1))   return true; 
+      if ( hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solarlight.gte(1) || player.E.EclipseTier.gte(1))   return true; 
 
     }
 }

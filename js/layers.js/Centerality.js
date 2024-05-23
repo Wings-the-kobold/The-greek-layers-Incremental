@@ -5,6 +5,7 @@ addLayer("C", {
     startData() { return {
         unlocked: true,
         CenterPoints: new Decimal(0),
+        OffsetPoints: new Decimal(0),
         Score: new Decimal(0),
         Highest: new Decimal(0),
         requirement: new Decimal(2000),
@@ -35,10 +36,18 @@ addLayer("C", {
     if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
     if (hasUpgrade("GL",15)) player["C"].Score = Decimal.mul(getBuyableAmount("S", 11), getBuyableAmount("S", 12))
     
-    player.C.requirement = Decimal.mul(2000   ,  Decimal.pow( 1.35 ,  player.C.CenterPoints   ).clampMin(1)       )
+
+
+    
     if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.mul(0)
     if (player.C.Score.gte(player.C.Highest)) player.C.Highest = player.C.Score
 
+    let Divisor = new Decimal(1)
+
+    if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.25))
+
+    player.C.requirement = Decimal.mul(2000   ,  Decimal.pow( 1.35 , player.C.CenterPoints)).div(Divisor).clampMin(1)
+    
 
   }, 
   
@@ -62,8 +71,22 @@ addLayer("C", {
      }],
        ["display-text",
      function() { 
-      return `You have ${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score. <br>
+      
+      let valueHeirarchy = decimalZero
+      if (player.C.checkUpgrades.gte(2)) valueHeirarchy = Decimal.pow(5, player.C.CenterPoints).clampMin(1)
+
+        if (getClickableState("C", 23)) valueHeirarchy = valueHeirarchy.log(12)
+
+      let HeirarchyBoost = ``
+
+
+
+      if (player.C.checkUpgrades.gte(2)) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(valueHeirarchy)}` 
+
+      return `You have ${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score. <br> <br>
+      ${HeirarchyBoost} 
       `
+      //if (player.C.checkUpgrades.gte(2)) gain = gain.mul(Decimal.pow(5, player.C.CenterPoints).clampMin(1))
      }],
      "blank",
      "clickables",
@@ -92,9 +115,46 @@ addLayer("C", {
      }],
      ["display-text",
       function() { 
+
+
+
+
         let progression = ""
-      if (player.C.EffectorTier.eq(4))
-      progression = `...What am i doing here... why am i here? WHY DO I EXIST? SOMEONE PLEASE HELP ME IM HAVING AN EXSISTENTIAL CRISIS!`
+        if (player.E.EclipseTier.gte(1)) type1 = `
+        <br><br>------
+        <br>part 2: (P-a -> Person a; P-b -> person b, and ECT...)
+        <br> P-A: YOU CLEARLY DID IT!
+        <br> P-B: WAIT WAIT GUYS STOP ARGUEING! WHAT IS THAT THING???
+        <br> *they all stop to look at the yellow gate, in which seems to be the Eclipsifier*
+        <br> P-A, P-B: Woah...
+        <br> P-C: Finally we get to stop arg- WOAH
+        <br> P-B: ...really? you still decide to bring that up?
+        <br> P-C: well actually we havent introduced ourselves with the reader here~
+        <br> *they both look at them, P-A, P-B glares*
+        <br> [Unlock more dialogue at Eclipse Tier 2!]`
+
+      if (getClickableState("C",23)) progression = `
+        Note that this Upgrade check has a large Timewall of around 6 hours <br>
+        <br> Person A: In the meantime, why dont you just play other games? like touching grass? or playing adopt me in roblox??? 
+        <br>Person A: w-what do you mean you hate adopt me? 
+        <br>Person A: adopt me is FUN 
+        <br>Person B: pfft oh please, adopt me is for KIDS
+        <br>Person A: OH YEAH? THEN WHAT DO YOU SUGGEST?? 
+        <br>Person B: ...idk lmao probably something better than your stinky game 
+        <br>Person A: GIVE ME SOMETHING THAT COULD BE BETTER THAN ADOPT ME
+        <br>Person B: The person playing this game can probably tell us
+        <br>Person C: HEY! WHAT DID I TELL YOU ABOUT BREAKING THE FOURTH WALL?
+        <br>Person B: Sorry, I Have a habit to uncontrollably tell that the reader is doing
+        <br>Person C: >:( well than stop it! its getting very annoying!
+        <br>Person C: And were not even helping because by the looks of it, Our dialogue is filling up the bottom half of the screen!
+        <br>Person A and B: HYPOCRITE!
+        <br>Person C: YOU DID IT FIRST PERSON B
+        <br>*the three are now arguing... when will this ever end?*
+        <br> [Unlock more dialogue at higher resets]
+        ${type1}
+       `
+      else if (player.C.EffectorTier.eq(4))
+      progression = `🙂`
       else if (player.C.EffectorTier.eq(3))
       progression = `[Last Minor Unlock at Effector Tier IV]`
       else if (player.C.EffectorTier.eq(2))
@@ -207,7 +267,7 @@ addLayer("C", {
       fullDisplay() {
           return `<h2>Jear 2</h2> <br>
           PATH SPLIT UPGRADE: <br>
-          4x to Solar Ray Gain
+          8x to Solar Ray Gain
           `
       },
       cost: new Decimal(1),
@@ -239,7 +299,7 @@ addLayer("C", {
   fullDisplay() {
       return `<h2>Jear 3</h2> <br>
       PATH SPLIT UPGRADE: <br>
-      2x to Solarity AND Solar rays
+      4x to Solarity AND Solar rays
       `
   },
   cost: new Decimal(1),
@@ -271,7 +331,7 @@ addLayer("C", {
 
 
 
-14: {
+21: {
   fullDisplay() {
       return `<h2>Neaver</h2> <br>
       PATH SPLIT UPGRADE II: <br>
@@ -284,7 +344,7 @@ addLayer("C", {
   currencyLayer: "C",
   canAfford() {
     let splitTaken = false
-    if (hasUpgrade("C",15) || hasUpgrade("C",16)) splitTaken = true
+    if (hasUpgrade("C",22) || hasUpgrade("C",23)) splitTaken = true
     return (splitTaken == false) 
   },
   unlocked() {
@@ -302,7 +362,7 @@ addLayer("C", {
     }
   },
 },
-15: {
+22: {
   fullDisplay() {
       return `<h2>Weaver</h2> <br>
       PATH SPLIT UPGRADE II: <br>
@@ -316,7 +376,7 @@ addLayer("C", {
 
   canAfford() {
     let splitTaken = false
-      if (hasUpgrade("C",14) || hasUpgrade("C",16)) splitTaken = true
+      if (hasUpgrade("C",21) || hasUpgrade("C",23)) splitTaken = true
       return (splitTaken == false) 
   },
   unlocked() {
@@ -334,7 +394,7 @@ addLayer("C", {
     }
   },
 },
-16: {
+23: {
 fullDisplay() {
   return `<h2>Leaver</h2> <br>
   PATH SPLIT UPGRADE II : <br>
@@ -347,7 +407,7 @@ currencyDisplayName: "CenterPoints",
   currencyLayer: "C",
 canAfford() {
   let splitTaken = false
-  if (hasUpgrade("C",14) || hasUpgrade("C",15)) splitTaken = true
+  if (hasUpgrade("C",21) || hasUpgrade("C",22)) splitTaken = true
   return (splitTaken == false ) 
   
 },
@@ -380,61 +440,12 @@ style() {
   
             },
   
-  buyables: { 
-  
-  
-  
-  
-  
-  
-  
-  },
-            /*
-  let effect1Disp = `log2 of Solar Rays boost Solarity, keep Intricity on ALL layer 1 Resets.` 
-                 
-                 let effect1 = format(player.S.points.clampMin(1).log(2))
-
-                 let effect2Disp = `log4 of Solar Rays boost Solar Rays, keep Polarize on ALL layer 1 Resets.` 
-                 
-                 let effect2 = format(player.S.points.clampMin(1).log(4))
-
-                 let effect3Disp = `log9 of Solar Rays boost plasmates effect, Keep Gravitation on ALL layer 1 Resets.` 
-                 
-                 let effect3 = format(player.S.points.clampMin(1).log(9))
-
-                 let effect4Disp = `log16 of Solar Rays boost multiply's effect, Keep Solarizor on ALL layer 1 Resets.` 
-                
-                 let effect4 = format(player.S.points.clampMin(1).log(16))
 
 
-                 let display1 = ``
-
-
-
-                 if (player.C.EffectorTier.gte(3)) display1 = `
-                 ${effect1Disp} <br> Effector's Tier I effect is ${effect1}  <br>
-                 ${effect2Disp} <br> Effector's Tier II effect is ${effect2} <br>
-                 ${effect3Disp} <br> Effector's Tier III effect is ${effect3} <br>` 
-                 else if (player.C.EffectorTier.gte(2)) display1 = `
-                 ${effect1Disp} <br> Effector's Tier I effect is ${effect1} <br>
-                 ${effect2Disp} <br> Effector's Tier II effect is ${effect2}`
-
-                 else if (player.C.EffectorTier.gte(1)) display1 = `${effect1Disp} <br> Effector's Tier I effect is ${effect1}`
-                  
-
-                   return `
-                   <h3>Effector Tier ${player.C.EffectorTier} (max 7) </h3><br> <br>
-                   Unlock a new Effect. <br>  
-                   cost: ${Decimal.pow(2, player.C.EffectorTier)} <br>
-                   ${display1}
-
-                   `
-
-
-            */
+            
   
     clickables: {
-                // Challenge Check Upgrades!
+                
                
       11: {
                   display() {
@@ -447,14 +458,28 @@ style() {
 
                   },
                   onClick() {
-                  player.C.CenterPoints = player.C.CenterPoints.plus(1)
-                  player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
+                    let Divisor = new Decimal(1)
+                    let mult = new Decimal(1)
+                   
+                  if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.25))
+                  let basecost = new Decimal(2000).div(Divisor)
+                    //this is the buyMax reset thing
+                   if (hasMilestone("E",3) && player.C.Score.gte(player.C.requirement)) mult = player.C.Score.div(basecost).log(1.35).round()
+                   
+                  //scaling for this is: (2000 * 1.35^x) / Reduced requirements
+                   
+                    
+                   
+                  player.C.CenterPoints = player.C.CenterPoints.plus(mult)
+                    player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
                   layer1Reset()
+                  
 
 
 
                   },
               canClick() {
+
                 if (player.C.Score.gte(player.C.requirement)) return true
 
 
@@ -495,18 +520,20 @@ style() {
 
                 },
                 onClick() {
-                player.C.EffectorTier = player.C.EffectorTier.plus(1)
-                player.C.CenterPoints = player.C.CenterPoints.sub(Decimal.pow(2, player.C.EffectorTier))
                 
+                player.C.CenterPoints = player.C.CenterPoints.sub(Decimal.pow(2, player.C.EffectorTier))
+                player.C.EffectorTier = player.C.EffectorTier.plus(1)
                 //if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.abs()
 
 
                 },
             canClick() {
-              if (player.C.CenterPoints.gte(Decimal.pow(2, player.C.EffectorTier)) && player.C.EffectorTier.neq(7)    ) return true
+              let maxPurchase = 4
+
+              if (player.C.CenterPoints.gte(Decimal.pow(2, player.C.EffectorTier)) && player.C.EffectorTier.neq(maxPurchase)    ) return true
             },
             unlocked() {
-              if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1)) return true
+              if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
     
             },
                 
@@ -523,17 +550,21 @@ style() {
                 ];
                 
                 const effectsDisplay = effects.slice(0, player.C.EffectorTier.toNumber())
-                                              .map(({log, boosts, keep, tier}, index) => `TIER ${tier} <br> log${log} of Solar Rays boosts ${boosts}, Keep ${keep} on ALL layer 1 Resets.<br /> Effector's Tier ${tier} effect is ${format(player.S.points.log(log).clampMin(1))}`)
+                                              .map(({log, boosts, keep, tier}, index) => `<h3>TIER ${tier} <br> log${log} of Solar Rays boosts ${boosts}, Keep ${keep} on ALL layer 2 Resets.<br /> Effector's Tier ${tier} effect is ${format(player.S.points.log(log).clampMin(1))}</h3>`)
                                               .join('<br><br>');
                 
-                return `<h3>${effectsDisplay}`
+           
+                if (player.E.EclipseTier.lt(1) || !player.C.EffectorTier.gte(1)) return `<h1>Locked.</h1><br><h3>Get Effector Tier I to unlock this board</h3>`; else return `${effectsDisplay}`
+
+
+               
 
                  
                 
 
               },
               unlocked() {
-                if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1)) return true
+                if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
       
               },
           canClick() {
@@ -556,18 +587,28 @@ style() {
               
           },
 
+
+
+
+
+
+// Challenge Check Upgrades!
+
+
       21: {
             display() {
               let text = ``
               let textActive = ``
               let rewardDisplay = ``
-              if (getClickableState("C", 21)) text = `^0.666 to Solarity<br>^0.666 to Solar Rays<br>^0.666 to Plasmate's effect <br>
-              require:
+              if (!getClickableState("C", 21) && player.C.checkUpgrades.lt(1)) text = `Enter Upgrade Check. #001 <br>
+              ^0.666 to Solarity<br>^0.666 to Solar Rays<br>^0.666 to Plasmate's effect <br>
+              Requires:
               Phaser #15
               Plasmate #60
-              Multiply #325 <br> Goal: Plasmate #40 <br> `
-              else if (player.C.checkUpgrades.lt(1)) text = `Enter Upgrade Check. #001`
-              else text = `Check Upgrade Completed!`
+              Multiply #325 <br>
+               `
+              else if (!getClickableState("C", 21) && player.C.checkUpgrades.gte(1)) text = `Check Upgrade Completed!<br>`
+              else text = `Goal: Plasmate #40`
               if (getClickableState("C", 21)) textActive = `[ACTIVE] `
              
              
@@ -575,16 +616,16 @@ style() {
               if (player.C.checkUpgrades.gte(1)) rewardDisplay = `^1.25 to Solarity Gain, and Automate Plasmate buyable, they also no longer spend anything.`
 
               return `
-              <h1>Formality...</h1><br> ${textActive}              
-              ${text} <br>
+              <h1>Formality...</h1>
+              ${textActive}              
+              ${text} 
               ${rewardDisplay}
-
-               `
+              <br>`
               
 
             },
             onClick() {
-            if (getClickableState("C", 21) && getBuyableAmount("S",11).gte(40) && player.C.checkUpgrades.lt(1)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
+            if (getClickableState("C", 21) && player.C.checkUpgrades.lt(1)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
             if (!getClickableState("C", 21)) {layer1Reset()}
 
             const currentState = getClickableState("C", 21)
@@ -611,7 +652,10 @@ style() {
           if (getBuyableAmount("S",11).gte(40)) return true                                              
         }                                                                    
         },  
-            
+        unlocked() {
+          if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
+          else false
+        },
             
         },
       22: {
@@ -620,24 +664,32 @@ style() {
             let textActive = ``
             let rewardDisplay = ``
             let textActiveGoal = ``
-            if (!getClickableState("C", 22)) text = `Enter Upgrade Check #002
+            
+            if (!getClickableState("C", 22) && player.C.checkUpgrades.lt(2)) text = `Enter Upgrade Check #002
 
             Meta Scaling starts instantly <br>Meta Scaling also affects Plasmate <br> ^0.666 to Multiply's effect
 
             Requires:
-            Phaser #20
-            Plasmate #250
-            Multiply #325 <br>
+            Phaser #17
+            Plasmate #235
+            Multiply #370
+            Formality 
             `
-            else text = `Check Upgrade Completed!`
-            if (getClickableState("C", 22)) textActive = `[ACTIVE]`
-            if (getClickableState("C", 22)) textActiveGoal = `Goal: Multiply #115`
+            else if (player.C.checkUpgrades.gte(2)) text = `Check Upgrade Completed!`
+            else text = ``
+            if (getClickableState("C", 22)) textActive = `
+            [ACTIVE] 
+            Goal: Multiply #80`
+            
             else textActiveGoal = ``
             // Goal: Plasmate #40 <br>
            
            
-            if (player.C.checkUpgrades.gte(2)) rewardDisplay = `Reduce Meta Scaling power by 35% and Automate Multiply buyable, they also no longer spend anything.`
+            if (player.C.checkUpgrades.gte(2)) rewardDisplay = `Center Points Boosts Solarity by 5^x, and Automate 'Multiply' with a bulk purchase of 5! <br>`
             else rewardDisplay = ``
+
+
+
             return `
             <h1>Heirarchy...</h1><br> ${textActive}
             ${text}
@@ -648,7 +700,7 @@ style() {
 
           },
           onClick() {
-          if (getClickableState("C", this.id) && getBuyableAmount("S",11).gte(40) && player.C.checkUpgrades.lt(1)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
+          if (getClickableState("C", this.id) && player.C.checkUpgrades.lt(2)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
           if (!getClickableState("C", this.id)) {layer1Reset()}
 
           const currentState = getClickableState("C", this.id)
@@ -659,40 +711,149 @@ style() {
 
 
           },
+          unlocked() {
+            if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
+            else false
+          },
       canClick() {
       //check if it has the check upgrade or is not in the check upgrade
-      if (getClickableState(this.layer,this.id) == false && player.C.checkUpgrades.lt(1)) 
+      if (getClickableState(this.layer,this.id) == false && player.C.checkUpgrades.lt(2)) 
       {
       //check if it has the requirements to enter unless it is in the check upgrade 
-      if (getBuyableAmount("S",11).gte(60) && getBuyableAmount("S",12).gte(325) && getBuyableAmount("GL",11).gte(15)){
+      if (getBuyableAmount("S",11).gte(235) && getBuyableAmount("S",12).gte(370) && getBuyableAmount("GL",11).gte(17) && !player.C.checkUpgrades.gte(2)){
           return true
         }
        } 
       // check if its inside the check upgrade  
-      else if (getClickableState(this.layer,this.id) == true && player.C.checkUpgrades.lt(1))
+      else if (getClickableState(this.layer,this.id) == true && player.C.checkUpgrades.lt(2))
       {                                                                       
         //check if it meets the requirements to complete the upgrade check.
-        if (getBuyableAmount("S",11).gte(40)) return true                                              
+        if (getBuyableAmount("S",12).gte(80)) return true                                              
       }                                                                    
       },
-      style() { return {
-        "width": "135px",
-        "height": "250px",
-        "border-radius": "5px",
-        "border": "5px",
-        "margin": "0px",
-        "text-shadow": "0px 0px 10px #000000",
-        "border-color":"rgb(240, 117, 16)",
-      }
+      style() { 
           },   
           
           
       },
+      23: {
+        display() {
+          let text = ``
+          let textActive = ``
+          let rewardDisplay = ``
+          let textActiveGoal = ``
+
+
+
+          if (player.C.checkUpgrades.gte(3)) text = `Check Upgrade Completed!`
+          else if (!getClickableState("C", 23))
+           text = `Enter Upgrade Check #003
+
+          All effects are reduced to log12(x)
+
+          Requires:
+          Phaser #25
+          Plasmate #262
+          Multiply #380
+          15 Center Points
+          Heirarchy
+          `
+          else text = ``
+
+          
+
+          if (getClickableState("C", 23)) textActive = `
+          [ACTIVE] 
+          Goal: Multiply #30
+          `
+          
+          else textActiveGoal = ``
+          // Goal: Plasmate #40 <br>
+         
+         
+          if (player.C.checkUpgrades.gte(3)) rewardDisplay = `Multiply's effect is raised ^1.312. You now generate ^0.75 of Solar Rays per Second [can be increased later on] <br>`
+          else rewardDisplay = ``
+
+
+
+          return `
+          <h1>Twilight...</h1><br> ${textActive}
+          ${text}
+          ${textActiveGoal}
+          ${rewardDisplay}
+           `
+          
+
+        },
+        onClick() {
+        if (getClickableState("C", this.id) && player.C.checkUpgrades.lt(3)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
+        if (!getClickableState("C", this.id)) {layer1Reset()}
+
+        const currentState = getClickableState("C", this.id)
+        setClickableState("C", this.id, !currentState)
+        
 
 
 
 
+        },
+        unlocked() {
+          if ( player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1) ) return true
+          else false
+        },
+    canClick() {
+    //check if it has the check upgrade or is not in the check upgrade
+    if (getClickableState(this.layer,this.id) == false && !player.C.checkUpgrades.gte(3)) 
+    {
+    //check if it has the requirements to enter unless it is in the check upgrade 
+    if (getBuyableAmount("S",11).gte(262) && getBuyableAmount("S",12).gte(380) && getBuyableAmount("GL",11).gte(25) && player.C.CenterPoints.gte(15) && player.C.checkUpgrades.gte(2)){
+        return true
+      }
+     } 
+    // check if its inside the check upgrade  
+    else if (getClickableState(this.layer,this.id) == true )
+    {                                                                       
+      //check if it meets the requirements to complete the upgrade check.
+      if (getBuyableAmount("S",12).gte(30)) return true                                              
+    }                                                                    
+    },
+   
+        
+    },
 
+
+
+
+   31: {
+      display() {
+          let ttt = ``
+          if (player.C.OffsetPoints.gte(1)) ttt = ` You have ${format(player.C.OffsetPoints)} Offset Points Stored `
+         return `
+         <h3>Offset the upgrade tree and transform used Center Points into Offset Points<br>
+         ${ttt}
+         `
+        
+
+      },
+      onClick() {
+      
+      layer1Reset()
+      if (hasUpgrade("C",11) || hasUpgrade("C",12)|| hasUpgrade("C",13)) player.C.OffsetPoints = player.C.OffsetPoints.plus(1)
+      if (hasUpgrade("C",21) || hasUpgrade("C",22)|| hasUpgrade("C",23)) player.C.OffsetPoints = player.C.OffsetPoints.plus(4)
+      player.C.upgrades = []
+      //if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.abs()
+
+
+      },
+  canClick() {
+    if (hasUpgrade("C",11) || hasUpgrade("C",12)|| hasUpgrade("C",13)) return true
+  },
+  unlocked() {
+    if (player.E.EclipseTier.gte(4)) return true
+  },
+      
+      
+  }, 
 
 
 
@@ -710,12 +871,10 @@ style() {
            
   
     row: 1, // Row the layer is in on the tree (0 is the first row)
-    hotkeys: [
-        {key: "", description: "Press A to Accelerate the Energy ", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
-    ],
+   
     branches: ["S"],
     layerShown(){ 
-      if ( hasUpgrade("GL",15) )   return true; 
+      if ( hasUpgrade("GL",15) || player.E.EclipseTier.gte(1) )   return true; 
   
     }
   }

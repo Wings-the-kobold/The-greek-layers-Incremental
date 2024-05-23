@@ -24,7 +24,7 @@ function resizeCanvas() {
 
 var colors_theme
 
-function drawTree() {
+function drawTree() { //hre is taht
 	if (!retrieveCanvasData()) return;
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	for (layer in layers){
