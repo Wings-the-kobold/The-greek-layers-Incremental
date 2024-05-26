@@ -244,7 +244,7 @@ addLayer("E", {
 // if (player["GL"].Solar_shards.gte(1))
     tooltip: () => `<p>Open Layer 3, Main Layer</p> <br> Your Current Eclipse Tier: ${player.E.EclipseTier}`,
  upgrades: {
-  11: {
+11: {
     fullDisplay() {
       let effectTXT =  ``
       if (hasUpgrade("E",this.id)) effectTXT = `${format(this.effect())}`
@@ -288,14 +288,18 @@ addLayer("E", {
   fullDisplay() {
     let effectTXT =  ``
     if (hasUpgrade("E",this.id)) effectTXT = `${format(this.effect())}`
-      return `<h2>Eclairity</h2> <br>
+      return `<h2>Pneomic</h2> <br>
       
-      Solar Charge makes Solar light generation faster<br> <br>
-      Cost: 10 Eclipsium
+      Solar Charge Boosts Solarity Gain by ^0.35 of its effect <br>
+
+      Requires: 4.77e16 Solarity without any Solarize Upgrades
+      (will reset everything eclipsium does as well as formality)<br>
+      
+      Cost: 8 Eclipsium
       
       `
   },
-  cost: new Decimal(13.5),
+  cost: new Decimal(8),
   //currencyInternalName: player["GL"].Solar_Shards,
   currencyDisplayName: "Eclipsium",
   currencyInternalName: "Eclipsium",
@@ -321,7 +325,55 @@ addLayer("E", {
 
   },
   canAfford() {
-    if (player.points.gte(8.91e14) && getBuyableAmount("S",11).eq(0) && getBuyableAmount("S",12).eq(0)) return true 
+    if (player.points.gte(1.11e23) && getBuyableAmount("S",11).eq(0) && getBuyableAmount("S",12).eq(0)) return true 
+  },
+
+
+},
+   
+
+
+13: {
+  fullDisplay() {
+    let effectTXT =  ``
+    if (hasUpgrade("E",this.id)) effectTXT = `${format(this.effect())}`
+      return `<h2>Pneomic</h2> <br>
+      
+      Solar Charge makes Solar light generation faster<br> <br>
+
+      Requires: 1.11e23 Solarity without Multiply or Plasmate
+
+      Cost: 3 Eclipsium
+      
+      `
+  },
+  cost: new Decimal(3),
+  //currencyInternalName: player["GL"].Solar_Shards,
+  currencyDisplayName: "Eclipsium",
+  currencyInternalName: "Eclipsium",
+  currencyLayer: "E",
+  unlocked() {
+    if (hasMilestone("E",4)) return true
+    },
+  style() {
+    return {
+      "width": "150px",
+      "height": "75px",
+      "border-radius": "0px",
+      "border": "0px",
+      "margin": "5px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#3a3337"
+    }
+  },
+  effect() {
+    let effect = new Decimal(1)
+    if (hasUpgrade("E",11)) effect = effect.mul(player.E.SolarCharge).pow(0.75)
+    return effect
+
+  },
+  canAfford() {
+    if (player.points.gte(1.11e23) && getBuyableAmount("S",11).eq(0) && getBuyableAmount("S",12).eq(0)) return true 
   },
 
 
@@ -574,7 +626,6 @@ unlocked() {if (hasMilestone("E",3)) return true}
     - QOL1: You can now Bulk Reset Center Points <br>
     - QOL2: Formality is kept on Recontrol<br>
     - Unlock Solar Charge<br>
-    - Formality's Exponent is increased 1.25 -> 1.4 <br>
     ` 
     else return `???`
   },
@@ -590,8 +641,8 @@ unlocked() {if (hasMilestone("E",3)) return true}
     if (player.E.EclipseTier.gte(this.id))
     return `
     - QOL3: You always generate Solar Rays based on log10 of Solarity<br>
-    - QOL4: Unlock Offset points (Centrality layer)<br>
     - QOL5: Heirarchy is kept on Recontrol <br>
+    - You can now pick 2 (x)eavers and 2 Jears in Centrality tree <br>
     - Unlock Recontrol Upgrades, as well as Expansion I  <br>
     ` 
     else return `???`
@@ -610,14 +661,20 @@ unlocked() {if (hasMilestone("E",3)) return true}
     - Generate Solar Light ^0.35 of its Solar Light cap<br>
     - Heirarchy's effect boost Solarity gain cap<br>
     - Unlock Lunaris <br>
-    - Twilight is kept on Recontrol, and
+    - Twilight is kept on Recontrol, and improve its generation even more
     <br>
     DEBUFF:<br>
     Eclipse Tier Requirement is worsened
     ` 
-    else return `???`
+    else return `???<br> 
+    Additional Requirements:
+    <br>"The Forgotton..." Check upgrade completed
+  
+    `
   },
-  done() { return player.E.EclipseTier.gte(this.id) },
+  done() { return player.E.EclipseTier.gte(this.id) // && 
+
+   },
   unlocked() {return player.E.EclipseTier.gte(3) },
   onComplete() {
     doPopup("msg","I can see it... I can hear... ", "???",3)        

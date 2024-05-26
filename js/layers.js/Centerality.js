@@ -5,7 +5,7 @@ addLayer("C", {
     startData() { return {
         unlocked: true,
         CenterPoints: new Decimal(0),
-        OffsetPoints: new Decimal(0),
+       
         Score: new Decimal(0),
         Highest: new Decimal(0),
         requirement: new Decimal(2000),
@@ -239,15 +239,23 @@ addLayer("C", {
           16x to Solarity
           `
       },
+      canAfford() {
+        let maxUpgradesAllowed = new Decimal(1)
+        let UpgradesTaken = new Decimal(0)
+        if (hasUpgrade("C",11)) UpgradesTaken = UpgradesTaken.plus(1)
+        else if (hasUpgrade("C",12)) UpgradesTaken = UpgradesTaken.plus(1)
+        else if (hasUpgrade("C",13)) UpgradesTaken = UpgradesTaken.plus(1)
+
+        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+      },
       cost: new Decimal(1),
       currencyDisplayName: "CenterPoints",
       currencyInternalName: "CenterPoints",
       currencyLayer: "C",
-      canAfford() {
-        let splitTaken = false
-        if (hasUpgrade("C",12) || hasUpgrade("C",13)) splitTaken = true
-        return (splitTaken == false) 
-      },
+    
       unlocked() {
         if (player.C.EffectorTier.gte(2)) return true
       },
@@ -276,9 +284,16 @@ addLayer("C", {
       currencyLayer: "C",
 
       canAfford() {
-        let splitTaken = false
-          if (hasUpgrade("C",11) || hasUpgrade("C",13)) splitTaken = true
-          return (splitTaken == false) 
+        let maxUpgradesAllowed = new Decimal(1)
+        let UpgradesTaken = new Decimal(0)
+        if (hasUpgrade("C",11)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",12)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",13)) UpgradesTaken = UpgradesTaken.plus(1)
+
+        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
       unlocked() {
         if (player.C.EffectorTier.gte(2)) return true
@@ -306,12 +321,18 @@ addLayer("C", {
   currencyDisplayName: "CenterPoints",
       currencyInternalName: "CenterPoints",
       currencyLayer: "C",
-  canAfford() {
-      let splitTaken = false
-      if (hasUpgrade("C",11) || hasUpgrade("C",12)) splitTaken = true
-      return (splitTaken == false ) 
-      
-  },
+      canAfford() {
+        let maxUpgradesAllowed = new Decimal(1)
+        let UpgradesTaken = new Decimal(0)
+        if (hasUpgrade("C",11)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",12)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",13)) UpgradesTaken = UpgradesTaken.plus(1)
+
+        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+      },
   unlocked() {
     if (player.C.EffectorTier.gte(2)) return true
   },
@@ -343,9 +364,16 @@ addLayer("C", {
   currencyInternalName: "CenterPoints",
   currencyLayer: "C",
   canAfford() {
-    let splitTaken = false
-    if (hasUpgrade("C",22) || hasUpgrade("C",23)) splitTaken = true
-    return (splitTaken == false) 
+    let maxUpgradesAllowed = new Decimal(1)
+    let UpgradesTaken = new Decimal(0)
+    if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
+
+    if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+    return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
   },
   unlocked() {
     if (player.C.EffectorTier.gte(3)) return true
@@ -375,9 +403,16 @@ addLayer("C", {
   currencyLayer: "C",
 
   canAfford() {
-    let splitTaken = false
-      if (hasUpgrade("C",21) || hasUpgrade("C",23)) splitTaken = true
-      return (splitTaken == false) 
+    let maxUpgradesAllowed = new Decimal(1)
+    let UpgradesTaken = new Decimal(0)
+    if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
+
+    if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+    return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
   },
   unlocked() {
     if (player.C.EffectorTier.gte(3)) return true
@@ -405,12 +440,18 @@ cost: new Decimal(4),
 currencyDisplayName: "CenterPoints",
   currencyInternalName: "CenterPoints",
   currencyLayer: "C",
-canAfford() {
-  let splitTaken = false
-  if (hasUpgrade("C",21) || hasUpgrade("C",22)) splitTaken = true
-  return (splitTaken == false ) 
-  
-},
+  canAfford() {
+    let maxUpgradesAllowed = new Decimal(1)
+    let UpgradesTaken = new Decimal(0)
+    if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
+
+    if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+    return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+  },
 unlocked() {
 if (player.C.EffectorTier.gte(3)) return true
 },
@@ -826,11 +867,9 @@ style() {
 
    31: {
       display() {
-          let ttt = ``
-          if (player.C.OffsetPoints.gte(1)) ttt = ` You have ${format(player.C.OffsetPoints)} Offset Points Stored `
+
          return `
-         <h3>Offset the upgrade tree and transform used Center Points into Offset Points<br>
-         ${ttt}
+         <h3>Recenter the upgrade tree and do a Convertary reset (respec)<br>
          `
         
 
@@ -838,8 +877,7 @@ style() {
       onClick() {
       
       layer1Reset()
-      if (hasUpgrade("C",11) || hasUpgrade("C",12)|| hasUpgrade("C",13)) player.C.OffsetPoints = player.C.OffsetPoints.plus(1)
-      if (hasUpgrade("C",21) || hasUpgrade("C",22)|| hasUpgrade("C",23)) player.C.OffsetPoints = player.C.OffsetPoints.plus(4)
+    
       player.C.upgrades = []
       //if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.abs()
 
@@ -851,7 +889,16 @@ style() {
   unlocked() {
     if (player.E.EclipseTier.gte(4)) return true
   },
-      
+  style() { return {
+    "width": "250px",
+    "height": "35px",
+    "border-radius": "0px",
+    "border": "10px",
+    "margin": "33px",
+    "text-shadow": "0px 0px 10px #000000",
+    
+  }
+}, 
       
   }, 
 

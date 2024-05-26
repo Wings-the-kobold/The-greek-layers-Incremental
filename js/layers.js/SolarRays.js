@@ -125,17 +125,7 @@ addLayer("S", {
          
          `
     
-    
-    
      
-    
-    
-    
-    
-    
-    
-    
-    
       },
     canReset() {
         return true
@@ -159,7 +149,14 @@ update(diff) {
   if (player.E.EclipseTier.gte(3)) BulkPurchase = BulkPurchase.plus(5)
 
 
+  let powered_Exponent = new Decimal(0)
+
+
   if (player.C.checkUpgrades.gte(3)) player.S.points = player.S.points.plus(getResetGain("S").pow(0.75))
+
+
+
+
   if (hasMilestone("E",4)) player.S.points = player.S.points.plus(player.points.clampMin(1).log(10).times(diff))
 
     player.S.Bulk_M = BulkPurchase
