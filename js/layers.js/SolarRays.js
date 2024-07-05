@@ -17,16 +17,17 @@ addLayer("S", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
    
-    tooltip: () => `<p>Open Layer 1, Main Layer</p>`,
+    tooltip: () => `<p>Open Layer 0, Main Layer</p>`,
     tabFormat: {
-        "March 8th, 2024": {      
+        "April 8th, 2024": {      
               content: [
                 
                 ["infobox","about"],
                 ["display-text",
                 function() { 
-                  
-                  return `You have ${format(player.S.points)} Solar Rays.`
+                  let forgotten = ``; if (getClickableState("E", 14)) forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 30px #ffffff;"> You Have ${format(player.S.points)} Shadow...? </h3>`; else forgotten = `You Have ${format(player.S.points)} Solar Rays`
+
+                  return `${forgotten}`
           
                }],
                "blank",
@@ -109,15 +110,17 @@ addLayer("S", {
 
 
       prestigeButtonText() {
-        let nerf = getResetGain(this.layer)  .pow(1.501501502)
-        
+        let nerf = new Decimal(0)
+        if (getClickableState("C",21)) nerf = getResetGain(this.layer)  .pow(1.501501502)
+        //if (getClickableState("E",14)) nerf = new Deciaml(1)
               let nerfText = ``
               if (getClickableState("C", 21)) nerfText = `+${format(nerf)} -> `
+             // if (getClickableState("E",14)) nerfText = `+${format(nerf)} ->`
              
         //let generation = ``
        // if (hasMilestone("E",1) && player.points.log(10).lt(40)) generation = `<p>Generating ${format(player.points.clampMin(1).log(10))} Solar Rays / Sec (thanks to Eclipse Tier 1)</p>`
         
-        return ` <h3> SOLARIZE </h3> [1st Layer Reset]  <br>
+        return ` <h3> SOLARIZE </h3> [Layer 0 Reset]  <br>
         Gain Solar rays by ^${tmp.S.exponent} of Solarity, Then Reset Solarity.<br>
          (Requires at least 1 Solarity)<br>
          ${nerfText} +${format(getNextAt(this.layer))} Solar Rays<br>
@@ -149,10 +152,11 @@ update(diff) {
   if (player.E.EclipseTier.gte(3)) BulkPurchase = BulkPurchase.plus(5)
 
 
-  let powered_Exponent = new Decimal(0)
+  let Twilight = new Decimal(0.75)
+  if (hasMilestone("E",3)) Twilight = Twilight.plus(0.15)
+  if (hasMilestone("E",5)) Twilight = Twilight.plus(0.15)
 
-
-  if (player.C.checkUpgrades.gte(3)) player.S.points = player.S.points.plus(getResetGain("S").pow(0.75))
+  if (player.C.checkUpgrades.gte(3)) player.S.points = player.S.points.plus(getResetGain("S").pow(Twilight))
 
 
 
@@ -178,7 +182,10 @@ getResetGain() {
 
   if (getClickableState("C", 21)) gain = gain.pow(0.666)
   if (getClickableState("C", 23)) gain = gain.log(12)
+    if (getClickableState("E",14) == true ) gain = gain.root(5)
   if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
+  
+  
   return gain;
 
 },
@@ -197,8 +204,9 @@ getNextAt() {
 
   if (getClickableState("C", 21)) gain = gain.pow(0.666)
   if (getClickableState("C", 23)) gain = gain.log(12)
-  
+    if (getClickableState("E",14) == true) gain = gain.root(5)  
   if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
+  
   return gain;
 
 },
@@ -236,7 +244,7 @@ getNextAt() {
         11: {
             fullDisplay() {
              // let rootage = new Decimal(0.05)
-              if (hasMilestone)
+              
 
 
                 return `<h2>Intricity</h2> <br>
@@ -264,7 +272,7 @@ getNextAt() {
                 "border": "0px",
                 "margin": "5px",
                 "text-shadow": "0px 0px 10px #000000",
-                "color": "#3a3337"
+                "color": "#664257"
               }
             },
             effect() {
@@ -301,7 +309,7 @@ getNextAt() {
               "border": "0px",
               "margin": "5px",
               "text-shadow": "0px 0px 10px #000000",
-              "color": "#3a3337"
+              "color": "#664257"
             }
           },
           effect() {
@@ -345,7 +353,7 @@ getNextAt() {
             "border": "0px",
             "margin": "5px",
             "text-shadow": "0px 0px 10px #000000",
-            "color": "#3a3337"
+            "color": "#664257"
           }
         },
     },
@@ -387,7 +395,7 @@ getNextAt() {
           "border": "0px",
           "margin": "5px",
           "text-shadow": "0px 0px 10px #000000",
-          "color": "#3a3337"
+          "color": "#664257"
         }
       },
   },
@@ -401,15 +409,18 @@ getNextAt() {
               let scale = new Decimal(1.35)
               
 
-
               let base = new Decimal(5)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
 
               if (hasUpgrade("GL",11)) Calculation = Calculation.pow(0.9).div(3)
+
+              
+
+              if (getBuyableAmount(this.layer,this.id).lt(5) && player.C.CenterPoints.lte(0) && player.GL.points.lte(0) && player.E.EclipseTier.lte(0)) Calculation = Calculation.div(1.1)
               return Calculation;
             },
             buyMax() {
-              let scale = new Decimal(1.35);
+              let scale = new Decimal(1.34);
             //  if (hasMilestone("E",1)) scale = scale.times(1.01)
               let base = new Decimal(5);
             
@@ -441,7 +452,7 @@ getNextAt() {
               return `
             <h2>Plasmate #${getBuyableAmount(this.layer, this.id)}</h2>
             <br>
-          <h2> ${nerfText} +${format(tmp[this.layer].buyables[this.id].effect)} to Solarity Gain</h2>
+          <h2> ${nerfText} +${format(this.effect())} to Solarity Gain</h2>
             <br>
           <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solar Rays</h2>
 
@@ -463,10 +474,12 @@ getNextAt() {
               if (getBuyableAmount("GL", 11).gte(1)) base = base.mul(buyableEffect("GL", 11).plus(1))
               effect = effect.mul(getBuyableAmount(this.layer, this.id)).mul(base)
               if (player.C.EffectorTier.gte(3)) effect = effect.mul(player.S.points.log(9).clampMin(1))
-              
              // if (hasMilestone("E",1)) effect = effect.pow(0.949)
+              if (getBuyableAmount("L",11).gte(1)) effect = effect.mul(buyableEffect("L",11))
+
               if (getClickableState("C", 21)) effect = effect.pow(0.666)
               if (getClickableState("C", 23)) effect = effect.clampMin(0.1).log(12)
+              if (hasUpgrade("E",13)) effect = effect.mul(upgradeEffect("E",13))
               return effect.clampMin(0);
             },
             style() {
@@ -549,7 +562,7 @@ getNextAt() {
           <h3> [Requires Plasmate #15] </h3>
           `
             },
-            canAfford() {
+            canAfford() {                     
               if  (player.points.gte(this.cost()) && getBuyableAmount("S",11).gte(15)) return true
             },
             buy() {
@@ -568,10 +581,14 @@ getNextAt() {
               effect = Decimal.pow(1.1,getBuyableAmount(this.layer, this.id))
               if (player.C.EffectorTier.gte(4)) effect = effect.mul(player.S.points.log(16).clampMin(1))
               if  (player.C.checkUpgrades.gte(3)) effect = effect.pow(1.312)
+              
+                if (getBuyableAmount("L",12).gte(1)) effect = effect.mul(buyableEffect("L",12))
 
               if (getClickableState("C",22)) effect = effect.pow(0.666)
               if (getClickableState("C", 23)) effect = effect.log(12)
-              
+
+
+              //    if (hasUpgrade("E",13)) effect = effect.mul(upgradeEffect("E",13))
               
               return effect;
             },

@@ -41,7 +41,7 @@
 }
 
 .resetNotify {
-	box-shadow: var(--hqProperty2a), 0 0 8px #ffffff;
+	box-shadow: var(--hqProperty2a), 0 0 8px #976e06;
 }
 
 .treeNode.can:hover {

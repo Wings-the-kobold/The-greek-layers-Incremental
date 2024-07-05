@@ -433,7 +433,7 @@ setInterval(function() {needCanvasUpdate = true}, 1)
 
 
 function layer1Reset(keepUpgrades=false) {
-	let resetPoints = 0
+let resetPoints = 0
 if (player.C.EffectorTier.gte(5)) { resetPoints = 1 }
 else if (player.C.EffectorTier.gte(4) || keepUpgrades == true) { player.S.upgrades = [11,12,13,14] }
 else if (player.C.EffectorTier.gte(3)) { player.S.upgrades = [11,12,13] }
@@ -444,7 +444,7 @@ else { player.S.upgrades = [] }
 
 player["S"].points = player["S"].points.mul(resetPoints).plus(1)
 
-player["GL"].Solarlight = player["GL"].Solarlight.mul(0)
+player["GL"].Solarlight = new Decimal(0)
 player.points = player.points.mul(0)
 setBuyableAmount("S", 11, new Decimal(0)   )
 setBuyableAmount("S", 12, new Decimal(0) )	
@@ -453,12 +453,12 @@ setBuyableAmount("S", 12, new Decimal(0) )
 
 
 function layer2Reset(keepUpgrades=false) {
-player.C.EffectorTier = player.C.EffectorTier.mul(0)
-player.GL.Solar_Shards = player.GL.Solar_Shards.mul(0)
-player.C.checkUpgrades = player.C.checkUpgrades.mul(0)
-player.C.CenterPoints = player.C.CenterPoints.mul(0)
-player.C.Highest = player.C.Highest.mul(0)
-player.C.Score = player.C.Score.mul(0)
+player.C.EffectorTier = new Decimal(0)
+player.GL.Solar_Shards = new Decimal(0)
+player.C.checkUpgrades = new Decimal(0)
+player.C.CenterPoints = new Decimal(0)
+player.C.Highest = new Decimal(0)
+player.C.Score = new Decimal(0)
 
 player.C.upgrades = []
 player.GL.upgrades = []
@@ -472,22 +472,30 @@ layer1Reset(false)
 
 }
 
-function EclipsiumReset() {
-	player.C.EffectorTier = player.C.EffectorTier.mul(0)
+function exitGeneration() {
+	const currentState = getClickableState("GL", 11)
+    if (currentState == true) setClickableState("GL", 11, false)
+}
+function EclipsiumReset(Queuereset=false) {
+	player.C.EffectorTier = new Decimal(0)
 	player.GL.Solar_Shards = player.GL.Solar_Shards.root(3).floor()
 	
 	player.C.CenterPoints = player.C.CenterPoints.root(3)
-	setBuyableAmount("GL", 11, getBuyableAmount("GL",11).root(2).floor() )
+	setBuyableAmount("GL", 11, getBuyableAmount("GL",11).root(2).floor())
 	player.GL.upgrades = []
+	player.C.upgrades = []
 	player.C.Highest = player.C.Highest.mul(0)
     player.C.Score = player.C.Score.mul(0)
 
-
-	if (player.E.EclipseTier.gte(4) && player.C.checkUpgrades.neq(2)) player.C.checkUpgrades = player.C.checkUpgrades.sub(1)
-	if (player.E.EclipseTier.gte(3) && player.C.checkUpgrades.neq(1)) player.C.checkUpgrades = player.C.checkUpgrades.sub(1)
-	else if (player.C.checkUpgrades.gte(1)) player.C.checkUpgrades = player.C.checkUpgrades.sub(1)
+	if (player.E.EclipseTier.eq(5) && player.C.checkUpgrades.gte(3)) player.C.checkUpgrades = new Decimal(3)
+	else if (player.E.EclipseTier.eq(4) && player.C.checkUpgrades.gte(2)) player.C.checkUpgrades = new Decimal(2)
+	else if (player.E.EclipseTier.eq(3) && player.C.checkUpgrades.gte(1)) player.C.checkUpgrades = new Decimal(1)
+	else if (player.E.EclipseTier.lt(3) && player.C.checkUpgrades.gte(1)) player.C.checkUpgrades = new Decimal(0)
+	exitGeneration()
 	
+	if (Queuereset == true) player.C.checkUpgrades = new Decimal(0)
 	layer1Reset(false)
+
 }
 
 

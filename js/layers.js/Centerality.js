@@ -33,10 +33,16 @@ addLayer("C", {
   
    update(diff) {
 
-    if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
-    if (hasUpgrade("GL",15)) player["C"].Score = Decimal.mul(getBuyableAmount("S", 11), getBuyableAmount("S", 12))
+    if (hasUpgrade("GL",21)) player["GL"].Time = player["GL"].Time.plus(decimalOne.times(diff)).clampMin(0)
+
+    let PhaserBoost = new Decimal(1)
+    if (player.E.forgotton == true) PhaserBoost = getBuyableAmount("GL",11).clampMin(1)
+    if (hasUpgrade("GL",31)) player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(PhaserBoost)
+    
     
 
+    if (getClickableState("E", 14)) player.C.Score = player.C.Score.pow(0.8)
+    
 
     
     if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.mul(0)
@@ -46,7 +52,7 @@ addLayer("C", {
 
     if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.25))
 
-    player.C.requirement = Decimal.mul(2000   ,  Decimal.pow( 1.35 , player.C.CenterPoints)).div(Divisor).clampMin(1)
+    player.C.requirement = Decimal.mul(2000   ,  Decimal.pow( 1.35 , player.C.CenterPoints ) ).div(Divisor).clampMin(1)
     
 
   }, 
@@ -65,6 +71,8 @@ addLayer("C", {
               content: [             
        ["display-text",
      function() { 
+
+        
       if (player["C"].CenterPoints.gte(1) || player.C.EffectorTier.gte(1))
        return `You have ${format(player["C"].CenterPoints )}  Center Points `
   
@@ -79,11 +87,11 @@ addLayer("C", {
 
       let HeirarchyBoost = ``
 
-
+      let forgotten = ``; if (getClickableState("E", 14)) forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} / ${format(player.C.requirement)} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
 
       if (player.C.checkUpgrades.gte(2)) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(valueHeirarchy)}` 
 
-      return `You have ${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score. <br> <br>
+      return `You have ${forgotten} <br> <br>
       ${HeirarchyBoost} 
       `
       //if (player.C.checkUpgrades.gte(2)) gain = gain.mul(Decimal.pow(5, player.C.CenterPoints).clampMin(1))
@@ -502,7 +510,7 @@ style() {
                     let Divisor = new Decimal(1)
                     let mult = new Decimal(1)
                    
-                  if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.25))
+                  if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.35))
                   let basecost = new Decimal(2000).div(Divisor)
                     //this is the buyMax reset thing
                    if (hasMilestone("E",3) && player.C.Score.gte(player.C.requirement)) mult = player.C.Score.div(basecost).log(1.35).round()
@@ -510,8 +518,9 @@ style() {
                   //scaling for this is: (2000 * 1.35^x) / Reduced requirements
                    
                     
-                   
-                  player.C.CenterPoints = player.C.CenterPoints.plus(mult)
+                  if (hasMilestone("E",3) && !getClickableState("E",14))
+                  player.C.CenterPoints = mult
+                  else player.C.CenterPoints = player.C.CenterPoints.plus(1)
                     player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
                   layer1Reset()
                   
@@ -783,8 +792,9 @@ style() {
           let textActive = ``
           let rewardDisplay = ``
           let textActiveGoal = ``
-
-
+          let Twilight = new Decimal(0.75)
+          if (hasMilestone("E",3)) Twilight = Twilight.plus(0.15)
+          if (hasMilestone("E",5)) Twilight = Twilight.plus(0.15)
 
           if (player.C.checkUpgrades.gte(3)) text = `Check Upgrade Completed!`
           else if (!getClickableState("C", 23))
@@ -812,7 +822,7 @@ style() {
           // Goal: Plasmate #40 <br>
          
          
-          if (player.C.checkUpgrades.gte(3)) rewardDisplay = `Multiply's effect is raised ^1.312. You now generate ^0.75 of Solar Rays per Second [can be increased later on] <br>`
+          if (player.C.checkUpgrades.gte(3)) rewardDisplay = `Multiply's effect is raised ^1.312. You now generate ^${Twilight} of Solar Rays per Second [can be increased later on] <br>`
           else rewardDisplay = ``
 
 
@@ -861,18 +871,11 @@ style() {
    
         
     },
-
-
-
-
    31: {
       display() {
-
          return `
          <h3>Recenter the upgrade tree and do a Convertary reset (respec)<br>
          `
-        
-
       },
       onClick() {
       

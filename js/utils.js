@@ -61,9 +61,14 @@ function buyUpg(layer, id) {
 	if (pay !== undefined)
 		run(pay, layers[layer].upgrades[id])
 	else {
+		
 		let cost = tmp[layer].upgrades[id].cost
-
-		if (upg.currencyInternalName) {
+		if (cost == undefined) {
+			cost = upg.canAfford
+			if (cost === true) player[layer].upgrades.push(id);
+			return 0;
+		}
+			else if (upg.currencyInternalName) {
 			let name = upg.currencyInternalName
 			if (upg.currencyLocation) {
 				if (upg.currencyLocation[name].lt(cost)) return
@@ -79,9 +84,9 @@ function buyUpg(layer, id) {
 				player[name] = player[name].sub(cost)
 			}
 		}
-		else {
-			if (player[layer].points.lt(cost)) return
-			player[layer].points = player[layer].points.sub(cost)
+				else {
+					if (player[layer].points.lt(cost)) return
+				player[layer].points = player[layer].points.sub(cost)
 		}
 	}
 	player[layer].upgrades.push(id);
@@ -89,6 +94,7 @@ function buyUpg(layer, id) {
 		run(upg.onPurchase, upg)
 	needCanvasUpdate = true
 }
+
 
 function buyMaxBuyable(layer, id) {
 	if (!player[layer].unlocked) return
