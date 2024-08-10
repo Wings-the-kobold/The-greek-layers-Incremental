@@ -165,6 +165,9 @@ update(diff) {
 
     player.S.Bulk_M = BulkPurchase
   
+    if (getClickableState("L",42) == true && player.S.points.gte(1e15)) player.S.points = new Decimal(1e15) 
+
+
      },
 
 
@@ -185,6 +188,9 @@ getResetGain() {
     if (getClickableState("E",14) == true ) gain = gain.root(5)
   if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
   
+  if (player.L.LightCheck.gte(1) && player.L.Light.gte(1)) gain = gain.mul(player.L.Light.pow(0.25)) 
+
+  if (getClickableState("L",42) == true) gain = gain.clampMax(1e15)
   
   return gain;
 
@@ -206,7 +212,9 @@ getNextAt() {
   if (getClickableState("C", 23)) gain = gain.log(12)
     if (getClickableState("E",14) == true) gain = gain.root(5)  
   if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
-  
+  if (player.L.LightCheck.gte(1) && player.L.Light.gte(1)) gain = gain.mul(player.L.Light.pow(0.25)) 
+
+  if (getClickableState("L",42) == true) gain = gain.clampMax(1e15)
   return gain;
 
 },

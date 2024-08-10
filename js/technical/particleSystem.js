@@ -87,7 +87,7 @@ const newParticles = {
             y: mouseY,
             width: 35,
             height: 35,
-            image: "resources/genericParticle.png",
+            image: "resources/genericParticle.png", //remember, to add particles make it a different png
             angle: 0,
             spread: 30,
             offset: 10,

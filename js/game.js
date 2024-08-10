@@ -162,9 +162,9 @@ function layerDataReset(layer, keep = []) {
 
 
 
-function addPoints(layer, gain) {
-	player[layer].points = player[layer].points.add(gain).max(0)
-	if (player[layer].best) player[layer].best = player[layer].best.max(player[layer].points)
+	function addPoints(layer, gain) {
+		player[layer].points = player[layer].points.add(gain).max(0)
+		if (player[layer].best) player[layer].best = player[layer].best.max(player[layer].points)
 	if (player[layer].total) player[layer].total = player[layer].total.add(gain)
 }
 
@@ -172,7 +172,7 @@ function generatePoints(layer, diff) {
 	addPoints(layer, tmp[layer].resetGain.times(diff))
 }
 // run(layers["GL"].onPrestige, layers["GL"], gainh)
-function doReset(layer, force=false) {
+	function doReset(layer, force=false) {	
 	if (tmp[layer].type == "none") return
 	let row = tmp[layer].row
 	if (!force) {

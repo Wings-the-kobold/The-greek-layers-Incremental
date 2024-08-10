@@ -25,7 +25,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5 F10-B10 [BETA TESTING]",
+	num: "0.5.2 F10-B10 [BETA TESTING]",
 	name: "Yeh",
 }
 
@@ -34,15 +34,23 @@ let changelog = `
 <h2>Start Date: 4/13/2024</h2> <br><br>
 
 
+<h3>v0.6 Fix 10, Balance 10</h3><br>
+TIME IS PRECIOUS!!! <br>
+- Added the Solar Clock <br>
+- Added DT1-3 and NT1-3 <br>
+- idk what else to put <br>
+
+
 <h3>v0.5 Fix 10, Balance 10</h3><br>
 Lunaris, do my laundry! <br>
 - added <h3> The Forgotton </h3> <br>
-- Added 2 new Currencies <br>
+- added 2 new Currencies <br>
 - added THE first One Time Reset Lunarity <br>
 - added a side Reset for Eclipsification (50% chance it gets reset on Eclipsification) <br>
 - NEW CHECK UPGRADE?!?! <br>
 - Renamed Enlightenment tabs: SOTI -> Eclipsify. and SOTE -> The Factory [dw these will return soon]<br>
 - NEW UI CHANGE????! <br>
+- 2 new repeatable check upgrades! <br>
 
 <br>
 Bal6: Reduced PK44's Plasmate Queue Requirements slightly (75 -> 74) [It was too long] <br>
@@ -187,12 +195,11 @@ function getPointGen() {
 	if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(9))
 	gain = gain.mul(upgradeEffect("E",12))
 	//if (hasUpgrade("E",11)) gain = upgradeEffect("E",11)
+	if (getClickableState("L",42) == true) gain = gain.root(3).mul(2)
 
 
 
-
-
-
+	if (player.L.DarkCheck.gte(1) && player.L.Dark.gte(1)) gain = gain.mul(player.L.Dark.pow(0.3)) 
 
 
 
@@ -200,10 +207,20 @@ function getPointGen() {
 	if (getClickableState("GL", 11) == true) gain = gain.pow(0.5)
 	
 	//the point hardcaps
+
+	
+
 	let C = player.E.Esolar.clampMax(10000)
 	let B = new Decimal(1)
 	if (C.gt(1))  B = Decimal.add(1 , C.log(2))
+	
+
+	
 	let basegainCap = player.BasepointsCap
+	//check upgrade Lightness
+	if (getClickableState("L", 41)) basegainCap = new Decimal(1)
+
+
 	if (hasMilestone("E",1)) basegainCap = basegainCap.mul(player.E.EclipseTier.pow_base(20))
 	if (hasMilestone("E",2)) basegainCap = basegainCap.mul(player.E.Eclipsium.pow_base(1.45))
 	basegainCap = basegainCap.mul(getBuyableAmount("E", 11).mul(0.5).add(1))
@@ -216,10 +233,12 @@ function getPointGen() {
 
 	if (hasMilestone("E",3)) basegainCap = basegainCap.mul(player.E.SolarCharge.log(2).add(1).pow(B))
 	if (hasMilestone("E",5)) basegainCap = basegainCap.mul(player.C.CenterPoints.pow_base(5).pow(0.33).clampMin(1))
-	let c1effect = decimalOne.plus(player.L.LunarPower.log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
+	let c1effect = decimalOne.plus(player.L.LunarPower.clampMin(1).log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
 	basegainCap = basegainCap.mul(c1effect)
+	if (player.L.Light.gt(1)) basegainCap = basegainCap.mul(player.L.Light)
+	if (player.L.Dark.gt(1)) basegainCap = basegainCap.mul(player.L.Dark)
 
-
+	
 
 
 
@@ -228,6 +247,9 @@ function getPointGen() {
 
 	player.postCap = gain.div(player.BasepointsCap)
 	player.beforeCap = gain
+
+	
+
 	return gain.clampMax(basegainCap)
 
 
@@ -284,13 +306,16 @@ var displayThings = [
 			if (player.SolarityCap.neq(1e308)) capped = `
 			<br>
 			The Current Solarity Gain Cap is ${format(player.SolarityCap)}
-			 <br> ${pushThrough} <br> `
+			 <br> ${pushThrough} <br> 
+			 
+			 TO DO: MAKE DAY TIER 1-3 AND NIGHT TIER 1-3. MAX BUY is 3 but effects can be further increased by 10% using Lunar essence without spend at a rate of 20 * 1.15^x 
+			 `
 			else capped = ``
 
 
 	//player.L.LunarPower.gte(1000)
 
-		if (getBuyableAmount("L",11).gte(10) || getBuyableAmount("L",12).gte(6)) {
+		if (getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(6)) {
 			if (getClickableState("GL", 11)) nextText = `
 			Next Unlock at Lightness #10 and Darkness #8 `
 		
@@ -382,9 +407,21 @@ var displayThings = [
 		let OOMTEXT = ``
 		if (tmp.other.oompsMag != 0) OOMTEXT = `+${format(tmp.other.oomps)} OOMS per second`
 		else OOMTEXT = `${format(getPointGen())} per second`
-		let forgotten = ``; if (getClickableState("E", 14)) forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Shade...? </h2>`; else forgotten = `<h2 style="color: #ffaf47; text-shadow: 0px 0px 10px #de482a;"> You Have ${format(player.points)} Solarity </h2>`
-		let forgotten1 = ``; if (getClickableState("E", 14)) forgotten1 = `<h5 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> Current Shade Production: ${OOMTEXT} Per second </h5>`; else forgotten1 = `<h5> Current Solarity Generation: ${OOMTEXT} </h5>`
+		let forgotten = ``; 
+
+		if (getClickableState("E", 14)) forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Shade...? </h2>`; 
+		else forgotten = `<h2 style="color: #ffaf47; text-shadow: 0px 0px 10px #de482a;"> You Have ${format(player.points)} Solarity </h2>`
 		
+		if (getClickableState("L",42) == true) forgotten = `<h2 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Dark Essence`
+		
+		let forgotten1 = ``; 
+//#31005e
+		if (getClickableState("E", 14)) forgotten1 = `<h5 style="color: #31005e; text-shadow: 0px 0px 10px #ffffff;"> Current Shade Production: ${OOMTEXT} Per second </h5>`; 
+		else forgotten1 = `<h5> Current Solarity Generation: ${OOMTEXT} </h5>`
+		if (getClickableState("L", 42)) forgotten1 = `<h5 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Current Dark Essence Generation: ${OOMTEXT} Per second </h5>`; 
+
+
+
 		//Solarity Generation:
 		return `
 		
