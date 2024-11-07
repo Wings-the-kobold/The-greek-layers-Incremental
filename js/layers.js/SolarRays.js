@@ -112,7 +112,7 @@ addLayer("S", {
         },
        
       },
-
+d
 
       prestigeButtonText() {
         let nerf = new Decimal(0)
