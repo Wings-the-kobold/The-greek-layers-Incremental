@@ -451,7 +451,6 @@ setBuyableAmount("S", 12, new Decimal(0) )
 }
 
 
-
 function layer2Reset(keepUpgrades=false) {
 player.C.EffectorTier = new Decimal(0)
 player.GL.Solar_Shards = new Decimal(0)
@@ -466,9 +465,6 @@ player.GL.upgrades = []
 setBuyableAmount("GL", 11, new Decimal(0) )
 
 layer1Reset(false)
-
-
-
 
 }
 
@@ -499,7 +495,12 @@ function EclipsiumReset(Queuereset=false) {
 }
 
 
-
-
-
+function getDuration(src, destination) {
+	var audio = new Audio();
+	$(audio).on("loadedmetadata", function(){
+		destination.textContent = audio.duration;
+	});
+	audio.src = src;
+}
+//and then invoke getDuration as needed like this
 

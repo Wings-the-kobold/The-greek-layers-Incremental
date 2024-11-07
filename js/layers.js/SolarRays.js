@@ -17,6 +17,11 @@ addLayer("S", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
    
+    style() {
+      return `a`
+    },
+
+    
     tooltip: () => `<p>Open Layer 0, Main Layer</p>`,
     tabFormat: {
         "April 8th, 2024": {      
@@ -38,7 +43,7 @@ addLayer("S", {
       function() { 
       let RootEFF1 = new Decimal(40)
 	    let RootEFF2 = new Decimal(35)
-      let MAX = hasMilestone("E", 2) ? 3 : 2
+      let MAX = (hasMilestone("E", 2)&& player.L.TimeTillDarkCheck == false) ? 3 : 2
       
   	  let eff1 = player.S.points.root(RootEFF1.sub(upgradeEffect("S",12))).clampMin(1)
   	  let eff2 = player.S.points.root(RootEFF2.sub(upgradeEffect("S",12))).clampMin(1)
@@ -121,7 +126,7 @@ addLayer("S", {
        // if (hasMilestone("E",1) && player.points.log(10).lt(40)) generation = `<p>Generating ${format(player.points.clampMin(1).log(10))} Solar Rays / Sec (thanks to Eclipse Tier 1)</p>`
         
         return ` <h3> SOLARIZE </h3> [Layer 0 Reset]  <br>
-        Gain Solar rays by ^${tmp.S.exponent} of Solarity, Then Reset Solarity.<br>
+        Gain Solar rays by ^${format(tmp.S.exponent)} of Solarity, Then Reset Solarity.<br>
          (Requires at least 1 Solarity)<br>
          ${nerfText} +${format(getNextAt(this.layer))} Solar Rays<br>
          
@@ -135,9 +140,21 @@ addLayer("S", {
     },
     exponent() { 
       let multiboost = decimalZero
-      if (hasMilestone("E",1)) multiboost = multiboost.plus(0.03)
-        
-      return upgradeEffect("S",11).plus(0.1).plus(multiboost)
+      if (hasMilestone("E",1) && player.L.TimeTillDarkCheck == false) multiboost = multiboost.plus(0.03)
+        Hour = new Date()
+      let e1 = 0
+        if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) e1 = `${(Hour.getHours() % 12) / 150}`; else e1 = `0.00`;
+               
+
+
+
+      return upgradeEffect("S",11).plus(0.1).plus(multiboost).plus(e1)
+
+
+  
+
+
+
 
       },
 
@@ -286,7 +303,7 @@ getNextAt() {
             effect() {
               let base = new Decimal(0)
               if (hasUpgrade("S",11)) base = base.plus(0.05)
-              if (hasMilestone("E",2)) base = base.plus(0.03)
+              if (hasMilestone("E",2) && player.L.TimeTillDarkActive == false) base = base.plus(0.03)
               return base
             },
         },
@@ -323,7 +340,7 @@ getNextAt() {
           effect() {
             let base = new Decimal(0)
             if (hasUpgrade("S",12)) base = base.plus(5)
-            if (hasMilestone("E",2)) base = base.plus(5)
+            if (hasMilestone("E",2) && player.L.TimeTillDarkActive == false) base = base.plus(5)
             return base
           },
       },
@@ -591,10 +608,13 @@ getNextAt() {
               if  (player.C.checkUpgrades.gte(3)) effect = effect.pow(1.312)
               
                 if (getBuyableAmount("L",12).gte(1)) effect = effect.mul(buyableEffect("L",12))
+              if (hasUpgrade("L",12)) effect = effect.mul(upgradeEffect("L",12))
 
+                
               if (getClickableState("C",22)) effect = effect.pow(0.666)
               if (getClickableState("C", 23)) effect = effect.log(12)
-
+              
+                
 
               //    if (hasUpgrade("E",13)) effect = effect.mul(upgradeEffect("E",13))
               

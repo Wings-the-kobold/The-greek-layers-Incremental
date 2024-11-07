@@ -25,6 +25,7 @@
 
 .milestone-popup {
 	background: #ff7700;
+	position: center;
 }
 
 .fade-enter-active, .fade-leave-active {

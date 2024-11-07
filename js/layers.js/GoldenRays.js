@@ -26,7 +26,7 @@ addLayer("GL", {
           let speed = new Decimal(1)
           if (getClickableState("GL", 11) == true && player["GL"].Solarlight.lt(player["GL"].Solarlightcap) ) {
             
-          mult = Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1).times(diff)
+          mult = Decimal.pow(getPointGen().clampMax(player.SolarityCap).pow(0.5), 0.2).sub(1).times(diff)
           if (hasUpgrade("C",16)) speed = speed.times(3.14)
           if (player.E.EclipseTier.gte(5)) speed = speed.times(player.E.EclipseTier.sub(3).pow_base(1.5))
 
@@ -50,13 +50,15 @@ addLayer("GL", {
         // Increasing Solar Light Cap
 
         let eff1 = new Decimal(1)
-        if (hasMilestone("E",1)) Base = Base.mul(player.E.TopLVL.pow_base(1.75))
+        if (hasMilestone("E",1)&& player.L.TimeTillDarkCheck == false) Base = Base.mul(player.E.TopLVL.pow_base(1.75))
         
         if (hasUpgrade("C",23)) Base = Base.mul(3.14)
         if (hasUpgrade("E",11)) Base = Base.mul(upgradeEffect("E",11))
           if (hasUpgrade("E",13)) Base = Base.mul(2)
         Base = Base.mul(getBuyableAmount("E", 12).pow_base(1.35))
-        if (hasMilestone("E",5)) Base = Base.mul(player.C.Score.clampMin(1).pow(0.25))
+        if (hasMilestone("E",5)&& player.L.TimeTillDarkCheck == false) Base = Base.mul(player.C.Score.clampMin(1).pow(0.25)) 
+        if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) Base = Base.mul(Hour.getMinutes() * (1.5 ** (Hour.getHours() % 12)))
+
 
         player.GL.Solarlightcap = Base
 
@@ -341,6 +343,11 @@ addLayer("GL", {
       let scale = new Decimal(1.2)
       let base = new Decimal(5)
       let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
+
+      if (hasUpgrade("L",22)) Calculation = Calculation.pow(0.9)
+
+
+
       return Calculation;
     },
     display() {
@@ -365,6 +372,9 @@ addLayer("GL", {
       let effect = decimalOne
       effect = effect.mul(getBuyableAmount(this.layer, this.id))
       effect = effect.mul(getBuyableAmount("E", 11).add(1))
+
+      if (hasUpgrade("L",22)) effect = effect.pow(1.15)
+
       return effect;
     },
     style() {
