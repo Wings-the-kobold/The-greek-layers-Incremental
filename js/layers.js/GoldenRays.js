@@ -1,14 +1,19 @@
 addLayer("GL", {
     name: "Compression", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "Sol+", // This appears on the layer's node. Default is the id with the first letter capitalized
+    //symbol: "Sol+", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
-		points: new Decimal(0),
+		
+        points: new Decimal(0),
         Solarlight: new Decimal(0),
         Solarlightcap: new Decimal(2000),
+        bestCap: new Decimal(1),
+
         Solar_Shards: new Decimal(0),
         Time: new Decimal(0)
+
+
     }},
     color: "#F0FA64",
    // Can be a function that takes requirement increases into account
@@ -17,7 +22,10 @@ addLayer("GL", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
  
-
+    symbol() {
+      return `
+      <p><img src="resources/The Converter.png" style="width:70px;height:70px;"></p>`
+      },
 
  
   
@@ -26,19 +34,15 @@ addLayer("GL", {
           let speed = new Decimal(1)
           if (getClickableState("GL", 11) == true && player["GL"].Solarlight.lt(player["GL"].Solarlightcap) ) {
             
-          mult = Decimal.pow(getPointGen().clampMax(player.SolarityCap).pow(0.5), 0.2).sub(1).times(diff)
+          mult = Decimal.pow(getPointGen().clampMax(player.SolarityCap).pow(0.5), 0.2).sub(1)
           if (hasUpgrade("C",16)) speed = speed.times(3.14)
           if (player.E.EclipseTier.gte(5)) speed = speed.times(player.E.EclipseTier.sub(3).pow_base(1.5))
 
-
-
         } 
         
-        player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.times(speed)).clampMin(0)
+        player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.times(speed).times(diff)).clampMin(0)
 
-
-        if ( player["GL"].Solarlight.gt(player["GL"].Solarlightcap)) { player["GL"].Solarlight = player["GL"].Solarlightcap }
-        // so that it does not go above
+        if ( player["GL"].Solarlight.gt(player["GL"].Solarlightcap)) { player["GL"].Solarlight = player["GL"].Solarlightcap }              
 
         if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
         
@@ -50,17 +54,21 @@ addLayer("GL", {
         // Increasing Solar Light Cap
 
         let eff1 = new Decimal(1)
-        if (hasMilestone("E",1)&& player.L.TimeTillDarkCheck == false) Base = Base.mul(player.E.TopLVL.pow_base(1.75))
+        if (hasMilestone("E",1)&& player.L.activeCheck == "") Base = Base.mul(player.E.TopLVL.pow_base(1.75))
         
         if (hasUpgrade("C",23)) Base = Base.mul(3.14)
         if (hasUpgrade("E",11)) Base = Base.mul(upgradeEffect("E",11))
           if (hasUpgrade("E",13)) Base = Base.mul(2)
         Base = Base.mul(getBuyableAmount("E", 12).pow_base(1.35))
-        if (hasMilestone("E",5)&& player.L.TimeTillDarkCheck == false) Base = Base.mul(player.C.Score.clampMin(1).pow(0.25)) 
+        if (hasMilestone("E",5)&& player.L.activeCheck == "") Base = Base.mul(player.C.Score.clampMin(1).pow(0.25)) 
         if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) Base = Base.mul(Hour.getMinutes() * (1.5 ** (Hour.getHours() % 12)))
+       
 
 
-        player.GL.Solarlightcap = Base
+          player.GL.Solarlightcap = Base
+        if ( player.E.EclipseTier.gte(6) && player.GL.Solarlightcap.gte(player.GL.bestCap)) player.GL.bestCap = player.GL.Solarlightcap
+        if ( player.E.EclipseTier.gte(6)) player.GL.Solarlightcap = player.GL.bestCap
+        
 
         // passive solar shard generation
 
@@ -76,14 +84,14 @@ addLayer("GL", {
                 ["display-text",
       function() { 
         
-      let forgotten = ``; if (getClickableState("E", 14)) forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> You Have Generated ${format(player["GL"].Solarlight)} / ${format(player["GL"].Solarlightcap)} Void...? </h3>`; else forgotten = `You Have Generated ${format(player["GL"].Solarlight)} / ${format(player["GL"].Solarlightcap)} Solar Light`
+      let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> You Have Generated ${format(player["GL"].Solarlight)} / ${format(player["GL"].Solarlightcap)} Void...? </h3>`; else forgotten = `You Have Generated ${format(player["GL"].Solarlight)} / ${format(player["GL"].Solarlightcap)} Solar Light`
 
         return `${forgotten}`
 
      }],
      ["display-text",
      function() { 
-      let forgotten = ``; if (getClickableState("E", 14)) forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> You have ${format(player["GL"].Solar_Shards )} Gloom...? </h3>`; else forgotten = `You Have ${format(player["GL"].Solar_Shards )} Solar Shards`
+      let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> You have ${format(player["GL"].Solar_Shards )} Gloom...? </h3>`; else forgotten = `You Have ${format(player["GL"].Solar_Shards )} Solar Shards`
 
       if (player["GL"].Solar_Shards.gte(1))
  return `${forgotten}`
@@ -228,7 +236,7 @@ addLayer("GL", {
               else change = `Cost: 105 Solar Shards`
 
 
-          let forgotten = ``; if (getClickableState("E", 14)) forgotten = `Forgotten Annulation?`; else forgotten = `Annular:`    
+          let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `Forgotten Annulation?`; else forgotten = `Annular:`    
               return `
               <h2>${forgotten}</h2> <br>
               <h3 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;"> Instability... </h3><br><br>
@@ -258,7 +266,7 @@ addLayer("GL", {
         effect() {  
           let effect = Decimal.plus(1.035, sin(player["GL"].Time.div(5))*0.135)
 
-          //if (getClickableState("E", 14)) effect = new Decimal(0.8)
+           if (player["E"].activeCheck == "Forgotton") effect = new Decimal(0.8)
             return effect
         },
         
@@ -323,16 +331,6 @@ addLayer("GL", {
       },
   },
     
-        //to do: make Effecter Upgrades.
-
-
-
-
-          
-
-
-
-
 
 
             },

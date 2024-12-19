@@ -420,3 +420,13 @@ function gridRun(layer, func, data, id) {
 	else
 		return layers[layer].grid[func];
 }
+
+
+function Check(layer, id) {return tmp[layer].Check[id]}
+function Viewer(layer, id) {return tmp[layer].Viewer[id]}
+function Reset(layer, id) {return tmp[layer].Reset[id]}
+function Ception(layer,id) {return tmp[layer].buyables[id].gain}
+function fix(item) {
+	if (item == undefined) item = false 
+	return item
+}  

@@ -1,25 +1,22 @@
 addLayer("S", {
-    name: "Solar Ray", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "Sol", // This appears on the layer's node. Default is the id with the first letter capitalized
+   
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
 
     Bulk_M: new Decimal(1),
+    metaNerf: new Decimal(300),
+    multMeta: new Decimal(1),
+    
 
-    metaNerf: new Decimal(300)
     }},
     color: "#ff6a00",
-    requires: new Decimal(1), // Can be a function that takes requirement increases into account
-    resource: "Solar Rays", // Name of prestige currency
-    baseResource: "Solarity", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
    
-    style() {
-      return `a`
-    },
+    symbol() {
+      return `
+      <p><img src="resources/Solarizor.png" style="width:70px;height:70px;"></p>`
+      },
 
     
     tooltip: () => `<p>Open Layer 0, Main Layer</p>`,
@@ -30,20 +27,24 @@ addLayer("S", {
                 ["infobox","about"],
                 ["display-text",
                 function() { 
-                  let forgotten = ``; if (getClickableState("E", 14)) forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 30px #ffffff;"> You Have ${format(player.S.points)} Shadow...? </h3>`; else forgotten = `You Have ${format(player.S.points)} Solar Rays`
+                  let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 30px #ffffff;"> You Have ${format(player.S.points)} Shadow...? </h3>`; else forgotten = `You Have ${format(player.S.points)} Solar Rays`
 
                   return `${forgotten}`
           
                }],
                "blank",
-                "prestige-button",
+               
+
+                ["Reset", {id: 11, title: "SOLARIZE"}],
+
+
                 "blank",
                 "upgrades",
                 ["display-text",
       function() { 
       let RootEFF1 = new Decimal(40)
 	    let RootEFF2 = new Decimal(35)
-      let MAX = (hasMilestone("E", 2)&& player.L.TimeTillDarkCheck == false) ? 3 : 2
+      let MAX = (hasMilestone("E", 2) && player.L.activeCheck == "") ? 3 : 2
       
   	  let eff1 = player.S.points.root(RootEFF1.sub(upgradeEffect("S",12))).clampMin(1)
   	  let eff2 = player.S.points.root(RootEFF2.sub(upgradeEffect("S",12))).clampMin(1)
@@ -52,7 +53,7 @@ addLayer("S", {
 
           //if (hasMilestone("E",1)) gain2 = gain2.pow(1.732)
 
-          if (eff1==2) capped = `(capped)`
+          if (eff1==2 && hasMilestone("E", 2)) capped = `(capped)`
         return `<h3> Solar Rays Boost the following: <br><br> Solarity by ^${format(eff1,3)} ${capped}<br> Solarity by ${format(eff2,3)} </h3>`
 
      }],
@@ -79,8 +80,7 @@ addLayer("S", {
 
         let antiscale =  Decimal.plus(   1  ,   Decimal.div(x.sub(player.S.metaNerf).root(1.5) , 25  )     ) 
       
-
-
+        
         let textA = `` 
         let textB = ``
         let textC = `` 
@@ -114,58 +114,55 @@ addLayer("S", {
       },
 
 
-      prestigeButtonText() {
-        let nerf = new Decimal(0)
-        if (getClickableState("C",21)) nerf = getResetGain(this.layer)  .pow(1.501501502)
-        //if (getClickableState("E",14)) nerf = new Deciaml(1)
-              let nerfText = ``
-              if (getClickableState("C", 21)) nerfText = `+${format(nerf)} -> `
-             // if (getClickableState("E",14)) nerfText = `+${format(nerf)} ->`
-             
-        //let generation = ``
-       // if (hasMilestone("E",1) && player.points.log(10).lt(40)) generation = `<p>Generating ${format(player.points.clampMin(1).log(10))} Solar Rays / Sec (thanks to Eclipse Tier 1)</p>`
-        
-        return ` <h3> SOLARIZE </h3> [Layer 0 Reset]  <br>
-        Gain Solar rays by ^${format(tmp.S.exponent)} of Solarity, Then Reset Solarity.<br>
-         (Requires at least 1 Solarity)<br>
-         ${nerfText} +${format(getNextAt(this.layer))} Solar Rays<br>
-         
-         
-         `
-    
+      Reset: {
+        11: {
+          display() {
+            let nerf = new Decimal(0)
+            if (player.C.activeCheck == "Formality") nerf = tmp["S"].getResetGain  .pow(1.501501502)
      
-      },
-    canReset() {
-        return true
-    },
+                  let nerfText = ``
+                  if (player.C.activeCheck == "Formality") nerfText = `${format(nerf)} -> `
+      
+          //player["C"].activeCheck == "Heirarchy"
+            return `
+            Gain Solar rays by ^${format(tmp.S.exponent)} of Solarity, Then Reset Solarity.
+            <br>
+             (Requires at least 1 Solarity)<br><br>
+            Solar rays earned:  ${nerfText} ${format(tmp["S"].getResetGain)} Solar Rays  
+             `
+        
+            },     
+          onClick() {
+            let gain = tmp["S"].getResetGain
+            player.S.points = player.S.points.add(gain)
+            player.points = new Decimal(0)
+            },
+          canClick() {if (player.points.gte(1)) return true},
+          
+        //  gain: () => { return player.L.LunarPower.clampMin(1).log(5)},
+          button: () => { return `Form Solar Rays!` },
+          unlocked() {return true},
+      },          
+     },
+
     exponent() { 
       let multiboost = decimalZero
-      if (hasMilestone("E",1) && player.L.TimeTillDarkCheck == false) multiboost = multiboost.plus(0.03)
+      if (hasMilestone("E",1) && player.L.activeCheck == "") multiboost = multiboost.plus(0.03)
         Hour = new Date()
       let e1 = 0
         if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) e1 = `${(Hour.getHours() % 12) / 150}`; else e1 = `0.00`;
                
-
-
-
       return upgradeEffect("S",11).plus(0.1).plus(multiboost).plus(e1)
-
-
-  
-
-
-
-
       },
 
 update(diff) {
 
-  if (getClickableState("C",22)) player.S.metaNerf = player.S.metaNerf.mul(0).add(1)
+  if (player["C"].activeCheck == "Heirarchy") player.S.metaNerf = player.S.metaNerf.mul(0).add(1)
   else player.S.metaNerf = new Decimal(300)
 
   let BulkPurchase = new Decimal(1)
 
-  if (player.C.checkUpgrades.gte(2)) BulkPurchase = BulkPurchase.plus(5)
+  if (Check("C",12).has) BulkPurchase = BulkPurchase.plus(5)
   if (player.E.EclipseTier.gte(3)) BulkPurchase = BulkPurchase.plus(5)
 
 
@@ -173,7 +170,7 @@ update(diff) {
   if (hasMilestone("E",3)) Twilight = Twilight.plus(0.15)
   if (hasMilestone("E",5)) Twilight = Twilight.plus(0.15)
 
-  if (player.C.checkUpgrades.gte(3)) player.S.points = player.S.points.plus(getResetGain("S").pow(Twilight))
+  if (player["C"].hasTwilight) player.S.points = player.S.points.plus(getResetGain("S").pow(Twilight))
 
 
 
@@ -183,6 +180,16 @@ update(diff) {
     player.S.Bulk_M = BulkPurchase
   
     if (getClickableState("L",42) == true && player.S.points.gte(1e15)) player.S.points = new Decimal(1e15) 
+
+    //generally for meta scale
+
+      let x = getBuyableAmount("S",12)
+      scaledAmt = x.sub(player.S.metaNerf)
+      metaScaling = scaledAmt.root(1.5).div(25).add(1).pow(scaledAmt)
+      if (getBuyableAmount("S",12).gte(player["S"].metaNerf)) player["S"].multMeta = metaScaling
+
+
+
 
 
      },
@@ -200,9 +207,9 @@ getResetGain() {
   if (hasUpgrade("C",13)) gain = gain.times(4)
   if (hasUpgrade("C",21)) gain = gain.pow(1.05)
 
-  if (getClickableState("C", 21)) gain = gain.pow(0.666)
-  if (getClickableState("C", 23)) gain = gain.log(12)
-    if (getClickableState("E",14) == true ) gain = gain.root(5)
+    if (player.C.activeCheck == "Formality") gain = gain.pow(0.666)
+  if (player["C"].activeCheck == "Twilight") gain = gain.log(12)
+    if (player["E"].activeCheck == "Forgotton" ) gain = gain.root(5)
   if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
   
   if (player.L.LightCheck.gte(1) && player.L.Light.gte(1)) gain = gain.mul(player.L.Light.pow(0.25)) 
@@ -212,30 +219,11 @@ getResetGain() {
   return gain;
 
 },
-
 
 getNextAt() {
-  if (player.points.lt(1)) return Decimal.dZero;
-  
-  let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
-  if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
-  if (hasUpgrade("GL",31)) gain = gain.times(upgradeEffect("GL",31))
-  if (player.C.EffectorTier.gte(2)) gain = gain.times(player.S.points.log(4).clampMin(1))
-  if (hasUpgrade("C",12)) gain = gain.times(8)
-  if (hasUpgrade("C",13)) gain = gain.times(4)
-  if (hasUpgrade("C",21)) gain = gain.pow(1.05)
-
-  if (getClickableState("C", 21)) gain = gain.pow(0.666)
-  if (getClickableState("C", 23)) gain = gain.log(12)
-    if (getClickableState("E",14) == true) gain = gain.root(5)  
-  if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
-  if (player.L.LightCheck.gte(1) && player.L.Light.gte(1)) gain = gain.mul(player.L.Light.pow(0.25)) 
-
-  if (getClickableState("L",42) == true) gain = gain.clampMax(1e15)
-  return gain;
+return  tmp["S"].getResetGain
 
 },
-
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -246,8 +234,8 @@ getNextAt() {
 
 
     automate() {
-      if (player.C.checkUpgrades.gte(1)) buyMaxBuyable("S",11)
-      if (player.C.checkUpgrades.gte(2)) buyMaxBuyable("S",12)
+      if ( player["C"].hasFormality && player.L.activeCheck == "") buyMaxBuyable("S",11)
+      if ( player["C"].hasHeirarchy && player.L.activeCheck == "") buyMaxBuyable("S",12)
     },
 
 //
@@ -303,7 +291,7 @@ getNextAt() {
             effect() {
               let base = new Decimal(0)
               if (hasUpgrade("S",11)) base = base.plus(0.05)
-              if (hasMilestone("E",2) && player.L.TimeTillDarkActive == false) base = base.plus(0.03)
+              if (hasMilestone("E",2) && player.L.activeCheck == "") base = base.plus(0.03)
               return base
             },
         },
@@ -340,7 +328,7 @@ getNextAt() {
           effect() {
             let base = new Decimal(0)
             if (hasUpgrade("S",12)) base = base.plus(5)
-            if (hasMilestone("E",2) && player.L.TimeTillDarkActive == false) base = base.plus(5)
+            if (hasMilestone("E",2) && player.L.activeCheck == "") base = base.plus(5)
             return base
           },
       },
@@ -467,11 +455,11 @@ getNextAt() {
             display() {
               let nerf = tmp[this.layer].buyables[this.id].effect.pow(1.501501502)
 
-
+  
 
 
               let nerfText = ``
-              if (getClickableState("C", 21)) nerfText = `+${format(nerf)} -> `
+              if (player.C.activeCheck == "Formality") nerfText = `+${format(nerf)} -> `
 
 
               return `
@@ -501,10 +489,15 @@ getNextAt() {
               if (player.C.EffectorTier.gte(3)) effect = effect.mul(player.S.points.log(9).clampMin(1))
              // if (hasMilestone("E",1)) effect = effect.pow(0.949)
               if (getBuyableAmount("L",11).gte(1)) effect = effect.mul(buyableEffect("L",11))
+              
+                if (hasUpgrade("L",23)) effect = effect.mul(upgradeEffect("L",23))  
 
-              if (getClickableState("C", 21)) effect = effect.pow(0.666)
-              if (getClickableState("C", 23)) effect = effect.clampMin(0.1).log(12)
+              if (player.C.activeCheck == "Formality") effect = effect.pow(0.666)
+              if (player["C"].activeCheck == "Twilight") effect = effect.clampMin(0.1).log(12)
               if (hasUpgrade("E",13)) effect = effect.mul(upgradeEffect("E",13))
+
+
+
               return effect.clampMin(0);
             },
             style() {
@@ -561,7 +554,7 @@ getNextAt() {
                   scaledAmt = dx.sub(player.S.metaNerf)
                   metaScaling = scaledAmt.root(1.5).div(25).add(1).pow(scaledAmt)
                   cost = cost.mul(metaScaling)
-                }   
+                }               
            
               if (player.points.gte(cost)) addBuyables("S", 12, 5)
               else if (player.points.gte(this.cost)) addBuyables("S", 12, 1)
@@ -577,7 +570,7 @@ getNextAt() {
               let nerf = tmp[this.layer].buyables[this.id].effect.pow(1.501501502)
 
               let nerfText = ``
-              if (getClickableState("C", 22)) nerfText = `x${format(nerf)} -> `
+              if (player["C"].activeCheck == "Heirarchy") nerfText = `x${format(nerf)} -> `
               return `
             <h2>Multiply #${getBuyableAmount(this.layer, this.id)}</h2>
             <br>
@@ -607,14 +600,15 @@ getNextAt() {
               if (player.C.EffectorTier.gte(4)) effect = effect.mul(player.S.points.log(16).clampMin(1))
               if  (player.C.checkUpgrades.gte(3)) effect = effect.pow(1.312)
               
-                if (getBuyableAmount("L",12).gte(1)) effect = effect.mul(buyableEffect("L",12))
+              if (getBuyableAmount("L",12).gte(1)) effect = effect.mul(buyableEffect("L",12))
               if (hasUpgrade("L",12)) effect = effect.mul(upgradeEffect("L",12))
-
+              if (hasUpgrade("L",23)) effect = effect.mul(upgradeEffect("L",23))  
                 
-              if (getClickableState("C",22)) effect = effect.pow(0.666)
-              if (getClickableState("C", 23)) effect = effect.log(12)
+              if (player["C"].activeCheck == "Heirarchy") effect = effect.pow(0.666)
+              if (player["C"].activeCheck == "Twilight") effect = effect.log(12)
               
-                
+              if (getBuyableAmount("L",22).gte(3) && Hour.getHours() >= 12 ) effect = effect.mul((1.1 + (Hour.getHours() % 12)/55 ) ** Hour.getMinutes())
+  
 
               //    if (hasUpgrade("E",13)) effect = effect.mul(upgradeEffect("E",13))
               
@@ -647,7 +641,7 @@ getNextAt() {
     
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "s", description: "S: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "s", description: "S: Reset for prestige points", onPress(){if (tmp["S"].Reset.canClick) tmp["S"].Reset.onClick}},
     ],
     layerShown(){return true}
 })

@@ -8,15 +8,25 @@ let Display = `Solarity`
 
 
 let modInfo = {
-	name: "The Great Eclipse Incremental",
-	id: "OINOINOIN",
+	name: "The Solar Eclipse Guidance Incremental",
+	id: "OINOINOIN", //after I'm done with this mod, change mod id for balance check
+
+	// main id save: OINOINOIN 
+	// 
+
 	author: "ThatOneKobold",
 	
 	
 	
 	pointsName: "Solarity",
 
-	modFiles: ["layers.js/SolarRays.js", "layers.js/GoldenRays.js","layers.js/Centerality.js","layers.js/Enlightenment.js","layers.js/dialogueStuff.js","layers.js/lunaris.js","tree.js"],
+	modFiles: ["layers.js/SolarRays.js", 
+		"layers.js/GoldenRays.js",
+		"layers.js/Centerality.js",
+		"layers.js/Enlightenment.js",
+		"layers.js/extras.js",
+		"layers.js/lunaris.js","layers.js/solaris.js",
+		"tree.js"],
 	discordName: "Join ThatOneKobold's Community Server!",
 	discordLink: "https://discord.gg/tJDWU7twvB",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
@@ -25,7 +35,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.4 F12-B13",
+	num: "0.5.4 (soon to 0.6) F16-B13",
 	name: "Yeh",
 }
 /*
@@ -56,19 +66,44 @@ let changelog = `
 
 
 
+<h3>v0.6 Fix 16, Balance 12</h3><br>
+Solaris... fuck you lol. <br>
+- added <h3> 4 Minutes until dark </h3> <br>
+- added 2 new Currencies <br>
+- added the first one time reset  <br>
+- added a side Reset for Eclipsification (50% chance it gets reset on Eclipsification) <br>
+- NEW CHECK UPGRADE?!?! <br>
+- Renamed Enlightenment tabs: SOTI -> Eclipsify. and SOTE -> The Factory [dw these will return soon]<br>
+- Changed  <br>
+- added the solar clock (and maybe buffed it a slight bit) <br>
+- a new upgrade type (subspecies) is here! [Repeatable Check Upgrades]. <br>
+- Added Chronology <br>
+- Changed Main layer 2 reset from Eclipsification to Eclipsify <br><br>
+
+- Added New Themes: Eclipse and Twilight<br>
+- Added and changed UI's of custom-made features<br>
+- Moved some features into other tabs to save space and clutter <br>
+	<br> Center Tree Respec moved from The Effector to The Center Tree
+	
+
+Fixes:
+Fix 13: Layers no longer randomly switch places when reloading screens <br>
+Fix 14: finally fixed post solarity cap statistics being incorrect<br>
+Fix 15: Fixed Center Points incorrect cost scale FOR THE 4TH TIME<br>
+Fix 16: Fixed Solar light generation and Solar Charge generation (for REAL this time), i finally understood what diff is and how it functions xd<br>
+Bal 11: Added a cap to Eclipsium at a base of 100,000<br>
+Bal 12: Added a new boost to Eclipsium at Eclipse Tier 5<br>
 
 
+<br><br>
 
-
-
-
-<h3>v0.5 Fix 12, Balance 10</h3><br>
+<h3>v0.5 to v0.5.4, Fix 12, Balance 10</h3><br>
 Lunaris, do my laundry! <br>
 - added <h3> The Forgotton </h3> <br>
 - added 2 new Currencies <br>
 - added the first one time reset  <br>
 - added a side Reset for Eclipsification (50% chance it gets reset on Eclipsification) <br>
-- NEW CHECK UPGRADE?!?! <br>
+- NEW CHECK UPGRADES?!?! <br>
 - Renamed Enlightenment tabs: SOTI -> Eclipsify. and SOTE -> The Factory [dw these will return soon]<br>
 - NEW UI CHANGE????! <br>
 - added the solar clock (and maybe buffed it a slight bit) <br>
@@ -83,9 +118,12 @@ Bal8: added 2 softcaps for Chimera's effect boost <br>
 Bal9: added a boost cap to Eclipsium [at 50 Eclipsium]<br>
 Bal10: Lowered Queue Upgrades goal requirements from 60000 to 30000 (Eclarity) <br>
 Fix9: Fixed Center Points bulk purchase not working properly (it was adding instead of setting the value) <br>
+<br><br>
+v0.5 - v0.5.4
 Fix10: Fixed Solar light generation incorrectly displaying its generation value<br>
 Fix11: Fixed Solar charge display incorrectly displaying its generation amount<br>
 Fix12: Fixed Solar Light generation displaying its unnerfed generation incorrectly.. (IT was displaying as if there was no Solarity gain cap) <br>
+
 <br><br>
 
 <h3>v0.4 Fix 8, Balance 5</h3><br>
@@ -133,7 +171,7 @@ Fix1: Fixed PointGen() issues/boosts not responding very well (it was an "x= val
 		- 4 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.<br>	
 		`
 
-let winText = `The Eclipse is over... for its rays and shades all crumble beneath you... as your moons and suns have become distant. guide no more... they say.`
+let winText = `The Eclipse is over... wfor its rays and shades all crumble beneath you... as your moons and suns have become distant. guide no more... they say.`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -143,9 +181,20 @@ function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
 }
 
+
+
+
+function startGame() {
+	player.inCutscene = true
+	setTimeout((player.inCutscene=!player.inCutscene),12000)
+
+
+}
+
+
 // Determines if it should show points/sec
 function canGenPoints(){
-	return true
+	return player.startGame
 }
 
 // Calculate points/sec!
@@ -156,7 +205,7 @@ function getPointGen() {
 	let e2 = 0
 
 
-	let gain = new Decimal(1)
+	let gain = new Decimal(0)
 
 
 	/*  */
@@ -171,7 +220,7 @@ function getPointGen() {
 	
 	let sPoints = player.S.points
 
-	let MAX = (hasMilestone("E", 2) && player.L.TimeTillDarkCheck == false) ? 3 : 2
+	let MAX = (hasMilestone("E", 2) && player.L.activeCheck == "") ? 3 : 2
 	let RootEFF1 = new Decimal(40)
 	let RootEFF2 = new Decimal(35)
   	let SolarRay1 = sPoints.root(RootEFF1.sub(upgradeEffect("S",12)))
@@ -187,8 +236,8 @@ function getPointGen() {
 
 	
 	//Check Upgrade 1 and Check Upgrade 2 Debuffs
-	if (getClickableState("C", 21)) gain = gain.pow(0.666)
-	if (getClickableState("C", 23) == true ) gain = gain.log(12)
+	if (player.C.activeCheck == "Formality") gain = gain.pow(0.666)
+	if (player["C"].activeCheck == "Twilight" ) gain = gain.log(12)
 	// ------------ CENTRALITY EFFECTS -----------
 	let HeirarchyBonus = player.C.CenterPoints.pow_base(5).clampMin(1)
 	
@@ -196,18 +245,18 @@ function getPointGen() {
 
 	if (hasUpgrade("C",22)) gain = gain.pow(1.15)
 	if (player.C.EffectorTier.gte(1)) gain = Decimal.mul(gain, player.S.points.log(2).clampMin(1))
-	if (getClickableState("C", 23) == true && hasMilestone("E",2) && player.L.TimeTillDarkCheck == false ) gain = gain.pow(1.15)
-	if (player.C.checkUpgrades.gte(2)) {
+	if (player["C"].activeCheck == "Twilight" && hasMilestone("E",2) && player.L.activeCheck == "" ) gain = gain.pow(1.15)
+	if (player["C"].hasHeirarchy) {
 		
-		if (!getClickableState("C", 23)) gain = gain.mul(HeirarchyBonus)
-		else if (getClickableState("C", 23)) gain = gain.mul(HeirarchyBonus.log(12)).clampMin(1)
+		if (!player["C"].activeCheck == "Twilight") gain = gain.mul(HeirarchyBonus)
+		else if (player["C"].activeCheck == "Twilight") gain = gain.mul(HeirarchyBonus.log(12)).clampMin(1)
 	}
-	if (player.C.checkUpgrades.gte(1)) gain = gain.pow(1.25)// The Forgotton... Check upgrade
+	if (player["C"].hasFormality) gain = gain.pow(1.25)// The Forgotton... Check upgrade
 		
 
 
 	// --------- ENLIGHTENMENT EFFECTS ---------
-	if (getClickableState("E",14)) gain = gain.root(7)
+	if (player["E"].activeCheck == "Forgotton") gain = gain.root(7)
 	if (player.L.LunarPower.gt(100)) gain = gain.div(decimalOne.plus(player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4)).clampMin(1))	
 	if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(9))
 	gain = gain.mul(upgradeEffect("E",12))
@@ -227,7 +276,7 @@ function getPointGen() {
 
 	//--------------- Solarity generation nerf ----------------
 	if (getClickableState("GL", 11) == true) gain = gain.pow(0.5)
-	if (player.L.TimeTillDarkActive == true) gain = gain.pow(0.6)
+	if (player.L.activeCheck == "TimeTillDark") gain = gain.pow(0.6)
 
 
 	// ------------------ SOLAR CHARGE EFFECTS --------------
@@ -242,11 +291,16 @@ function getPointGen() {
 	
 	let basegainCap = player.BasepointsCap
 	// --------------- check upgrade Lightness
-	if (getClickableState("L", 41) || player.L.TimeTillDarkActive == true) basegainCap = new Decimal(1)
+	if (getClickableState("L", 41) || player.L.activeCheck == "TimeTillDark") basegainCap = new Decimal(1)
 
 
 	if (hasMilestone("E",1)) basegainCap = basegainCap.mul(player.E.EclipseTier.pow_base(20))
-	if (hasMilestone("E",2)) basegainCap = basegainCap.mul(player.E.Eclipsium.pow_base(1.45))
+
+	let moved = new Decimal(100000)
+	if (player.E.EclipseTier.gte(6)) moved = new Decimal(1e10)	
+	if (hasMilestone("E",2)) basegainCap = basegainCap.mul(player.E.Eclipsium.pow_base(1.45).clampMax(moved))
+
+
 	basegainCap = basegainCap.mul(getBuyableAmount("E", 11).mul(0.5).add(1))
 	basegainCap = basegainCap.mul(buyableEffect("E",12))
 
@@ -254,13 +308,12 @@ function getPointGen() {
 	if (getBuyableAmount("L",11).gte(1)) basegainCap = basegainCap.mul(buyableEffect("S",11).pow(getBuyableAmount("L",11).add(1).log(10).div(5)).clampMin(1))
 
 
-
 	if (hasMilestone("E",3)) basegainCap = basegainCap.mul(player.E.SolarCharge.log(2).add(1).pow(B))
 	
 
 	//Heirarchy
 	
-	if (hasMilestone("E",5) && player.L.TimeTillDarkCheck == false) basegainCap = basegainCap.mul(HeirarchyBonus.pow(0.33))
+	if (hasMilestone("E",5) && player.L.activeCheck == "") basegainCap = basegainCap.mul(HeirarchyBonus.pow(0.33))
 
 
 	let c1effect = decimalOne.plus(player.L.LunarPower.clampMin(1).log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
@@ -270,13 +323,14 @@ function getPointGen() {
 	if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) basegainCap = basegainCap.mul(1.15 ** Hour.getMinutes())
 	
 
-
+ 
 
 	//Limit everything to the point gain cap
 
 	//Time till dark
-	if (player.L.TimeTillDarkActive == true){ 
+	if (player.L.activeCheck == "TimeTillDark"){ 
 		basegainCap = basegainCap.pow(0.6)
+		
 		basegainCap = basegainCap.div(player.L.TimeTillDark.sub(243).abs().div(60).floor().pow_base(100))
 	}
 	
@@ -285,11 +339,11 @@ function getPointGen() {
 	player.postCap = gain.div(player.BasepointsCap)
 	player.beforeCap = gain
 
-	if (player.L.TimeTillDarkActive == true && player.L.TimeTillDark.lte(0)) {
-		layer2Reset()
-		player.L.TimeTillDarkActive = false
+	if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.lte(0)) {
+		player.L.activeCheck == ""
+
 		player.L.TimeTillDark = new Decimal(0)
-		gain= new Decimal(0)
+		gain = gain.mul(0).add(1)
 	}
 
 	return gain.clampMax(basegainCap)
@@ -298,17 +352,27 @@ function getPointGen() {
 }
 
 function addedPlayerData() { return {
+
+
 	BasepointsCap: new Decimal(1e308),
 	SolarityCap: new Decimal(1),
 	postCap: new Decimal(1),
-	beforeCap: new Decimal(1)
+	beforeCap: new Decimal(1),
+	//
+	rot: 0,
+	tick: 0,
+	inCutscene: false,
+	showScreen: true,
+	//
+	startedGame: false,
+
 }}
 
 // Display extra things at the top of the page
 var displayThings = [
 
 	
-	function() {
+	function s() {
 		
 		// Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1)
 
@@ -337,14 +401,17 @@ var displayThings = [
 	    let pushThrough = ``
 
 		let fogger = `Solarity`
-		if (getClickableState("E",14)) fogger = `Shade...?`
+		if (player["E"].activeCheck == "Forgotton") fogger = `Shade...?`
 		//if (getClickableState("L",11)) fogger = ``
 
 
 		//Hardcaps and other things
 			// Solarity Hardcap
-			if (getPointGen().gte(player.pointsCap)) pushThrough = `<br>
-			If your ${fogger} gain was not capped, you would gain x${format(player.postCap)} more than what you would have. which is ${format(player.postCap.mul(player.SolarityCap))}`
+
+			let multAfterCap = player.beforeCap.div(player.SolarityCap)
+
+			if (getPointGen().gte(player.SolarityCap)) pushThrough = `<br>
+			If your ${fogger} gain was not capped, you would gain x${format(multAfterCap)} more than what you would have. which is ${format(player.beforeCap)}`
 			else pushThrough = ``
 			if (player.SolarityCap.neq(1e308)) capped = `
 			<br>
@@ -365,7 +432,17 @@ var displayThings = [
 
 	*/
 	if (true) {	
-		if (getBuyableAmount("L",22).gte(2) && getBuyableAmount("L",22).gte(2)) {
+
+		if (player.Sol.Aperativity.gte(35)) {
+			nextText = `Solock XVII (18): Next unlock at 1000 TRNG and CP base >8 `
+			} 
+		else if (player.E.EclipseTier.eq(6)) {
+			nextText = `Solock XVI (17): Next unlock at 35 Aperativity`
+			} 
+		else if (hasUpgrade("L",23)) {
+			nextText = `Solock (16.5): [Get ECT 6 to continue]`
+			} 
+		else if (getBuyableAmount("L",22).gte(2) && getBuyableAmount("L",22).gte(2)) {
 		nextText = `Solock XV (16): Next Unlock at Anaphalagia (1x:x)`
 		} 
 		else if (getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5)) {
@@ -377,7 +454,7 @@ var displayThings = [
 						
 		} 
 		else if (player.E.Chimera.gte(10)) {
-				nextText = `Solock XIII: Next Unlock at Expansion I #10 `
+				nextText = `Solock XIII: Next Unlock at Expansion I #10, and a Lunarity performed`
 		} 
 		else if (player.E.EclipseTier.eq(4)) {
 			 nextText = `Solock XII: Next Unlock at Chimera #10`
@@ -429,19 +506,19 @@ var displayThings = [
 		else OOMTEXT = `${format(getPointGen())} per second`
 		let forgotten = ``; 
 
-		if (getClickableState("E", 14)) forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Shade...? </h2>`; 
+		if (player["E"].activeCheck == "Forgotton") forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Shade...? </h2>`; 
 		else forgotten = `<h2 style="color: #ffaf47; text-shadow: 0px 0px 10px #de482a;"> You Have ${format(player.points)} Solarity </h2>`
 		
 		if (getClickableState("L",42) == true) forgotten = `<h2 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Dark Essence`
 		
-		if (player.L.TimeTillDarkActive == true) forgotten = `<h2 style="color: #044c76"> ${format(player.points)} / 3e44 </h2> <h2 style="color: #61036b"> Dark Entropy </h2>`
+		if (player.L.activeCheck == "TimeTillDark") forgotten = `<h2 style="color: #044c76"> ${format(player.points)} / 2.91e41 </h2> <h2 style="color: #61036b"> Dark Entropy </h2>`
 
-		let forgotten1 = ``; 
+		let forgotten1 = ``; //// 7.72e39
 //#31005e
-		if (getClickableState("E", 14)) forgotten1 = `<h5 style="color: #31005e; text-shadow: 0px 0px 10px #ffffff;"> Current Shade Production: ${OOMTEXT} Per second </h5>`; 
+		if (player["E"].activeCheck == "Forgotton") forgotten1 = `<h5 style="color: #31005e; text-shadow: 0px 0px 10px #ffffff;"> Current Shade Production: ${OOMTEXT} Per second </h5>`; 
 		else forgotten1 = `<h5> Current Solarity Generation: ${OOMTEXT} </h5>`
 		if (getClickableState("L", 42)) forgotten1 = `<h5 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Current Dark Essence Generation: ${OOMTEXT} Per second </h5>`; 
-		if (player.L.TimeTillDarkActive == true) forgotten1 = `<h4 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Solarity Generation is hidden... </h4>`; 
+		if (player.L.activeCheck == "TimeTillDark") forgotten1 = `<h4 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Solarity Generation is hidden... </h4>`; 
 //5b0935
 
 
@@ -452,20 +529,25 @@ var displayThings = [
 
 		let FMTDnerf = ``
 
-		if (player.L.TimeTillDark.sub(243).abs().gte(60)) FMTDnerf = `<h4 style="color: #9a1212";>Solarity gain cap reduced by /${format(player.L.TimeTillDark.sub(243).abs().div(60).floor().pow_base(100))} </h4>`
+		if (player.L.TimeTillDark.sub(243).abs().gte(60)) FMTDnerf = `<h4 style="color: #9a1212";>Solarity gain cap reduced by /${format(player.L.TimeTillDark.sub(243).abs().div(60).floor().pow_base(100))} </h4> | `
 		
-		completion = Decimal.div(player.points.clampMin(1).log(10), new Decimal(3e44).log(10)).mul(100)
-		
+		completion1 = Decimal.div(player.points.clampMin(1).log(10), new Decimal(2.91e41).log(10)).mul(50)
+		completion2 = Decimal.div(player.C.CenterPoints.clampMin(1).log(10), new Decimal(40).log(10)).mul(50)
 
-
+		completionFULL = completion1 + completion2
 		
-		if (player.L.TimeTillDarkActive == true) FMTDtext = `<br><h3 style="color: #9a1212"; class="glitch"; data-text="The clock is ticking...";>The clock is ticking...</h3> <br>
+		if (player.L.activeCheck == "TimeTillDark") FMTDtext = `<br><h3 style="color: #9a1212"; class="glitch"; data-text="The clock is ticking...";>The clock is ticking...</h3> <br>
 		 <h4 style="color:#5022f3"> You have ${format(player.L.TimeTillDark,1)} Seconds left to complete this check</h4> <br> 
 		 ${FMTDnerf}
-		 Progress to completion: ${format(completion,2)}%
+		 Progress to completion: ${format(completionFULL,2)}%
 		 `
 
-		if (player.L.TimeTillDarkActive == true) nextText = ``
+		if (player.L.activeCheck == "TimeTillDark") nextText = ``
+		if (player.L.activeCheck == "TimeTillDark") genText = ``
+		//thing that returns ALL 
+		
+		let Noter = ``
+		if (options.autosave) Noter = `Autosave is on.`
 
 		return `
 		
@@ -473,11 +555,14 @@ var displayThings = [
 		${nextText}
 		${genText} 
 		${capped} <br>
-
-		
-		`
-
-	}
+dev note (to-do) for v0.5: <br>	
+ <br>		
+- (0.6 and later) make activeCheck a global variable<br>			
+	${Noter}	`
+	
+	}, 
+	
+	function d() {return `<br>main things to do: seperate displays into different functions (for displayThings).<br>`},
 	
 
 
@@ -490,7 +575,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return false
+	return player.Sol.solarBurst
 }
 
 

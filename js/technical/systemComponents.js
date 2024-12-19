@@ -151,6 +151,8 @@ var systemComponents = {
     },
 
     'options-tab': {
+		//<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'FourMinutes'" > Theme: Four Minutes Until Dark </button>
+				
         template: `
         <table>
             <tr>
@@ -164,7 +166,16 @@ var systemComponents = {
                 <td><button class="opt" onclick="toggleOpt('offlineProd')">Offline Prod: {{ options.offlineProd?"ON":"OFF" }}</button></td>
             </tr>
             <tr>
-                <td><button class="opt" onclick="switchTheme()">Theme: {{ getThemeName() }}</button></td>
+                <td>
+				<button class="opt" onclick="switchTheme()" v-if="getThemeName() == 'Eclipse'" > Theme: Eclipse...?</button>
+				<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'Twilight'" > Theme: Twilight...</button>
+				
+				<button class="opt" onclick="switchTheme()" v-else> Theme: {{ getThemeName() }}</button>
+				
+				</td>
+
+
+
                 <td><button class="opt" onclick="adjustMSDisp()">Show Milestones: {{ MS_DISPLAYS[MS_SETTINGS.indexOf(options.msDisplay)]}}</button></td>
                 <td><button class="opt" onclick="toggleOpt('hqTree')">High-Quality Tree: {{ options.hqTree?"ON":"OFF" }}</button></td>
             </tr>

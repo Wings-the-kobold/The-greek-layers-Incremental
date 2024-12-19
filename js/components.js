@@ -119,7 +119,7 @@ function loadVue() {
 			<div class="instant" v-bind:style="data ? {'height': data} : {}" class="vl2"></div>
 		`
 	})
-
+	//yuck I hate these
 	Vue.component('challenges', {
 		props: ['layer', 'data'],
 		template: `
@@ -140,11 +140,17 @@ function loadVue() {
 		<div v-if="tmp[layer].challenges && tmp[layer].challenges[data]!== undefined && tmp[layer].challenges[data].unlocked && !(options.hideChallenges && maxedChallenge(layer, [data]) && !inChallenge(layer, [data]))"
 			v-bind:class="['challenge', challengeStyle(layer, data), player[layer].activeChallenge === data ? 'resetNotify' : '']" v-bind:style="tmp[layer].challenges[data].style">
 			<br><h3 v-html="tmp[layer].challenges[data].name"></h3><br><br>
-			<button v-bind:class="{ longUpg: true, can: true, [layer]: true }" v-bind:style="{'background-color': tmp[layer].color}" v-on:click="startChallenge(layer, data)">{{challengeButtonText(layer, data)}}</button><br><br>
+			<button v-bind:class="{ longUpg: true, can: true, [layer]: true }" v-bind:style="{'background-color': tmp[layer].color}"
+			 v-on:click="startChallenge(layer, data)">
+			 
+			 
+			 {{challengeButtonText(layer, data)}}</button>
+			 <br><br>
 			<span v-if="layers[layer].challenges[data].fullDisplay" v-html="run(layers[layer].challenges[data].fullDisplay, layers[layer].challenges[data])"></span>
 			<span v-else>
 				<span v-html="tmp[layer].challenges[data].challengeDescription"></span><br>
-				Goal:  <span v-if="tmp[layer].challenges[data].goalDescription" v-html="tmp[layer].challenges[data].goalDescription"></span><span v-else>{{format(tmp[layer].challenges[data].goal)}} {{tmp[layer].challenges[data].currencyDisplayName ? tmp[layer].challenges[data].currencyDisplayName : modInfo.pointsName}}</span><br>
+				Goal:  <span v-if="tmp[layer].challenges[data].goalDescription" v-html="tmp[layer].challenges[data].goalDescription"></span>
+				<span v-else>{{format(tmp[layer].challenges[data].goal)}} {{tmp[layer].challenges[data].currencyDisplayName ? tmp[layer].challenges[data].currencyDisplayName : modInfo.pointsName}}</span><br>
 				Reward: <span v-html="tmp[layer].challenges[data].rewardDescription"></span><br>
 				<span v-if="layers[layer].challenges[data].rewardDisplay!==undefined">Currently: <span v-html="(tmp[layer].challenges[data].rewardDisplay) ? (run(layers[layer].challenges[data].rewardDisplay, layers[layer].challenges[data])) : format(tmp[layer].challenges[data].rewardEffect)"></span></span>
 			</span>
@@ -322,6 +328,7 @@ function loadVue() {
 			`
 	})
 	
+	//the way of how the clickables are aligned
 	Vue.component('clickables', {
 		props: ['layer', 'data'],
 		template: `
@@ -338,20 +345,55 @@ function loadVue() {
 	})
 
 	// data = id of clickable
+	//what
+
+
+
+	Vue.component('Custom', {
+		props: ['layer', 'data'],
+		data() {
+			return {
+			id: "in-component id",
+			}
+		},
+
+		template: `
+		<button 
+		v-if="tmp[layer].Custom[data.id].unlocked"
+		v-bind:style="[ tmp[layer].Custom[data.id].style]"
+		v-html="tmp[layer].Custom[data.id].display()" @click="tmp[layer].Custom[data.id].onClick()" 
+		
+		v-bind:class="{click: true, can: tmp[layer].Custom[data.id].canClick, locked: !tmp[layer].Custom[data.id].canClick }"
+
+		> </button>
+		`
+	})
+
+
 	Vue.component('clickable', {
 		props: ['layer', 'data'],
 		template: `
+		
+		
 		<button 
 			v-if="tmp[layer].clickables && tmp[layer].clickables[data]!== undefined && tmp[layer].clickables[data].unlocked" 
 			v-bind:class="{ upg: true, tooltipBox: true, can: tmp[layer].clickables[data].canClick, locked: !tmp[layer].clickables[data].canClick}"
 			v-bind:style="[tmp[layer].clickables[data].canClick ? {'background-color': tmp[layer].color} : {}, tmp[layer].clickables[data].style]"
-			v-on:click="if(!interval) clickClickable(layer, data)" :id='"clickable-" + layer + "-" + data' @mousedown="start" @mouseleave="stop" @mouseup="stop" @touchstart="start" @touchend="stop" @touchcancel="stop">
+			v-on:click="if(!interval) clickClickable(layer, data)" :id='"clickable-" + layer + "-" + data' @mousedown="start" @mouseleave="stop" @mouseup="stop" @touchstart="start" @touchend="stop" @touchcancel="stop"
+			>
+
+		
 			<span v-if= "tmp[layer].clickables[data].title"><h2 v-html="tmp[layer].clickables[data].title"></h2><br></span>
 			<span v-bind:style="{'white-space': 'pre-line'}" v-html="run(layers[layer].clickables[data].display, layers[layer].clickables[data])"></span>
 			<node-mark :layer='layer' :data='tmp[layer].clickables[data].marked'></node-mark>
+			
 			<tooltip v-if="tmp[layer].clickables[data].tooltip" :text="tmp[layer].clickables[data].tooltip"></tooltip>
-
+		
 		</button>
+
+		
+
+		<h3>test</h3>
 		`,
 		data() { return { interval: false, time: 0,}},
 		methods: {
@@ -603,6 +645,201 @@ function loadVue() {
 				v-bind:class="{ longUpg: true, can: player[layer].unlocked, locked: !player[layer].unlocked }">{{tmp[layer].buyables.sellAllText ? tmp[layer].buyables.sellAllText : "Sell All"}}</button>
 	`
 	})
+
+
+	Vue.component('Viewer', {	
+		props: ['layer','id','title','data'],		
+		data() {
+			return { 
+				id: "in-component id",
+				title: "in-component title",
+				//button here			
+			}							
+		},
+		template: `
+<div >		
+	<h2  v-if="tmp[layer].Viewer[data.id].unlocked" class="ignThemes"> 
+		<span style="border: 2px solid gray; display: inline-block; padding: 2px; background-color: #5a5b5c;" v-html="data.title" ></span>	
+	</h2> 
+<br> 
+
+
+	<span 
+	
+	v-if="tmp[layer].Viewer[data.id].unlocked"
+	class="ignThemes"
+	style="
+	border: 2px solid gray; display: inline-block;
+	font-size:12px;
+	background-color: #202021;	
+	padding: 15px;
+	width: 560px;
+	 " 
+	v-html="tmp[layer].Viewer[data.id].display()" 
+	> 		
+</span>
+<br><br>
+
+</div>
+`,//v-if="tmp[layer].Viewer[data.id].unlocked"
+	} )
+
+
+	Vue.component('Reset', {	
+		props: ['layer','id','data'],		
+		data() {
+			return { 
+				id: "in-component id", 
+				title: "in-component id",	
+				interval: false, 
+				time: 0,	
+			}		
+			
+			
+		},
+
+		methods: {
+			
+		},
+
+
+		template: `
+<div v-if="tmp[layer].Reset[data.id].unlocked">		
+
+	<span style="border: 2px solid gray; display: inline-block;padding: 3px; width: 500px;">	
+
+	<span style="border: 2px solid gray; display: inline-block; padding: 1px; width: 490px;" class="ignThemes" > <h3> {{data.title}} </h3></span>  <br>
+	
+	<p v-html="tmp[layer].Reset[data.id].display()" class="ignThemes"> </p>
+	<br>
+	
+	<button style="width: 250px;" @click="if (tmp[layer].Reset[data.id].canClick) tmp[layer].Reset[data.id].onClick()"
+	
+	v-bind:class="{can: tmp[layer].Reset[data.id].canClick, locked: !tmp[layer].Reset[data.id].canClick}"
+	
+	v-html="tmp[layer].Reset[data.id].button"		
+	> </button>
+	
+	
+
+	</span> 
+
+
+
+</div> 
+`, //v-html="tmp[layer].Reset[data.id].buttonText"
+
+/* 
+
+*/
+
+	} )
+
+
+	
+
+
+	Vue.component('Check', {
+		props: ['layer','id','data'],	
+
+		data() {
+			return {
+				title: "in-component id",
+				id: "in-component id",
+				item: "in-component id",
+				checkIsActive: false,	
+				
+
+				isActive() {
+					if (player[layer].activeCheck == undefined) { 
+						return false
+					} else if (player[layer].activeCheck == "") {
+						return false
+					} else {
+						return player[layer].activeCheck
+					}				
+				},			
+			}	
+		},
+		methods: {
+		toggle() {
+		this.checkIsActive = !this.checkIsActive	
+		},
+
+		},
+
+
+template: `<template><div v-if="Check(layer, data.id).unlocked"  >
+	
+<br>
+	
+
+<span style="border: 2px solid gray; display: inline-block; padding: 4px; background-color: #5a5b5c; margin: auto;" >
+		<p v-if="player[layer].activeCheck == data.item"> [ ACTIVE ] <br></p>
+		
+<p v-if="Check(layer, data.id).has" class="ignThemes"> Check Upgrade Completed! <br></p> 
+	<span style=" padding: 2px; background-color: #5a5b5c; width: 75px; height: 75px; " > <p v-html="Check(layer, data.id).png" v-if="Check(layer, data.id).png "></p><p v-if="!Check(layer, data.id).png || Check(layer, data.id).png == undefined"> Png Error: No image provided. </p></span>	
+		
+			
+	<span style="border: 2px solid gray; display: inline-block; padding: 2px; background-color: #5a5b5c; width: 185px; height: auto " >
+		
+		<p v-html="Check(layer, data.id).display()"  class="ignThemes"></p><br>
+		
+		<br>
+		<span v-if="!Check(layer, data.id).CompReq == undefined || !Check(layer, data.id).EnterReq == undefined || !Check(layer, data.id).has || player[layer].activeCheck == ''" >
+					
+			
+			<button 
+			style=" display: inline-block; padding: 2px; width: 150px;" 
+			v-if="player[layer].activeCheck == '' && !Check(layer, data.id).EnterReq && !Check(layer, data.id).has "
+			v-bind:class="{locked: true}"
+			
+			> [Locked] - Get the above requirements to proceed </button>
+					
+			<button 
+			style=" display: inline-block; padding: 2px; width: 150px;" 
+			@click="toggle(), Check(layer, data.id).onClick()"
+			v-if="player[layer].activeCheck == '' && Check(layer, data.id).EnterReq && !Check(layer, data.id).has "
+			v-bind:class="{can: Check(layer, data.id).EnterReq , locked: !Check(layer, data.id).EnterReq }"
+			
+			> Check For Bonuses </button>
+
+			<button 
+			style=" display: inline-block; padding: 2px; width: 150px;" 
+			v-if="!player[layer].activeCheck == '' && !Check(layer, data.id).CompReq && !Check(layer, data.id).has"
+			v-bind:class="{locked: true }"
+			
+			> Checking... </button>
+					
+			<button 
+			style=" display: inline-block; padding: 2px; width: 150px;" 
+			@click=" Check(layer, data.id).onClick(true), toggle()"
+			v-if=" Check(layer, data.id).CompReq && !Check(layer, data.id).has && player[layer].activeCheck == data.item"
+			v-bind:class="{can: Check(layer, data.id).CompReq}"
+			> Finish Checking </button>
+
+			</span>
+					<span v-else-if="Check(layer, data.id).CompReq == undefined || Check(layer, data.id).EnterReq == undefined"><br> Button Error: CompReq() or EnterReq() is undefined</span>
+					<span v-else-if="Check(layer, data.id).has == undefined"><br> Function Error: has() is undefined (you might need to add 'fix()') </span>
+					<span v-else-if="player[layer].activeCheck == undefined" >Undefined error: Cannot find any active checks</span>
+					<span v-else-if="Check(layer, data.id).has == !undefined"></span>
+					<span v-else>Component error: an unexpected error occured</span>
+					
+		</span>	
+
+			
+	</span>	
+
+		
+	</div></template>`
+	} )
+
+
+
+
+
+
+
 
 	// SYSTEM COMPONENTS
 	Vue.component('node-mark', systemComponents['node-mark'])

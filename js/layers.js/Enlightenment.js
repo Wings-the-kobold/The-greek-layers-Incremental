@@ -1,7 +1,10 @@
+
+var canGet =` You Can Aquire the next Eclipse Tier on This Eclipsication!` 
+
 addLayer("E", {
     name: "Enlightenment", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "⚡", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+   // symbol: "⚡", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
 		    ENLlevels: new Decimal(0),
@@ -21,32 +24,30 @@ addLayer("E", {
         Chimera: new Decimal(0),
 
         // checkupgrade
+
+        activeCheck: "",
+
+
         forgotton: false,
     }},
     color: "#3f5b96",
-   // Can be a function that takes requirement increases into account
-    resource: "Solar Light", // Name of prestige currency
-    baseResource: "Solarity", // Prestige currency uses this "base currency"
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    //exponent: 0.2, // Prestige currency exponent
-   // gainMult() { // Calculate the multiplier for main currency from bonuses
-   //     mult = new Decimal(1)
-    //    mult = mult.pow(0.3)
-    //    return mult
-    //},
-    //gainExp() { // Calculate the exponent on main currency from bonuses
-    //    return new Decimal(1)
-   // },
+ 
     row: 2,
 
  //if (player.L.TimeTillDarkCheck == false)
-  
+    
+ symbol() {
+  return `
+  <p><img src="resources/The Eclipse.png" style="width:80px;height:80px;",></p>`
+  },
+
+
+
          update(diff) {
          let Hour = new Date()
          
         let ENLcap = 9
-        if (player.L.TimeTillDarkCheck == true) ENLcap = 16
+        if (Check("L",11).has) ENLcap = 16
 
          if (player.points.div(1e308).gte(1)) {
           
@@ -59,31 +60,31 @@ addLayer("E", {
           player.E.ECSgain = player.E.ENLlevels.root(3)
          // player.E.falsity = player.postCap
 
-
+        //Check("L",11).has
 
          //Solar Charge stuff
-        let flow = player.E.ENLlevels.div(10) // the base gain generation
-        let Baseincrement = new Decimal(1)  // speed increaser
-        
-        // BOOSTS AND MULTIPLIERS ARE HERE
-        Baseincrement = Baseincrement.mul(player.E.Solinity)
-      
-       let effect2 = player.E.Chimera.pow_base(1.25)
+        let gainSC = player.E.ENLlevels.div(10) // the base gain generation      
+        let gainL1 = tmp["E"].buyables["21"].gain//.times(diff)
+    
+    // BOOSTS AND MULTIPLIERS ARE HERE 
+
+   //Solar charge
+      let speedSC = player.E.Solinity.clampMin(1) 
+      let effect2 = player.E.Chimera.pow_base(1.25)
 
       effect2 = softcap(effect2, new Decimal(10000), 0.1)
-        if (player.E.Chimera.gt(1)) Baseincrement = Baseincrement.mul(effect2)
-         
-
-        if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(2) && !Hour.getHours == 12) Baseincrement = Baseincrement.mul(1.5 ** Hour.getHours()) 
-
-
-
-       if (player.E.EclipseTier.gte(3)) Baseincrement = Baseincrement.mul(player.E.EclipseTier.sub(2).pow_base(1.15))
-       //if (hasMilestone("E",5)) Baseincrement = Baseincrement.mul(1.7)
-
-        //Totals
-        if (player.E.EclipseTier.gte(3)) player.E.SolarCharge = player.E.SolarCharge.plus(flow.times(Baseincrement.times(diff)))
+      if (player.E.Chimera.gt(1)) speedSC = speedSC.mul(effect2)
+      if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(2) && !Hour.getHours == 12) speedSC = speedSC.mul(1.5 ** Hour.getHours()) 
+      if (player.E.EclipseTier.gte(3)) speedSC = speedSC.mul(player.E.EclipseTier.sub(2).pow_base(1.15))
+                
+        //Solinity passive gen
+      let speedL1 = tmp["E"].buyables["21"].gain
         
+        //Generation
+        if (player.E.EclipseTier.gte(3)) player.E.SolarCharge = player.E.SolarCharge.plus(gainSC.times(speedSC.times(diff)))
+        if (player.E.EclipseTier.gte(6)) player.E.Solinity = player.E.Solinity.plus(gainL1.div(10).times(diff))
+
+
         if (player.E.EclipseTier.eq(8))
             player.E.ETCost = new Decimal(105)
         else if (player.E.EclipseTier.eq(7))
@@ -115,14 +116,15 @@ addLayer("E", {
       function() { 
             
         let ENLcap = 9
+
         let ENLCapText = ``
         let CappedText = ``
         if (player.E.ENLlevels.gte(ENLcap)) CappedText = `If this wasn't capped, your Enlightenment Levels would instead be ${format(player.points.div(1e308).clampMin(1).log(10).root(2),4)}`
 
-        if (player.L.TimeTillDarkCheck == true) ENLcap = 16; ENLCapText = `(capped)`
+        if (Check("L",11).has) ENLcap = 16; else ENLCapText = `(capped)`
         
             return `
-            You Have ${format(player["E"].ENLlevels )} Enlightenment Levels ${ENLCapText}<br><br>
+            You Have ${format(player["E"].ENLlevels)} Enlightenment Levels ${ENLCapText}<br><br>
             ${CappedText}   
             `     
      }],
@@ -154,23 +156,28 @@ addLayer("E", {
                  "blank",
                 ["display-text",
                 function() { 
-                    let b1 = new Decimal(1)
-                    let b2 = new Decimal(1)
-                    let b3 = new Decimal(1)
-                    let b4 = new Decimal(1)
-                    let b5 = new Decimal(1)
-                    let b6 = new Decimal(1)
-                    b1 = b1.mul(player.E.EclipseTier.pow_base(9))
-                    b2 = b2.mul(player.E.EclipseTier.pow_base(5))
-                    b3 = b3.mul(player.E.EclipseTier.pow_base(2))
-                    b4 = b4.mul(player.E.EclipseTier.pow_base(1.25))
-                    if (player.E.EclipseTier.gte(3)) b5 = b5.mul(player.E.EclipseTier.sub(2).pow_base(1.15))
-                    if (player.E.EclipseTier.gte(4)) b6 = b6.mul(player.E.EclipseTier.sub(3).pow_base(1.5))
+                    let b1 = player.E.EclipseTier.pow_base(9)
+                    let b2 = player.E.EclipseTier.pow_base(5)
+                    let b3 = player.E.EclipseTier.pow_base(2)
+                    let b4 = player.E.EclipseTier.pow_base(1.25)
+                    let b5 = player.E.EclipseTier.sub(2).pow_base(1.15)
+                    let b6 = player.E.EclipseTier.sub(3).pow_base(1.5)
+                    let b7 = player.E.EclipseTier.sub(4).pow_base(2)
+                    let b8 = player.E.EclipseTier.sub(5).pow_base(5)
+                    
 
                   let b5show = ``
                   let b6show = ``
-                  if (player.E.EclipseTier.gte(3)) b5show = `${format(b5)} to Solar Charge Generation`
-                  if (player.E.EclipseTier.gte(4)) b6show = `${format(b6)} to Solar Light generation speed`
+                  let b7show = ``
+                  let b8show = ``
+                  player.E.EclipseTier.gte(3) ? b5show = `${format(b5)} to Solar Charge Generation` : b5show = ``
+                  player.E.EclipseTier.gte(4) ? b6show = `${format(b6)} to Solar Light generation speed` : b6show = ``
+                  player.E.EclipseTier.gte(5) ? b7show = `${format(b7)} to Eclipsium gain` : b7show = `` ;
+                  player.E.EclipseTier.gte(6) ? b8show = `${format(b8)} to Luner Essence gain` : b8show = `` ;
+                  
+
+                   //return
+
 
                   let g = ``
                   if (player.E.EclipseTier.gte(1)) g = `
@@ -181,6 +188,8 @@ addLayer("E", {
                   ${format(player.E.EclipseTier.pow_base(20))} to Solarity gain cap<br>
                   ${b5show} <br>
                   ${b6show} <br>
+                  ${b7show} <br>
+                  ${b8show} <br>
                   `
                   else g = `None yet [Unlocked at Eclipse Tier 1]`
 
@@ -211,29 +220,34 @@ addLayer("E", {
           content: [
             ["display-text",
      function() { 
+
+    let cap = new Decimal(100000)
+
+    if (Check("L",11).has) cap = new Decimal(1e10)
+
       let effect = new Decimal(1)
-        effect = player.E.Eclipsium.pow_base(1.45)
-        effect = format(effect)
+        effect = player.E.Eclipsium.pow_base(1.45).clampMax(cap)
+       // effect = effect
+        
+        
+
       if (player.E.EclipseTier.gte(2) )
-       return `You Have ${format(player.E.Eclipsium )} Eclipsium , which multiplies Solarity gain cap by ${effect}<br>`
+       return `You Have ${format(player.E.Eclipsium)} Eclipsium , which multiplies Solarity gain cap by ${format(effect)} ${effect >= cap ? "" : "(Capped)" }<br>`
 
     }],
     
-            ["clickable",12],
+    ["Reset", {id: 11, title: "RECONTROLLERIZE"}],
            
 
 
     
             "blank",
             "buyables",
-            ["clickable",14],
+            ["Check", {id: 11, item:"Forgotten"}],
             "blank",
             "blank",
-            ["clickable",21],
+         
             
-            "blank",
-            ["clickable",22],
-            ["clickable",13],
             "blank",
             ["display-text", //The entire Solar charge display lies here
             function() { 
@@ -335,15 +349,114 @@ addLayer("E", {
 
     }],
             "upgrades",
-
-          
-          
+ 
           ],
          
 
         },
        
     },
+
+    Reset: {
+
+       11: {   
+           display() {
+            let gain = Reset("E",11).gain            
+        return `<br> 
+               Doing a recontrol reset does everything Convertary does as well as rooting Solar Shards and Center Points by 3, it also resets some things. <br>
+                            
+                <br> You will gain ${format(gain)} Eclipsium on Recontrol
+                            `
+                        
+          },
+         onClick() {
+            player.E.Eclipsium = player.E.Eclipsium.plus(Reset("E",11).gain)
+            EclipsiumReset()
+                },
+
+    canClick() {if (player.E.ENLlevels.gte(1)) return true},
+                      style() { return {
+                              "width": "350px",
+                              "height": "100px",
+                              "border-radius": "5px",
+                              "border": "10px",
+                              "margin": "25px",
+                              "text-shadow": "0px 0px 10px #000000",
+                              "color": "#50D1C9"
+                            }
+                          },   
+                          
+                    unlocked() {if (hasMilestone("E",2)) return true},
+                    gain() {
+                      let gain = player.E.ENLlevels
+                      if (player.E.EclipseTier.gte(5)) gain = gain.mul(player.E.EclipseTier.sub(4).pow_base(2))
+                      return gain
+                      },      
+                    button: () => { return `Recontrol the layers!` },
+              },
+
+              
+
+    },
+
+    Check: {
+      11: {
+        display() {
+          let text = ``
+        
+          if (!Check("E",11).has) text = `
+          It is unknown, for the darkness lurks with pure rage...<br><br>
+          Requires:Expansion I #10, Phaser #68, Cytochrisy #8, Multiply #674
+          `
+          else if (player["E"].activeCheck == "Forgotton") text = `Goal: 1.16e20 Shade...? and 2 Center Points`       
+          if (Check("E",11).has) text = `Phaser is added into the Modifier score formula. You now Generate Solar shards ^0.2 of your current golden light<br>`
+          return text
+        },
+        onClick() {
+          if (player["E"].activeCheck == "Forgotton" && Check("E",11).CompReq == true ) {
+            player["E"].forgotton = true
+            player["E"].activeCheck = ""
+          }
+          else if (Check("E",11).canEnter == true) player.E.activeCheck = "Forgotton"; layer2Reset()
+    
+        },
+        unlocked() {
+          if (hasMilestone("E",5) && getBuyableAmount("E",12).gte(10) ) return true
+          else false
+        },
+    canEnter() {
+      return (Check("E",11).EnterReq == true && !Check("E",11).has && player["E"].activeCheck == "")                                                             
+      },  
+    EnterReq() {
+     return (getBuyableAmount("E",12).gte(10) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(10) && getBuyableAmount("E",11).gte(8))   
+    },   
+    CompReq() {
+    return player.C.CenterPoints.gte(2) && player.points.gte(1.16e20)
+    },
+    
+    has() { return player["E"].forgotton },
+    
+    png() {return `<p><img src="resources/The Forgotton.png" style="width:150px;height:150px;"></p> `}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    },
+    },
+
+
+
+
+
+
+
+
+
 // if (player["GL"].Solar_shards.gte(1))
     tooltip: () => `<p>Open Layer 2, Main Layer</p> <br> Your Current Eclipse Tier: ${player.E.EclipseTier}`,
  upgrades: {
@@ -632,43 +745,31 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
     display() {
       //GAIN HERE
-          let gain = new Decimal(1)
-          gain = player.E.SolarCharge.root(10).sub(1)
+      let gain = tmp["E"].buyables["21"].gain
+
           
-          
+        let locked = `Current Solinity generation: ${format(gain.div(10))}`
+        if (!player.E.EclipseTier.gte(6)) locked = `<br> Gain +${format(gain)} Solinity Levels, Then Reset Solar Charge.
+    Requires: 50 Solar Charge`
 
-            let EsolarBoost = player.E.Esolar.root(1.35)
-          
-            let chimeraBoost = player.E.Chimera.pow_base(1.15).clampMin(1)
-
-            let Hour = new Date()
-            if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) gain = gain.times(1.5 ** (Hour.getHours() % 12))
-
-
-            EsolarBoost = softcap(EsolarBoost, new Decimal(1000), 0.175)
-          chimeraBoost = softcap(chimeraBoost, new Decimal(10000), 0.05)
-
-
-          if (player.E.Esolar.gt(1)) gain = gain.mul(EsolarBoost)
-          if (player.E.Chimera.gt(1)) gain = gain.mul(chimeraBoost)
-          gain = softcap(gain, new Decimal(7.5e8), 0.05   )
-          
-        //   if (hasMilestone("E",5)) gain = gain.mul(1.25)
-
-        
-          //"septic"
    return `
     <h2>Solinity #${format(player.E.Solinity)}</h2><br>                   
-    <br> Gain +${format(gain)} Solinity Levels, Then Reset Solar Charge.
-    Requires: 50 Solar Charge
+    ${locked}
     `
           
     
         },
         canAfford() {
-          return player.E.SolarCharge.gte(50) 
+          return player.E.SolarCharge.gte(50) && !player.E.EclipseTier.gte(6)
         },
         buy() {
+          
+        player.E.Solinity = player.E.Solinity.plus(tmp["E"].buyables[21].gain)
+        player.E.SolarCharge = new Decimal(1)
+       
+        },
+
+        gain() {
           let gain = new Decimal(1)
           gain = player.E.SolarCharge.root(10).sub(1)
           let EsolarBoost = player.E.Esolar.root(1.35)
@@ -683,13 +784,11 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
            if (player.E.Esolar.gt(1)) gain = gain.mul(EsolarBoost)
           if (player.E.Chimera.gt(1)) gain = gain.mul(chimeraBoost)
-
-       
+            
          gain = softcap(gain, new Decimal(7.5e8), 0.05  )
-        player.E.Solinity = player.E.Solinity.plus(gain)
-        player.E.SolarCharge = new Decimal(1)
-       
+         return gain
         },
+
         style() {
           return {
             "width": "266px",
@@ -905,7 +1004,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     if (player.E.EclipseTier.gte(this.id))
     return `
     - QOL1: You can now Bulk Reset Center Points <br>
-    - QOL2: Formality is kept on Recontrol<br>
+    - QOL2: Formality is no longer reset on Recontrol<br>
     - Unlock Solar Charge<br>
     ${TillDarkText}
     ` 
@@ -926,7 +1025,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     if (player.E.EclipseTier.gte(this.id))
     return `
     - QOL3: You always generate Solar Rays based on log10 of Solarity<br>
-    - QOL5: Heirarchy is kept on Recontrol <br>
+    - QOL5: Heirarchy is no longer reset on Recontrol <br>
     - You can now pick 2 (x)eavers and 2 Jears in Centrality tree <br>
     - Unlock Recontrol Upgrades <br>
 
@@ -956,18 +1055,17 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
     if (player.E.EclipseTier.gte(this.id))
     return `
-    ${TillDarkText}
-    - Twilight is kept on Recontrol, and improve its generation even more from ^0.9 -> ^1.05 (+0.15)<br>
-    DEBUFF:<br>
-    Eclipse Tier Requirement scaling is worsened
-    ${TillDarkText}
+    ${TillDarkText}<br>
+    - Twilight is no longer reset on Recontrol, and improve its generation even more from ^0.9 -> ^1.05 (+0.15)<br>
+    <p style="color:red"> DEBUFF: Eclipse Tier Requirement scaling is worsened</p><br>
+  
     ` 
     else return `???`
   },
   done() { return player.E.EclipseTier.gte(this.id) // && 
 
    },
-  unlocked() {return player.E.EclipseTier.gte(3) },
+  unlocked() {return player.E.EclipseTier.gte(4) },
   onComplete() {
     doPopup("msg","I can see it... I can hear... ", "???",3)   
     
@@ -977,20 +1075,16 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   6: {
   requirementDescription: "Eclipse Tier 6",
   effectDescription() {
-    
-    
 
     let Heirarchy = player.C.CenterPoints.pow_base(5).clampMin(1)
 
     if (player.E.EclipseTier.gte(this.id))
     return `
-    - Generate 10% of Solinity gain per second. (Disables Solinity reset) <br>
-    - Unlock "4 Minutes Until Dark" check upgrade<br>
-    - Double Light and Dark generation per eclipse tier<br>
-    - Keep Effector Tier 1-2 and Quest upgrades on Recontrol <br>
-    Good job man! you're nearly there to unlocking a new layer!<br>
-
-
+    - QOL5: Generate 10% of Solinity gain per second. (Disables Solinity reset) <br>
+    - QOL6: Highest solar light cap is kept on Recontrol and Restabilize. <br>
+    - Dark and Light generation is raised to 1.25<br>
+    - Unlock Solaris, the solar sun.<br>
+    <p>Oh also, keep Eclarity on Future Eclipsifications. (and start with it) because at this point it's impossible to obtain.</p>
     ` 
 
 
@@ -1000,40 +1094,66 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   done() { return player.E.EclipseTier.gte(this.id) // && 
 
    },
-  unlocked() {return player.E.EclipseTier.gte(3) },
+  unlocked() {return player.E.EclipseTier.gte(5) },
   onComplete() {
-    doPopup("msg","I can see it... I can hear... ", "???",3)    
+    doPopup("msg","the eclipse grows weak...", "Game:",10)  
+
+  },
+}, 7: {
+  requirementDescription: "Eclipse Tier 7",
+  effectDescription() {
+
+    let Heirarchy = player.C.CenterPoints.pow_base(5).clampMin(1)
+
+    if (player.E.EclipseTier.gte(this.id))
+    return `
+    - passivly generate 1% of Solinity levels gain per second, (Locks Solinity reset)
+
+    <p>Oh also, keep all other Recontrol Upgrades on reset, since you have been tortured enough
+    ` 
+
+
+
+    else return `???`
+  },
+  done() { return player.E.EclipseTier.gte(this.id) // && 
+
+   },
+  unlocked() {return player.E.EclipseTier.gte(6) },
+  onComplete() {
+    doPopup("msg","the eclipse grows weak...", "Game:",10)  
+
   },
 },
+
+
 },
-            clickables: {  
-              
-     
+            clickables: {      
               11: {
                   display() {
                     
                   let ready = `To get to the next Eclipse Tier: ${player.E.ETCost} Enlightenment Levels `
-                    
+                   
                   if (player.E.ENLlevels.gte(player.E.ETCost) ) 
                     {
-                      if (player.E.EclipseTier.eq(5))
-                       ready = `You have reached the max Eclipse tier (For now...)`
-                       
-                       else ready = `You Can Aquire the next Eclipse Tier on This Eclipsication!`
-                    }
+                      
+                      
+                  if (player.E.EclipseTier.eq(6) && 1==2) ready = canGet
+                  else if (player.E.EclipseTier.eq(5) && Check("L",11).has)
+                       ready = canGet     
+
+                  else ready = `You have reached the max Eclipse tier (For now...)`
+                      }
                     
-
-
-
                    let unlocker = ``
                    if (player.E.Eclipsium.gte(1)) unlocker = `("The Factory" Content included)`
                    if (player.L.Lunarity) unlocker = `("The Factory" Content, and Lunaris included)`
+                   if(Check("L",11).has) unlocker = `("The Factory" Content, and Lunaris content, excluding its progresional check upgrade)`
                   
                   let firstUnlock = ``
 
 
-                   if (player.E.EclipseTier.gte(1)) firstUnlock = `Your first Eclipsication Unlocks a board in this tab that provides various boosts to help you get back to where you started! (after all nerfs) `
-
+                   if (player.E.EclipseTier.lte(1)) firstUnlock = `Your first Eclipsication Unlocks a board in this tab that provides various boosts to help you get back to where you started! (after all nerfs) `
                   return `<h1>Eclipsify [LAYER 2 RESET]</h1><br> 
                     <h2>Reset Everything ${unlocker} to form a new Eclipse.</h2>
                     ${firstUnlock}     
@@ -1043,13 +1163,12 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
       
                   },
                   onClick() {
-                  
-                  
-                  if (player.E.EclipseTier.gte(2)) player.E.Eclipsium = player.E.Eclipsium.plus(player.E.ECSgain)
-                  else 
+                    
+                    if (player.E.EclipseTier.gte(5)) player.E.upgrades = [11]; else player.E.upgrades = []
+
                     if (player.E.ENLlevels.gte(player.E.ETCost)) {
                     player.E.EclipseTier = player.E.EclipseTier.plus(1)
-                    
+                    }
 
 
                     // reset ALL progress
@@ -1061,7 +1180,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     player.E.Esolar = new Decimal(1)
                     player.E.Chimera = new Decimal(1)
                     
-                    player.E.upgrades = []
+                   
                     
                     player.L.Lunarity = false
                     player.L.LunarPower = new Decimal(1)
@@ -1072,27 +1191,20 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     player.L.Light= new Decimal(0), 
                     player.L.Dark= new Decimal(0),  
                     player.L.UnwantedChromia= new Decimal(0)
-
-                    player.L.upgrades = []
-
-                  }
-                  
-                  
-
-                  layer2Reset()
-                 
-                  
-
-
+                    player.L.upgrades = []                                                   
+                    setBuyableAmount("L", 11, new Decimal(0) )
+                    setBuyableAmount("L", 12, new Decimal(0) )
+                    setBuyableAmount("L", 13, new Decimal(0) )
+                    setBuyableAmount("L", 21, new Decimal(0) )
+                    setBuyableAmount("L", 22, new Decimal(0) )
+                    setBuyableAmount("L", 23, new Decimal(0) )
+                  layer2Reset(true)    
 
                   },
               canClick() {
                 
-                
-                if (player.E.ENLlevels.gte(player.E.ETCost) ) 
-                  if (player.E.ENLlevels.eq(5) && hasUpgrade("L",23)) return true
-
-                
+                if (player.E.EclipseTier.eq(5) && Check("L",11).has && player.E.ENLlevels.gte(player.E.ETCost)) return true
+                else if (player.E.ENLlevels.gte(player.E.ETCost) ) return true                     
                 
                 },
               style() {
@@ -1112,58 +1224,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                   
                   
               },
-              12: {   
-
-
-          
-
-                          display() {
-                            let gain = new Decimal(1)
-                            gain = player.E.ENLlevels
-
-                            //"septic"
-                          return `
-                            <h2>Recontrol [MODIFIED LAYER 2 RESET]</h2> <br> 
-                            Doing a recontrol reset does everything Convertary does as well as rooting Solar Shards and Center Points by 3, it also resets some things.
-                            
-                            <br> recontrol will give +${format(gain)} Eclipsium, then do an Recontrol reset as well as check upgrades
-                            `
-                            
-
-                          },
-                          onClick() {
-                            let gain = new Decimal(1)
-                            gain = player.E.ENLlevels
-                            
-
-
-
-                        
-                          player.E.Eclipsium = player.E.Eclipsium.plus(gain)
-                          EclipsiumReset()
-                         
-
-
-                          },
-                      canClick() {if (hasMilestone("E",2) && player.E.ENLlevels.gte(1)) return true},
-                      style() { return {
-                              "width": "350px",
-                              "height": "100px",
-                              "border-radius": "5px",
-                              "border": "10px",
-                              "margin": "25px",
-                              "text-shadow": "0px 0px 10px #000000",
-                              "color": "#50D1C9"
-                            }
-                          },   
-                          
-                    unlocked() {if (hasMilestone("E",2)) return true}
-              },
               13: {   
-
-
-          
-
                 display() {
                   let gain = new Decimal(1)
                   gain = player.E.ENLlevels
@@ -1174,7 +1235,6 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                   Shows when you messed up Astrologic. Helpful for not softlocking yourself
                   `
                   
-
                 },
                 onClick() {
                   player.E.Esolar = new Decimal(15)
@@ -1200,131 +1260,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
           }
     },
-                // END OF CLICKABLE CODE
-              
-              
-        
-        14: {
-                  display() {
-                    let text = ``
-                    let textActiveGoal = ``
-                    let rewardDisplay = ``
-                    let textActive = ``
-
-               
-
-                    
-
-                    if (player.E.forgotton == true) rewardDisplay = `<br><br><br>Phaser is added into the Modifier score formula. You now Generate Solar shards ^0.2 of your current golden light <br>`
-                    else rewardDisplay = ``
-                    if (getClickableState("E", 14)) textActive = `
-                    [ACTIVE] 
-                    Goal: 1.16e20 Shade...? and 2 Center Points  
-
-                    
-                    `
-                    if (player.E.forgotton == true) text = `Check Upgrade Completed!`
-                    else if (!getClickableState("E", 14))
-                     text = `Enter check upgrade #004
-                                     
-                    Start helping him...
-                    [Check Requirements are unknown... but it will change the entirety of this game temporarily]
-
-                    Requires: 
-                    Expansion I #10
-                    Phaser #68
-                    Cytochrisy #8
-                    Multiply #674
-                    `
-                    else text = ``
-                /* Hidden restrictions
-                    - Modifier score is reduced to ^0.8
-                    - Solar Shards is rooted to 3
-                    - Solar Rays is rooted to 5
-                    - Solarity gain is rooted by 7*/
-          
-
-                    return `<h2>The Forgotton...</h2><br> ${textActive}
-          ${text}
-          ${textActiveGoal}
-          ${rewardDisplay}
-           `
-                    
-
-                  },
-                  onClick() {
-                    
-
-                    if ((getClickableState("E", 14) == true) && player.C.CenterPoints.gte(2) && player.points.gte(1.16e20) && (player.E.forgotton == false)) {
-                     player.E.forgotton = true 
-                     
-                     layer2Reset()
-                    }
-                    else if (getClickableState("E", 14) == false)  {
-                    
-                    layer2Reset()
-
-                    }
-                    const currentState = getClickableState("E", 14)
-                    setClickableState("E", 14, !currentState)
-                    
-                  },
-                  
-              
-
-
-
-
-              canClick() {
-                //check if it has the check upgrade or is not in the check upgrade
-                if (getClickableState(this.layer,this.id) == false && player.E.forgotton == false) 
-                {
-                //check if it has the requirements to enter unless it is in the check upgrade 
-                if (getBuyableAmount("E",12).gte(10) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(10) && getBuyableAmount("E",11).gte(8)){
-                    return true
-                  }
-                 } 
-                // check if its inside the check upgrade  
-                else if (getClickableState(this.layer,this.id) == true )
-                {                                                                       
-                  //check if it meets the requirements to complete the upgrade check.
-                  if (player.C.CenterPoints.gte(2) && player.points.gte(1.16e20)) return true                                              
-                }                                                                    
-                },
-
-              style() {
-               return getClickableState("E",14) ? {
-                  "width": "150px",
-                  "height": "125px",
-                  "border-radius": "0px",
-                  "border": "0px",
-                  "margin": "0px",
-                  "text-shadow": "0px 0px 10px #000000",
-                  
-                }
-                : {
-                  "width": "150px",
-                  "height": "207px",
-                  "border-radius": "0px",
-                  "border": "0px",
-                  "margin": "0px",
-                  "text-shadow": "0px 0px 10px #000000",
-                  
-                }
-
-
-                  },   
-                  
-                unlocked() {if (hasMilestone("E",5) && getBuyableAmount("E",12).gte(10)) return true; else return false}  
-              },
-              
-
-
-
-
             },
-
-           
 
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -1334,7 +1270,6 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     layerShown(){ 
       hasCurrency = new Decimal(1)
       if ( player["E"].ENLlevels.gte(1) || player.points.gte(1e308) || player.E.EclipseTier.gte(1) )   return true; 
-
     }
 }
 

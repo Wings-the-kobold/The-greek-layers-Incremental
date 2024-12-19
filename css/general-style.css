@@ -3,15 +3,17 @@ body {
 	color: var(--color);
 	overflow: hidden;
 	--background: #542a11;
-	--color: #fd6b27;
+	--color: #ffffff;
 	--points: #d9822c;
 	background: var(--background)
+	
 }
 
 /* General text */
 h1, h2, h3,h4,p, b, input {
 	display: inline;
-	font-family: "Righteous"
+	font-family: "Righteous";
+	
 }
 
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */
@@ -39,3 +41,35 @@ h1, h2, h3,h4,p, b, input {
 	color: var(--points);
 	text-shadow: 0 0 100px var(--points);
 }
+
+
+
+
+
+
+@keyframes show {
+
+	from { opacity: 0; } 
+  
+	to { opacity: 1; } 
+  
+  }
+
+@keyframes hide {
+
+	from { opacity: 1; } 
+  
+	to { opacity: 0; } 
+  
+  }
+
+  .fadeIn {
+  
+	animation: show 2s ease-in-out; /* Adjust duration as needed */
+  
+  }
+  .fadeOut {
+  
+	animation: hide 2s ease-in-out; /* Adjust duration as needed */
+  
+  }

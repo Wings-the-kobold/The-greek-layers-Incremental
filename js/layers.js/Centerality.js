@@ -1,7 +1,5 @@
 addLayer("C", {
-    name: "Center", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: ">C<", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    position: 1, 
     startData() { return {
         unlocked: true,
         CenterPoints: new Decimal(0),
@@ -10,48 +8,44 @@ addLayer("C", {
         Highest: new Decimal(0),
         requirement: new Decimal(2000),
         EffectorTier: new Decimal(0), 
-        checkUpgrades: new Decimal(0),  
+        checkUpgrades: new Decimal(0), //well, uh. since these are removed, I should give a boost to removed content
+        hasFormality: false,
+        hasHeirarchy: false,
+        hasTwilight: false,  
+        activeCheck: "",
     
     }},
     color: "#1f2129",
-   // Can be a function that takes requirement increases into account
-    resource: "Solar Light", // Name of prestige currency
-    baseResource: "Solarity", // Prestige currency uses this "base currency"
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    //exponent: 0.2, // Prestige currency exponent
-   // gainMult() { // Calculate the multiplier for main currency from bonuses
-   //     mult = new Decimal(1)
-    //    mult = mult.pow(0.3)
-    //    return mult
-    //},
-    //gainExp() { // Calculate the exponent on main currency from bonuses
-    //    return new Decimal(1)
-   // },
-  
-  
-  
+   
+   symbol() {
+    return `
+    <p><img src="resources/Centrality.png" style="width:80px;height:80px;",></p>`
+    },
+   
    update(diff) {
 
     if (hasUpgrade("GL",21)) player["GL"].Time = player["GL"].Time.plus(decimalOne.times(diff)).clampMin(0)
 
-    let PhaserBoost = new Decimal(1)
-    if (player.E.forgotton == true) PhaserBoost = getBuyableAmount("GL",11).clampMin(1)
-    if (hasUpgrade("GL",31)) player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(PhaserBoost)
-    if (getClickableState("E", 14)) player.C.Score = player.C.Score.pow(0.8)
+    let ScoreBoost = new Decimal(1)
+    Hour = new Date()
+
+    if (Check("E",11).has) ScoreBoost = ScoreBoost.mul(getBuyableAmount("GL",11).clampMin(1))
+    if (getBuyableAmount("L",21).gte(3)&& Hour.getHours() <= 12) ScoreBoost = ScoreBoost.mul(1.2 ** Hour.getMinutes() * (2 ** (Hour.getHours() % 12)))
+
+    if (hasUpgrade("GL",31) ) player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(ScoreBoost)
+    if (player["E"].activeCheck == "Forgotton") player.C.Score = player.C.Score.pow(0.8)
    
 
 
     if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.mul(0)
     if (player.C.Score.gte(player.C.Highest)) player.C.Highest = player.C.Score
 
+    //if (tmp["C"].hasFormality == undefined) {tmp["C"].hasFormality = false}
 
-
-
-
-    // the formula
+    fix(tmp["C"].hasFormality)
+    fix(tmp["C"].hasHeirarchy)
+    fix(tmp["C"].hasTwilight)
     
-
 
     let Divisor = new Decimal(1)
 
@@ -59,43 +53,28 @@ addLayer("C", {
     if (hasUpgrade("L",13)) Divisor = Divisor.mul(upgradeEffect("L",13))
 
 
+
     Hour = new Date()
     let exponent = 0
     let reductions = new Decimal(1)
     if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - (Hour.getHours() % 12) / 100; else exponent = 1
-    // add .root(exponent) 
 
-
-
-
-    player.C.requirement = Decimal.mul(2000   ,  Decimal.pow( 1.35 , player.C.CenterPoints ) ).div(Divisor).pow(exponent)            .clampMin(1)
-
-
-
-
-   
-
-
+    player.C.requirement = player.C.CenterPoints.clampMin(1).pow_base(1.35).times(2000).div(Divisor).pow(exponent)
   }, 
   
-  
-      
-  
-  
-  
-  
-  
-  
-  
+
     tabFormat: {
         "The Effector": {      
               content: [             
        ["display-text",
      function() { 
+      let FourMTD = ``
+      
+      if (player.L.activeCheck == "TimeTillDark") FourMTD = `/<h3 style="color: #060114;"> 40 Dark Energy</h3>`; else FourMTD = `Center Points`
 
-        
-      if (player["C"].CenterPoints.gte(1) || player.C.EffectorTier.gte(1))
-       return `You have ${format(player["C"].CenterPoints )}  Center Points `
+
+      if (player["C"].CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.L.activeCheck == "TimeTillDark")
+       return `You have ${format(player["C"].CenterPoints )} ${FourMTD} `
   
      }],
        ["display-text",
@@ -105,13 +84,13 @@ addLayer("C", {
 	
   	if (hasUpgrade("L",11)) HeirarchyBonus = HeirarchyBonus.pow(1.15)	
 
-        if (getClickableState("C", 23)) HeirarchyBonus = HeirarchyBonus.log(12)
+        if (player["C"].activeCheck == "Heirarchy") HeirarchyBonus = HeirarchyBonus.log(12)
 
       let HeirarchyBoost = ``
 
-      let forgotten = ``; if (getClickableState("E", 14)) forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} / ${format(player.C.requirement)} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
+      let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} / ${format(player.C.requirement)} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
 
-      if (player.C.checkUpgrades.gte(2)) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(HeirarchyBonus)}` 
+      if (player["C"].hasHeirarchy) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(HeirarchyBonus)}` 
  
       return `You have ${forgotten} <br> <br>
       ${HeirarchyBoost} 
@@ -119,22 +98,57 @@ addLayer("C", {
       //if (player.C.checkUpgrades.gte(2)) gain = gain.mul(Decimal.pow(5, player.C.CenterPoints).clampMin(1))
      }],
      "blank",
-     "clickables",
+
+     ["row", [
+      ["Reset", {id:11, title: "CENTRALIZATION"}],
+      "blank",
+      "blank",
+      "blank",
+      ["clickable",12],
+    ]],
+      "blank",
+     ["Viewer",  {id:11, title: "The Effector™️"}],
+
+
+ ["display-text",function() { if ((player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) && !player["C"].hasFormality)
+       return `<h2>Check Upgrades.</h2><br><br>
+       <h4 class="hl"> 
+       These sort of act like challenges, except you cannot leave until you meet ALL of it's goal requirements. <br>
+       </h4>
+       <h5>
+       <br> Whereas you have to meet its Enter requirements to start checking. 
+       <br> these 'enter' requirements are called a 'gate'. or 'gates' if multiple requirements are needed
+       <br> You also MUST check the previous check upgrade to be able to check the next
+       <br> You will see more of these later on, so do not exspect these are the only ones... 
+       <br> Oh also, you can only complete a check upgrade ONCE. except IF it is modified.</h5>
+       
+       `
+      if ((player["C"].hasFormality || player.E.EclipseTier.gt(0)) & !player["C"].hasHeirarchy) return `if you need a refresher on check upgrades, you can look at my docs, or you can wait until I add a button on refreshers on these types of things if you have unlocked them yet.`
+      if (player["C"].hasHeirarchy || player.E.EclipseTier.gte(2)) return ``
+
+
+     }],
+     ["row", [
      
+      ["Check", {id:11 , item: "Formality"} ],
+      ["Check", {id:12, item: "Heirarchy"} ],
+      ["Check", {id:13, item: "Twilight"} ],
+      
+      "blank",
+      "blank",
+      "blank",
+     
+      "blank",
+      "blank",
+      "blank",
+      ["clickable",23],
+    ]],
     
-
-
-
-
-
-
-    
-    // player["GL"].CenterPoints
+    ["clickable",31],
+  
+    // player["C"].CenterPoints
     ["display-text",
      function() { 
-      
-
-
      /* 
        return ` <br>Highest Modifier Score Boosts Solar Light Cap by ${format(player.C.Highest.log(4).root(2))}  [Effector VI]<br>
        
@@ -145,45 +159,11 @@ addLayer("C", {
      }],
      ["display-text",
       function() { 
-
-
-
-
-        let progression = ""
-        if (player.E.EclipseTier.gte(1)) type1 = `
-        <br><br>------
-        <br>part 2: (P-a -> Person a; P-b -> person b, and ECT...)
-        <br> P-A: YOU CLEARLY DID IT!
-        <br> P-B: WAIT WAIT GUYS STOP ARGUEING! WHAT IS THAT THING???
-        <br> *they all stop to look at the yellow gate, in which seems to be the Eclipsifier*
-        <br> P-A, P-B: Woah...
-        <br> P-C: Finally we get to stop arg- WOAH
-        <br> P-B: ...really? you still decide to bring that up?
-        <br> P-C: well actually we havent introduced ourselves with the reader here~
-        <br> *they both look at them, P-A, P-B glares*
-        <br> [Unlock more dialogue at Eclipse Tier 2!]`
-
-      if (getClickableState("C",23)) progression = `
-        Note that this Upgrade check has a large Timewall of around 6 hours <br>
-        <br> Person A: In the meantime, why dont you just play other games? like touching grass? or playing adopt me in roblox??? 
-        <br>Person A: w-what do you mean you hate adopt me? 
-        <br>Person A: adopt me is FUN 
-        <br>Person B: pfft oh please, adopt me is for KIDS
-        <br>Person A: OH YEAH? THEN WHAT DO YOU SUGGEST?? 
-        <br>Person B: ...idk lmao probably something better than your stinky game 
-        <br>Person A: GIVE ME SOMETHING THAT COULD BE BETTER THAN ADOPT ME
-        <br>Person B: The person playing this game can probably tell us
-        <br>Person C: HEY! WHAT DID I TELL YOU ABOUT BREAKING THE FOURTH WALL?
-        <br>Person B: Sorry, I Have a habit to uncontrollably tell that the reader is doing
-        <br>Person C: >:( well than stop it! its getting very annoying!
-        <br>Person C: And were not even helping because by the looks of it, Our dialogue is filling up the bottom half of the screen!
-        <br>Person A and B: HYPOCRITE!
-        <br>Person C: YOU DID IT FIRST PERSON B
-        <br>*the three are now arguing... when will this ever end?*
-        <br> [Unlock more dialogue at higher resets]
-        ${type1}
-       `
-      else if (player.C.EffectorTier.eq(4))
+        
+     
+      let progression;
+    
+      if (player.C.EffectorTier.eq(4))
       progression = `🙂`
       else if (player.C.EffectorTier.eq(3))
       progression = `[Last Minor Unlock at Effector Tier IV]`
@@ -194,24 +174,17 @@ addLayer("C", {
       else if (player["C"].Score.gte(1))
       progression = `[Next Minor Unlock at 2000 Modifier Score]`
 
-        return progression
+        return `${progression}<br>
+        ${type1}
+        `
   
      }],
      "blank",
      "blank",
                 //"main-display",
                 ["infobox","about"],
-                
-                 
-               
-                
-             
                 "blank",
                 "blank",
-               
-              
-                
-                
                 "blank",
                 "blank",
                 "blank",
@@ -240,26 +213,190 @@ addLayer("C", {
 
         //if (player.C.EffectorTier.gte(2)) {
         
+        
 
           
         },
+
+  Viewer: {
+
+    11: {
+      display() {
+
+        const effects = [
+          { log: 2, boosts: "Solarity", keep: "Intricity", on: "ALL layer 1 Resets.", tier: "I" },
+          { log: 4, boosts: "Solar Rays", keep: "Polarize", on: "ALL layer 1 Resets.", tier: "II" },
+          { log: 9, boosts: "plasmates effect", keep: "Gravitation", on: "ALL layer 1 Resets.", tier: "III" },
+          { log: 16, boosts: "multiply's effect", keep: "Solarizor", on: "ALL layer 1 Resets.",tier: "IV" },
+          { log: 25, boosts: "Solarity Gain Cap", keep: "Shardism,Scorch, and Leverage", on: "ALL Recontrol Resets.",tier: "V" },
+          { log: 36, boosts: "Light/Dark Generation", keep: "Annular", on: "ALL Recontrol Resets.", tier: "VI" },
+
+        ];
         
-       
-     
-    
-  
+        const effectsDisplay = effects.slice(0, player.C.EffectorTier.toNumber())
+                                      .map(({log, boosts, keep, on, tier}, index) => `<h2>TIER  ${tier}</h2> <h3> <br> log${log} of Solar Rays boosts ${boosts}. Keep ${keep} on ${on} <br /> Effector's Tier ${tier} effect is ${format(player.S.points.log(log).clampMin(1))}</h3>`)
+                                      .join('<br><br>');
+        
    
+        if (player.E.EclipseTier.lt(1) || !player.C.EffectorTier.gte(1)) return `<h1>Locked.</h1><br><h3>Get Effector Tier I to unlock this board</h3>`; else return `${effectsDisplay}`
+
+      },
+      unlocked() {
+        if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
+
+      },
+
   
+
+
+  },
+
+  },
+ 
+  Check: {
   
-  
-  
-  
-  
-  
+    11: {
+    display() {
+        let text = ``
+       
+        
+        if (!player["C"].hasFormality) text = `
+        ^0.666 to Solarity, Solar Rays, and Plasmate's effect.<br><br>
+        Requires:
+        Phaser #15, Plasmate #60 and Multiply #325 
+         `
+        else if (player["C"].hasFormality) text = `
+        
+        ^1.25 to Solarity Gain, and Automate Plasmate buyable, they also no longer spend anything.`
+       
+        if (player.C.activeCheck == "Formality") text = `Goal: Plasmate #40`
     
+        return `             
+        ${text}
+      `
+        
+
+      }, 
+    onClick() {
+        if (player["C"].activeCheck == "Formality" && Check("C",11).CompReq == true ) {
+          player["C"].hasFormality = true
+          player["C"].activeCheck = ""
+        }
+        else if (Check("C",11).canEnter == true) player.C.activeCheck = "Formality"; layer1Reset()
+      },
+      
+    unlocked() {
+      if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
+      else false
+      },
+      
+    canEnter() {
+            return (Check("C",11).EnterReq == true && !Check("C",11).has)                                                             
+            },  
+    EnterReq() {
+        return (getBuyableAmount("S",11).gte(60) && getBuyableAmount("S",12).gte(325) && getBuyableAmount("GL",11).gte(15))   
+      },   
+    CompReq() {
+        return getBuyableAmount("S",11).gte(40)
+      },
+    has() { return player["C"].hasFormality },
+
+    png() {return `<p><img src="resources/Formality.png" style="width:150px;height:150px;"></p> `}
+
+    },
+
+    12: {
+      
+      display() {
+        let text = ``
   
+        if (!player["C"].hasHeirarchy && player["C"].activeCheck == "") text = `
+        Meta Scaling starts instantly, of which also affects Plasmate. ^0.666 to Multiply's effect<br><br>
+        Requires: Phaser #17, Plasmate #235, Multiply #370  
+        `
+        else if (player["C"].activeCheck == "Heirarchy") text = `Goal: Multiply #80`       
+        if (player["C"].hasHeirarchy) text = `Center Points Boosts Solarity by 5^x, and Automate 'Multiply' with a bulk purchase of 5! <br>`
+        return `${text}`
+        
+
+      },
+      onClick() {
+        if (player["C"].activeCheck == "Heirarchy" && Check("C",12).CompReq == true ) {
+          player["C"].hasHeirarchy = true
+          player["C"].activeCheck = ""
+        }
+        else if (Check("C",12).canEnter == true) player.C.activeCheck = "Heirarchy"; layer1Reset()
+      },
+
+      unlocked() {
+        if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
+        else false
+      },
+     
+      
+      canEnter() {
+        return (Check("C",12).EnterReq == true && !Check("C",12).has && player["C"].activeCheck == "")                                                             
+        },  
+      EnterReq() {
+       return (getBuyableAmount("S",11).gte(235) && getBuyableAmount("S",12).gte(370) && getBuyableAmount("GL",11).gte(17) && Check("C",11).has)   
+      },   
+      CompReq() {
+    return getBuyableAmount("S",11).gte(40)
+  },
+
+      has() { return player["C"].hasHeirarchy },
+
+      png() {return `<p><img src="resources/Heirarchy.png" style="width:150px;height:150px;"></p> `}
+
+
   
-  // if (player["GL"].Solar_shards.gte(1))
+
+    },
+
+    13: {
+    display() {
+     
+      
+      let Twilight = new Decimal(0.75);if (hasMilestone("E",3)) Twilight = Twilight.plus(0.15);if (hasMilestone("E",5)) Twilight = Twilight.plus(0.15)
+
+        
+      if (player["C"].activeCheck == "Twilight" ) return `Goal: Multiply #30`       
+      else if (Check("C",13).has ) return `Multiply's effect is ^1.312, You now generate Solar rays ^${Twilight} of your solar rays (can be increased later on)<br>`
+      else return `All effects are reduced to log12(x)<br><br>
+      Requires:Phaser #25, Plasmate #262, Multiply #380, 15 Center Points  `
+       
+        //return `${text} `
+      },
+      onClick() {
+        if (player["C"].activeCheck == "Twilight" && Check("C",13).CompReq == true ) {
+          player["C"].hasTwilight = true
+          player["C"].activeCheck = ""
+        }
+        else if (Check("C",13).canEnter == true) player.C.activeCheck = "Twilight"; layer1Reset()
+
+      },
+      unlocked() {
+        if ( player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1) ) return true
+        else false
+      },
+  canEnter() {
+    return (Check("C",13).EnterReq == true && !Check("C",13).has && player["C"].activeCheck == "")                                                             
+    },  
+  EnterReq() {
+    return (getBuyableAmount("S",11).gte(262) && getBuyableAmount("S",12).gte(380) && getBuyableAmount("GL",11).gte(25) && player.C.CenterPoints.gte(15) && Check("C",12).has)   
+  },   
+  CompReq() {
+    return getBuyableAmount("S",12).gte(30)
+},
+
+  has() { return player["C"].hasTwilight },
+
+  png() {return `<p><img src="resources/Twilight.png" style="width:150px;height:150px;"></p> `}
+
+  },
+
+  },
+
     tooltip: () => `<p>Open Centrality, side layer</p>`,
   upgrades: {
     11: {
@@ -511,84 +648,69 @@ style() {
   
             },
   
+  Reset: {
+
+    11: {   
+       
+      display() {
+  let gain = hasMilestone("E",3) ? `Your CP will be set to ${tmp["C"].CPgain} on reset` : `You will earn +1 CP on reset`
+  if (tmp["C"].CPgain == "0") gain = ``
+        return `
+      <br> 
+        Doing a recontrol reset does everything Convertary does as well as rooting Solar Shards and Center Points by 3, it also resets some things. <br>            
+           ${gain}
+         `                       
+                 },
+                 onClick() {
+                if (hasMilestone("E",3) && !getClickableState("E",14))
+                player.C.CenterPoints = tmp["C"].CPgain
+                else player.C.CenterPoints = player.C.CenterPoints.plus(1)
+                  player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
+                layer1Reset()
+                
+                },
+             canClick() {
+
+              if (player.C.Score.gte(player.C.requirement)) return true
+
+            },
+                                 
+              unlocked() { return true },
+       
+             button: () => { if (!tmp["C"].CPgain == "0") return !hasMilestone("E",3) ? `Centralize Once!` : `Centralize All!`; else return `Cant reset`},
+                     },
+       
+                     
+       
+           },        
+
+   CPgain() {
+    let Divisor = new Decimal(1)
+    let mult = new Decimal()
+      if (hasMilestone("E",1)) Divisor = player.E.EclipseTier.pow_base(1.35)
+      if (hasUpgrade("L",13)) Divisor = Divisor.mul(upgradeEffect("L",13))
+
+      Hour = new Date()
+      let exponent = 0
+      if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - (Hour.getHours() % 12) / 100; else exponent = 1
+
+      
+      
+    //this is the buyMax reset thing
+     if (hasMilestone("E",3) && player.C.Score.gte(player.C.requirement)) mult = player.C.Score.root(exponent).times(Divisor).div(2000).log(1.35).round()
+
+    return mult
+   },
+           
 
 
-            
+     
+
   
-    clickables: {
+  clickables: {
                 
                
-      11: {
-                  display() {
-
-                     return `
-                     <h3>CENTRALIZE [LAYER 2 SIDE RESET]</h3><br> <br>
-                     Does Everything Convertary does as well as rooting your solar shards by 4        
-                     `
-                    
-
-                  },
-                  onClick() {
-                    let Divisor = new Decimal(1)
-                    let mult = new Decimal(1)
-                   
-                  if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.35))
-                  let basecost = new Decimal(2000).div(Divisor)
-                  Hour = new Date()
-                  let exponent = 0
-                  if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - (Hour.getHours() % 12) / 100; else exponent = 1
-                 // add .root(exponent)
-
-                 let reductions = new Decimal(1)
-                 if (hasUpgrade("L",13)) reductions = reductions.mul(upgradeEffect("L",13))
-
-
-                 
-                    //this is the buyMax reset thing
-                   if (hasMilestone("E",3) && player.C.Score.gte(player.C.requirement)) mult = player.C.Score.div(basecost).mul(reductions).log(1.35).root(exponent).round()
-                   
-                  //scaling for this is: (2000 * 1.35^x) / Reduced requirements
-                   
-                    
-                  if (hasMilestone("E",3) && !getClickableState("E",14))
-                  player.C.CenterPoints = mult
-                  else player.C.CenterPoints = player.C.CenterPoints.plus(1)
-                    player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
-                  layer1Reset()
-                  
-
-
-
-                  },
-              canClick() {
-
-                if (player.C.Score.gte(player.C.requirement)) return true
-
-
-
-              },
-              style() { return (this.canClick()) ? {
-                      "width": "300px",
-                      "height": "100px",
-                      "border-radius": "20px",
-                      "border": "10px",
-                      "margin": "0px",
-                      "text-shadow": "0px 0px 10px #000000",
-                      
-                    } : {
-                      "width": "250px",
-                      "height": "40px",
-                      "border-radius": "20px",
-                      "border": "10px",
-                      "margin": "0px",
-                      "text-shadow": "0px 0px 10px #000000",
-                      
-                    }
-                    
-                  },   
-                  
-                  
-              },
+      
       12: {
                 display() {
 
@@ -620,290 +742,8 @@ style() {
             },
                 
                 
-            }, 
-      13: {
-              display() {
-
-                const effects = [
-                  { log: 2, boosts: "Solarity", keep: "Intricity", tier: "I" },
-                  { log: 4, boosts: "Solar Rays", keep: "Polarize", tier: "II" },
-                  { log: 9, boosts: "plasmates effect", keep: "Gravitation", tier: "III" },
-                  { log: 16, boosts: "multiply's effect", keep: "Solarizor", tier: "IV" }
-                ];
-                
-                const effectsDisplay = effects.slice(0, player.C.EffectorTier.toNumber())
-                                              .map(({log, boosts, keep, tier}, index) => `<h3>TIER ${tier} <br> log${log} of Solar Rays boosts ${boosts}, Keep ${keep} on ALL layer 2 Resets.<br /> Effector's Tier ${tier} effect is ${format(player.S.points.log(log).clampMin(1))}</h3>`)
-                                              .join('<br><br>');
-                
-           
-                if (player.E.EclipseTier.lt(1) || !player.C.EffectorTier.gte(1)) return `<h1>Locked.</h1><br><h3>Get Effector Tier I to unlock this board</h3>`; else return `${effectsDisplay}`
-
-
-               
-
-                 
-                
-
-              },
-              unlocked() {
-                if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
-      
-              },
-          canClick() {
-            //if (player.C.CenterPoints.gte(Decimal.pow(2, player.C.EffectorTier))) return true
-            return false
-
-
-          },
-          style() { return {
-                  "width": "600px",
-                  "height": "235px",
-                  "border-radius": "0px",
-                  "border": "10px",
-                  "margin": "33px",
-                  "text-shadow": "0px 0px 10px #000000",
-                  
-                }
-              },   
-              
-              
-          },
-
-
-
-
-
-
-// Challenge Check Upgrades!
-
-
-      21: {
-            display() {
-              let text = ``
-              let textActive = ``
-              let rewardDisplay = ``
-              if (!getClickableState("C", 21) && player.C.checkUpgrades.lt(1)) text = `Enter Upgrade Check. #001 <br>
-              ^0.666 to Solarity<br>^0.666 to Solar Rays<br>^0.666 to Plasmate's effect <br>
-              Requires:
-              Phaser #15
-              Plasmate #60
-              Multiply #325 <br>
-               `
-              else if (!getClickableState("C", 21) && player.C.checkUpgrades.gte(1)) text = `Check Upgrade Completed!<br>`
-              else text = `Goal: Plasmate #40`
-              if (getClickableState("C", 21)) textActive = `[ACTIVE] `
-             
-             
-             
-              if (player.C.checkUpgrades.gte(1)) rewardDisplay = `^1.25 to Solarity Gain, and Automate Plasmate buyable, they also no longer spend anything.`
-
-              return `
-              <h1>Formality...</h1>
-              ${textActive}              
-              ${text} 
-              ${rewardDisplay}
-              <br>`
-              
-
-            },
-            onClick() {
-            if (getClickableState("C", 21) && player.C.checkUpgrades.lt(1)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
-            if (!getClickableState("C", 21)) {layer1Reset()}
-
-            const currentState = getClickableState("C", 21)
-            setClickableState("C", 21, !currentState)
-            
-
-
-
-
-            },
-        canClick() {
-        //check if it has the check upgrade or is not in the check upgrade
-        if (getClickableState(this.layer,this.id) == false && player.C.checkUpgrades.lt(1)) 
-        {
-        //check if it has the requirements to enter unless it is in the check upgrade 
-        if (getBuyableAmount("S",11).gte(60) && getBuyableAmount("S",12).gte(325) && getBuyableAmount("GL",11).gte(15)){
-            return true
-          }
-         } 
-        // check if its inside the check upgrade  
-        else if (getClickableState(this.layer,this.id) == true && player.C.checkUpgrades.lt(1))
-        {                                                                       
-          //check if it meets the requirements to complete the upgrade check.
-          if (getBuyableAmount("S",11).gte(40)) return true                                              
-        }                                                                    
-        },  
-        unlocked() {
-          if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
-          else false
-        },
-            
-        },
-      22: {
-          display() {
-            let text = ``
-            let textActive = ``
-            let rewardDisplay = ``
-            let textActiveGoal = ``
-            
-            if (!getClickableState("C", 22) && player.C.checkUpgrades.lt(2)) text = `Enter Upgrade Check #002
-
-            Meta Scaling starts instantly <br>Meta Scaling also affects Plasmate <br> ^0.666 to Multiply's effect
-
-            Requires:
-            Phaser #17
-            Plasmate #235
-            Multiply #370
-            Formality 
-            `
-            else if (player.C.checkUpgrades.gte(2)) text = `Check Upgrade Completed!`
-            else text = ``
-            if (getClickableState("C", 22)) textActive = `
-            [ACTIVE] 
-            Goal: Multiply #80`
-            
-            else textActiveGoal = ``
-            // Goal: Plasmate #40 <br>
-           
-           
-            if (player.C.checkUpgrades.gte(2)) rewardDisplay = `Center Points Boosts Solarity by 5^x, and Automate 'Multiply' with a bulk purchase of 5! <br>`
-            else rewardDisplay = ``
-
-
-
-            return `
-            <h1>Heirarchy...</h1><br> ${textActive}
-            ${text}
-            ${textActiveGoal}
-            ${rewardDisplay}
-             `
-            
-
-          },
-          onClick() {
-          if (getClickableState("C", this.id) && player.C.checkUpgrades.lt(2)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
-          if (!getClickableState("C", this.id)) {layer1Reset()}
-
-          const currentState = getClickableState("C", this.id)
-          setClickableState("C", this.id, !currentState)
-          
-
-
-
-
-          },
-          unlocked() {
-            if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
-            else false
-          },
-      canClick() {
-      //check if it has the check upgrade or is not in the check upgrade
-      if (getClickableState(this.layer,this.id) == false && player.C.checkUpgrades.lt(2)) 
-      {
-      //check if it has the requirements to enter unless it is in the check upgrade 
-      if (getBuyableAmount("S",11).gte(235) && getBuyableAmount("S",12).gte(370) && getBuyableAmount("GL",11).gte(17) && !player.C.checkUpgrades.gte(2)){
-          return true
-        }
-       } 
-      // check if its inside the check upgrade  
-      else if (getClickableState(this.layer,this.id) == true && player.C.checkUpgrades.lt(2))
-      {                                                                       
-        //check if it meets the requirements to complete the upgrade check.
-        if (getBuyableAmount("S",12).gte(80)) return true                                              
-      }                                                                    
-      },
-      style() { 
-          },   
-          
-          
-      },
-      23: {
-        display() {
-          let text = ``
-          let textActive = ``
-          let rewardDisplay = ``
-          let textActiveGoal = ``
-          let Twilight = new Decimal(0.75)
-          if (hasMilestone("E",3)) Twilight = Twilight.plus(0.15)
-          if (hasMilestone("E",5)) Twilight = Twilight.plus(0.15)
-
-          if (player.C.checkUpgrades.gte(3)) text = `Check Upgrade Completed!`
-          else if (!getClickableState("C", 23))
-           text = `Enter Upgrade Check #003
-
-          All effects are reduced to log12(x)
-
-          Requires:
-          Phaser #25
-          Plasmate #262
-          Multiply #380
-          15 Center Points
-          Heirarchy
-          `
-          else text = ``
-
-          
-
-          if (getClickableState("C", 23)) textActive = `
-          [ACTIVE] 
-          Goal: Multiply #30
-          `
-          
-          else textActiveGoal = ``
-          // Goal: Plasmate #40 <br>
-         
-         
-          if (player.C.checkUpgrades.gte(3)) rewardDisplay = `Multiply's effect is raised ^1.312. You now generate ^${Twilight} of Solar Rays per Second [can be increased later on] <br>`
-          else rewardDisplay = ``
-
-
-
-          return `
-          <h1>Twilight...</h1><br> ${textActive}
-          ${text}
-          ${textActiveGoal}
-          ${rewardDisplay}
-           `
-          
-
-        },
-        onClick() {
-        if (getClickableState("C", this.id) && player.C.checkUpgrades.lt(3)) { player.C.checkUpgrades = player.C.checkUpgrades.plus(1) }   
-        if (!getClickableState("C", this.id)) {layer1Reset()}
-
-        const currentState = getClickableState("C", this.id)
-        setClickableState("C", this.id, !currentState)
-        
-
-
-
-
-        },
-        unlocked() {
-          if ( player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1) ) return true
-          else false
-        },
-    canClick() {
-    //check if it has the check upgrade or is not in the check upgrade
-    if (getClickableState(this.layer,this.id) == false && !player.C.checkUpgrades.gte(3)) 
-    {
-    //check if it has the requirements to enter unless it is in the check upgrade 
-    if (getBuyableAmount("S",11).gte(262) && getBuyableAmount("S",12).gte(380) && getBuyableAmount("GL",11).gte(25) && player.C.CenterPoints.gte(15) && player.C.checkUpgrades.gte(2)){
-        return true
-      }
-     } 
-    // check if its inside the check upgrade  
-    else if (getClickableState(this.layer,this.id) == true )
-    {                                                                       
-      //check if it meets the requirements to complete the upgrade check.
-      if (getBuyableAmount("S",12).gte(30)) return true                                              
-    }                                                                    
-    },
-   
-        
-    },
-   31: {
+            },   
+      31: {
       display() {
          return `
          <h3>Recenter the upgrade tree and do a Convertary reset (respec)<br>
@@ -937,21 +777,8 @@ style() {
       
   }, 
 
-
-
-
-
-          //challenge check upgrade down here
-          // should be in "Darkness?" tab
-
-     
-  
-  
-  
             },
-  
-           
-  
+
     row: 1, // Row the layer is in on the tree (0 is the first row)
    
     branches: ["S"],

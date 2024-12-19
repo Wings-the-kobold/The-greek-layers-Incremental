@@ -161,7 +161,6 @@ function layerDataReset(layer, keep = []) {
 }
 
 
-
 	function addPoints(layer, gain) {
 		player[layer].points = player[layer].points.add(gain).max(0)
 		if (player[layer].best) player[layer].best = player[layer].best.max(player[layer].points)
@@ -226,7 +225,7 @@ function generatePoints(layer, diff) {
 
 	updateTemp()
 	updateTemp()
-}
+} //EW
 
 function resetRow(row) {
 	//if (prompt('Are you sure you want to reset this row? It is highly recommended that you wait until the end of your current run before doing this! Type "I WANT TO RESET THIS" to confirm')!="I WANT TO RESET THIS") return
@@ -259,7 +258,17 @@ function startChallenge(layer, x) {
 		run(layers[layer].challenges[x].onEnter, layers[layer].challenges[x])
 	}
 	updateChallengeTemp(layer)
+} //EW
+
+function startCheck(layer, x) {
+	
+
+
 }
+
+
+
+
 
 function canCompleteChallenge(layer, x)
 {
@@ -284,7 +293,7 @@ function canCompleteChallenge(layer, x)
 		return !(player.points.lt(challenge.goal))
 	}
 
-}
+} //YUCK
 
 function completeChallenge(layer, x) {
 	var x = player[layer].activeChallenge
@@ -306,6 +315,17 @@ function completeChallenge(layer, x) {
 	run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
 	updateChallengeTemp(layer)
 }
+
+
+
+
+
+
+
+
+
+
+
 
 VERSION.withoutName = "v" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSION.pre : VERSION.pre ? " Beta " + VERSION.beta : "")
 VERSION.withName = VERSION.withoutName + (VERSION.name ? ": " + VERSION.name : "")
@@ -431,6 +451,8 @@ setInterval(function() {needCanvasUpdate = true}, 1)
 
 
 
+//ALL CUSTOM FUNCTIONS ARE HERE
+
 
 function layer1Reset(keepUpgrades=false) {
 let resetPoints = 0
@@ -451,10 +473,18 @@ setBuyableAmount("S", 12, new Decimal(0) )
 }
 
 
-function layer2Reset(keepUpgrades=false) {
+function layer2Reset(force=false) {
 player.C.EffectorTier = new Decimal(0)
 player.GL.Solar_Shards = new Decimal(0)
 player.C.checkUpgrades = new Decimal(0)
+
+
+	if (!player.E.EclipseTier.gte(3) || force) player["C"].hasFormality = false
+	if (!player.E.EclipseTier.gte(4) || force) player["C"].hasHeirarchy = false
+	if (!player.E.EclipseTier.gte(5) || force) player["C"].hasTwilight = false
+
+	//if (force == partial && !player.E.EclipseTier.gte(5))
+
 player.C.CenterPoints = new Decimal(0)
 player.C.Highest = new Decimal(0)
 player.C.Score = new Decimal(0)
@@ -472,7 +502,10 @@ function exitGeneration() {
 	const currentState = getClickableState("GL", 11)
     if (currentState == true) setClickableState("GL", 11, false)
 }
+
+
 function EclipsiumReset(Queuereset=false) {
+	
 	player.C.EffectorTier = new Decimal(0)
 	player.GL.Solar_Shards = player.GL.Solar_Shards.root(3).floor()
 	
@@ -483,10 +516,11 @@ function EclipsiumReset(Queuereset=false) {
 	player.C.Highest = player.C.Highest.mul(0)
     player.C.Score = player.C.Score.mul(0)
 
-	if (player.E.EclipseTier.eq(5) && player.C.checkUpgrades.gte(3)) player.C.checkUpgrades = new Decimal(3)
-	else if (player.E.EclipseTier.eq(4) && player.C.checkUpgrades.gte(2)) player.C.checkUpgrades = new Decimal(2)
-	else if (player.E.EclipseTier.eq(3) && player.C.checkUpgrades.gte(1)) player.C.checkUpgrades = new Decimal(1)
-	else if (player.E.EclipseTier.lt(3) && player.C.checkUpgrades.gte(1)) player.C.checkUpgrades = new Decimal(0)
+	if (!player.E.EclipseTier.gte(3)) player["C"].hasFormality = false
+	if (!player.E.EclipseTier.gte(4)) player["C"].hasHeirarchy = false
+	if (!player.E.EclipseTier.gte(5)) player["C"].hasTwilight = false
+
+	
 	exitGeneration()
 	
 	if (Queuereset == true) player.C.checkUpgrades = new Decimal(0)
@@ -494,13 +528,41 @@ function EclipsiumReset(Queuereset=false) {
 
 }
 
+function getBaseCheckGen(type) {
 
-function getDuration(src, destination) {
-	var audio = new Audio();
-	$(audio).on("loadedmetadata", function(){
-		destination.textContent = audio.duration;
-	});
-	audio.src = src;
+	let BaseLightIncrement = player.L.LightCheck.pow_base(10)
+	  if (player.L.UnwantedChromia.gt(1)) BaseLightIncrement = BaseLightIncrement.div(player.L.UnwantedChromia.root(10)).clampMin(1)
+	  if (player.E.EclipseTier.gte(6)) BaseLightIncrement = BaseLightIncrement.pow(1.25)   
+	  
+	let BaseDarkIncrement = player.L.DarkCheck.pow_base(10)
+	  if (player.L.UnwantedChromia.gt(1)) BaseDarkIncrement = BaseDarkIncrement.div(player.L.UnwantedChromia.root(10)).clampMin(1)
+	  if (player.E.EclipseTier.gte(6)) BaseDarkIncrement = BaseDarkIncrement.pow(1.25) 
+  
+		if (type == "Light") return BaseLightIncrement
+		else if (type == "Dark") return BaseDarkIncrement
+		else return decimalZero
+   }
+
+
+
+function start() {
+	 player.inCutscene = !player.inCutscene; player.rot = 0; player.tab = 'none';
 }
-//and then invoke getDuration as needed like this
+
+function end() {
+	player.inCutscene = !player.inCutscene; player.gameEnded = !player.gameEnded
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 

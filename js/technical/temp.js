@@ -3,6 +3,10 @@ var temp = tmp // Proxy for tmp
 var funcs = {}
 var NaNalert = false;
 
+//var inCutscene = false;
+
+// x mod 2
+
 // Tmp will not call these
 var activeFunctions = [
 	"startData", "onPrestige", "doReset", "update", "automate",
@@ -29,6 +33,8 @@ function setupTemp() {
 	tmp.displayThings = []
 	tmp.scrolled = 0
 	tmp.gameEnded = false
+
+
 	funcs = {}
 	
 	setupTempData(layers, tmp, funcs)
@@ -41,7 +47,11 @@ function setupTemp() {
 		tmp[layer].prestigeNotify = {}
 		tmp[layer].computedNodeStyle = []
 		setupBuyables(layer)
+		ViewerSetup(layer)
+		
+
 		tmp[layer].trueGlowColor = []
+		
 	}
 
 	tmp.other = {
@@ -54,7 +64,7 @@ function setupTemp() {
 	updateWidth()
 
 	temp = tmp
-}
+}//if (tmp[layer] == undefined) {tmp[item] = false}
 
 const boolNames = ["unlocked", "deactivated"]
 
@@ -85,9 +95,15 @@ function setupTempData(layerData, tmpData, funcsData) {
 				tmpData[item] = false
 			else
 				tmpData[item] = decimalOne // The safest thing to put probably?
-		} else {
+		} 
+		//else if (tmp[item] == undefined) {tmp[item] = false}
+	
+		else {
 			tmpData[item] = layerData[item]
 		}
+
+		
+
 	}	
 }
 
@@ -156,23 +172,50 @@ function updateClickableTemp(layer)
 	updateTempData(layers[layer].clickables, tmp[layer].clickables, funcs[layer].clickables)
 }
 
+function updateViewerTemp(layer) {
+	updateTempData(layers[layer].Viewer, tmp[layer].Viewer, funcs[layer].Viewer)
+}
+
+
 function setupBuyables(layer) {
 	for (id in layers[layer].buyables) {
 		if (isPlainObject(layers[layer].buyables[id])) {
 			let b = layers[layer].buyables[id]
+			
 			b.actualCostFunction = b.cost
-			b.cost = function(x) {
+			b.actualEffectFunction = b.effect //effect
+
+
+			b.cost = function(x) { //the cost
 				x = (x === undefined ? player[this.layer].buyables[this.id] : x)
 				return layers[this.layer].buyables[this.id].actualCostFunction(x)
 			}
-			b.actualEffectFunction = b.effect
-			b.effect = function(x) {
+
+			b.effect = function(x) { //the effect
 				x = (x === undefined ? player[this.layer].buyables[this.id] : x)
 				return layers[this.layer].buyables[this.id].actualEffectFunction(x)
 			}
 		}
 	}
 }
+
+function ViewerSetup(layer) {
+	for (id in layers[layer].Viewer) {
+		if (isPlainObject(layers[layer].Viewer[id])) {
+			let V = layers[layer].Viewer[id] 			
+			return V.display()		
+		}
+	}
+}	
+
+function ResetSetup(layer) {
+	for (id in layers[layer].Reset) {
+		if (isPlainObject(layers[layer].Reset[id])) {
+			let V = layers[layer].Reset[id] 			
+			return V.display(), V.gain()		
+		}
+	}
+}	
 
 function checkDecimalNaN(x) {
 	return (x instanceof Decimal) && !x.eq(x)

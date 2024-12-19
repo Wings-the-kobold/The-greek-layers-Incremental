@@ -1,4 +1,6 @@
 // ************ Save stuff ************
+
+
 function save(force) {
 	NaNcheck(player)
 	if (NaNalert && !force) return
@@ -200,7 +202,7 @@ function load() {
 	if (options.offlineProd) {
 		if (player.offTime === undefined)
 			player.offTime = { remain: 0 };
-		player.offTime.remain += (Date.now() - player.time) / 1000;
+		player.offTime.remain += (Date.now() - player.time) / 1000; //note, change this for TQET.
 	}
 	player.time = Date.now();
 	versionCheck();
