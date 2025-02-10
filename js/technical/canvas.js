@@ -1,118 +1,87 @@
 var canvas;
 var ctx;
-
-
-
+var colors_theme
+var middleY = window.innerHeight / 2;
+var middleX = window.innerWidth / 2
 window.addEventListener("resize", (_=>resizeCanvas()));
-
 function retrieveCanvasData() {
 	let treeCanv = document.getElementById("treeCanvas")
 	let treeTab = document.getElementById("treeTab")
 	if (treeCanv===undefined||treeCanv===null) return false;
 	canvas = treeCanv;
 	ctx = canvas.getContext("2d");
-	return true;
-	
+	return true;	
 }
-
-function resizeCanvas() {
-	
-	
+function resizeCanvas() {	
 		if (!retrieveCanvasData()) return
 		canvas.width = 0;
 		canvas.height = 0;
-		canvas.width  = window.innerWidth;
+		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
-		
-		if (!player.inCutscene) drawTree();
-		if (!player.inCutscene) drawEclipse();
-		
-		if (player.inCutscene){
-			if (!player.startedGame) startGameEclipse();
-			else if (player.gameEnded) endGameEclipse();
-		}
-		
-		
-
-		
+		middleY = window.innerHeight / 2;
+        middleX = window.innerWidth / 2
+			if ((!player.startedGame && player.inCutscene ) || player.cutsceneName == "startGame") {startGameEclipse()};
+			if ( player.gameEnd && player.inCutscene) {endGameEclipse();  };
+			if (!player.inCutscene) drawTree();	
 }
-
-
-var colors_theme
-
-
-
-
-
+function fadeOutAt(n) {return 1 - (player.frames-n)/20}
+function fadeInAt(n) {return 0 + (player.frames-n)/20}
 function startGameEclipse() {
-
-let basex = canvas.width / 2
-
 //This is the sun. stays at center
-Circle(basex, 500, 300, "#ffa340")
-
-
-
-let x1 = 30
-
-
+Circle(middleX, middleY, 300, "#ffa340")
 //this is the moon. position from bottom left to center 
-Circle(basex , 500, 295, "#000000")
-
-
-//move at frame 15
-//F sequence: 15,40
-
-
-//show text here
-
+x = middleX - 200
+y = middleY + 200
+radia = player.rot / (Math.PI * 10)
+Circle(x + (-207 * Math.cos(radia)), y - ( 239 * Math.sin(player.rot / 90)) , 295, "#000000")
+/* move at frame 15
+F sequence: 15,40
+show text here IF player.frames = value
+or use fadeInAt()
+fade in sequences: 50, 65, 95, 120 [start button show: 150] */	
+text((middleX - 170), (middleY - 400), "The Eclipse just started...", fadeInAt(46) , 30)
+text((middleX - 210), (middleY + 350), "Your task:", fadeInAt(85) , 30)
+text((middleX - 50), (middleY + 350), "Survive the Eclipse", fadeInAt(120) , 30)
 //shrink Eclipse down to minimum
-
 //then start game
-
 }
-
-
+//finished (no buttons)
 function endGameEclipse() {
-
-	text((canvas.width/2) + 100, 700, "...",30,1) 
+	let finalTime = player.finalTime
+	x = middleX 
+	y = middleY
+	let frame = 0
+    radia = player.rot / (Math.PI * 12)
+	Circle(middleX, middleY, 300, "#ffa340")
+	if (player.frames < 45) frame = player.frames; else (frame = 45)
+	Circle((x + 300) + (-300 * Math.cos(radia - 90)), ( y - 50 ) + ( (50 - (frame * 12) ) * Math.sin((radia)  )) , 295, `rgb(0,0,0,${fadeOutAt(45)})`)
+	text((middleX - 125), (middleY - 200), "...", 1 , 300)
+	text((middleX - 135), (middleY - 120), "The Eclipse is over...", fadeInAt(65) , 30)
+	text((middleX - 500), (middleY - 100), `The Eclipse Lasted ${formatTime(finalTime)}...`, fadeInAt(105) , 30)
+	text((middleX - 140), (middleY + 150), `There will soon be more to discover...`, fadeInAt(125),20)
 }
-
-
-
 //static -> does not move
 function drawEclipse() {
 	let sizeMult = player.E.EclipseTier.mul(2).mul(player["E"].ENLlevels.clampMin(0.1))
 	let sizeMultbestSize = player.E.EclipseTier.mul(2).mul(player["E"].TopLVL).clampMin(0.1)
-
-	
 	Circle((canvas.width / 2), 500, sizeMultbestSize, "#ffa340")
 	Circle((canvas.width / 2), 500, sizeMult, "#000000")
-
 }
-
-
-
 function drawTree() { //hre is taht
 	if (!retrieveCanvasData()) return;
-	
 	if (!player.inCutscene) ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-
-	
+	if (!player.inCutscene) drawEclipse();	
 	for (layer in layers){
 		if (tmp[layer].layerShown == true && tmp[layer].branches){
 			for (branch in tmp[layer].branches)
 				{
 					drawTreeBranch(layer, tmp[layer].branches[branch])
 				}
-		}
-		
+		}		
 		drawComponentBranches(layer, tmp[layer].upgrades, "upgrade-")
 		drawComponentBranches(layer, tmp[layer].buyables, "buyable-")
 		drawComponentBranches(layer, tmp[layer].clickables, "clickable-")
-		drawComponentBranches(layer, tmp[layer].Viewer, "Viewer-")
-		
+		drawComponentBranches(layer, tmp[layer].Viewer, "Viewer-")		
 	}
 }
 
@@ -182,16 +151,6 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
 
 }
 
-function init()
-{
-   canvas = document.getElementById('canvas');
-   if(canvas.getContext)
-	ctx = canvas.getContext('2d');
-   else return;
-
-   setInterval(draw, 1000 / 60); // 60 times per second
-}
-
 function Circle(x,y,s=10,color="#000000")
 {
    // ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -204,13 +163,13 @@ function Circle(x,y,s=10,color="#000000")
    ctx.closePath(); 
 } 
 
-function text(x,y,t,size=20,o=1){
+function text(x,y,t,o,size=100){	
+	ctx.fillStyle = `rgb(0,0,0,${o})`;
 	ctx.strokeStyle = `rgb(0,0,0,${o})`;
 	ctx.font = `${size}px Righteous`
 	ctx.textBaseline = "hanging";
 	ctx.fillText(`${t}`, x, y);
 }
-
 
 function ring(x,y,s=10) {
 	ctx.fillStyle = "rgb(150,29,28)";
@@ -219,26 +178,3 @@ function ring(x,y,s=10) {
 	ctx.closePath();
 
 }
-
-
-
-
-
-
-function hideAll() {
-	
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-

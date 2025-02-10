@@ -9,11 +9,11 @@ function getStartOptions() {
 		theme: "default",
 		hqTree: false,
 		offlineProd: true,
-		hideChallenges: false,
+		hideChallenges: true,
 		showStory: true,
 		forceOneTab: false,
 		oldStyle: false,
-		tooltipForcing: true,
+		tooltipForcing: false,
 	}
 }
 

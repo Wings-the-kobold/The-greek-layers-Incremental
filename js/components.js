@@ -360,7 +360,7 @@ function loadVue() {
 		template: `
 		<button 
 		v-if="tmp[layer].Custom[data.id].unlocked"
-		v-bind:style="[ tmp[layer].Custom[data.id].style]"
+		v-bind:style="[ tmp[layer].Custom[data.id].style ]"
 		v-html="tmp[layer].Custom[data.id].display()" @click="tmp[layer].Custom[data.id].onClick()" 
 		
 		v-bind:class="{click: true, can: tmp[layer].Custom[data.id].canClick, locked: !tmp[layer].Custom[data.id].canClick }"
@@ -653,28 +653,31 @@ function loadVue() {
 			return { 
 				id: "in-component id",
 				title: "in-component title",
-				//button here			
+				
+				defaultStyle: {
+					"border": "2px solid gray",
+					"display": "inline-block",
+					"font-size": "12px",
+					"background-color":"#202021",	
+					"padding": "15px",
+					"width": "560px",
+				}
 			}							
 		},
 		template: `
 <div >		
 	<h2  v-if="tmp[layer].Viewer[data.id].unlocked" class="ignThemes"> 
-		<span style="border: 2px solid gray; display: inline-block; padding: 2px; background-color: #5a5b5c;" v-html="data.title" ></span>	
-	</h2> 
+	<span style="border: 2px solid gray; display: inline-block; padding: 2px; background-color: #5a5b5c;" v-if="data.title" v-html="data.title" >
+	</span>	</h2> 
 <br> 
-
 
 	<span 
 	
 	v-if="tmp[layer].Viewer[data.id].unlocked"
 	class="ignThemes"
-	style="
-	border: 2px solid gray; display: inline-block;
-	font-size:12px;
-	background-color: #202021;	
-	padding: 15px;
-	width: 560px;
-	 " 
+	v-bind:style="[ tmp[layer].Viewer[data.id].style ? tmp[layer].Viewer[data.id].style : this.defaultStyle ]"
+	
+	
 	v-html="tmp[layer].Viewer[data.id].display()" 
 	> 		
 </span>
@@ -683,6 +686,12 @@ function loadVue() {
 </div>
 `,//v-if="tmp[layer].Viewer[data.id].unlocked"
 	} )
+
+
+
+
+
+
 
 
 	Vue.component('Reset', {	
@@ -835,6 +844,8 @@ template: `<template><div v-if="Check(layer, data.id).unlocked"  >
 	} )
 
 
+
+	// Unique Components / Custom Components as 1
 
 
 

@@ -260,11 +260,6 @@ function startChallenge(layer, x) {
 	updateChallengeTemp(layer)
 } //EW
 
-function startCheck(layer, x) {
-	
-
-
-}
 
 
 
@@ -356,7 +351,7 @@ function gameLoop(diff) {
 		if(diff > limit)
 			diff = limit
 	}
-	addTime(diff)
+	if (!player.gameEnd || player.startedGame) addTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
 
 	for (let x = 0; x <= maxRow; x++){
@@ -416,8 +411,10 @@ var ticking = false
 var interval = setInterval(function() {
 	if (player===undefined||tmp===undefined) return;
 	if (ticking) return;
-	if (tmp.gameEnded&&!player.keepGoing) return;
+	if (tmp.gameEnded && !player.keepGoing) return;
 	ticking = true
+
+
 	let now = Date.now()
 	let diff = ((now - player.time) / 1e3)
 	let trueDiff = diff
@@ -432,9 +429,11 @@ var interval = setInterval(function() {
 	}
 	if (player.devSpeed) diff *= player.devSpeed
 	player.time = now
+
 	if (needCanvasUpdate){ resizeCanvas();
 		needCanvasUpdate = false;
 	}
+	
 	tmp.scrolled = document.getElementById('treeTab') && document.getElementById('treeTab').scrollTop > 30
 	updateTemp();
 	updateOomps(diff);
@@ -444,6 +443,7 @@ var interval = setInterval(function() {
 	fixNaNs()
 	adjustPopupTime(trueDiff)
 	updateParticles(trueDiff)
+	resizeCanvas();
 	ticking = false
 }, 80)
 
@@ -451,9 +451,12 @@ setInterval(function() {needCanvasUpdate = true}, 1)
 
 
 
+
+
+
 //ALL CUSTOM FUNCTIONS ARE HERE
 
-
+//Layer Resets
 function layer1Reset(keepUpgrades=false) {
 let resetPoints = 0
 if (player.C.EffectorTier.gte(5)) { resetPoints = 1 }
@@ -497,6 +500,9 @@ setBuyableAmount("GL", 11, new Decimal(0) )
 layer1Reset(false)
 
 }
+//
+
+
 
 function exitGeneration() {
 	const currentState = getClickableState("GL", 11)
@@ -523,9 +529,37 @@ function EclipsiumReset(Queuereset=false) {
 	
 	exitGeneration()
 	
-	if (Queuereset == true) player.C.checkUpgrades = new Decimal(0)
+	if (Queuereset == true){ player.C.checkUpgrades = new Decimal(0); player["C"].hasFormality = false; player["C"].hasHeirarchy = false; player["C"].hasTwilight = false}
 	layer1Reset(false)
 
+}
+
+
+
+
+
+function ReplicEffect(offset) {
+ let replic = player.Sol.MNG.Replic
+ let increment = 0.001	
+
+let base = (replic + offset) * increment
+  
+// let formula = base > 0.2 ? 0.2 + (replic - 200) * increment/2 : 1
+	
+	const cSoftcap = {
+	 Defective: increment/2, 
+	 Redundant: increment/4,
+  
+	 DefVal: 0.2 + ((replic + offset) - 200) * increment/2,
+	 RedVal: 0.4 + ((replic + offset) - 400) * increment/4,
+	  
+	}
+  
+	if (cSoftcap.RedVal > 0.6) base = 0.6 
+	else if (cSoftcap.DefRed > 0.4) base = 0.4 + ((replic + offset) - 400) * cSoftcap.Redundant
+	else if (base > 0.2) base = 0.2 + ((replic + offset) - 200) * cSoftcap.Defective
+	else return base
+  
 }
 
 function getBaseCheckGen(type) {
@@ -533,36 +567,116 @@ function getBaseCheckGen(type) {
 	let BaseLightIncrement = player.L.LightCheck.pow_base(10)
 	  if (player.L.UnwantedChromia.gt(1)) BaseLightIncrement = BaseLightIncrement.div(player.L.UnwantedChromia.root(10)).clampMin(1)
 	  if (player.E.EclipseTier.gte(6)) BaseLightIncrement = BaseLightIncrement.pow(1.25)   
+	  if (BSolStones(1).unlocked) BaseLightIncrement = BaseLightIncrement.mul(BSolStones(1).effect); 	
 	  
+
 	let BaseDarkIncrement = player.L.DarkCheck.pow_base(10)
 	  if (player.L.UnwantedChromia.gt(1)) BaseDarkIncrement = BaseDarkIncrement.div(player.L.UnwantedChromia.root(10)).clampMin(1)
 	  if (player.E.EclipseTier.gte(6)) BaseDarkIncrement = BaseDarkIncrement.pow(1.25) 
-  
-		if (type == "Light") return BaseLightIncrement
-		else if (type == "Dark") return BaseDarkIncrement
-		else return decimalZero
+	  if (BSolStones(1).unlocked) BaseDarkIncrement = BaseDarkIncrement.mul(BSolStones(1).effect); 	
+	  
+
+	let ReplicBonuses = [
+		player.L.Light.gte(1) ? player.L.Light.pow(ReplicEffect(0)) : 1, 
+		player.L.Dark.gte(1) ? player.L.Dark.pow(ReplicEffect(0)) : 1
+	]
+
+	
+
+		
+		if (type == "Light") return BaseLightIncrement.mul(ReplicBonuses[0])
+		else if (type == "Dark") return BaseDarkIncrement.mul(ReplicBonuses[1])
+		else alert("Incorrect Gen type input")
    }
 
 
 
+
+
+
+
+
+
+//create a custom softcap
+/* add any custom softcap formula below */
+//yeah i might not use this
+function cSoftcap(val, start=[], nerf=[], format=false) {
+	const makeNew = {}
+
+	makeNew.Start = {}
+	makeNew.Nerfs = {}
+	var effect = new Decimal(val)
+	{//makes sure the below works and provides missing code feedback
+		{//checks for missing paramaters
+			if (val == undefined) throw new Error("Missing input 'val'" );
+			if (start == undefined || start.length == undefined) throw new Error("Missing starting nerfs, or the input isn't a list");
+			if (nerf == undefined || nerf.length == undefined) throw new Error("Missing nerf formulas, or the input isn't a list");
+			if (format !== Boolean && !format == undefined) throw new Error("format paramater must be a Boolean")
+			}
+		{//fixes both arrays if irregular
+			if (!nerf.length>=start.length) nerf.pop(); 
+			else if (!start.length>=nerf.length) start.pop()
+			}
+	} 
+	{//automatically assigns Decimals
+	for (item in start) 
+		if (start[item] instanceof Decimal) makeNew.Start[item] = start[item];
+		else makeNew.Start[item] = new Decimal(start[item])
+			 console.warn("note: " + start[item] + " is not assigned to a Decimal"); 
+	for (item in nerf) 
+		if (nerf[item] instanceof Decimal) makeNew.Nerfs[item] = nerf[item];
+		else makeNew.Nerfs[item] = new Decimal(nerf[item])
+			 console.warn("note: " + nerf[item] + " is not assigned to a Decimal");  
+	}
+
+	//does the softcap stuffs based on it's starting position, THEN scales.
+	for (item in makeNew.Start) makeNew.Start[item].gt(effect) ? effect = makeNew.Start[item].plus((effect.sub(makeNew.Start[item])).times(makeNew.Nerfs[item])) : 0;
+
+	         return format ? effect.toNumber() : effect	
+}
+
+
+
+// cSoftcap(20,[10,40],[0.5,0.3])
+
 function start() {
-	 player.inCutscene = !player.inCutscene; player.rot = 0; player.tab = 'none';
+	 player.inCutscene = !player.inCutscene;  player.tab = 'none'; 
+	 if (player.cutsceneName = "") player.cutsceneName = "gameStart"; else player.cutsceneName = ""
 }
 
 function end() {
-	player.inCutscene = !player.inCutscene; player.gameEnded = !player.gameEnded
+	player.inCutscene = !player.inCutscene; player.gameEnd = !player.gameEnd; player.rot = 90; player.frames = 0;
+	if (player.cutsceneName = "" && player.inCutscene) player.cutsceneName = "gameEnd"; else player.cutsceneName = ""; player.finalTime = player.timePlayed
+//	tmp.gameEnded = !tmp.gameEnded
 }
 
 
 
 
+document.title = "Loading Content..."
+
+if (Error) document.title = "Cannot Load Content."
 
 
+function getSRCap() {
+	let baseSRCap = new Decimal(1e15)
+	if (hasUpgrade("Sol",12) && getClickableState("L",42)) baseSRCap = baseSRCap.mul(player["S"].bestPointsInDark)
 
+		return baseSRCap
+}
 
+function GetHeirarchyBonus() {
+	let base = new Decimal(5)
+    if (player.Sol.CPBoost.gte(0)) base = base.plus(player.Sol.CPBoost)
 
-
-
+    let effect = player.C.CenterPoints.pow_base(base).clampMin(1)
+	
+	if (hasUpgrade("L",11)) effect = effect.pow(1.15)
+		
+	if (player["C"].activeCheck == "Twilight") effect = effect.mul(effect.log(12)).clampMin(1)
+		
+if (player["C"].hasHeirarchy) return effect; else return new Decimal(1)
+}
 
 
 

@@ -30,7 +30,10 @@ addLayer("C", {
     Hour = new Date()
 
     if (Check("E",11).has) ScoreBoost = ScoreBoost.mul(getBuyableAmount("GL",11).clampMin(1))
-    if (getBuyableAmount("L",21).gte(3)&& Hour.getHours() <= 12) ScoreBoost = ScoreBoost.mul(1.2 ** Hour.getMinutes() * (2 ** (Hour.getHours() % 12)))
+    if (getBuyableAmount("L",21).gte(1) && Hour.getHours() >= 12) ScoreBoost = ScoreBoost.pow(1 + (Hour.getMinutes() * (1 + Hour.getHours() % 12) / 1000)) //buff this if DT is still too op
+    if (getBuyableAmount("L",21).gte(3) && Hour.getHours() <= 12) ScoreBoost = ScoreBoost.mul(1.12 ** Hour.getMinutes() * (1.3 ** (Hour.getHours() % 12)))
+
+ // 1.12^M -> 1.35^H
 
     if (hasUpgrade("GL",31) ) player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(ScoreBoost)
     if (player["E"].activeCheck == "Forgotton") player.C.Score = player.C.Score.pow(0.8)
@@ -79,21 +82,22 @@ addLayer("C", {
      }],
        ["display-text",
      function() { 
-      
-      let HeirarchyBonus = player.C.CenterPoints.pow_base(5).clampMin(1)
-	
-  	if (hasUpgrade("L",11)) HeirarchyBonus = HeirarchyBonus.pow(1.15)	
+    
 
-        if (player["C"].activeCheck == "Heirarchy") HeirarchyBonus = HeirarchyBonus.log(12)
+
 
       let HeirarchyBoost = ``
 
-      let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} / ${format(player.C.requirement)} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
+      let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
 
-      if (player["C"].hasHeirarchy) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(HeirarchyBonus)}` 
+      let newBaseText = ``
+      if (player.Sol.CPBoost.gt(0 )) newBaseText = `Thanks to aperature, Heirarchy's base is 5 -> ${format(player.Sol.CPBoost.plus(5))}`
+      
+      if (player["C"].hasHeirarchy) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(GetHeirarchyBonus())}` 
  
       return `You have ${forgotten} <br> <br>
-      ${HeirarchyBoost} 
+      ${HeirarchyBoost}<br>
+      ${newBaseText}
       `
       //if (player.C.checkUpgrades.gte(2)) gain = gain.mul(Decimal.pow(5, player.C.CenterPoints).clampMin(1))
      }],
@@ -109,7 +113,7 @@ addLayer("C", {
       "blank",
      ["Viewer",  {id:11, title: "The Effector™️"}],
 
-
+    //check upgrade guide
  ["display-text",function() { if ((player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) && !player["C"].hasFormality)
        return `<h2>Check Upgrades.</h2><br><br>
        <h4 class="hl"> 
@@ -306,16 +310,18 @@ addLayer("C", {
     },
 
     12: {
-      
       display() {
         let text = ``
-  
         if (!player["C"].hasHeirarchy && player["C"].activeCheck == "") text = `
         Meta Scaling starts instantly, of which also affects Plasmate. ^0.666 to Multiply's effect<br><br>
         Requires: Phaser #17, Plasmate #235, Multiply #370  
         `
         else if (player["C"].activeCheck == "Heirarchy") text = `Goal: Multiply #80`       
-        if (player["C"].hasHeirarchy) text = `Center Points Boosts Solarity by 5^x, and Automate 'Multiply' with a bulk purchase of 5! <br>`
+        if (player["C"].hasHeirarchy) text = `Center Points Boosts Solarity by a starting base of 5, and Automate 'Multiply' with a bulk purchase of 5! <br>
+        
+
+        
+        `
         return `${text}`
         
 
@@ -409,12 +415,13 @@ addLayer("C", {
       canAfford() {
         let maxUpgradesAllowed = new Decimal(1)
         let UpgradesTaken = new Decimal(0)
+         if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
         if (hasUpgrade("C",11)) UpgradesTaken = UpgradesTaken.plus(1)
-        else if (hasUpgrade("C",12)) UpgradesTaken = UpgradesTaken.plus(1)
-        else if (hasUpgrade("C",13)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",12)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",13)) UpgradesTaken = UpgradesTaken.plus(1)
 
-        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
-
+       
 
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
@@ -453,12 +460,12 @@ addLayer("C", {
       canAfford() {
         let maxUpgradesAllowed = new Decimal(1)
         let UpgradesTaken = new Decimal(0)
+        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
         if (hasUpgrade("C",11)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",12)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",13)) UpgradesTaken = UpgradesTaken.plus(1)
 
-        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
-
+        
 
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
@@ -491,11 +498,12 @@ addLayer("C", {
       canAfford() {
         let maxUpgradesAllowed = new Decimal(1)
         let UpgradesTaken = new Decimal(0)
+        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
         if (hasUpgrade("C",11)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",12)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",13)) UpgradesTaken = UpgradesTaken.plus(1)
 
-        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+        
 
 
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 

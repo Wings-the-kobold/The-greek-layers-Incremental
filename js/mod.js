@@ -35,8 +35,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.4 (soon to 0.6) F16-B13",
-	name: "Yeh",
+	num: "0.6 F20-B17",
+	name: "Solaris's awakening.",
 }
 /*
 6 Unique Upgrade types that are probably exclusive to SLOWPACED games
@@ -59,42 +59,57 @@ Solaris dont BURN my laundry! <br>
 - added <br>
 - <br>
 - <br>*/
-let changelog = `
+let changelog = ` <span class="ignThemes">
 <h1>Changelog:</h1><br><br>
 <h2>Start Date: 4/13/2024</h2> <br><br>
 <h3>there are currently 6 Unique upgrades types according TESGI's draft (Layers 1-4) </h3> <br><br><br>
 
 
 
-<h3>v0.6 Fix 16, Balance 12</h3><br>
+
+
+<h3>v0.6 Fix 20, Balance 17</h3><br>
 Solaris... fuck you lol. <br>
-- added <h3> 4 Minutes until dark </h3> <br>
-- added 2 new Currencies <br>
-- added the first one time reset  <br>
-- added a side Reset for Eclipsification (50% chance it gets reset on Eclipsification) <br>
-- NEW CHECK UPGRADE?!?! <br>
-- Renamed Enlightenment tabs: SOTI -> Eclipsify. and SOTE -> The Factory [dw these will return soon]<br>
-- Changed  <br>
+- Added Aperation, The Randomizor, and The Core.<br>
 - added the solar clock (and maybe buffed it a slight bit) <br>
 - a new upgrade type (subspecies) is here! [Repeatable Check Upgrades]. <br>
 - Added Chronology <br>
-- Changed Main layer 2 reset from Eclipsification to Eclipsify <br><br>
+- Changed Main layer 2 reset from Eclipsification to Eclipsify <br>
+- Updated and changed Annular and Coronal's styling just slightly <br>
+<br><br>
 
+<h4> I also slightly altered the Viewer component to be customizable to a default </h4><br>
+<h4> Also made changelog easier to read just in case of people wanting to see how the game changed over the months </h4><br><br>
+- Majorly Shortened and Compacted the Main visuals, like realm currencies. <br>
 - Added New Themes: Eclipse and Twilight<br>
 - Added and changed UI's of custom-made features<br>
 - Moved some features into other tabs to save space and clutter <br>
 	<br> Center Tree Respec moved from The Effector to The Center Tree
-	
+<br>added a few secrets into the game 
 
-Fixes:
+Fixes:<br>
 Fix 13: Layers no longer randomly switch places when reloading screens <br>
-Fix 14: finally fixed post solarity cap statistics being incorrect<br>
+Fix 14: Finally fixed post solarity cap statistics being incorrect<br>
 Fix 15: Fixed Center Points incorrect cost scale FOR THE 4TH TIME<br>
 Fix 16: Fixed Solar light generation and Solar Charge generation (for REAL this time), i finally understood what diff is and how it functions xd<br>
+Fix 17: Fixed Expansion I buyable so that it shows itself when having at least 1 level of it.<br>
+Fix 18: Fixed Duality not following Dark requirements<br>
+Fix 19: Finally fixed what made the Duality checks not return to their normal color after leaving it. <br>
+Fix 20: Fixed Jear 1 being able to be purchased during specific conditions via "Jear 2 + Jear 3" <br>
+<br>
+Balances <br>
 Bal 11: Added a cap to Eclipsium at a base of 100,000<br>
 Bal 12: Added a new boost to Eclipsium at Eclipse Tier 5<br>
-
-
+Bal 13: slightly nerfed the goal requirements for Light And Dark Rep-Checks <br>
+	Light: 150^(Level^2.25) -> 100^(Level^2) <br>
+	Dark: 150^(Level^5.25) -> 100^(Level^3) <br>
+Bal 14: nerfed Lunar Time first requirements from 3e12 Solar Light to 1.5e11 <br>
+Bal 15: buffed MH-1 <br>
+	1 + (M * (1 + H / 1560) ->  1 + (M * (1 + H / 1000) <br>
+Bal 16: nerfed MH-2 from 2^H to 1.35^H and 1.2^M -> 1.12^M <br> might just buff D-H1 in the future<br>
+Bal 17: buffed Dark check nerfs to be applied after all bonuses have been applied <br>
+Bal 18: added a scaling to duality checks once it reaches 10. <br>
+: 
 <br><br>
 
 <h3>v0.5 to v0.5.4, Fix 12, Balance 10</h3><br>
@@ -169,13 +184,14 @@ Fix1: Fixed PointGen() issues/boosts not responding very well (it was an "x= val
 <h3>v0.1 Fix 0, Balance 0</h3><br>
 	<h4>First layer has been added...</h4><br>
 		- 4 Upgrades, and 2 very Important Buyables... Plasmate and Multiply.<br>	
+	</span>
 		`
 
-let winText = `The Eclipse is over... wfor its rays and shades all crumble beneath you... as your moons and suns have become distant. guide no more... they say.`
+let winText = 0
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "rollAP"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -194,7 +210,7 @@ function startGame() {
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return player.startGame
+	return player.startedGame
 }
 
 // Calculate points/sec!
@@ -233,27 +249,18 @@ function getPointGen() {
 	//
 	if (hasUpgrade("GL",21)) gain = gain.pow(upgradeEffect("GL",21))
 	
-
-	
 	//Check Upgrade 1 and Check Upgrade 2 Debuffs
 	if (player.C.activeCheck == "Formality") gain = gain.pow(0.666)
 	if (player["C"].activeCheck == "Twilight" ) gain = gain.log(12)
 	// ------------ CENTRALITY EFFECTS -----------
-	let HeirarchyBonus = player.C.CenterPoints.pow_base(5).clampMin(1)
-	
-	if (hasUpgrade("L",11)) HeirarchyBonus = HeirarchyBonus.pow(1.15)	
+	//hasUpgrade("Sol")
+	gain = gain.mul(GetHeirarchyBonus()) 
 
 	if (hasUpgrade("C",22)) gain = gain.pow(1.15)
 	if (player.C.EffectorTier.gte(1)) gain = Decimal.mul(gain, player.S.points.log(2).clampMin(1))
 	if (player["C"].activeCheck == "Twilight" && hasMilestone("E",2) && player.L.activeCheck == "" ) gain = gain.pow(1.15)
-	if (player["C"].hasHeirarchy) {
-		
-		if (!player["C"].activeCheck == "Twilight") gain = gain.mul(HeirarchyBonus)
-		else if (player["C"].activeCheck == "Twilight") gain = gain.mul(HeirarchyBonus.log(12)).clampMin(1)
-	}
+	
 	if (player["C"].hasFormality) gain = gain.pow(1.25)// The Forgotton... Check upgrade
-		
-
 
 	// --------- ENLIGHTENMENT EFFECTS ---------
 	if (player["E"].activeCheck == "Forgotton") gain = gain.root(7)
@@ -261,22 +268,26 @@ function getPointGen() {
 	if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(9))
 	gain = gain.mul(upgradeEffect("E",12))
 	//if (hasUpgrade("E",11)) gain = upgradeEffect("E",11)
-	if (getClickableState("L",42) == true) gain = gain.root(3).mul(2)
+	
 	if (player.L.DarkCheck.gte(1) && player.L.Dark.gte(1)) gain = gain.mul(player.L.Dark.pow(0.3)) 
 	
-
-
 
 	//--------- LUNARIS EFFECTS -------------
 	if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) gain = gain.mul(1.15 ** Hour.getMinutes())
 	
-	
+	//--------- SOLARIS' EFFECTS -------------
+	if (TSolStones(1).unlocked) gain = gain.mul(TSolStones(1).effect); 
+	if (getClickableState("L",41) && hasUpgrade("Sol",13)) gain = gain.pow(1.05)
+
+
+	// --------- PESTILLESSENCE EFFECTS ----------
 
 
 
-	//--------------- Solarity generation nerf ----------------
+	//--------------- Solarity generation nerf (after all bonuses) ----------------
 	if (getClickableState("GL", 11) == true) gain = gain.pow(0.5)
 	if (player.L.activeCheck == "TimeTillDark") gain = gain.pow(0.6)
+	if (getClickableState("L",42)) gain = gain.root(3)
 
 
 	// ------------------ SOLAR CHARGE EFFECTS --------------
@@ -286,14 +297,19 @@ function getPointGen() {
 	if (buyableEffect("L",31).gt(1)) S = buyableEffect("L",31).log(4)
 	if (C.gt(1))  B = Decimal.add(1 , C.log(2)).add(S)
 
+
+	// ---------------- TRNG,BRNG,CRNG
 	
+		
 
 	
 	let basegainCap = player.BasepointsCap
 	// --------------- check upgrade Lightness
 	if (getClickableState("L", 41) || player.L.activeCheck == "TimeTillDark") basegainCap = new Decimal(1)
+	
 
 
+	//---------- INCREASING SOLARITY CAP
 	if (hasMilestone("E",1)) basegainCap = basegainCap.mul(player.E.EclipseTier.pow_base(20))
 
 	let moved = new Decimal(100000)
@@ -313,7 +329,7 @@ function getPointGen() {
 
 	//Heirarchy
 	
-	if (hasMilestone("E",5) && player.L.activeCheck == "") basegainCap = basegainCap.mul(HeirarchyBonus.pow(0.33))
+	if (hasMilestone("E",5) && player.L.activeCheck == "") basegainCap = basegainCap.mul(GetHeirarchyBonus().pow(0.33))
 
 
 	let c1effect = decimalOne.plus(player.L.LunarPower.clampMin(1).log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
@@ -322,18 +338,18 @@ function getPointGen() {
 	if (player.L.Dark.gt(1)) basegainCap = basegainCap.mul(player.L.Dark)
 	if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) basegainCap = basegainCap.mul(1.15 ** Hour.getMinutes())
 	
+	//if (BSolStones(2).unlocked) basegainCap = basegainCap.mul(BSolStones(2).effect); 	
+	if (getClickableState("L",41) && hasUpgrade("Sol",13)) basegainCap = basegainCap.pow(1.15)	
 
- 
-
-	//Limit everything to the point gain cap
 
 	//Time till dark
 	if (player.L.activeCheck == "TimeTillDark"){ 
 		basegainCap = basegainCap.pow(0.6)
-		
 		basegainCap = basegainCap.div(player.L.TimeTillDark.sub(243).abs().div(60).floor().pow_base(100))
 	}
-	
+
+	if (BSolStones(2).unlocked) basegainCap = basegainCap.mul(BSolStones(2).effect)
+
 	//this is in getPointGen() btw
 	player.SolarityCap = basegainCap
 	player.postCap = gain.div(player.BasepointsCap)
@@ -358,31 +374,47 @@ function addedPlayerData() { return {
 	SolarityCap: new Decimal(1),
 	postCap: new Decimal(1),
 	beforeCap: new Decimal(1),
-	//
+	//d
 	rot: 0,
 	tick: 0,
+	frames: 0,
 	inCutscene: false,
 	showScreen: true,
 	//
-	startedGame: false,
+	finishedStCutscene: false,
 
-}}
+	cutsceneName: "",
+
+
+	//DO NOT CHANGE THIS
+	agreedTOS: false,
+	timerToAgree: 12,
+
+	finalTime: 0,
+	startedGame: false,
+	gameEnd: false,
+
+	//technical
+	debugMode: false,
+
+	//secret
+	secrets: {
+	 really: false,
+	 why: false,
+	}
+
+}}   
+
+
 
 // Display extra things at the top of the page
 var displayThings = [
-
+	
+	// REMINDER: seperate displays into different functions (for displayThings)
 	
 	function s() {
-		
-		// Decimal.pow(getPointGen().pow(0.5), 0.2).sub(1)
-
-		let nextText = `new Decimal(1)`
 		let speed = new Decimal(1)
 		if (getClickableState("GL", 11)) speed = getPointGen().clampMax(player.SolarityCap).pow(0.5).pow(0.2)
-			//.pow(0.5).pow(0.2).sub(1)
-			
-		//if (getClickableState("C", 14)) formula = Decimal.div(getPointGen().pow(1.501501502),   getPointGen())
-		
 		
 		if (hasUpgrade("C",16)) speed = speed.times(3.14)
 			
@@ -402,8 +434,8 @@ var displayThings = [
 
 		let fogger = `Solarity`
 		if (player["E"].activeCheck == "Forgotton") fogger = `Shade...?`
-		//if (getClickableState("L",11)) fogger = ``
-
+	
+		let SD104_Eff = getSRCap().gt(1e15) && getClickableState("L",42) ? `<span style="color: #0f032b;">The Current Solar ray cap is ${format(getSRCap())} </span><br>` : ``
 
 		//Hardcaps and other things
 			// Solarity Hardcap
@@ -411,94 +443,17 @@ var displayThings = [
 			let multAfterCap = player.beforeCap.div(player.SolarityCap)
 
 			if (getPointGen().gte(player.SolarityCap)) pushThrough = `<br>
-			If your ${fogger} gain was not capped, you would gain x${format(multAfterCap)} more than what you would have. which is ${format(player.beforeCap)}`
+			<p>If your ${fogger} gain was not capped, you would gain x${format(multAfterCap)} more than what you would have. which is ${format(player.beforeCap)} </p> <br>`
 			else pushThrough = ``
 			if (player.SolarityCap.neq(1e308)) capped = `
 			<br>
-			The Current Solarity Gain Cap is ${format(player.SolarityCap)}
-			 <br> ${pushThrough} <br>
+			The Current Solarity Gain Cap is ${format(player.SolarityCap)}<br> 
+			${SD104_Eff}
+
+			 ${pushThrough} <br>
 			 `
 			else capped = ``
 
-
-	/*
-
-			 TO DO: MAKE DAY TIER II and Night tier II, then make 2 Lunarity check upgrades. and a queued upgrade.<br>
-			 6:00 PM - ^1.15 to Heirarchy's effect. Cost: <br>
-			 12:30 AM - Increase solar light cap by 1.5 per Center point compounding<br>
-			 8:00 PM - Solar charge boosts Multiply and Plasmate at a reduced rate (log5(x))<br>
-			 10:00 PM - Requires 6PM,12.5AM, 10PM, 8PM, and X40PM: Boost Enlightenment levels by 1.15x <br>
-			 x:40 AM - reduce solar charge's log effect base by -0.1<br>
-
-	*/
-	if (true) {	
-
-		if (player.Sol.Aperativity.gte(35)) {
-			nextText = `Solock XVII (18): Next unlock at 1000 TRNG and CP base >8 `
-			} 
-		else if (player.E.EclipseTier.eq(6)) {
-			nextText = `Solock XVI (17): Next unlock at 35 Aperativity`
-			} 
-		else if (hasUpgrade("L",23)) {
-			nextText = `Solock (16.5): [Get ECT 6 to continue]`
-			} 
-		else if (getBuyableAmount("L",22).gte(2) && getBuyableAmount("L",22).gte(2)) {
-		nextText = `Solock XV (16): Next Unlock at Anaphalagia (1x:x)`
-		} 
-		else if (getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5)) {
-			nextText = `Solock XV (15): Next Unlock at D-Time II and N-Time II`
-		} 
-		else if (getBuyableAmount("E",12).gte(10) || player.L.lunarity == true) {
-				
-				nextText = `Solock XIV (14): Next Unlock at Ektrosy #9 and Basity I #5`
-						
-		} 
-		else if (player.E.Chimera.gte(10)) {
-				nextText = `Solock XIII: Next Unlock at Expansion I #10, and a Lunarity performed`
-		} 
-		else if (player.E.EclipseTier.eq(4)) {
-			 nextText = `Solock XII: Next Unlock at Chimera #10`
-		} 
-		else if (player.E.Esolar.gte(10)) {
-			 nextText = `Solock XI: Next Unlock at Eclipse Tier 4`
-		}
-		else if (player.E.Solinity.gte(10) || player.E.Esolar.gt(1)) {
-			 nextText = `Solock X: Next Unlock at Esolar #10`
-		}
-		else if (player.E.EclipseTier.eq(3)) {
-			 nextText = `Solock IX: Next Unlock at Solinity #10`
-		}
-		else if (player.E.Eclipsium.gte(10) || getBuyableAmount("E", 11).gte(1)) {
-			nextText = `Solock VIII: Next Unlock at Cytochrisy #5`
-				}
-		else if (player.E.EclipseTier.eq(2)) {
-			 nextText = `Solock VII: Next Unlock at 10 Eclipsium`
-		}
-		else if (player.E.EclipseTier.eq(1)) {
-			 nextText = `Solock VI: Next Unlock at Eclipse Tier 2 `
-		}
-		else if (player.C.checkUpgrades.gte(3) || player.E.TopLVL.gte(1)) {
-			 nextText = `Solock V: Next Unlock at First Eclipsication`
-		}
-		else if (hasUpgrade("GL",15)) {
-			 nextText = `Solock IV: Next Unlock at Twilight`
-		}
-		else if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
-			
-			
-			nextText = `Solock III: Next Unlock at Coronal Upgrade` //unlock 4
-		} 
-		else if (getBuyableAmount("S",11).gte(5)) {			
-			nextText = `Solock II: Next Unlock at Solarizor Upgrade `
-		} 
-		else if (player["S"].points.gte(5) || getBuyableAmount("S",11).gte(2)){
-			nextText = `Solock I: Next Unlock at Plasmate #5`
-
-		} else {
-			nextText = `Solock 0: Next Unlock at 5 Solar Rays`
-
-			}
-		}
 
 
 		let OOMTEXT = ``
@@ -506,19 +461,19 @@ var displayThings = [
 		else OOMTEXT = `${format(getPointGen())} per second`
 		let forgotten = ``; 
 
-		if (player["E"].activeCheck == "Forgotton") forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Shade...? </h2>`; 
+		if (player["E"].activeCheck == "Forgotton") forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Shade...? </h2><br>`; 
 		else forgotten = `<h2 style="color: #ffaf47; text-shadow: 0px 0px 10px #de482a;"> You Have ${format(player.points)} Solarity </h2>`
 		
-		if (getClickableState("L",42) == true) forgotten = `<h2 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Dark Essence`
+		if (getClickableState("L",42) == true) forgotten = `<h2 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Dark Essence<br>`
 		
-		if (player.L.activeCheck == "TimeTillDark") forgotten = `<h2 style="color: #044c76"> ${format(player.points)} / 2.91e41 </h2> <h2 style="color: #61036b"> Dark Entropy </h2>`
+		if (player.L.activeCheck == "TimeTillDark") forgotten = `<h2 style="color: #044c76"> ${format(player.points)} / 2.91e41 </h2> <h2 style="color: #61036b"> Dark Entropy </h2><br>`
 
 		let forgotten1 = ``; //// 7.72e39
 //#31005e
-		if (player["E"].activeCheck == "Forgotton") forgotten1 = `<h5 style="color: #31005e; text-shadow: 0px 0px 10px #ffffff;"> Current Shade Production: ${OOMTEXT} Per second </h5>`; 
+		if (player["E"].activeCheck == "Forgotton") forgotten1 = `<h5 style="color: #31005e; text-shadow: 0px 0px 10px #ffffff;"> Current Shade Production: ${OOMTEXT} Per second </h5><br>`; 
 		else forgotten1 = `<h5> Current Solarity Generation: ${OOMTEXT} </h5>`
-		if (getClickableState("L", 42)) forgotten1 = `<h5 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Current Dark Essence Generation: ${OOMTEXT} Per second </h5>`; 
-		if (player.L.activeCheck == "TimeTillDark") forgotten1 = `<h4 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Solarity Generation is hidden... </h4>`; 
+		if (getClickableState("L", 42)) forgotten1 = `<h5 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Current Dark Essence Generation: ${OOMTEXT} Per second </h5><br>`; 
+		if (player.L.activeCheck == "TimeTillDark") forgotten1 = `<h4 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Solarity Generation is hidden... </h4><br>`; 
 //5b0935
 
 
@@ -540,7 +495,7 @@ var displayThings = [
 		 <h4 style="color:#5022f3"> You have ${format(player.L.TimeTillDark,1)} Seconds left to complete this check</h4> <br> 
 		 ${FMTDnerf}
 		 Progress to completion: ${format(completionFULL,2)}%
-		 `
+		 <br>`
 
 		if (player.L.activeCheck == "TimeTillDark") nextText = ``
 		if (player.L.activeCheck == "TimeTillDark") genText = ``
@@ -551,22 +506,177 @@ var displayThings = [
 
 		return `
 		
-		${forgotten}<br>${forgotten1}<br>${FMTDtext} <br>
-		${nextText}
+		${forgotten}${forgotten1}${FMTDtext} 
+
 		${genText} 
-		${capped} <br>
-dev note (to-do) for v0.5: <br>	
- <br>		
-- (0.6 and later) make activeCheck a global variable<br>			
-	${Noter}	`
+		${capped}		
+		${Noter}	`
 	
 	}, 
 	
-	function d() {return `<br>main things to do: seperate displays into different functions (for displayThings).<br>`},
+	function c() {
+		let nextText;
+
+
+		if (player.Sol.Heliosphere) { //unlocks MNG upgrades
+			nextText = `Solock XIX (19): Next unlock at </i>`
+				} 
+		else if (player.Sol.MNG.Total.gte(32)) { //unlocks MNG upgrades
+			nextText = `Solock (18.5): ...Beat <i>The Heliosphere to continue...</i>`
+				} 
+		else if (player.Sol.Aperativity.gte(35) || player.Sol.CRNG.gt(0)) { //unlocks AP Upgrades
+				nextText = `Solock XVII (18): Next Unlock at 32 total MNG bought`
+			} 
+		else if (player.E.EclipseTier.eq(6)) {
+				nextText = `Solock XVI (17): Next unlock at 35 Aperativity`
+				} 
+		else if (hasUpgrade("L",23)) {
+				nextText = `Solock (16.5): [Get ECT 6 to continue]`
+				} 
+		else if (getBuyableAmount("L",22).gte(2) && getBuyableAmount("L",22).gte(2)) {
+			nextText = `Solock XV (16): Next Unlock at Anaphalagia (1x:x)`
+			} 
+		else if (getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5)) {
+				nextText = `Solock XV (15): Next Unlock at D-Time II and N-Time II`
+		} 
+		else if (getBuyableAmount("E",12).gte(10) || player.L.lunarity == true) {
+					
+					nextText = `Solock XIV (14): Next Unlock at Ektrosy #9 and Basity I #5`
+							
+			} 
+		else if (player.E.Chimera.gte(10)) {
+					nextText = `Solock XIII: Next Unlock at Expansion I #10, and a Lunarity performed`
+			} 
+		else if (player.E.EclipseTier.eq(4)) {
+				 nextText = `Solock XII: Next Unlock at Chimera #10`
+			} 
+		else if (player.E.Esolar.gte(10)) {
+				 nextText = `Solock XI: Next Unlock at Eclipse Tier 4`
+			}
+		else if (player.E.Solinity.gte(10) || player.E.Esolar.gt(1)) {
+				 nextText = `Solock X: Next Unlock at Esolar #10`
+			}
+		else if (player.E.EclipseTier.eq(3)) {
+				 nextText = `Solock IX: Next Unlock at Solinity #10`
+			}
+		else if (player.E.Eclipsium.gte(10) || getBuyableAmount("E", 11).gte(1)) {
+				nextText = `Solock VIII: Next Unlock at Cytochrisy #5`
+					}
+		else if (player.E.EclipseTier.eq(2)) {
+				 nextText = `Solock VII: Next Unlock at 10 Eclipsium`
+			}
+		else if (player.E.EclipseTier.eq(1)) {
+				 nextText = `Solock VI: Next Unlock at Eclipse Tier 2 `
+			}
+		else if (player.C.checkUpgrades.gte(3) || player.E.TopLVL.gte(1)) {
+				 nextText = `Solock V: Next Unlock at First Eclipsication`
+			}
+		else if (hasUpgrade("GL",15)) {
+				 nextText = `Solock IV: Next Unlock at Twilight`
+			}
+		else if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
+				
+				
+				nextText = `Solock III: Next Unlock at Coronal Upgrade` //unlock 4
+			} 
+		else if (getBuyableAmount("S",11).gte(5)) {			
+				nextText = `Solock II: Next Unlock at Solarizor Upgrade `
+			} 
+		else if (player["S"].points.gte(5) || getBuyableAmount("S",11).gte(1)){
+				nextText = `Solock I: Next Unlock at Plasmate #5`
+				
+		} else {
+				nextText = `Solock 0: Next Unlock at 5 Solar Rays`	
+				
+			}
+
+
+
+			
+
+
+			return nextText
+	},
+
+	function windowTitle() {
+
+	if (player.agreedTOS) {
+		if (player.Sol.MNG.Total.gt(0)) {
+			document.title = `TSEGI - ${player.Sol.MNG.Total} Total MNG's`
+		}
+		else if (player.Sol.Aperativity.gte(35) || (player.Sol.CRNG.gt(0) || Roll.Amount > 0)) {
+			document.title = `TSEGI - ${format(player.Sol.Aperativity)} Aperativity`
+			} 
+		else if (player.L.activeCheck == "TimeTillDark") {
+			//couldn't get this working :(
+			tempGlitch = {
+				1: `the time is ticking...`, 
+				2: `ThE t1me !s t1cKinG`,
+				3: `tH3 t!Me i$ T!C<!N&`,
+				4: `TH3 tIM3 1S tIC>InG`,
+			}
+			
+			//delay(250)
+			
+			document.title = `The clock is ticking...`
+
+
+		} 
+		else if (player.L.DarkCheck.gte(1) && player.L.LightCheck.gte(1)) {
+			document.title = `TSEGI - DK #${player.L.DarkCheck} and LK #${player.L.LightCheck}`
+		} 
+		else if (player.L.lunarity) {
+			document.title = `TSEGI - ${format(player.E.LunarPower)} LP`
+		} 
+		else if (player.E.EclipseTier.eq(3)) {
+			 document.title = `TSEGI - ${format(player.E.SolarCharge)} Solar Charge`
+		} 
+		else if (player.E.EclipseTier.eq(2) && player.E.Eclipsium.gt(0)) {
+			document.title = `TSEGI - ${format(player.E.Eclipsium)} Eclipsium`
+		}
+		else if (player.C.checkUpgrades.gte(3) || player.E.TopLVL.gte(1)) {
+			document.title = `TSEGI - ${format(player.E.TopLVL)} Enlightenment (Best)`
+		}
+		else if (hasUpgrade("GL",15)) {
+			document.title = `TSEGI - ${format(player["C"].CenterPoints)} CP`
+		}
+		else if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
+			
+			document.title = `TSEGI - ${format(player["GL"].Solar_Shards)} Solar Shards`
+
+		} 
+		else if (getBuyableAmount("S",11).gte(5)) {			
+			document.title = `TSEGI - ${format(player.S.points)} SR`
+		} 
+		else if (player["S"].points.gte(5) || getBuyableAmount("S",11).gte(1)){
+			document.title = `TSEGI - ${format(player.S.points)} SR`
+			
+		} else {
+			document.title = `TSEGI - ${format(player.points)} Solarity`
+			
+		}
+
+	} else document.title = `TSEGI - Introduction`
 	
+		
+	},
 
+	function gh() {
+		return `
+Self Dev Reminder:
+   balance the randomizor. <br>
+   <br><br>
+   Balance MNG's and TRNG Milestones.
 
+- (0.7 and later) make activeCheck a global variable<br>
+- later: Rebalance, and buff NMH-1
+`
 
+	},
+
+	function mmm() {
+		return `<h3>NOTE: Rebalancing mode</h3>`
+	}
 
 
 
@@ -596,3 +706,16 @@ function maxTickLength() {
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
 }
+
+  
+
+
+
+
+
+// I should add an anti-cheat system 
+// where if the solar clock suddenly changes it gives them a warning
+// 
+// warn("sudden shift in timelapse detected, initiating anti-cheat protocol.")
+// and then it forces a lunarity reset, and then temporarily reducing most gains by ^0.4 for 3 minutes
+// 

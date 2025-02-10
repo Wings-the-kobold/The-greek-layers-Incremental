@@ -239,12 +239,26 @@ addLayer("dL", {
         Escapee: component help, general JS help, and a little feedback<br>
         Donbor: providing music '86 Minutes until dark'. for a check upgrade<br>
         Sedar: early game rebalancing help, and stuffs<br>
-        The Solar Eclipse, April 2024 for general idea.<br>
+        
         Not my motivation: :trol:<br>
         Me: Creating the game<br>
+        <br>
+
+        Additional resources:<br>
+        April 8th 2024, <a href="https://science.nasa.gov/eclipses/future-eclipses/eclipse-2024/" target="__blank" rel="noopener noreferrer">
+        The total solar eclipse event </a> that caused HUGE inspiration for this game 
+
 <br>
-        This game IS part of a series known as 'the greek layer tower'. there is ALOT more to expect so get ready!<br>
+        This game IS part of a series known as 'the greek layer tower', Otherwise known as TGLT. there is ALOT more to expect so get ready!<br>
         
+
+        Difficulty stats: <br>
+
+        Timewalls/Forcewalls: 7/10 [Irritation] <br>
+        Strategy usage/Tedious Gameplay: 6/10 [Complex] <br>
+        Overall : 6.3 / 10
+
+
         `
 
         if (player.dL.tab == "Credits") return text; else return ``
@@ -323,4 +337,14 @@ addLayer("dL", {
 })
 
 
-/* */
+/*
+
+Note that the key difference between a Queued upgrade and the 
+Quest upgrade is the following:
+
+Queued Upgrades require strategies to obtain, While Quest upgrades forces the player to live in a certain condition 
+Basically:
+Queued: self-inflicted challenges
+Quest: self-conditional challenges
+
+*/

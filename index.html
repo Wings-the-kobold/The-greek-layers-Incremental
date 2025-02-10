@@ -43,55 +43,46 @@
 <body onload="load()" onmousemove="updateMouse(event)">
 				
 	<canvas id="treeCanvas" class="canvas" v-if="!(tmp.gameEnded && !player.keepGoing)"></canvas>
-<span>
+
+	
+<span v-if="player.debugMode">
+	<!-- comment here
 		<button onclick="start()">Click to debug animation sequence (startGame)</button>
-		<button onclick="end()">Debug endGame animation sequence (endGame)</button>
+		<button onclick="end()">Debug endGame animation sequence (endGame)</button> -->
 		<h2 id="debugStats"></h2>
-		</span>
+</span>
 	
 	
 	<div id="app">
 		
-		
+
 			<div v-if="false" id="loadingSection" class="fullWidth">
-			<h1>Hi if take a screenshot through your phone, and send it to the discord before it loads, it means a fatal bug has occured.</h1>
-		
-		
-		
-		</div>			
-		
+			
+				<h1>Loading things... please wait</h1>
+
+				<img src="resources/Loading screen.png" style="width:400px;height:400px; margin: auto;">		
+
+				<h3>If it takes more than 10 seconds to load, tell the developer about it. they should get to work</h3>
+
+			</div>			
 		
 
-		<div v-if="(tmp.gameEnded && !player.keepGoing)" class="fullWidth">
-			<br><h3 v-html="modInfo.winText"></h3><br>
-			
-			<div v-if="!player.timePlayedReset">The eclipse lasted {{formatTime(player.timePlayed)}}. </div>
-			<br>
-			<button class="longUpg can" onclick="hardReset(true)">Play Again</button>&nbsp;&nbsp;&nbsp;&nbsp;<button
-				class="longUpg can" onclick="keepGoing()">bruh dont click me</button>
-			
-				<br><br><br>
-			<span v-if="modInfo.discordLink"><a class="link" v-bind:href="modInfo.discordLink" target="_blank">{{modInfo.discordName}}</a><br></span>
-								
-				
-			<br><br>
-		
-		
-	
-		</div>
-	
-		
+			<div id="version" 
+			v-if="!player.inCutscene"
+			onclick="showTab('changelog-tab')" class="overlayThing" 
+			style="margin-right: 1px; border: 2px solid gray; margin: auto; padding: 2px; background-color: rgb(53, 39, 39);" >
+				{{VERSION.withoutName}}</div>
 
-<span id="screen">
+
+				<span id="screen">
 			<div id="treeOverlay" v-if="
-			!(tmp.gameEnded && !player.keepGoing) && (player.tab === 'none' || tmp.other.splitScreen || !readData(layoutInfo.showTree))" class="treeOverlay" onscroll="resizeCanvas()"
+			 (player.tab === 'none' || tmp.other.splitScreen || !readData(layoutInfo.showTree))" class="treeOverlay" onscroll="resizeCanvas()"
 				v-bind:class="{ 
 				fullWidth: (player.tab == 'none' || player.navTab == 'none'), 
 				col: (player.tab !== 'none' && player.navTab !== 'none'), 
 				left: (player.tab !== 'none' && player.navTab !== 'none')}"
 				:style="{'margin-top': !readData(layoutInfo.showTree) && player.tab == 'info-tab' ? '50px' : ''}">
-				<div id="version" onclick="showTab('changelog-tab')" class="overlayThing" style="margin-right: 1px" >
-					{{VERSION.withoutName}}</div>
+				
 				
 					<button
 				v-if="((player.navTab == 'none' && (tmp[player.tab].row == 'side' || tmp[player.tab].row == 'otherside' || player[player.tab].prevTab)) || player[player.navTab]?.prevTab)"				class="other-back overlayThing" onclick="goBack(player.navTab == 'none' ? player.tab : player.navTab)">←</button>
@@ -120,19 +111,29 @@
 								</div>
 							</div>
 				</div>
-			
+			</span>
 		
-			
-			<div v-if="!(tmp.gameEnded && !player.keepGoing) && (player.tab === 'none' || tmp.other.splitScreen)" id="treeTab"  onscroll="resizeCanvas()" 
-				v-bind:class="{ fullWidth: (player.tab == 'none' || player.navTab == 'none'), col: (player.tab !== 'none' && player.navTab !== 'none'), left: (player.tab !== 'none' && player.navTab !== 'none')}">
+		
+			<div v-if="(player.tab === 'none' || tmp.other.splitScreen)" id="treeTab"  onscroll="resizeCanvas()" 
+				v-bind:class="{ fullWidth: (player.tab == 'none' || player.navTab == 'none'), 
+				col: (player.tab !== 'none' && player.navTab !== 'none'), 
+				left: (player.tab !== 'none' && player.navTab !== 'none')}">
+
+
+
 				<br><br><br><br>
-				<overlay-head id="fakeHead" style="visibility: hidden;">
-				</overlay-head>
+					
+						<overlay-head id="fakeHead" style="visibility: hidden;"></overlay-head>
+						</span>
+
 				<layer-tab :layer="player.navTab == 'none' ? player.tab : player.navTab" :key="'left'"></layer-tab>
 				<bg :layer="player.navTab == 'none' ? player.tab : player.navTab" ></bg>
-				</div>
-		
-<div id="info" v-if="player.tab!='info-tab'" class="overlayThing" onclick="showTab('info-tab')" v-bind:style="{'font-size': '16px'}"><br>stats</div>
+				
+			</div>
+	
+
+		<span id="screen">
+		<div id="info" v-if="player.tab!='info-tab'" class="overlayThing" onclick="showTab('info-tab')" v-bind:style="{'font-size': '16px'}"><br>stats</div>
 		
 
 
@@ -152,9 +153,7 @@
 					</div>
 				</div>
 
-
 				
-
 				<div v-if="player.navTab !== 'none' && player.tab !== 'none' && !(tmp.gameEnded && !player.keepGoing)" onscroll="resizeCanvas()" v-bind:class="{ fullWidth: player.navTab == 'none' || !tmp.other.splitScreen || !readData(layoutInfo.showTree), col: player.navTab != 'none', right: player.navTab != 'none', fast: true, tab: true}">
 				<div v-for="layer in LAYERS">
 					<div v-if="player.tab==layer">
@@ -171,7 +170,8 @@
 
 			
 			<div class = "bg2" v-bind:style = "tmp.backgroundStyle"></div>
-</span>
+
+
 
 		
 	</div>

@@ -1,0 +1,35 @@
+to get automation on dark check
+
+    DO DILATION FIRST
+    then use scaling
+
+
+
+
+    SR Cap increment:
+    DO DILATION FIRST
+
+    get reset gains from 
+
+    `tmp["S"].getResetGain`
+
+    THEN CALCULATE SR GAINS (Use Solar Rays Cap bonus, or it's effect)
+
+    power Dilated 
+
+
+
+    Light check automation
+    - Create a function that calculates multipliers from base of 1
+    - power it by Solar Rays
+    - have it go through the normal scaling
+
+
+idea
+
+
+Increase Duality check base by 0.1 per level
+
+
+
+

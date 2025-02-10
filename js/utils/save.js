@@ -1,6 +1,5 @@
 // ************ Save stuff ************
 
-
 function save(force) {
 	NaNcheck(player)
 	if (NaNalert && !force) return
@@ -194,7 +193,13 @@ function load() {
 		options = getStartOptions();
 	}
 	else {
+		
 		player = Object.assign(getStartPlayer(), JSON.parse(decodeURIComponent(escape(atob(get)))));
+		
+		/*
+		alert("dude how the hell did you break " + item + "? if its an exported file go join the community server to discuss abvout the issue. ")
+		alert("if the problem persists you should tell the developer about this issue.")
+		*/
 		fixSave();
 		loadOptions();
 	}
@@ -237,6 +242,7 @@ function setupModInfo() {
 function fixNaNs() {
 	NaNcheck(player);
 }
+
 function NaNcheck(data) {
 	for (item in data) {
 		if (data[item] == null) {
@@ -248,7 +254,7 @@ function NaNcheck(data) {
 			if (!NaNalert) {
 				clearInterval(interval);
 				NaNalert = true;
-				alert("Invalid value found in player, named '" + item + "'. Please let the creator of this mod know! You can refresh the page, and you will be un-NaNed.")
+				
 				return
 			}
 		}
@@ -320,5 +326,6 @@ var saveInterval = setInterval(function () {
 window.onbeforeunload = () => {
     if (player.autosave) {
         save();
-    }
+    };
+	
 };

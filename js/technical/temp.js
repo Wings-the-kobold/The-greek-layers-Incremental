@@ -15,7 +15,7 @@ var activeFunctions = [
 	"effectDescription", "display", "fullDisplay", "effectDisplay", "rewardDisplay",
 	"tabFormat", "content",
 	"onComplete", "onPurchase", "onEnter", "onExit", "done",
-	"getUnlocked", "getStyle", "getCanClick", "getTitle", "getDisplay"
+	"getUnlocked", "getStyle", "getCanClick", "getTitle", "getDisplay", 
 ]
 
 var noCall = doNotCallTheseFunctionsEveryTick
@@ -147,7 +147,7 @@ function updateTempData(layerData, tmpData, funcsData, useThis) {
 			updateTempData(layerData[item], tmpData[item], funcsData[item], useThis)
 		}
 		else if (isFunction(layerData[item]) && !isFunction(tmpData[item])){
-			let value
+			let value;
 
 			if (useThis !== undefined) value = layerData[item].bind(useThis)()
 			else value = layerData[item]()

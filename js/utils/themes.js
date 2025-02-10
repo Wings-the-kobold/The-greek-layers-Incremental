@@ -65,17 +65,6 @@ var colors = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 function changeTheme() {
 
 	colors_theme = colors[options.theme || "default"];

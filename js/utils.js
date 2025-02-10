@@ -346,7 +346,6 @@ function isPlainObject(obj) {
 	return (!!obj) && (obj.constructor === Object)
 }
 
-document.title = modInfo.name
 
 // Converts a string value to whatever it's supposed to be
 function toValue(value, oldValue) {
@@ -392,7 +391,6 @@ function doPopup(type = "none", text = "This is a test popup.", title = "", time
 	popupID++;
 }
 
-
 //Function to reduce time on active popups
 function adjustPopupTime(diff) {
 	for (popup in activePopups) {
@@ -421,12 +419,17 @@ function gridRun(layer, func, data, id) {
 		return layers[layer].grid[func];
 }
 
-
 function Check(layer, id) {return tmp[layer].Check[id]}
 function Viewer(layer, id) {return tmp[layer].Viewer[id]}
 function Reset(layer, id) {return tmp[layer].Reset[id]}
 function Ception(layer,id) {return tmp[layer].buyables[id].gain}
-function fix(item) {
-	if (item == undefined) item = false 
-	return item
-}  
+function miniBoard(layer, id) {return tmp[layer].miniBoard[id]}
+function fix(item) {if (item == undefined) item = false ;return item}  
+function Clickable(layer,id) {return tmp[layer].clickables[id]}
+function BSolStones(id=0) {let data = tmp["Sol"].Viewer[12].display(true); if (id != null) return data[id]; else return data}
+function TSolStones(id=0) {let data = tmp["Sol"].Viewer[14].display(true); if (id != null) return data[id]; else return data}
+function getMNG(item) {if (!item == undefined) return tmp["Sol"].MNG[item]; else alert("unfound data '" + item + "'")}
+function getScale(id) {return tmp["Sol"].clickables[id].scale}
+
+
+// which is ${format(player["S"].bestPointsInDark.pow(11.11111111))}

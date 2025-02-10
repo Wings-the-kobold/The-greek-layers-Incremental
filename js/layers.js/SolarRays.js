@@ -9,6 +9,7 @@ addLayer("S", {
     metaNerf: new Decimal(300),
     multMeta: new Decimal(1),
     
+    bestPointsInDark: new Decimal(0)
 
     }},
     color: "#ff6a00",
@@ -162,8 +163,8 @@ update(diff) {
 
   let BulkPurchase = new Decimal(1)
 
-  if (Check("C",12).has) BulkPurchase = BulkPurchase.plus(5)
-  if (player.E.EclipseTier.gte(3)) BulkPurchase = BulkPurchase.plus(5)
+  if (Check("C",12).has) BulkPurchase = new Decimal(5)
+ // if (player.E.EclipseTier.gte(3)) BulkPurchase = BulkPurchase.plus(5)
 
 
   let Twilight = new Decimal(0.75)
@@ -173,13 +174,28 @@ update(diff) {
   if (player["C"].hasTwilight) player.S.points = player.S.points.plus(getResetGain("S").pow(Twilight))
 
 
-
-
+  //Twilight QoL
   if (hasMilestone("E",4)) player.S.points = player.S.points.plus(player.points.clampMin(1).log(10).times(diff))
 
-    player.S.Bulk_M = BulkPurchase
+    player.S.Bulk_M = BulkPurchase;
   
-    if (getClickableState("L",42) == true && player.S.points.gte(1e15)) player.S.points = new Decimal(1e15) 
+    //SR Cap
+    
+    (getClickableState("L",42) && tmp["S"].getResetGain.pow(0.09).gte(player["S"].bestPointsInDark)) ? (player["S"].bestPointsInDark = tmp["S"].getResetGain.pow(0.09)) : 0;
+
+
+
+    
+   
+    if (getClickableState("L",42) && player.S.points.gte(getSRCap())) player.S.points = getSRCap()
+
+      // /
+
+
+
+
+
+
 
     //generally for meta scale
 
@@ -190,7 +206,7 @@ update(diff) {
 
 
 
-
+      
 
      },
 
@@ -207,15 +223,17 @@ getResetGain() {
   if (hasUpgrade("C",13)) gain = gain.times(4)
   if (hasUpgrade("C",21)) gain = gain.pow(1.05)
 
-    if (player.C.activeCheck == "Formality") gain = gain.pow(0.666)
+  if (player.C.activeCheck == "Formality") gain = gain.pow(0.666)
   if (player["C"].activeCheck == "Twilight") gain = gain.log(12)
-    if (player["E"].activeCheck == "Forgotton" ) gain = gain.root(5)
+  if (player["E"].activeCheck == "Forgotton" ) gain = gain.root(5)
   if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
   
   if (player.L.LightCheck.gte(1) && player.L.Light.gte(1)) gain = gain.mul(player.L.Light.pow(0.25)) 
-
-  if (getClickableState("L",42) == true) gain = gain.clampMax(1e15)
+  if (hasUpgrade("Sol",12)) gain = gain.mul(upgradeEffect("Sol",12))
   
+ // if (getClickableState("L",42) == true) gain = gain.clampMax(getSRCap())
+
+   
   return gain;
 
 },
@@ -425,6 +443,15 @@ return  tmp["S"].getResetGain
               let base = new Decimal(5)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
 
+
+
+
+              if (player["C"].activeCheck == "Heirarchy") {
+                let scaledAmt = getBuyableAmount("S",12)
+                let metaScaling = scaledAmt.root(1.5).div(25).add(1).pow(scaledAmt)
+                Calculation = Calculation.mul(metaScaling)
+              }    
+
               if (hasUpgrade("GL",11)) Calculation = Calculation.pow(0.9).div(3)
 
               
@@ -542,7 +569,7 @@ return  tmp["S"].getResetGain
 
               let x = getBuyableAmount("S",12)
 
-              let dx = x.plus(5)
+              let dx = x.plus(player.S.Bulk_M)
 
               let cost = base.mul(scale.pow(dx))
               
@@ -556,7 +583,7 @@ return  tmp["S"].getResetGain
                   cost = cost.mul(metaScaling)
                 }               
            
-              if (player.points.gte(cost)) addBuyables("S", 12, 5)
+              if (player.points.gte(cost)) addBuyables("S", 12, player.S.Bulk_M)
               else if (player.points.gte(this.cost)) addBuyables("S", 12, 1)
               else player.points = player.points.plus(1) // :trol:
 
@@ -641,7 +668,7 @@ return  tmp["S"].getResetGain
     
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "s", description: "S: Reset for prestige points", onPress(){if (tmp["S"].Reset.canClick) tmp["S"].Reset.onClick}},
+        {key: "s", description: "S to Solarize", onPress(){if (tmp["S"].Reset.canClick) tmp["S"].Reset.onClick}},
     ],
     layerShown(){return true}
 })

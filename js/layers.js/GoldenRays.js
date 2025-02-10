@@ -62,10 +62,11 @@ addLayer("GL", {
         Base = Base.mul(getBuyableAmount("E", 12).pow_base(1.35))
         if (hasMilestone("E",5)&& player.L.activeCheck == "") Base = Base.mul(player.C.Score.clampMin(1).pow(0.25)) 
         if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) Base = Base.mul(Hour.getMinutes() * (1.5 ** (Hour.getHours() % 12)))
-       
+        //  if (BSolStones(3).unlocked) Base = Base.mul(BSolStones(3).effect); 
 
+        if (BSolStones(3).unlocked) Base = Base.mul(BSolStones(3).effect)
 
-          player.GL.Solarlightcap = Base
+        player.GL.Solarlightcap = Base
         if ( player.E.EclipseTier.gte(6) && player.GL.Solarlightcap.gte(player.GL.bestCap)) player.GL.bestCap = player.GL.Solarlightcap
         if ( player.E.EclipseTier.gte(6)) player.GL.Solarlightcap = player.GL.bestCap
         
@@ -228,6 +229,15 @@ addLayer("GL", {
           21: {
         fullDisplay() {
           
+          let max = 1.17
+          let min = 0.9
+
+
+          //add max here
+          max = new Decimal(max)
+          if (hasUpgrade("Sol",11)) max = max.plus(player.Sol.CPBoost.root(4).sub(1)) 
+
+
           
           let enter;
           let change; 
@@ -248,7 +258,7 @@ addLayer("GL", {
             
 
             Boost Range: <br> 
-            ^0.9 ~ ^1.17 to Solarity <br><br>
+            ^0.9 ~ ^${max.eq(1.17) ? max : format(max,3)} to Solarity <br><br>
             
             ${change}`
            
@@ -264,7 +274,21 @@ addLayer("GL", {
         currencyLayer: "GL",
         
         effect() {  
-          let effect = Decimal.plus(1.035, sin(player["GL"].Time.div(5))*0.135)
+          let max = 1.17
+          let min = 0.9
+
+
+          //add max here
+          max = new Decimal(max)
+          if (hasUpgrade("Sol",11) && hasUpgrade("GL",21)) max = max.plus(player.Sol.CPBoost.root(4).sub(1)) 
+          
+          max = max.toNumber()  
+
+          let range = max-min
+          let offset = (max-1)/2
+
+          let effect = Decimal.plus(offset+1, Math.sin(player["GL"].Time.div(20))*(range/2)).sub(0.05)
+
 
            if (player["E"].activeCheck == "Forgotton") effect = new Decimal(0.8)
             return effect
@@ -273,7 +297,7 @@ addLayer("GL", {
         style() {
           return {
             "width": "200px",
-            "height": "170px",
+            "height": "180px",
             "border-radius": "0px",
             "border": "0px",
             "margin": "15px",
@@ -321,7 +345,7 @@ addLayer("GL", {
       style() {
         return {
           "width": "290px",
-          "height": "170px",
+          "height": "180px",
           "border-radius": "0px",
           "border": "0px",
           "margin": "35px",
@@ -530,9 +554,7 @@ addLayer("GL", {
            
 
     row: 1, // Row the layer is in on the tree (0 is the first row)
-    hotkeys: [
-        {key: "", description: "Press A to Accelerate the Energy ", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
-    ],
+  
     branches: ["S","GL"],
     layerShown(){ 
       hasCurrency = new Decimal(1)

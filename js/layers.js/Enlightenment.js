@@ -557,7 +557,7 @@ pay() {
     let text = `Requires: 2 Eclipsium`
     if (hasUpgrade("E",this.id)) text = `PK-44's effect is ${format(this.effect())}`
       return `<h2>PK-44</h2> <br>
-      Queued Upgrade 3:<br> Reach Plasmate #74 without Multiply and Effector Tier 0<br><br><br>
+      Queued Upgrade 3:<br> Reach Plasmate #74 without Multiply and no effector tiers<br><br><br>
 
       ^0.4 of Multiply Amount boosts Plasmate. also 2x Solar Light cap <br>
       ${text} <br>
@@ -736,7 +736,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
         "color": "#ffffff"
       }
     },
-    unlocked() {return player.E.Chimera.gte(10)}
+    unlocked() {return player.E.Chimera.gte(10) || getBuyableAmount(this.layer, this.id).gte(1)}
      
   },
 
@@ -814,16 +814,16 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
           if (player.E.Chimera.gt(1)) gain = gain.mul(chimeraBoost)
           chimeraBoost = softcap(chimeraBoost, new Decimal(10000), 0.05)
           
-        gain = softcap(gain, new Decimal(10000), 0.15 )
-        
+       
         let Hour = new Date()
         if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) gain = gain.times(1.5 ** (Hour.getHours() % 12))
+        gain = softcap(gain, new Decimal(10000), 0.15 )
+                
 
+        if (player.E.Solinity.lt(10)) gain = new Decimal(1)
 
-        if (player.E.Solinity.lt(10)) gain = new Decimal(0)
-
-        let effect = new Decimal(1)
-        effect = effect.mul(player.E.Esolar).root(1.35)
+       // let effect = new Decimal(1)
+       // effect = effect.mul(player.E.Esolar).root(1.35)
        
           
         //   if (hasMilestone("E",5)) gain = gain.mul(1.25)
@@ -1042,12 +1042,12 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   requirementDescription: "Eclipse Tier 5",
   effectDescription() {
    
-    let HeirarchyBonus = player.C.CenterPoints.pow_base(5).clampMin(1)
+    let HeirarchyBonus = GetHeirarchyBonus()
 
     let TillDarkText = `- ^0.25 of Modifier score multiplies Solar Light cap<br>
     (which is ${format(player.C.Score.pow(0.25))} btw)<br>
     - Heirarchy's effect boost Solarity gain cap by ^0.33<br>
-    (which is ${format(HeirarchyBonus.pow(0.33))} btw)<br>
+    (which is ${format(GetHeirarchyBonus().pow(0.33))} btw)<br>
     - Unlock ??? <br>`
 
     if (player.L.TimeTillDarkActive == true) TillDarkText = `<h3 style="color:#7d0f9c">...</h3><br>`
@@ -1099,7 +1099,8 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     doPopup("msg","the eclipse grows weak...", "Game:",10)  
 
   },
-}, 7: {
+}, 
+7: {
   requirementDescription: "Eclipse Tier 7",
   effectDescription() {
 
@@ -1107,9 +1108,12 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
     if (player.E.EclipseTier.gte(this.id))
     return `
-    - passivly generate 1% of Solinity levels gain per second, (Locks Solinity reset)
-
-    <p>Oh also, keep all other Recontrol Upgrades on reset, since you have been tortured enough
+    - QOL7: passivly generate 1% of Esolar levels gain per second, (Locks Esolar reset)<br>
+    - QOL8: you can now gain bulk Light and Dark checks<br>
+    - QOL9: You now start Eclipsifications with Lunarity performed <br> 
+    - Raise all ongoing Solarity cap multipliers by 1.15 After all bonuses and powers <br>
+    - Unlock The Core.<br>
+    <p>Oh also, keep all other Recontrol Upgrades on Eclipsifications, since you have been tortured enough<br>
     ` 
 
 
@@ -1121,9 +1125,11 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
    },
   unlocked() {return player.E.EclipseTier.gte(6) },
   onComplete() {
-    doPopup("msg","the eclipse grows weak...", "Game:",10)  
+    doPopup("msg","The core begins to crumble...", "Game:",10)  
 
   },
+
+
 },
 
 
@@ -1138,24 +1144,26 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     {
                       
                       
-                  if (player.E.EclipseTier.eq(6) && 1==2) ready = canGet
+                  if (player.E.EclipseTier.eq(6)) ready = `You have reached the max Eclipse tier (For now...)`  
+                     
                   else if (player.E.EclipseTier.eq(5) && Check("L",11).has)
                        ready = canGet     
 
-                  else ready = `You have reached the max Eclipse tier (For now...)`
-                      }
-                    
+                    } else ready = `You have reached the max Eclipse tier (For now...)`;
+                   
+
+                     
                    let unlocker = ``
                    if (player.E.Eclipsium.gte(1)) unlocker = `("The Factory" Content included)`
                    if (player.L.Lunarity) unlocker = `("The Factory" Content, and Lunaris included)`
-                   if(Check("L",11).has) unlocker = `("The Factory" Content, and Lunaris content, excluding its progresional check upgrade)`
-                  
+                   if (Check("L",11).has) unlocker = `("The Factory" Content, and Lunaris content, excluding its progresional check upgrade)`
+                      
                   let firstUnlock = ``
 
 
                    if (player.E.EclipseTier.lte(1)) firstUnlock = `Your first Eclipsication Unlocks a board in this tab that provides various boosts to help you get back to where you started! (after all nerfs) `
                   return `<h1>Eclipsify [LAYER 2 RESET]</h1><br> 
-                    <h2>Reset Everything ${unlocker} to form a new Eclipse.</h2>
+                    <h2>Sacrifice everything ${unlocker} to tame the eclipse.</h2>
                     ${firstUnlock}     
 
                     <h3>${ready}</h3>                  
@@ -1171,7 +1179,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     }
 
 
-                    // reset ALL progress
+                    // reset ALL Layer Layer 2 progress
                     player.E.Eclipsium = player.E.Eclipsium.mul(0)
                     setBuyableAmount("E", 11, new Decimal(0) )
                     setBuyableAmount("E", 12, new Decimal(0) )
@@ -1180,8 +1188,9 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     player.E.Esolar = new Decimal(1)
                     player.E.Chimera = new Decimal(1)
                     
-                   
                     
+                    // Lunaris
+
                     player.L.Lunarity = false
                     player.L.LunarPower = new Decimal(1)
                     player.L.LunarEssence=  new Decimal(0)
@@ -1198,14 +1207,22 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     setBuyableAmount("L", 21, new Decimal(0) )
                     setBuyableAmount("L", 22, new Decimal(0) )
                     setBuyableAmount("L", 23, new Decimal(0) )
+                    setBuyableAmount("L", 31, new Decimal(0) )
+
+                    // Solaris
+
+
                   layer2Reset(true)    
 
                   },
               canClick() {
                 
                 if (player.E.EclipseTier.eq(5) && Check("L",11).has && player.E.ENLlevels.gte(player.E.ETCost)) return true
+
                 else if (player.E.ENLlevels.gte(player.E.ETCost) ) return true                     
                 
+                if (player.E.EclipseTier.eq(6)) return false
+
                 },
               style() {
                 
@@ -1264,7 +1281,29 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "", description: "Press A to Accelerate the Energy ", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "e", description: "...", onPress(){
+          alert("...really?"); 
+          if (player.secrets.really == false)
+         {alert("why must you be so ignorant..."); 
+          alert("you know... you have found one of the many secrets in this game i'll tell you that...");
+          alert(".");
+          alert("..");
+          alert("...");
+          alert("hope you fail. :)");
+          alert("goodbye.");
+           player.secrets.really = true
+        }
+        else {
+          alert("didn't you just hear what i just said?")
+          alert("cant you not read you moron")
+          alert("i guess not.")
+          }
+
+         
+        }
+        
+        
+        },
     ],
     branches: ["GL"],
     layerShown(){ 
