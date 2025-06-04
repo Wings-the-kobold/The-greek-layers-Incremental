@@ -20,9 +20,9 @@ function resizeCanvas() {
 		canvas.height = window.innerHeight;
 		middleY = window.innerHeight / 2;
         middleX = window.innerWidth / 2
-			if ((!player.startedGame && player.inCutscene ) || player.cutsceneName == "startGame") {startGameEclipse()};
-			if ( player.gameEnd && player.inCutscene) {endGameEclipse();  };
-			if (!player.inCutscene) drawTree();	
+			if (player.cutsceneName == "startGame") {startGameEclipse()}
+			else if (player.cutsceneName == "endGame")  {endGameEclipse(); }
+			else if (player.cutsceneName == "") drawTree();	
 }
 function fadeOutAt(n) {return 1 - (player.frames-n)/20}
 function fadeInAt(n) {return 0 + (player.frames-n)/20}
@@ -61,11 +61,26 @@ function endGameEclipse() {
 	text((middleX - 140), (middleY + 150), `There will soon be more to discover...`, fadeInAt(125),20)
 }
 //static -> does not move
+
+var opac = 0
+
 function drawEclipse() {
 	let sizeMult = player.E.EclipseTier.mul(2).mul(player["E"].ENLlevels.clampMin(0.1))
 	let sizeMultbestSize = player.E.EclipseTier.mul(2).mul(player["E"].TopLVL).clampMin(0.1)
-	Circle((canvas.width / 2), 500, sizeMultbestSize, "#ffa340")
-	Circle((canvas.width / 2), 500, sizeMult, "#000000")
+
+	if (player.Sol.activeCheck == "Heliosphere") opac+=0.01; else epac = 0;
+	
+	if (player.Sol.activeCheck == "Heliosphere"){
+		Circle((canvas.width / 2), 500, new Decimal(sizeMultbestSize).mul(player.Sol.HelioRadiation.root(2).mul(0.5)).clampMax(575), "#9e6c20")
+		Circle((canvas.width / 2), 500, new Decimal(sizeMult ).mul(player.Sol.HelioRadiation.plus(35).pow(1.34)).clampMax(568), "#381803")
+		text((middleX - 120 ), (middleY - 40), "BREAK YOUR LIMITS", 1 , 25)
+		text((middleX - 110 ), (middleY - 0), format(player.Sol.HelioRadiation) , 1 , 25)
+		text((middleX + 50 ), (middleY - 0), "√" + format(player.Sol.HelioStat["Reduction"])  , 1 , 25)
+	} else {
+		Circle((canvas.width / 2), 500, sizeMultbestSize, "#ffa340")
+		Circle((canvas.width / 2), 500, sizeMult, "#000000")
+	}
+
 }
 function drawTree() { //hre is taht
 	if (!retrieveCanvasData()) return;

@@ -66,35 +66,47 @@ addLayer("tree-tab", {
     leftTab: true,
 
 
-    update(diff) {
-        let firstCapBeforeTOS = 180
+    update(diff) { 
+        
     if (player.finishedStCutscene == true){ 
         if (player.timerToAgree >= 0) player.timerToAgree -= (1 * diff)
            //to fix the number
            player.timerToAgree = Math.floor(player.timerToAgree * 100) / 100
-           if (player.timerToAgree != 0 && player.timerToAgree <= 0) player.timerToAgree = 0 
+        if (player.timerToAgree != 0 && player.timerToAgree <= 0) player.timerToAgree = 0 
+        }
+        if (player.cutsceneName == "" && player.finishedStCutscene == false && player.startedGame==false) player.cutsceneName = "startGame"
+        
+        //game initializer
+        if (player.inCutscene){
+            if (player.cutsceneName == "startGame") {
+                if (player.frames < 180) player.frames += 1
+                if (player.rot < 90) player.rot += 2 
+                }
+            if (player.cutsceneName == "endGame") {
+                if (player.frames < 180) player.frames += 1
+                if (player.rot < 180) player.rot += 2
+            }   
+         player.tab = 'none'
         }
 
-        //game initializer
-    if (player.startedGame == false && !player.inCutscene) {start()}
-
-        // endGame Initializer
-    if (player.inCutscene) {
-        player.tab = 'none'
-        if (player.frames < 180) player.frames += 1
-            
-        if (player.rot < 90 && !player.startedGame) player.rot += 2 
-        else if (player.rot < 180 && player.gameEnd) player.rot += 2
-
-        document.getElementById("screen").style.opacity = "0"; 
-    //for debug purposes
+       
+        
+// general cutscene initializer
     if (player.debugMode) document.getElementById("debugStats").innerHTML = `Rotation: ${player.rot} <br> Frame ${player.frames}`   
 
-    } 
-    if (!player.inCutscene) {
-          document.getElementById("screen").style.opacity = "1";
-          if (player.debugMode) document.getElementById("debugStats").innerHTML = ``   
-        }
+    
+
+
+
+ document.getElementById("screen").style.opacity = player.showScreen == false ? 0 : 1; 
+        
+
+
+
+
+
+
+
     },
 
     Custom: {
@@ -117,13 +129,14 @@ addLayer("tree-tab", {
 
         12: {
             display() { 
-               let TOS = `<h1>NOTICE:</h1><br><br>
+               return `<h1>NOTICE:</h1><br><br>
                <h4>
                This game is HARD, slowpaced, and requires strategies to beat the game. <br><br>
 
-               This game IS part of a series known as 'the greek layer tower'. which is a slow paced incremental game which involves beating other games of thatonekobold or my incremental mods.<br>
+               This game IS part of a series known as 'the greek layer tower'. which is a slow paced incremental game which may involve beating other games of thatonekobold or my incremental mods.<br>
                Expect alot of timewalls and a few forcewalls in this game.<br>
-                
+               Also Expect a bit of labor near endgame <br>
+
                If you cannot handle this concept or idea, then dont continue and play some other game! <br>
                The game is also balanced enough the way it is, so DO NOT COMPLAIN ABOUT HOW IMBALANCED THIS GAME IS. <br>
 
@@ -131,14 +144,12 @@ addLayer("tree-tab", {
                
                <br>
                Oh also, in addition to such. this is NOT inspired by the roblox game GCI from "supernova". check the games credits on the top right when accepting TOS<br>            
-
+                
                You cannot continue until you have read the TOS <br> 
                You can accept in ${player.timerToAgree}<br>
                `
-            return TOS
-
             },
-            onClick() {player.agreedTOS = true },
+            onClick() {player.agreedTOS = true; doPopup("msg","New theme unlocked!", "Game Notifier",10) },
             canClick() {return false},
             style() {return {
               "width": "400px",

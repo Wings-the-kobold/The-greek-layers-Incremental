@@ -325,7 +325,8 @@ var saveInterval = setInterval(function () {
 
 window.onbeforeunload = () => {
     if (player.autosave) {
+		
         save();
     };
-	
+	alert("saving...")
 };
