@@ -55,7 +55,7 @@ addLayer("tree-tab", {
         ["Custom", {id:12}],
         ["Custom", {id:13}],
 
-        () => player.inCutScene ? ["column", Array.from({ length: 20 }, () => "blank")] : "blank",
+        () => player.inCutscene ? ["column", Array.from({ length: 20 }, () => "blank")] : "blank",
         
         ["Custom", {id:11}],
 
@@ -68,23 +68,30 @@ addLayer("tree-tab", {
 
     update(diff) { 
         
-    if (player.finishedStCutscene == true){ 
+    if (player.finishedStCutscene == false && player.inCutscene == false) {
+        player.inCutscene = true
+        player.cutsceneName = "startGame"
+    }
+
+    else if (player.finishedStCutscene == true){ 
         if (player.timerToAgree >= 0) player.timerToAgree -= (1 * diff)
            //to fix the number
            player.timerToAgree = Math.floor(player.timerToAgree * 100) / 100
         if (player.timerToAgree != 0 && player.timerToAgree <= 0) player.timerToAgree = 0 
         }
-        if (player.cutsceneName == "" && player.finishedStCutscene == false && player.startedGame==false) player.cutsceneName = "startGame"
         
         //game initializer
-        if (player.inCutscene){
+     if (player.inCutscene){
+        
             if (player.cutsceneName == "startGame") {
                 if (player.frames < 180) player.frames += 1
                 if (player.rot < 90) player.rot += 2 
+                resizeCanvas()
                 }
             if (player.cutsceneName == "endGame") {
                 if (player.frames < 180) player.frames += 1
                 if (player.rot < 180) player.rot += 2
+                resizeCanvas()
             }   
          player.tab = 'none'
         }
@@ -92,7 +99,6 @@ addLayer("tree-tab", {
        
         
 // general cutscene initializer
-    if (player.debugMode) document.getElementById("debugStats").innerHTML = `Rotation: ${player.rot} <br> Frame ${player.frames}`   
 
     
 

@@ -4,6 +4,7 @@ var colors_theme
 var middleY = window.innerHeight / 2;
 var middleX = window.innerWidth / 2
 window.addEventListener("resize", (_=>resizeCanvas()));
+
 function retrieveCanvasData() {
 	let treeCanv = document.getElementById("treeCanvas")
 	let treeTab = document.getElementById("treeTab")

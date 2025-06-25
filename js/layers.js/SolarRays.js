@@ -43,7 +43,19 @@ addLayer("S", {
 
 
                 "blank",
-                "upgrades",
+
+
+                ["row", [ //check upgrades
+                   ["upgrade",11],
+                   ["upgrade",12], 
+                   ["upgrade",13], 
+                   ["upgrade",21],  
+                   ["upgrade",14], 
+                   
+               ]], 
+
+
+
                 ["display-text",
       function() { 
       let RootEFF1 = new Decimal(40)
@@ -225,8 +237,11 @@ update(diff) {
       if (getBuyableAmount("S",12).gte(player["S"].metaNerf)) player["S"].multMeta = metaScaling
 
 
-
+      if (hasUpgrade("S",13) && !hasUpgrade("S",21)) player.S.upgrades.push(21) 
+      else if (hasUpgrade("S",21) && !hasUpgrade("S",13)) player.S.upgrades.push(13)
       
+
+       
 
      },
 
@@ -376,14 +391,21 @@ return  tmp["S"].getResetGain
         13: {
         fullDisplay() {
           let enter
-          if (hasUpgrade("S",13)) enter = format(upgradeEffect("S",13) )
-          else enter = "???"
-            return !(player.Sol.activeCheck == "Heliosphere") ? `<h2>Gravitation</h2> <br>
-            Requires:<br>  Multiply #20 <br><br><br> 
-            
-            ^0.05 of Solarity boosts themselves <br>
 
-            <br> Gravitations effect is ${enter}<br>
+              let readNormal = player.Sol["TMSun"].active ? `IGNORE<br>IGNORE<br>IGNORE <br>` : ``
+              let readNormal2 = player.Sol["TMSun"].active ? `` : `<br> Gravitation's effect is ${format(effect = player.points.pow(0.05).clampMin(1))}<br>`
+              let readNormal3 = player.Sol["TMSun"].active ? `<s>^0.05 of <br> boosts</s>` : `^0.05 of Solarity boosts themselves`
+              let readNormal4 = player.Sol["TMSun"].active ? `<h2>Gravit</h2><br> ` : `<h2>Gravitation</h2>`
+              let readNormal5 = player.Sol["TMSun"].active ? `Requires:` : `Requires: Multiply #20`
+          if (hasUpgrade("S",13)) enter = format(upgradeEffect("S",13) )
+
+            
+
+          else enter = "???"
+            return !(player.Sol.activeCheck == "Heliosphere") ? `${readNormal4}<br>
+                ${readNormal5} <br><br><br><br>
+                ${readNormal3} <br> 
+                ${readNormal2}
             ` : `<h1>it's forsaken<h1>`
         },
         cost: new Decimal(0),
@@ -393,18 +415,61 @@ return  tmp["S"].getResetGain
         },
         effect() {
           let effect = new Decimal(1)
-          return effect = player.points.pow(0.05).clampMin(1)
+          return effect = player.Sol["TMSun"].active ? new Decimal(1) : player.points.pow(0.05).clampMin(1)
+           
+          
         },
         unlocked() {
           if (hasUpgrade("S",12) || player.C.EffectorTier.gte(3)) return true
         },
         style() {
           return {
-            "width": "160px",
-            "height": "75px",
+            "width": player.Sol["TMSun"].active ? "80px" :"160px",
+            "height": player.Sol["TMSun"].active ? "80px" : "37.5px",
             "border-radius": "0px",
             "border": "0px",
-            "margin": "5px",
+            "margin": player.Sol["TMSun"].active ? "11px" : "5px",
+            "transform": player.Sol["TMSun"].active ? "rotate(10deg)" : "rotate(0deg)",
+            "letter-spacing": player.Sol["TMSun"].active ? "2px" : "0px",
+            "filter": player.Sol["TMSun"].active ? "blur(1px)" : "blur(0px)",
+            "text-shadow": "0px 0px 10px #000000",
+            "color": "#664257"
+          }
+        },
+    },  
+    21: {
+        fullDisplay() {
+          let enter
+          if (hasUpgrade("S",13)) enter = format(upgradeEffect("S",13) )
+            
+          else enter = "???"
+            return !(player.Sol.activeCheck == "Heliosphere") ? `<h2>ation</h2> <br>
+            Multiply #20 <br><br><br> 
+            
+            Solarity <br> themselves <br>
+            ` : `<h1>it's forsaken<h1>`
+        },
+        cost: new Decimal(0),
+        canAfford() {
+            return false
+        },
+        effect() {
+          
+          return effect = new Decimal(1)
+        },
+        unlocked() {
+          if (player.Sol["TMSun"].active && (hasUpgrade("S",12) || player.C.EffectorTier.gte(3))) return true
+        },
+        style() {
+          return {
+            "width": "80px",
+            "height": "37.5px",
+            "border-radius": "0px",
+            "border": "0px",
+            "margin": player.Sol["TMSun"].active ? "11px" : "0px",
+            "transform": player.Sol["TMSun"].active ? "rotate(-10deg)" : "rotate(0deg)",
+            "letter-spacing": player.Sol["TMSun"].active ? "2px" : "0px",
+            "filter": player.Sol["TMSun"].active ? "blur(1px)" : "blur(0px)",
             "text-shadow": "0px 0px 10px #000000",
             "color": "#664257"
           }
@@ -451,7 +516,8 @@ return  tmp["S"].getResetGain
           "color": "#664257"
         }
       },
-  },
+  },    
+
     },
     
 //if (player.C.checkUpgrades.gte(1))

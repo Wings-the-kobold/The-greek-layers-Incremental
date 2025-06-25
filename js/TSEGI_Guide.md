@@ -265,28 +265,38 @@ so just start grinding your way in the fragmented sun upgrades for now. the uppe
 
 # The Core to Solar bursting ( end of v0.6 )
 
-Recomended stat requirements to proceed, :
+Recomended stat requirements to proceed, or bare minimum :
  > +2.8 CP base (+3 is better)
- > Light check 17 and Darkcheck 17
+ > Light check 17 and Dark check 17
  > 
 
-TRM, TMS, TBS. then The Broken Core 1
-
+TRM, TMS, TBS 1 and THEN TBS 2. then The Broken Core 1
+do NOT do TBS 2 if you HAVE TBS 0! THIS WILL HEAVILY 
 
 - First things first what it will do:
     > Non-permenant currencies are heavily lowered and reduced
     > Enlightenment levels are always at a fixed number equal to the pending number
     > Everything else Solaritology says it will affect
-    > (Bleeding Sun only) Solar rays are disabled 
+    > (Bleeding Eclipse only) Solar rays bonuses are disabled 
+    > (Raging Moon only) Extra CP are disabled
+    > (Melted sun only) All self-boosts are disabled
 
 - Also by the way, every time you enter or finish either one of these it's cruicial that you do light and dark check recoveries.
     > Dark checks are a bit time-wally since you mostly have to rely on Annular
     > Light checks are very resource dependant, so you most likely have to rely on CRNG/BRNG bonuses
     * NOTE: At this point it is NOT recomended to rely on chronology for this as this WILL take 1 MOD check per day!
+    
 
 - since The Melted Sun is pretty needy:
     > bouncing from check to check `starting at The Raging Moon` may be the right thing to do. 
     
+once you have obtained TMS 2 start preparing for TBC 1
+- 20 LK/DK checks or more
+- 1K aperativity
+- 100k SF, 10k SH
+- all solar upgrades at least 17 or more
+
+
 Broken core will instead equal to all combined checks ever gotten.
     Also i recomend getting ~1K Solar heat and 50K solar Fragments for any of `The broken core` Checks. 
         ~2K Solar Shards and 125K Solar Fragments if TBC2

@@ -677,7 +677,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
           let c1NOMERCYDEBUFF = decimalOne.plus(player.L.LunarPower.log(7.5)).pow(player.L.LunarPower.log(4)).clampMin(1).pow(BLEEDINGSUN_POWER)
               
           
-          let c1debuff = decimalOne.plus(player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4)).clampMin(1)
+          let c1debuff = decimalOne.plus((player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4))  .pow(new Decimal(0.9).pow(player.Sol["TBSun"].x)) ).clampMin(1)
           
           //.pow(BLEEDINGSUN_POWER)
           

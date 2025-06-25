@@ -478,7 +478,7 @@ const Tier2QueuedUpgs = {
     let short = ""
     if (player.Sol.selected == "TMSun") short = `TMS`
     else if (player.Sol.selected == "TRMoon") short = `TRM`
-    else if (player.Sol.selected == "TBSun") short = `TBS`
+    else if (player.Sol.selected == "TBSun") short = `TBE`
 
     return `<h2>Decrease ${short == "" ? "[???]" : short + "'s"} Difficulty by 1</h2>`},
   onClick() {
@@ -498,37 +498,76 @@ const Tier2QueuedUpgs = {
 112: {
   display() {
 
-    let REQ = player.Sol["TRMoon"].active ? 40 : 30
+    let TRMoonReq = player.Sol["TRMoon"].active ? new Decimal(47).sub(player.Sol["TRMoon"].pending.mul(3.5).round()) : 30
+    let TBEclReq = player.Sol["TBSun"].active ? new Decimal("5e430").div(player.Sol["TBSun"].pending.pow_base(1e15)) : 40
+    let TMSunReq = player.Sol["TMSun"].active ? new Decimal(1200).mul(player.Sol["TMSun"].pending.pow_base(3.1111).round()) : 40
+
+
 
     if (!Selecting("active")) return `<h2>Begin studying the celestial bodies...</h2>`
     else {
-      if (player.C.CenterPoints.lt(REQ)) return `<h2>Goal: ${REQ} Center points </h2>`
+      if (player.C.CenterPoints.lt(TRMoonReq) && player.Sol["TRMoon"].active) return `<h2>Goal: ${TRMoonReq} Center points </h2>`
+      else if (player.points.lt(TBEclReq) && player.Sol["TBSun"].active) return `<h2>Goal: ${format(TBEclReq)} Solarity </h2>`
+      else if (player.GL.Solar_Shards.lt(TMSunReq) && player.Sol["TMSun"].active) return `<h2>Goal: ${format(TMSunReq)} Solar Shards </h2>`
       else return `<h2> Deem yourself knowledgeable...? </h2>`
     }
   },
   onClick() { 
     //Increase only if met requirements  
 
-    let REQ = player.Sol["TRMoon"].active ? 40 : 30
-        //For The Broken Core   
+    let TRMoonReq = player.Sol["TRMoon"].active ? new Decimal(47).sub(player.Sol["TRMoon"].pending.sub(1).mul(3.5).round()) : 30
+    let TBSunReq = player.Sol["TBSun"].active ? new Decimal("5e430").div(player.Sol["TBSun"].pending.sub(1).pow_base(1e15)) : 40
+    let TMSunReq = player.Sol["TMSun"].active ? new Decimal(1200).mul(player.Sol["TMSun"].pending.pow_base(3.1111).round()) : 40
+
+    //Increase Melted sun requirements
+    /*
+    player.Sol[player.Sol.selected].active = true; layer2Reset()
+    */
+
+    //The Broken Core clear  
   if (tmp["Sol"].Custom["112"].canClick && player.Sol["TBCore"].active) {
       if (player.Sol["TBCore"].pending.eq(3)) doPopup("msg","...H-How~ What did you do…!? h-he wont like this...", "Solaris:",10) /* ...H-How~ What did you do… */
       else if (player.Sol["TBCore"].pending.eq(2)) doPopup("msg","You should probably give up at this point…", "Solaris:",10) 
-      else if (player.Sol["TBCore"].pending.eq(1))  doPopup("msg","so… hows it going? Feeling the pain yet? It only gets worse from here…", "Solaris:",10)   
+      else if (player.Sol["TBCore"].pending.eq(1)) doPopup("msg","so… hows it going? Feeling the pain yet? It only gets worse from here…", "Solaris:",10)   
    }
     
     // if player can complete the check
-    if (player.C.CenterPoints.gte(REQ) && Selecting("pending").gte(1) && Selecting("active")) 
+      // The Raging Moon clear
+    if (player.C.CenterPoints.gte(TRMoonReq) && Selecting("pending").gte(1) && player.Sol["TRMoon"].active) 
     {
       player.Sol[player.Sol.selected].x = player.Sol[player.Sol.selected].pending 
       player.Sol[player.Sol.selected].active = false
       player.Sol[player.Sol.selected].pending = new Decimal(0)
       player.Sol.selected = ""
 
-    } //else quit the check
-    else if (Selecting("active")) {
+    } 
+      // The Bleeding Eclipse clear
+    else if (player.points.gte(TBSunReq) && Selecting("pending").gte(1) && player.Sol["TBSun"].active) 
+    {
+      player.Sol[player.Sol.selected].x = player.Sol[player.Sol.selected].pending 
+      player.Sol[player.Sol.selected].active = false
+      player.Sol[player.Sol.selected].pending = new Decimal(0)
+      player.Sol.selected = ""
 
-    if (Selecting("pending").gte(1) && Selecting("x").lte(0)) {alert("Make sure to read the guide before entering a check!"); }
+    } 
+      // The Melted Sun clear
+    else if (player.GL.Solar_Shards.gte(TMSunReq) && Selecting("pending").gte(1) && player.Sol["TMSun"].active) {
+      player.Sol["TMSun"].x = player.Sol["TMSun"].pending 
+      player.Sol[player.Sol.selected].active = false
+      player.Sol[player.Sol.selected].pending = new Decimal(0)
+      player.Sol.selected = ""
+
+    }
+
+    //else quit the check
+    else if (Selecting("active")) {
+      let canLeave = false
+      if (player.C.CenterPoints.gte(TRMoonReq) && player.Sol["TRMoon"].active) canLeave = true
+      else if (player.points.gte(TBSunReq) && player.Sol["TBSun"].active) canLeave = true
+      else if (player.GL.Solar_Shards.gte(TMSunReq) && player.Sol["TMSun"].active) canLeave = true
+
+
+    if (Selecting("pending").gte(1) && Selecting("x").lte(0) && canLeave) {alert("Make sure to read the guide before entering a check!"); }
       player.Sol[player.Sol.selected].active = false
       player.Sol.selected = ""
      // player.Sol[player.Sol.selected] = ""
@@ -574,7 +613,7 @@ const Tier2QueuedUpgs = {
     let short = ""
     if (player.Sol.selected == "TMSun") short = `TMS`
     else if (player.Sol.selected == "TRMoon") short = `TRM`
-    else if (player.Sol.selected == "TBSun") short = `TBS`
+    else if (player.Sol.selected == "TBSun") short = `TBE`
 
     return `<h2>Increase ${short == "" ? "[???]" : short + "'s"} Difficulty by 1</h2>`
   },
@@ -1118,7 +1157,7 @@ const Tier2QueuedUpgs = {
     let TBSunP = player.Sol.TBSun.pending
     let TBCoreP = player.Sol.TBCore.pending
 
-    let choosingScale = Selecting("pending") == undefined ? new Decimal(0) : Selecting("pending")
+    let choosingScale = Selecting("pending") == undefined ? new Decimal(0) : Selecting("pending").plus(Selecting("x"))
     let BC_Influence = ``
     //if (player.Sol.selected != "")  choosingScale = player.Sol[player.Sol.selected].pending  
  
@@ -1141,7 +1180,7 @@ const Tier2QueuedUpgs = {
       ,
       `- Lunar Inst. debuff also affects SR gain and Solar Shards gain (^${format(choosingScale.sub(1).div(15))}) <br>`
       ,
-      `- Lunar Inst. debuff also affects Plasmates and Multiply (^0.44)`
+      `- Lunar Inst. debuff also affects Plasmates and Multiply (^0.44)<br>`
     ]
     const TBCDebuff = [
           `Convertary resets CP layer and Centralizing resets SL Layer. <br>`
@@ -1155,19 +1194,19 @@ const Tier2QueuedUpgs = {
 
 
     const TMSBuff = [
-       `${decimalOne.plus(TMSun.mul(0.15))} to Solar light cap `,
-          ,
+       `${decimalOne.plus(TMSun.mul(0.15))} to Solar light cap and Shards (Gen. AND Mult.)<br>`,
+          , //hasMilestone("E",5)
           `Eclipsium effect base is increased +${decimalOne.plus(TMSun.mul(0.03))}. It's cap is moved to ${new Decimal(1e10).mul(TMSun.pow_base(1e10))} <br>`
           ,
-          `Plasmate is raised ^1.1 <b>(+0.01 per minute on latest reset)</b>`      
+          `Plasmate is raised ^1.1 <b>(+0.01 per minute on latest reset)<br>`      
 
     ]
     const TRMBuff = [
-       ` -${TRMoon.mul(0.02)} to CP cost scaling requirement <br>`
+          `-${TRMoon.mul(0.02)} to CP cost scaling requirement <br>`
           ,
-          `-${TRMoon.sub(2).mul(0.02)} to Phasers cost scaling `
+          `-${TRMoon.sub(2).mul(0.02)} to Phasers cost scaling<br>`
           , 
-          `Multiply's Meta nerf starts +50 Later <b>(+2 per minute on latest reset)</b>`
+          `Multiply's Meta nerf starts +50 Later <b>(+1 per minute on latest reset)<br>`
 
     ]
     const TBSBuff = [
@@ -1185,9 +1224,9 @@ const Tier2QueuedUpgs = {
     ]
 
      const ProjectedTMSBuff = [
-         `${decimalOne.plus(TMSunP.mul(0.15))} to Solar light cap <br>`,
+         `${decimalOne.plus(TMSunP.plus(TMSun).mul(0.15))} to Solar light cap and Shards (Gen. AND Mult.)<br>`,
           ,
-          `Eclipsium effect base is increased +${decimalOne.plus(TMSunP.mul(0.03))}. It's cap is moved to ${new Decimal(1e10).mul(TMSunP.pow_base(1e10))} <br>`
+          `Eclipsium effect base is increased +${decimalOne.plus(TMSun.plus(TMSun).mul(0.03))}. It's cap is moved to ${new Decimal(1e10).mul(TMSunP.plus(TMSun).pow_base(1e10))} <br>`
           ,
           `Plasmate is raised to ^2 <br>`      
 
@@ -1214,13 +1253,20 @@ const Tier2QueuedUpgs = {
 
     if (player.Sol.TBCore.pending.eq(2)) BC_Influence = `
     <h3> Broken core's influence: </h3><br>
-    TMS2 and TBS3 is active 
+    TMS2 and TBS3 is active <br><br>
+      <span style='color:rgba(170, 186, 2, 0.99)';> 
+        (caps Solar light and Modifier score to 10,000) <br> 
+        (Lunar inst. debuff is raised to ^6, and affects Solar Ray's and Solar Shards gain) <br> 
+        </span>
     `
     else if (player.Sol.TBCore.pending.eq(1)) BC_Influence = `
       <h3> Broken core's influence: </h3><br>
-      TMS1 and TRM2 is active 
+      TMS1 and TRM2 is active <br><br>
+      <span style='color:rgba(0, 133, 2, 0.99)';>  
+        (caps Solar light and Modifier score to 100,000) <br> 
+        (increases CP scale by 21%) </span>
       `
-  
+  //player.Sol.selected == "TMSun"
     let type = ``
      {
       if (player.Sol.selected == "TMSun") {
@@ -1229,14 +1275,15 @@ const Tier2QueuedUpgs = {
               <h2> The Melted Sun ( ${TMSun} / 5 ) </h2>
             </span>
             <br>
-              <h3>
-             Pre-check measures: Leverage and Gravitation are disabled <br> 
+              
+             Pre-check measures: Leverage and Gravitation is disabled. Convertary is also disabled <br> 
+             <h3>
              <span style='color:rgba(80, 44, 225, 0.99)';>
             ${ choosingScale.gte(1) ? TMSDebuff[0] : ""   }
             ${ choosingScale.gte(3) ? TMSDebuff[1] : ""   }
             ${ choosingScale.gte(5) ? TMSDebuff[2] : ""   }
             </span>
-              </h3>
+             </h3>
             `
       } else if (player.Sol.selected == "TRMoon") {
         type = `
@@ -1244,7 +1291,7 @@ const Tier2QueuedUpgs = {
               <h2> The Raging Moon ( ${TRMoon} / 5 ) </h2>
               
             <br>
-             Pre-Check measures: Extra CP gained from TRNG-5 are disabled <br>
+             Pre-Check measures: Extra CP gained from TRNG-5 are disabled.<br>
               <h3>
                 <span style='color:rgba(114, 15, 53, 0.99)';>
                   ${ choosingScale.gte(1) ? TRMDebuff[0] : ""   }
@@ -1285,6 +1332,7 @@ const Tier2QueuedUpgs = {
               </h3>
 
             ${BC_Influence}
+
          </span>
             `
       } //player.Sol.TRMoon.x
@@ -1304,21 +1352,21 @@ const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
       <span style="border: 2px solid gray; display: inline-block;"> 
           All possible bonus effects <br><br>
           
-           ${ TMSun.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSBuff[0] + " </span>" : unknown  } ${ TMSunP.gte(1) && TMSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTMSBuff[0] + " </span>" : ""   }
-            ${ TMSun.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSBuff[1] + " </span>" : unknown   } ${ TMSunP.gte(3) && TMSun.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTMSBuff[1] + " </span>" : ""   }
-            ${ TMSun.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSBuff[2] + " </span>" : unknown  } ${ TMSunP.gte(5) && TMSun.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTMSBuff[2] + " </span>" : ""   }
+      ${ TMSun.gte(1) && TMSun.neq(TMSunP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSBuff[0] + " </span>" : unknown  } ${ TMSunP.gte(1) && TMSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTMSBuff[0] + " </span>" : ""   }
+      ${ TMSun.gte(3) && TMSun.neq(TMSunP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSBuff[1] + " </span>" : unknown   } ${ TMSunP.gte(3) && TMSun.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTMSBuff[1] + " </span>" : ""   }
+      ${ TMSun.gte(5) && TMSun.neq(TMSunP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSBuff[2] + " </span>" : unknown  } ${ TMSunP.gte(5) && TMSun.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTMSBuff[2] + " </span>" : ""   }
         
-      ${ TRMoon.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMBuff[0] + "</span>": unknown  } ${ TRMoonP.gte(1) && TRMoon.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTRMBuff[0] + " </span>" : ""   }
-            ${ TRMoon.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMBuff[1] + "</span>": unknown  } ${ TRMoonP.gte(3) && TRMoon.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTRMBuff[1] + " </span>" : ""   }
-            ${ TRMoon.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMBuff[2] + "</span>": unknown   } ${ TRMoonP.gte(5) && TRMoon.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTRMBuff[2] + " </span>" : ""   }
+      ${ TRMoon.gte(1) && TRMoon.neq(TRMoonP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMBuff[0] + "</span>": unknown  } ${ TRMoonP.gte(1) && TRMoon.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTRMBuff[0] + " </span>" : ""   }
+      ${ TRMoon.gte(3) && TRMoon.neq(TRMoonP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMBuff[1] + "</span>": unknown  } ${ TRMoonP.gte(3) && TRMoon.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTRMBuff[1] + " </span>" : ""   }
+      ${ TRMoon.gte(5) && TRMoon.neq(TRMoonP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMBuff[2] + "</span>": unknown   } ${ TRMoonP.gte(5) && TRMoon.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTRMBuff[2] + " </span>" : ""   }
       
-      ${ TBSun.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[0] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[0] + " </span>" : ""   }
-            ${ TBSun.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[1] + "</span>" : unknown   } ${ TBSunP.gte(3) && TBSun.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[1] + " </span>" : ""   }
-            ${ TBSun.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[2] + "</span>" : unknown   } ${ TBSunP.gte(5) && TBSun.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[2] + " </span>" : ""   }
+      ${ TBSun.gte(1) && TBSun.neq(TBSunP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[0] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[0] + " </span>" : ""   }
+      ${ TBSun.gte(3) && TBSun.neq(TBSunP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[1] + "</span>" : unknown   } ${ TBSunP.gte(3) && TBSun.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[1] + " </span>" : ""   }
+      ${ TBSun.gte(5) && TBSun.neq(TBSunP) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[2] + "</span>" : unknown   } ${ TBSunP.gte(5) && TBSun.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[2] + " </span>" : ""   }
     
       ${ TBCore.eq(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[0] + "</span>" : unknown   } ${ TBCoreP.gte(1) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBCoreBuff[0] + " </span>" : ""   }
-            ${ TBCore.eq(2) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[1] + "</span>" : unknown   } ${ TBCoreP.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBCoreBuff[1] + " </span>" : ""   }
-            ${ TBCore.eq(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[2] + "</span>" : unknown   } ${ TBCoreP.gte(3) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBCoreBuff[2] + " </span>" : ""   }
+      ${ TBCore.eq(2) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[1] + "</span>" : unknown   } ${ TBCoreP.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBCoreBuff[1] + " </span>" : ""   }
+      ${ TBCore.eq(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[2] + "</span>" : unknown   } ${ TBCoreP.gte(3) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBCoreBuff[2] + " </span>" : ""   }
 
 
       </span>
@@ -1326,17 +1374,17 @@ const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
       <span style="border: 2px solid gray; display: inline-block;"> 
           All possible QoL effects <br><br>
          
-         ${ TMSun.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSQoL[0] + " </span>" : unknown  } ${ TMSunP.gte(1) && TMSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TMSQoL[0] + " </span>" : ""   }
-            ${ TMSun.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSQoL[1] + " </span>" : unknown  } ${ TMSunP.gte(3) && TMSun.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TMSQoL[1] + " </span>" : ""   }
-            ${ TMSun.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSQoL[2] + " </span>" : unknown   } ${ TMSunP.gte(5) && TMSun.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TMSQoL[2] + " </span>" : ""   } 
+         ${ TMSun.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSQoL[0] + " </span>" : unknown  } ${ TMSunP.gte(1) && TMSun.neq(TMSunP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TMSQoL[0] + " </span>" : ""   }
+            ${ TMSun.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSQoL[1] + " </span>" : unknown  } ${ TMSunP.gte(3) && TMSun.neq(TMSunP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TMSQoL[1] + " </span>" : ""   }
+            ${ TMSun.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TMSQoL[2] + " </span>" : unknown   } ${ TMSunP.gte(5) && TMSun.neq(TMSunP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TMSQoL[2] + " </span>" : ""   } 
            
-        ${ TRMoon.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMQoL[0] + "</span>": unknown  } ${ TRMoonP.gte(1) && TRMoon.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TRMQoL[0] + " </span>" : ""   }
-          ${ TRMoon.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMQoL[1] + "</span>": unknown   } ${ TRMoonP.gte(3) && TRMoon.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TRMQoL[1] + " </span>" : ""   }
-          ${ TRMoon.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMQoL[2] + "</span>": unknown   } ${ TRMoonP.gte(5) && TRMoon.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TRMQoL[2] + " </span>" : ""   }
+        ${ TRMoon.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMQoL[0] + "</span>": unknown  } ${ TRMoonP.gte(1) && TRMoon.neq(TRMoonP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TRMQoL[0] + " </span>" : ""   }
+          ${ TRMoon.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMQoL[1] + "</span>": unknown   } ${ TRMoonP.gte(3) && TRMoon.neq(TRMoonP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TRMQoL[1] + " </span>" : ""   }
+          ${ TRMoon.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TRMQoL[2] + "</span>": unknown   } ${ TRMoonP.gte(5) && TRMoon.neq(TRMoonP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TRMQoL[2] + " </span>" : ""   }
         
-        ${ TBSun.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSQoL[0] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBSQoL[0] + " </span>" : ""   }
-            ${ TBSun.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSQoL[1] + "</span>" : unknown   } ${ TBSunP.gte(3) && TBSun.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBSQoL[1] + " </span>" : ""   }
-            ${ TBSun.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSQoL[2] + "</span>" : unknown  } ${ TBSunP.gte(5) && TBSun.gte(4) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBSQoL[2] + " </span>" : ""   }
+        ${ TBSun.gte(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSQoL[0] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSun.neq(TBSunP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBSQoL[0] + " </span>" : ""   }
+            ${ TBSun.gte(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSQoL[1] + "</span>" : unknown   } ${ TBSunP.gte(3) && TBSun.neq(TBSunP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBSQoL[1] + " </span>" : ""   }
+            ${ TBSun.gte(5) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSQoL[2] + "</span>" : unknown  } ${ TBSunP.gte(5) && TBSun.neq(TBSunP) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBSQoL[2] + " </span>" : ""   }
         
         ${ TBCore.eq(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCQoL[0] + "</span>" : unknown   } ${ TBCoreP.gte(1) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBCQoL[0] + " </span>" : ""   }
             ${ TBCore.eq(2) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCQoL[1] + "</span>" : unknown   } ${ TBCoreP.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + TBCQoL[1] + " </span>" : ""   }
@@ -1348,7 +1396,7 @@ const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
 
 
     let stats = `
-    <h3>${TMSun.gte(1) ? "Melted Sun " + TMSun : "Melted Sun Ø"}, ${TRMoon.gte(1) ? "Raging Moon " + TRMoon : "Raging Moon Ø"}, ${TBSun.gte(1) ? "Chaotic  " + TRMoon : "Bleeding Eclipse Ø"} </h3>
+    <h3>${TMSun.gte(1) ? "Melted Sun " + TMSun : "Melted Sun Ø"}, ${TRMoon.gte(1) ? "Raging Moon " + TRMoon : "Raging Moon Ø"}, ${TBSun.gte(1) ? "Bleeding Eclipse  " + TRMoon : "Bleeding Eclipse Ø"} </h3>
     
     `
 
@@ -2166,7 +2214,7 @@ style() {
         let TMSunX = player.Sol.TMSun.x
         let TMSunPend = player.Sol.TMSun.pending
 
-        let TMSPT = TMSunPend.gte(1) ? `Difficulty: ${TMSunPend.plus(TMSunX)} / 5` : ``
+        let TMSPT = (TMSunPend.gte(1) || TMSunX.gte(1)) && player.Sol.selected == "TMSun"  ? `Difficulty: ${TMSunPend.plus(TMSunX)} / 5` : ``
 
         return `<h2>The Melted Sun </h2> 
         
@@ -2202,7 +2250,7 @@ style() {
         let TRMoonX = player.Sol.TRMoon.x
         let TRMoonPend = player.Sol.TRMoon.pending
 
-        let TRMPT = TRMoonPend.gte(1) ? `Difficulty: ${TRMoonPend.plus(TRMoonX)} / 5` : ``
+        let TRMPT = (TRMoonPend.gte(1) || TRMoonX.gte(1)) && player.Sol.selected == "TRMoon" ? `Difficulty: ${TRMoonPend.plus(TRMoonX)} / 5` : ``
 
        return `<h2>The Raging Moon</h2>
         
@@ -2237,19 +2285,20 @@ style() {
         let TBSunX = player.Sol.TBSun.x
         let TBSunPend = player.Sol.TBSun.pending
 
-        let TBSPT = TBSunPend.gte(1) ? `Difficulty: ${TBSunPend.plus(TBSunX)} / 5` : ``
+        let TBSPT = (TBSunPend.gte(1) || TBSunX.gte(1)) && player.Sol.selected == "TBSun" ? `Difficulty: ${TBSunPend.plus(TBSunX)} / 5` : ``
 
-        return `<h2> The Bleeding Sun </h2> 
+        return `<h2> The Bleeding Eclipse </h2> 
         
         ${TBSPT}
         `
-
-      
-      
-      
       
       },
-      onClick() {  player.Sol.selected = "TBSun" },
+      onClick() { 
+       
+        player.Sol.selected = "TBSun"; 
+        // player.Sol.TBSun.pending = player.Sol.TBSun.x
+
+       },
       canClick() {return player.Sol.selected == ""},
       style() {return {
         "width": "133px",
@@ -2265,8 +2314,6 @@ style() {
         let notForceHide = true
         if (TBCore.eq(2) && (TMSun.gte(2) && TRMoon.gte(3) && TBSun.gte(2) )) notForceHide = false
         else if (TBCore.eq(1) && (TMSun.gte(1) && TRMoon.gte(1) && TBSun.gte(1) ) ) notForceHide = false
-
-
 
         return player.Sol.sub == "WoC" && notForceHide && !(player.Sol.selected == "TRMoon" || player.Sol.selected == "TMSun")
       

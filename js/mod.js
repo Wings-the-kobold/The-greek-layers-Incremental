@@ -14,7 +14,7 @@ const shiftList = [
 
 let modInfo = {
 	name: "The Solar Eclipse Guidance Incremental",
-	id: "OINOINOIN", //after I'm done with this mod, change mod id for balance check
+	id: "test1", //after I'm done with this mod, change mod id for balance check
 
 	// main id save: OINOINOIN 
 	// testing id save: test1
@@ -280,7 +280,7 @@ function getPointGen() {
 			if (player.Sol["TBSun"].active) BLEEDINGSUN_POWER = player.Sol["TBSun"].pending.plus(1)
 			if (player.Sol["TBSun"].active) c1DEBUFF = decimalOne.plus(LP.log(7.5)).pow(player.L.LunarPower.log(4)).clampMin(1).pow(BLEEDINGSUN_POWER)	
 
-	if (LP.gt(100) && !player.Sol["TBSun"].active) gain = gain.div(decimalOne.plus(player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4)).clampMin(1))	
+	if (LP.gt(100) && !player.Sol["TBSun"].active) gain = gain.div( (decimalOne.plus(player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4)).clampMin(1)).pow(new Decimal(0.9).pow(player.Sol["TBSun"].x))     )	
 	else if (player.Sol["TBSun"].active) gain = gain.div(c1DEBUFF)		
 
 
@@ -744,13 +744,14 @@ var displayThings = [
 	function gh() {
 		if (true) return `<br>
 To do list: <br>  
-   - Debuffs (), Balance (), Add Bonuses (): TMS, TRM (✅), and TBS (⭕) <br> 
+   - Debuffs (), Balance (), Add Bonuses (): TMS (⭕), TRM (✅), and TBE (✅) <br> 
    - Create softcaps and cost scalings for Solaritology upgrades<br>
    - Debuffs (), Balance (), Bonuses (): TBC1, TBC2, TBC3 <br><br>
 
    if (player.Sol[""].active) for debuffs <br>
-   
-		TBS 2 => 5e400 Solarity
+		
+		Finish making scalings for TMS<br>
+		in display()
 `
 /*
    (0.7) Rebalance, and buff NMH-1 <br>	

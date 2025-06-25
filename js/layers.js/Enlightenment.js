@@ -433,7 +433,7 @@ addLayer("E", {
     
         },
         unlocked() {
-          if (hasMilestone("E",5) && getBuyableAmount("E",12).gte(10) ) return true
+          if ((hasMilestone("E",5) && getBuyableAmount("E",12).gte(10)) || hasMilestone("E",6) ) return true
           else false
         },
     canEnter() {

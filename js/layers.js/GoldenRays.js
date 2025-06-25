@@ -14,9 +14,10 @@ addLayer("GL", {
         bestCap: new Decimal(1),
 
         Solar_Shards: new Decimal(0),
-        Time: new Decimal(0)
+        Time: new Decimal(0),
 
-
+        ghh: 3,
+        ghh2: 100
     }},
     color: "#F0FA64",
    // Can be a function that takes requirement increases into account
@@ -70,13 +71,13 @@ addLayer("GL", {
         if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) Base = Base.mul(Hour.getMinutes() * (1.5 ** (Hour.getHours() % 12)))
         //  if (BSolStones(3).unlocked) Base = Base.mul(BSolStones(3).effect); 
         if (BSolStones(3).unlocked) Base = Base.mul(BSolStones(3).effect)
-
+        if (player.Sol["TMSun"].x.gte(1)) Base = Base.pow(decimalOne.plus(player.Sol["TMSun"].x.mul(0.15)))
         
 
         player.GL.Solarlightcap = Base
         if ( player.E.EclipseTier.gte(6) && player.GL.Solarlightcap.gte(player.GL.bestCap)) player.GL.bestCap = player.GL.Solarlightcap
         if ( player.E.EclipseTier.gte(6)) player.GL.Solarlightcap = player.GL.bestCap
-        if (player.Sol["TMSun"].active) player.GL.Solarlightcap = new Decimal(100000).div(player.Sol["TMSun"].pending.sub(1).pow_base(10))
+        if (player.Sol["TMSun"].active) player.GL.Solarlightcap = new Decimal(100000).div(player.Sol["TMSun"].pending.sub(1).pow_base(10)).pow(decimalOne.plus(player.Sol["TMSun"].x.mul(0.15)))
 
 
 
@@ -85,12 +86,23 @@ addLayer("GL", {
 
         // passive solar shard generation
         let passive = player["Sol"].activeCheck == "Heliosphere" ? player.Sol.HelioStat["Solar_Light"].pow(0.2) : player.GL.Solarlight.pow(0.2)
-        if (player.E.forgotton == true) player.GL.Solar_Shards = player.GL.Solar_Shards.plus(passive.times(diff))
+        
+        if (player.E.forgotton == true) player.GL.Solar_Shards = player.GL.Solar_Shards.plus(passive.pow(decimalOne.plus(player.Sol["TMSun"].x.mul(0.15))).times(diff) )
           
           
 
         // change 
         
+        if (hasUpgrade("GL",13) && !hasUpgrade("GL",14)) player.GL.upgrades.push(14) 
+        else if (hasUpgrade("GL",14) && !hasUpgrade("GL",13)) player.GL.upgrades.push(13)
+          
+
+          if (player.Sol["TMSun"].active) {
+            player.GL.ghh += Math.random() * (5 - -5) + -5
+            player.GL.ghh2 += Math.random() * (5 - -5) + -5
+            if (player.GL.ghh > 40 || player.GL.ghh < -40) player.GL.ghh = 0
+            if (player.GL.ghh2 > 150 || player.GL.ghh2 < 80) player.GL.ghh2 = 100
+          }
 
         },
           
@@ -193,6 +205,7 @@ addLayer("GL", {
         },
           12: {
             fullDisplay() {
+               
                 if (player.Sol.activeCheck == "")
                 return `<h2>Scorch</h2> <br>
                
@@ -211,6 +224,10 @@ addLayer("GL", {
               return true
               },
             style() {
+
+              
+              
+
               return {
                 "width": "150px",
                 "height": "75px",
@@ -218,7 +235,8 @@ addLayer("GL", {
                 "border": "0px",
                 "margin": "5px",
                 "text-shadow": "0px 0px 10px #000000",
-                "color": "#664257"
+                "color": "#664257",
+               
               }
             },
         },
@@ -228,11 +246,15 @@ addLayer("GL", {
               if (hasUpgrade("GL",13)) enter = format(upgradeEffect("GL",13) )
               else enter = "???";
 
-              if (player.Sol.activeCheck == "") return `<h2>Leverage</h2> <br> <br><br>
+              let readNormal = player.Sol["TMSun"].active ? `IGNORE<br>IGNORE<br>IGNORE <br>` : `Cost: 35 Solar Shards`
+              let readNormal2 = player.Sol["TMSun"].active ? `` : `<br> Leverage's effect is ${enter}<br>`
+              let readNormal3 = player.Sol["TMSun"].active ? `<s>^0.09 of <br> boosts</s>` : `^0.09 of Solarity boosts themselves`
+              let readNormal4 = player.Sol["TMSun"].active ? `<h2>Leve</h2><br> <br><br>` : `<h2>Leverage</h2> <br> <br><br>`
+              if (player.Sol.activeCheck == "") return `${readNormal4}
                 
-                ^0.09 of Solarity boosts themselves <br>
-                Cost: 35 Solar Shards <br> 
-                <br> Leverage's effect is ${enter}<br>
+                ${readNormal3} <br>
+                ${readNormal} <br> 
+                ${readNormal2}
                 `;
               else return `<h1> 35 </h1>
               
@@ -240,7 +262,7 @@ addLayer("GL", {
             },
           effect() {
             let effect = new Decimal(1)
-            return effect = player.points.pow(0.09)
+            return effect = player.Sol["TMSun"].active ? new Decimal(1) : player.points.pow(0.09)
           },
           cost: new Decimal(35),
             currencyInternalName: "Solar_Shards",
@@ -250,17 +272,71 @@ addLayer("GL", {
             return true
             },
           style() {
+           // let MeltedSunUIChange = player.Sol["TMSun"].active ? "rotate(40deg);" : "rotate(0deg)"
             return {
-              "width": "150px",
-              "height": "75px",
+              "width": player.Sol["TMSun"].active ? "75px" : "150px",
+              "height": player.Sol["TMSun"].active ? "37.5px" : "75px",
               "border-radius": "0px",
               "border": "0px",
-              "margin": "5px",
+              "margin": player.Sol["TMSun"].active ? "25px" : "5px",
               "text-shadow": "0px 0px 10px #000000",
-              "color": "#664257"
+              "color": "#664257",
+              "transform": player.Sol["TMSun"].active ? "rotate(10deg)" : "rotate(0deg)",
+              "letter-spacing": player.Sol["TMSun"].active ? "1.5px" : "0px",
+              "filter": player.Sol["TMSun"].active ? "blur(1px)" : "blur(0px)",
+              
             }
           },
-      },
+      },  
+      //broken "upgrade"
+        14: {
+            fullDisplay() {
+              let enter
+              if (hasUpgrade("GL",13)) enter = format(upgradeEffect("GL",13) )
+              else enter = "???";
+
+              let readNormal = player.Sol["TMSun"].active ? ` THE SUN<br>THE SUN<br>THE SUN` : `Cost: 35 Solar Shards`
+              let readNormal2 = player.Sol["TMSun"].active ? `` : `<br> Leverage's effect is ${enter}<br>`
+              if (player.Sol.activeCheck == "") return `<h2>rage</h2> <br> <br><br>
+                
+                <s> Solarity themselves </s><br>
+                ${readNormal} <br> 
+               
+                `;
+              else return `<h1> 35 </h1>
+              
+                <br> <h2> be in </h2>`
+            },
+          effect() {
+           return new Decimal(1)
+          },
+          cost: new Decimal(35),
+            currencyInternalName: "Solar_Shards",
+            currencyLayer: "GL",
+
+          unlocked() {
+            //^0.09 of Solarity boosts themselves <br>
+            return player.Sol["TMSun"].active 
+            },
+          style() {
+           // let MeltedSunUIChange = player.Sol["TMSun"].active ? "rotate(40deg);" : "rotate(0deg)"
+            return {
+              "width": "75px",
+              "height": "37.5px",
+              "border-radius": "0px",
+              "border": "0px",
+              "margin": player.Sol["TMSun"].active ? "8px" : "5px",
+              
+              
+              "transform": player.Sol["TMSun"].active ? "rotate(-10deg)" : "rotate(0deg)",
+              "letter-spacing": player.Sol["TMSun"].active ? "1.5px" : "0px",
+              "filter": player.Sol["TMSun"].active ? "blur(1px)" : "blur(0px)",
+              "color": "#664257",
+              "text-shadow": "0px 0px 10px #000000",
+            }
+          },
+      },  
+
           21: {
         fullDisplay() {
           
@@ -331,7 +407,7 @@ addLayer("GL", {
           let range = max-min
           let offset = (max-1)/2
 
-          let effect = Decimal.plus(offset+1, Math.sin(player["GL"].Time.div(20))*(range/2)).sub(0.05)
+          let effect = Decimal.plus(offset+1, Math.sin(player["GL"].Time.div(30))*(range/2)).sub(0.05)
 
 
            if (player["E"].activeCheck == "Forgotton") effect = new Decimal(0.8)
@@ -531,16 +607,25 @@ addLayer("GL", {
                     if (getClickableState("E",14) == true) gain = gain.root(3)
                     if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(2))
                     if (player["Sol"].activeCheck == "Heliosphere") gain = gain.root(player.Sol.HelioStat["Reduction"])  
-
+                    gain = gain.pow(decimalOne.plus(player.Sol["TMSun"].x.mul(0.15)))
                       let forgotten = ``; if (getClickableState("E", 14)) forgotten = `Broken Convertary...?`; else forgotten = `CONVERTARY [LAYER 1 RESET]:`  
+                    let normalLIGHT = `<br>(Requires Solar Light Generation)`
+                    if (player.Sol["TMSun"].active) forgotten = `<i>Perished rays of light that only wanted chaos... <br>- Lunaris </i>`
+                    if (player.Sol["TMSun"].active) normalLIGHT = ``
 
-
-                    let Inactive = `<h3>${forgotten}</h3><br> <br>(Requires Solar Light Generation)`
-                    let Active = `
-                    Convert ALL of your Solar Light into ^0.4 of golden light. <br> 
+                    if (player.Sol["TMSun"].active) nnb=`
+                     <h3> <i>Perished rays of light that only wanted chaos... <br>- Lunaris </i></h3>
+                    `
+                    else nnb = `
+                      Convert ALL of your Solar Light into ^0.4 of golden light. <br> 
                     Then reset Solar Upgrades, Solarity, Solar Rays, And Solar Modifiers. 
                     <br> Convertary will Award +${format(gain)} Solar Shards, Before Resetting Solar Light
-                    
+                    `
+
+                    let Inactive = `<h3>${forgotten}</h3><br> ${normalLIGHT}`
+            
+                    let Active = `
+                    ${nnb}
                     `
                     return getClickableState("GL", 11) ? Active : Inactive  
 
@@ -563,15 +648,18 @@ addLayer("GL", {
 
 
                   },
-              canClick() {return getClickableState("GL", 11)},
-              style() { return (getClickableState("GL", 11)) ? {
+              canClick() {if (!player.Sol["TMSun"].active) return getClickableState("GL", 11); else return false},
+              style() { 
+                
+                if (!player.Sol["TMSun"].active){
+                    return (getClickableState("GL", 11)) ? {
                       "width": "300px",
                       "height": "100px",
                       "border-radius": "20px",
                       "border": "10px",
                       "margin": "25px",
                       "text-shadow": "0px 0px 10px #000000",
-                      
+
                     } : {
                       "width": "200px",
                       "height": "40px",
@@ -581,7 +669,22 @@ addLayer("GL", {
                       "text-shadow": "0px 0px 10px #000000",
                       
                     }
-                    
+                  }
+                else {
+                     return {
+                      "width": player.GL.ghh2 + "px",
+                      "height": player.GL.ghh2 + "px",
+                      "border-radius": "20px",
+                      "border": "10px",
+                      "margin": "25px",
+                      "text-shadow": "0px 0px 10px #000000",
+                      "transform": "skew(" + player.GL.ghh + "deg, " + player.GL.ghh + "deg)",
+                      "margin-right": player.GL.ghh + "px",
+                      "box-shadow": "0 0 50px 20px rgba(255, 255, 255, 0.7);"  
+                    } 
+
+                }    
+
                   },   
                   
                   

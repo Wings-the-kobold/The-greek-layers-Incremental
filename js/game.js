@@ -531,7 +531,7 @@ function EclipsiumReset(Queuereset=false) {
 	exitGeneration()
 	
 	if (Queuereset == true){ player.C.checkUpgrades = new Decimal(0); player["C"].hasFormality = false; player["C"].hasHeirarchy = false; player["C"].hasTwilight = false}
-	layer1Reset(false)
+	layer1Reset(player.Sol["TBSun"].x.gte(1))
 
 }
 
