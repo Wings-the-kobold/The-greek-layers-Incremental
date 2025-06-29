@@ -37,7 +37,7 @@ addNode("sNode", {
 )
 
 
-function s() {return player.showScreen = !player.showScreen};
+//function s() {return player.showScreen = !player.showScreen};
 
 
 
@@ -101,16 +101,8 @@ addLayer("tree-tab", {
 // general cutscene initializer
 
     
-
-
-
  document.getElementById("screen").style.opacity = player.showScreen == false ? 0 : 1; 
         
-
-
-
-
-
 
 
     },

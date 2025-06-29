@@ -36,6 +36,7 @@ addLayer("GL", {
          update(diff) {
           let mult = new Decimal(0)
           let speed = new Decimal(1)
+          let Hour = new Date()
           if (getClickableState("GL", 11) == true && player["GL"].Solarlight.lt(player["GL"].Solarlightcap) ) {
             
           mult = Decimal.pow(getPointGen().clampMax(player.SolarityCap).pow(0.5), 0.2).sub(1)

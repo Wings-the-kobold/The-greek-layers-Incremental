@@ -14,7 +14,7 @@ const shiftList = [
 
 let modInfo = {
 	name: "The Solar Eclipse Guidance Incremental",
-	id: "test1", //after I'm done with this mod, change mod id for balance check
+	id: "OINOINOIN", //after I'm done with this mod, change mod id for balance check
 
 	// main id save: OINOINOIN 
 	// testing id save: test1
@@ -38,8 +38,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6 F20-B18",
-	name: "Solaris's awakening.",
+	num: "0.6.4 F20-B18",
+	name: "Breaking the Core.",
 }
 /*
 6 Unique Upgrade types that are probably exclusive to SLOWPACED games
@@ -777,7 +777,7 @@ function isEndgame() {
 
 // Style for the background, can be a function
 var backgroundStyle = {
-
+	
 }
 
 // You can change this if you have things that can be messed up by long tick lengths
@@ -791,8 +791,20 @@ function fixOldSave(oldVersion){
 }
 
   
-
-
+//to get back stuff
+/*
+player.Sol.TRMoon.x = new Decimal(2)
+player.Sol.TBSun.x = new Decimal(2)
+player.Sol.TMSun.x = new Decimal(2)
+setBuyableAmount("Sol",11,20)
+setBuyableAmount("Sol",12,20)
+setBuyableAmount("Sol",13,15)
+setBuyableAmount("Sol",14,10)
+player.Sol.BRNG = new Decimal(8650)
+player.Sol.TRNG = new Decimal(30000)
+player["Sol"].Heliosphere = true
+player.timePlayed = 1780488
+*/
 
 
 
