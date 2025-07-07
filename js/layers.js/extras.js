@@ -29,7 +29,7 @@ addLayer("dL", {
   
     color: "#ff6a00",
     position: "side", 
-     
+    
     row: "side", 
   
   tabFormat: {
@@ -44,6 +44,7 @@ addLayer("dL", {
          ["row", [ //check upgrades
           ["Custom", {id:11}],
           ["Custom", {id:12}],
+          ["Custom", {id:13}],
          ]],
 
          "blank",
@@ -55,6 +56,9 @@ addLayer("dL", {
           ["Custom", {id:23}],
         ]],
 
+
+
+        
                 
        ["display-text",
       function() { 
@@ -74,6 +78,9 @@ addLayer("dL", {
         if (player.E.EclipseTier.eq(1)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 2!`
         if (player["C"].activeCheck == "Twilight") dUnl = `<br>(Note that Twilight check has a large Timewall of around 6 hours) `
         if (Check("C",13).has && player.E.EclipseTier.eq(0)) dUnl `<br> [Unlock more dialogue at higher resets]`
+
+
+        // Solaris has entered the chat. 
 
         if (Check("L",11).has) type8 = `
         <br>--------------------------------<br>
@@ -228,9 +235,6 @@ addLayer("dL", {
 
       }],
 
-
-
-
       ["display-text", function() {
 
    let text = `
@@ -238,8 +242,8 @@ addLayer("dL", {
       People that helped with this game, as well as with debugging:<br>
         Escapee: component help, general JS help, and a little feedback<br>
         Donbor: providing music '86 Minutes until dark'. for a check upgrade<br>
+        Voliik: providing music 'Eclipse' as for the end game music<br>
         Sedar: early game rebalancing help, and stuffs<br>
-        
         Not my motivation: :trol:<br>
         Me: Creating the game<br>
         <br>
@@ -252,7 +256,7 @@ addLayer("dL", {
         This game IS part of a series known as 'the greek layer tower', Otherwise known as TGLT. there is ALOT more to expect so get ready!<br>
         
 
-        Difficulty stats: <br>
+        Difficulty stats: <br><br>
 
         Timewalls/Forcewalls: 7/10 [Irritation] <br>
         Strategy usage/Tedious Gameplay: 6/10 [Complex] <br>
@@ -265,8 +269,20 @@ addLayer("dL", {
 
       }],
 
+      "blank",
+      "blank",
+      "blank",
 
-              ],
+      ["row", [ //check upgrades
+        ["Custom", {id:41}],
+        ["Custom", {id:42}],
+        ["Custom", {id:43}],
+        ["Custom", {id:44}],
+        ["Custom", {id:45}],
+      ]],
+
+      
+        ],
          
         },      
       },
@@ -275,11 +291,11 @@ addLayer("dL", {
 
     Custom: {
       11: {
-        display() {return `<h2>Credits</h2>`},
+        display() {return `<h2>Credits + Info</h2>`},
         onClick() {player.dL.tab = "Credits"; player.dL.sub = ""},
         canClick() {return true},
         style() {return {
-          "width": "100px",
+          "width": "120px",
           "height": "40px",
           }},  
         unlocked() {return true}
@@ -295,6 +311,22 @@ addLayer("dL", {
         unlocked() {return player.C.checkUpgrades.gte(3) || player.E.EclipseTier.gte(1)}
       },
       
+      13: {
+        display() {return `<h2>Unrelated</h2>`},
+        onClick() {player.dL.tab = "Unrelated"},
+        canClick() {return true},
+        style() {return {
+          "width": "100px",
+          "height": "40px",
+          }},  
+        unlocked() {return true}
+
+      },
+
+
+    
+
+
       21: {
         display() {return `<h3>Sub: Centrality</h3>`},
         onClick() {if (player.dL.tab == "Storyline") player.dL.sub = "Center"},
@@ -326,6 +358,37 @@ addLayer("dL", {
           }},  
         unlocked() {return Check("E",11).has && player.dL.tab == "Storyline"}
       },
+
+      // add more 
+
+
+
+
+      41: {
+        display() {return `booga boogus?`},
+        onClick() {alert("bunga")},
+        canClick() {return true},
+        style() {return {
+          "width": "100px",
+          "height": "40px",
+          }},  
+        unlocked() {return player.dL.tab == "Unrelated"}
+      },
+
+      42: {
+        display() {return `Click thing number<br> ${player.thingy}
+          `},
+        onClick() {player.thingy += 1},
+        canClick() {return true},
+        style() {return {
+          "width": "100px",
+          "height": "40px",
+          }},  
+        unlocked() {return player.dL.tab == "Unrelated"}
+      },
+
+        //alert("bunga")
+
     },  
 
 

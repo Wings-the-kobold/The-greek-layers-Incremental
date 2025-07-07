@@ -218,6 +218,7 @@ function load() {
 
 	setupTemp();
 	updateTemp();
+	updateTemp();
 	updateTabFormats()
 	loadVue();
 }
@@ -324,7 +325,11 @@ var saveInterval = setInterval(function () {
 
 window.onbeforeunload = () => {
     if (player.autosave) {
+		
         save();
     };
-	
+	alert("saving...")
 };
+
+
+

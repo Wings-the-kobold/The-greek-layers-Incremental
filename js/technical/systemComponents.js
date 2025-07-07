@@ -172,7 +172,7 @@ var systemComponents = {
                 <td>
 				<button class="opt" onclick="switchTheme()" v-if="getThemeName() == 'Eclipse'" > Theme: Eclipse...?</button>
 				<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'Twilight'" > Theme: Twilight...</button>
-				
+				<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'Heliosphere'" > Theme: THE SURFACE OF THE SUN</button>
 				<button class="opt" onclick="switchTheme()" v-else> Theme: {{ getThemeName() }}</button>
 				
 				</td>

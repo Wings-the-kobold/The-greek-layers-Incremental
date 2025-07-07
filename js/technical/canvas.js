@@ -22,8 +22,7 @@ function resizeCanvas() {
         middleX = window.innerWidth / 2
 			if (player.cutsceneName == "startGame") {startGameEclipse()}
 			else if (player.cutsceneName == "endGame")  {endGameEclipse(); }
-			else if (player.cutsceneName == "") {drawTree(); drawEclipse()}
-			
+			else if (player.cutsceneName == "") drawTree();	
 }
 function fadeOutAt(n) {return 1 - (player.frames-n)/20}
 function fadeInAt(n) {return 0 + (player.frames-n)/20}
@@ -65,44 +64,13 @@ function endGameEclipse() {
 
 var opac = 0
 
-
-
-
-
-
-
-
-
-
-
 function drawEclipse() {
 	let sizeMult = player.E.EclipseTier.mul(2).mul(player["E"].ENLlevels.clampMin(0.1))
 	let sizeMultbestSize = player.E.EclipseTier.mul(2).mul(player["E"].TopLVL).clampMin(0.1)
 
 	if (player.Sol.activeCheck == "Heliosphere") opac+=0.01; else epac = 0;
 	
-	if (player.Sol["TMSun"].active) {
-
-		//with time:
-		/*
-			x , y
-
-			cw ,cy
-
-			(cw/2)
-
-		*/
-
-		Circle((canvas.width / 2), 500, new Decimal(sizeMultbestSize).clampMax(10), "#9e6c20")
-		Circle((canvas.width / 2), 500, new Decimal(sizeMult).clampMax(11), "#381803")
-	}
-	else if (player.Sol["TBSun"].active) {
-
-	}
-	else if (player.Sol["TRMoon"].active) {
-
-	}
-	else if (player.Sol.activeCheck == "Heliosphere"){
+	if (player.Sol.activeCheck == "Heliosphere"){
 		Circle((canvas.width / 2), 500, new Decimal(sizeMultbestSize).mul(player.Sol.HelioRadiation.root(2).mul(0.5)).clampMax(575), "#9e6c20")
 		Circle((canvas.width / 2), 500, new Decimal(sizeMult ).mul(player.Sol.HelioRadiation.plus(35).pow(1.34)).clampMax(568), "#381803")
 		text((middleX - 120 ), (middleY - 40), "BREAK YOUR LIMITS", 1 , 25)
@@ -114,24 +82,17 @@ function drawEclipse() {
 	}
 
 }
-
-
-
-
-
-
 function drawTree() { //hre is taht
 	if (!retrieveCanvasData()) return;
 	if (!player.inCutscene) ctx.clearRect(0, 0, canvas.width, canvas.height);
 	if (!player.inCutscene) drawEclipse();	
 	for (layer in layers){
-		if (!tmp[layer].layerShown)
-			if (tmp[layer].layerShown == true && tmp[layer].branches){
-				for (branch in tmp[layer].branches)
-					{
-						drawTreeBranch(layer, tmp[layer].branches[branch])
-					}
-			}		
+		if (tmp[layer].layerShown == true && tmp[layer].branches){
+			for (branch in tmp[layer].branches)
+				{
+					drawTreeBranch(layer, tmp[layer].branches[branch])
+				}
+		}		
 		drawComponentBranches(layer, tmp[layer].upgrades, "upgrade-")
 		drawComponentBranches(layer, tmp[layer].buyables, "buyable-")
 		drawComponentBranches(layer, tmp[layer].clickables, "clickable-")
@@ -231,14 +192,4 @@ function ring(x,y,s=10) {
 	ctx.arc(x, y, 20, 0 , Math.PI * 2, true); 
 	ctx.closePath();
 
-}
-
-function oval(x,y,ScaleX, ScaleY, c="#ffffff") {
-		 ctx.translate(x / 2, y / 2);
-         ctx.scale(ScaleX, ScaleY);
-         ctx.beginPath();
-         ctx.arc(middleX, middleY, r, 0, 2 * Math.PI, false);
-         ctx.restore();
-         ctx.fillStyle = c;
-         ctx.fill();
 }
