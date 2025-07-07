@@ -10,7 +10,7 @@ addLayer("S", {
     multMeta: new Decimal(1),
     
     bestPointsInDark: new Decimal(0)
-      
+
     }},
     color: "#ff6a00",
    
@@ -28,11 +28,8 @@ addLayer("S", {
                 ["infobox","about"],
                 ["display-text",
                 function() { 
-                  let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = 
-                  `<h3 style="color: #170f1c; text-shadow: 0px 0px 30px #ffffff;"> You Have ${format(player.S.points)} Shadow...? </h3>`; 
-                  else forgotten = `You Have ${format(player.S.points)} Solar Rays`
-                  
-                   if (player.Sol.activeCheck == "Heliosphere") forgotten = `<h3 style="color:rgba(204, 0, 0, 0.3); text-shadow: 0px 0px 50px rgba(196, 104, 4, 0.67);"> ~~~~~~~~~~~ ${format(player.Sol.HelioStat["Solar_Rays"])}<h3 style="color: #170f1c; text-shadow: 0px 0px 30px #ffffff;">`
+                  let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 30px #ffffff;"> You Have ${format(player.S.points)} Shadow...? </h3>`; else forgotten = `You Have ${format(player.S.points)} Solar Rays`
+
                   return `${forgotten}`
           
                }],
@@ -61,24 +58,16 @@ addLayer("S", {
       let RootEFF1 = new Decimal(40)
 	    let RootEFF2 = new Decimal(35)
       let MAX = (hasMilestone("E", 2) && player.L.activeCheck == "") ? 3 : 2
-    
-
-
+      
   	  let eff1 = player.S.points.root(RootEFF1.sub(upgradeEffect("S",12))).clampMin(1)
   	  let eff2 = player.S.points.root(RootEFF2.sub(upgradeEffect("S",12))).clampMin(1)
         let capped = ``
-      eff1 = !player.Sol["TBSun"].active ? softcap(eff1, new Decimal(2), 0.3).clampMax(MAX) : eff1
+      eff1 = softcap(eff1, new Decimal(2), 0.3).clampMax(MAX)
 
           //if (hasMilestone("E",1)) gain2 = gain2.pow(1.732)
 
           if (eff1==2 && hasMilestone("E", 2)) capped = `(capped)`
-
-          let TBSN1 = ``; let TBSN2 = ``;
-          
-        return !player.Sol["TBSun"].active ? `<h3 class="ignThemes"> Solar Rays Boost the following: <br><br>  Solarity by ^${format(eff1,3)} ${capped} <br> Solarity by ${format(eff2,3)} </h3>` : 
-        `<h3 class="ignThemes"> <s>Solar Rays Boost the following: </s><br><br> <s> Solarity by ^${format(eff1,3)} ${capped} </s><br> <s>Solarity by ${format(eff2,3)} </s></h3>
-        <br> <i>"Forget the sun that's injured, broken even... - Solaris"</i>
-        `
+        return `<h3> Solar Rays Boost the following: <br><br> Solarity by ^${format(eff1,3)} ${capped}<br> Solarity by ${format(eff2,3)} </h3>`
 
      }],
                 "blank",
@@ -148,22 +137,13 @@ addLayer("S", {
                   if (player.C.activeCheck == "Formality") nerfText = `${format(nerf)} -> `
       
           //player["C"].activeCheck == "Heirarchy"
-            
-
-            let autoAcc = 2 
-            if (player.Sol.SolarFragments.gt(1)) autoAcc = 3 
-
-            if (player.Sol.activeCheck == "")
-
             return `
-            Gain Solar rays by ^${format(tmp.S.exponent,autoAcc)} of Solarity, Then Reset Solarity.
+            Gain Solar rays by ^${format(tmp.S.exponent)} of Solarity, Then Reset Solarity.
             <br>
              (Requires at least 1 Solarity)<br><br>
             Solar rays earned:  ${nerfText} ${format(tmp["S"].getResetGain)} Solar Rays  
              `
-
-            else return `<h3 style="color:rgba(125, 68, 6, 0.66); text-shadow: 0px 0px 50px rgba(255, 244, 172, 0.5);"> +${format(player.Sol.HelioStat["Solarity"].clampMin(1).log(10))} </h3>` //``
-
+        
             },     
           onClick() {
             let gain = tmp["S"].getResetGain
@@ -177,15 +157,15 @@ addLayer("S", {
           unlocked() {return true},
       },          
      },
-//
-    exponent() { Hour = new Date()
-      let multiboost = decimalZero
 
+    exponent() { 
+      let multiboost = decimalZero
       if (hasMilestone("E",1) && player.L.activeCheck == "") multiboost = multiboost.plus(0.03)
-      if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) multiboost = multiboost.plus((Hour.getHours() % 12) / 150)
-      if (player.Sol.SolarFragments.gt(1)) multiboost = multiboost.plus(player.Sol.SolarFragments.log(10).div(100))
-      
-      return upgradeEffect("S",11).plus(0.1).plus(multiboost)
+        Hour = new Date()
+      let e1 = 0
+        if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) e1 = `${(Hour.getHours() % 12) / 150}`; else e1 = `0.00`;
+               
+      return upgradeEffect("S",11).plus(0.1).plus(multiboost).plus(e1)
       },
 
 update(diff) {
@@ -248,31 +228,28 @@ update(diff) {
 
 getResetGain() {
   if (player.points.lt(1)) return Decimal.dZero;
-    let Helio = player.Sol.activeCheck == "Heliosphere" ? 0.7 : 1
-    let gain = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Solarity"].clampMin(1).log(10) : Decimal.pow(player.points, tmp.S.exponent).minus(1);
 
-    let f = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Solar_Rays"].clampMin(1) : player.S.points   ;
+  let gain = Decimal.pow(player.points, tmp.S.exponent).minus(1);
 
+  if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14), gain)
+  if (hasUpgrade("GL",31)) gain = gain.times(upgradeEffect("GL",31))
+  if (player.C.EffectorTier.gte(2)) gain = gain.times(player.S.points.log(4).clampMin(1))
+  if (hasUpgrade("C",12)) gain = gain.times(8)
+  if (hasUpgrade("C",13)) gain = gain.times(4)
+  if (hasUpgrade("C",21)) gain = gain.pow(1.05)
 
-    if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14).pow(Helio), gain)
-    if (hasUpgrade("GL",31)) gain = gain.times(upgradeEffect("GL",31).pow(Helio))
-    if (player.C.EffectorTier.gte(2)) gain = gain.times( f.log(4).clampMin(1))
-    if (hasUpgrade("C",12)) gain = gain.times(8 ** Helio)
-    if (hasUpgrade("C",13)) gain = gain.times(4 ** Helio)
-    if (hasUpgrade("C",21)) gain = gain.pow(1.05)
-    
-      {  
-    if (player.C.activeCheck == "Formality") gain = gain.pow(0.666)
-    if (player["C"].activeCheck == "Twilight") gain = gain.log(12)
-    if (player["E"].activeCheck == "Forgotton" ) gain = gain.root(5)
-    } 
-    if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5).pow(Helio))
-    
-    if (player.L.LightCheck.gte(1) && player.L.Light.gte(1)) gain = gain.mul(player.L.Light.pow(0.25).pow(Helio)) 
-    if (hasUpgrade("Sol",12)) gain = gain.mul(upgradeEffect("Sol",12).pow(Helio))
-    gain = gain.mul(player.Sol.SolarFragments.pow(2.4))
+  if (player.C.activeCheck == "Formality") gain = gain.pow(0.666)
+  if (player["C"].activeCheck == "Twilight") gain = gain.log(12)
+  if (player["E"].activeCheck == "Forgotton" ) gain = gain.root(5)
+  if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(5))
+  
+  if (player.L.LightCheck.gte(1) && player.L.Light.gte(1)) gain = gain.mul(player.L.Light.pow(0.25)) 
+  if (hasUpgrade("Sol",12)) gain = gain.mul(upgradeEffect("Sol",12))
+  
+ // if (getClickableState("L",42) == true) gain = gain.clampMax(getSRCap())
+
    
-  return gain.clampMin(1);
+  return gain;
 
 },
 
@@ -314,14 +291,15 @@ return  tmp["S"].getResetGain
             fullDisplay() {
              // let rootage = new Decimal(0.05)
               
-              //if (player.Sol.activeCheck == "Heliosphere") {}
 
-                return !(player.Sol.activeCheck == "Heliosphere") ? ` <h2>Intricity</h2> <br>
+
+                return `<h2>Intricity</h2> <br>
                 Requires:<br> Plasmate #5 <br><br> <br> 
                 
                 +${upgradeEffect("S",11)} Solar Ray Gain Exponent <br> <br>
                 Cost: 22 Solar Rays
-                ` : `<h1>The Sun<h1>`
+                
+                `
             },
            
             cost: new Decimal(22),
@@ -334,7 +312,7 @@ return  tmp["S"].getResetGain
             },
             style() {
               return {
-                "width": "160px",
+                "width": "150px",
                 "height": "75px",
                 "border-radius": "0px",
                 "border": "0px",
@@ -353,13 +331,13 @@ return  tmp["S"].getResetGain
 
         12: {
           fullDisplay() {
-            return !(player.Sol.activeCheck == "Heliosphere") ? `<h2>Polarize</h2> <br>
+              return `<h2>Polarize</h2> <br>
               Requires:<br> Plasmate #10 <br><br><br> 
               
               -${upgradeEffect("S",12)} to Root formula of solar rays bonus <br><br>
               Cost: 105 Solar Rays
               
-              ` : `<h1>Must aquire<h1>`
+              `
           },
           cost: new Decimal(100),
           canAfford() {
@@ -371,7 +349,7 @@ return  tmp["S"].getResetGain
           },
           style() {
             return {
-              "width": "160px",
+              "width": "150px",
               "height": "75px",
               "border-radius": "0px",
               "border": "0px",
@@ -434,7 +412,7 @@ return  tmp["S"].getResetGain
             "filter": player.Sol["TMSun"].active ? "blur(1px)" : "blur(0px)",
             "text-shadow": "0px 0px 10px #000000",
             "color": "#664257"
-          }
+          } 
         },
     },  
     21: {
@@ -480,14 +458,14 @@ return  tmp["S"].getResetGain
         let enter
         if (hasUpgrade("S",14)) enter = format(upgradeEffect("S",14) )
         else enter = "???"
-          return !(player.Sol.activeCheck == "Heliosphere") ? `<h2>Solarizor</h2> <br>
+          return `<h2>Solarizor</h2> <br>
           Requires:<br>Plasmate #17 <br>
           Multiply #25 <br><br>
           
           log15 of Solar Rays boosts themselves <br> 
 
           <br> Solarizors effect is ${enter}<br>
-          ` : `<h1>sacrifice... your<h1>`
+          `
       },
       cost: new Decimal(0),
       canAfford() {
@@ -507,7 +485,7 @@ return  tmp["S"].getResetGain
       },
       style() {
         return {
-          "width": "160px",
+          "width": "150px",
           "height": "75px",
           "border-radius": "0px",
           "border": "0px",
@@ -548,26 +526,17 @@ return  tmp["S"].getResetGain
               return Calculation;
             },
             buyMax() {
-              
-              
               let scale = new Decimal(1.34);
             //  if (hasMilestone("E",1)) scale = scale.times(1.01)
               let base = new Decimal(5);
-
-              
+            
               let amount = player.S.points;
               if (hasUpgrade("GL", 11)) amount = amount.root(0.9).times(3); // upgrade effect is applied last, so it's undone first
               amount = amount.dividedBy(base).log(scale); // then undo the normal calculations
             
               amount = amount.ceil(); // then only at the very very end, floor()
-              
-               if (player.Sol.activeCheck == "Heliosphere") {
-
-                //change amount to 
-
-                if (amount.gte(this.cost) && !getBuyableAmount(this.layer, this.id).eq(100)) addBuyables(this.layer, this.id, 1)
-               }
-               else setBuyableAmount("S", 11, amount.plus(1));
+            
+              setBuyableAmount("S", 11, amount.plus(1));
              // player.S.points = player.S.points.minus(this.cost(amount));
             },
 
@@ -578,35 +547,28 @@ return  tmp["S"].getResetGain
             },
             display() {
               let nerf = tmp[this.layer].buyables[this.id].effect.pow(1.501501502)
+
+  
+
+
               let nerfText = ``
               if (player.C.activeCheck == "Formality") nerfText = `+${format(nerf)} -> `
-              //player.Sol.HelioStat["Solarity"]
-              
-            if (player.Sol.activeCheck == "")  return `
+
+
+              return `
             <h2>Plasmate #${getBuyableAmount(this.layer, this.id)}</h2>
             <br>
           <h2> ${nerfText} +${format(this.effect())} to Solarity Gain</h2>
             <br>
           <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solar Rays</h2>
+
           `
-
-            else if (player.Sol.activeCheck == "Heliosphere") {
-              return `<h1> ${getBuyableAmount(this.layer, this.id)} / 100 </h1>`
-              //player.Sol.activeCheck == "Heliosphere"
-            } 
-
             },
-            canAfford() {                                                                  // change to Solar Rays via player.Sol.HelioStat["Solar_Rays"]
-              if (player.Sol.activeCheck == "Heliosphere") return getBuyableAmount("S",11).gte(100) ? false : player.Sol.HelioStat["Solar_Rays"].gte(this.cost());
-              else return player[this.layer].points.gte(this.cost())
+            canAfford() {
+              return player[this.layer].points.gte(this.cost())
             },
             buy() {
-              if (!player.Sol.activeCheck == "Heliosphere") if (player.S.points.gte(this.cost) && player.C.checkUpgrades.lt(1)) player.S.points = player.S.points.minus(this.cost());
-              else  player.Sol.HelioStat["Solar_Rays"].minus(this.cost)
-              
-
-
-
+              if (player.S.points.gte(this.cost) && player.C.checkUpgrades.lt(1)) player.S.points = player.S.points.minus(this.cost());
               addBuyables(this.layer, this.id, 1);
             },
 
@@ -621,11 +583,13 @@ return  tmp["S"].getResetGain
              // if (hasMilestone("E",1)) effect = effect.pow(0.949)
               if (getBuyableAmount("L",11).gte(1)) effect = effect.mul(buyableEffect("L",11))
               
-              if (hasUpgrade("L",23)) effect = effect.mul(upgradeEffect("L",23))  
+                if (hasUpgrade("L",23)) effect = effect.mul(upgradeEffect("L",23))  
 
               if (player.C.activeCheck == "Formality") effect = effect.pow(0.666)
               if (player["C"].activeCheck == "Twilight") effect = effect.clampMin(0.1).log(12)
               if (hasUpgrade("E",13)) effect = effect.mul(upgradeEffect("E",13))
+
+
 
               return effect.clampMin(0);
             },
@@ -649,6 +613,8 @@ return  tmp["S"].getResetGain
               let scale = new Decimal(1.4)
               let base = new Decimal(500)
               let x = getBuyableAmount("S",12)
+            
+            
 
               let cost = base.mul(scale.pow(x))
               if (hasUpgrade("GL",12)) cost = cost.pow(0.9).div(3)
@@ -681,12 +647,9 @@ return  tmp["S"].getResetGain
                   scaledAmt = dx.sub(player.S.metaNerf)
                   metaScaling = scaledAmt.root(1.5).div(25).add(1).pow(scaledAmt)
                   cost = cost.mul(metaScaling)
-                }   
-
-              if (player.Sol.activeCheck == "Heliosphere") {
-                if (player.Sol.HelioStat["Solarity"].gte(this.cost) && !getBuyableAmount(this.layer, this.id).gte(100)) {addBuyables(this.layer, this.id, 1)} 
-              }
-              else if (player.points.gte(cost)) addBuyables("S", 12, player.S.Bulk_M)
+                }               
+           
+              if (player.points.gte(cost)) addBuyables("S", 12, player.S.Bulk_M)
               else if (player.points.gte(this.cost)) addBuyables("S", 12, 1)
               else player.points = player.points.plus(1) // :trol:
 
@@ -701,8 +664,6 @@ return  tmp["S"].getResetGain
 
               let nerfText = ``
               if (player["C"].activeCheck == "Heirarchy") nerfText = `x${format(nerf)} -> `
-              
-              if (player.Sol.activeCheck == "")  
               return `
             <h2>Multiply #${getBuyableAmount(this.layer, this.id)}</h2>
             <br>
@@ -711,25 +672,17 @@ return  tmp["S"].getResetGain
           <h2>${format(tmp[this.layer].buyables[this.id].cost)} Solarity</h2> <br>
           <h3> [Requires Plasmate #15] </h3>
           `
-          else if (player.Sol.activeCheck == "Heliosphere") {
-              return `<h1> ${getBuyableAmount(this.layer, this.id)} / 100 </h1>
-                        >15
-              `
-              } 
-
             },
-            canAfford() {     
-              if (player.Sol.activeCheck == "Heliosphere" ) 
-                return player.Sol.HelioStat["Solarity"].gte(this.cost()) && getBuyableAmount("S",11).gte(15) && getBuyableAmount("S",12).lt(100)              
-              else if (player.Sol.activeCheck == "") return player.points.gte(this.cost()) && getBuyableAmount("S",11).gte(15)
-  
+            canAfford() {                     
+              if  (player.points.gte(this.cost()) && getBuyableAmount("S",11).gte(15)) return true
             },
             buy() {
-            if (!player.Sol.activeCheck == "Heliosphere")
-              if (player.points.gte(this.cost)) { if (player.C.checkUpgrades.lt(2)) player.points = player.points.minus(this.cost()); }
-            else if (player.points.gte(this.cost) && player.Sol.activeCheck == "Heliosphere") player.Sol.HelioStat["Solarity"] = player.Sol.HelioStat["Solarity"].minus(this.cost());
+
+              if (player.points.gte(this.cost)) 
+                  if (player.C.checkUpgrades.lt(2)) player.points = player.points.minus(this.cost());
+                  else player.points = player.points
               
-            if (!(getBuyableAmount("S",12).gte(100) && player.Sol.activeCheck == "Heliosphere")) addBuyables(this.layer, this.id, 1);
+              addBuyables(this.layer, this.id, 1);
 
 
 
@@ -783,6 +736,5 @@ return  tmp["S"].getResetGain
     hotkeys: [
         {key: "s", description: "S to Solarize", onPress(){if (tmp["S"].Reset.canClick) tmp["S"].Reset.onClick}},
     ],
-    layerShown(){return player.startedGame == true}
-    
+    layerShown(){return true}
 })

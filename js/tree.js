@@ -68,17 +68,18 @@ addLayer("tree-tab", {
 
     update(diff) { 
         
-    if (player.finishedStCutscene == false && player.inCutscene == false) {
+        if (player.finishedStCutscene == false && player.inCutscene == false) {
         player.inCutscene = true
         player.cutsceneName = "startGame"
-    }
-
-    else if (player.finishedStCutscene == true){ 
-        if (player.timerToAgree >= 0) player.timerToAgree -= (1 * diff)
-           //to fix the number
-           player.timerToAgree = Math.floor(player.timerToAgree * 100) / 100
-        if (player.timerToAgree != 0 && player.timerToAgree <= 0) player.timerToAgree = 0 
         }
+
+         else if (player.finishedStCutscene == true){ 
+            if (player.timerToAgree == NaN) player.timerToAgree = 12
+            if (player.timerToAgree >= 0) player.timerToAgree -= (1 * diff)
+            //to fix the number
+            player.timerToAgree = Math.floor(player.timerToAgree * 100) / 100
+            if (player.timerToAgree != 0 && player.timerToAgree <= 0) player.timerToAgree = 0 
+            }
         
         //game initializer
      if (player.inCutscene){
@@ -116,7 +117,7 @@ addLayer("tree-tab", {
                 return `<h2>...Continue?</h2>`
             
             },
-            onClick() {player.finishedStCutscene = !player.finishedStCutscene},
+            onClick() {player.finishedStCutscene = true},
             canClick() {return true},
             style() {return {
               "width": "100px",
@@ -127,14 +128,13 @@ addLayer("tree-tab", {
 
         12: {
             display() { 
-               return `<h1>NOTICE:</h1><br><br>
+               let TOS = `<h1>NOTICE:</h1><br><br>
                <h4>
                This game is HARD, slowpaced, and requires strategies to beat the game. <br><br>
 
-               This game IS part of a series known as 'the greek layer tower'. which is a slow paced incremental game which may involve beating other games of thatonekobold or my incremental mods.<br>
+               This game IS part of a series known as 'the greek layer tower'. which is a slow paced incremental game which involves beating other games of thatonekobold or my incremental mods.<br>
                Expect alot of timewalls and a few forcewalls in this game.<br>
-               Also Expect a bit of labor near endgame <br>
-
+                
                If you cannot handle this concept or idea, then dont continue and play some other game! <br>
                The game is also balanced enough the way it is, so DO NOT COMPLAIN ABOUT HOW IMBALANCED THIS GAME IS. <br>
 
@@ -142,12 +142,14 @@ addLayer("tree-tab", {
                
                <br>
                Oh also, in addition to such. this is NOT inspired by the roblox game GCI from "supernova". check the games credits on the top right when accepting TOS<br>            
-                
+
                You cannot continue until you have read the TOS <br> 
                You can accept in ${player.timerToAgree}<br>
                `
+            return TOS
+
             },
-            onClick() {player.agreedTOS = true; doPopup("msg","New theme unlocked!", "Game Notifier",10) },
+            onClick() {player.agreedTOS = true },
             canClick() {return false},
             style() {return {
               "width": "400px",

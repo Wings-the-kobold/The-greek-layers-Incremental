@@ -28,8 +28,6 @@ function canBuyBuyable(layer, id) {
 
 
 function canAffordPurchase(layer, thing, cost) {
-
-
 	if (thing.currencyInternalName) {
 		let name = thing.currencyInternalName
 		if (thing.currencyLocation) {
@@ -42,40 +40,10 @@ function canAffordPurchase(layer, thing, cost) {
 		else {
 			return !(player[name].lt(cost))
 		}
-	} else {
-		return player[layer].points.gte(cost);
 	}
-	/*
-	let intName = isFunction(thing.currencyInternalName) ? thing.currencyInternalName() : thing.currencyInternalName
-	let lr = isFunction(thing.currencyLayer) ? thing.currencyLayer() : thing.currencyLayer
-	let plr = player
-	let loc = thing.currencyLocation
-	if (intName) {
-		if (isFunction(intName) && !isFunction(lr)) { return plr.lr.intName().gte(cost)} //if internamName is a function
-		else if (isFunction(intName) && isFunction(lr)) {return plr.lr().intName().gte(cost)} // if both are a function
-		else if (!isFunction(intName) || intName == undefined) { return (plr.lr instanceof Decimal) ? plr[lr].gte(cost) : false}
-		else if (!isFunction(intName) && intName) return plr[lr][intName].gte(cost);
-		else if (loc) {return loc[intName].gte(cost)}
-		else if (lr) {return plr[lr][intName].gte(cost)}
-		else {return (plr[intName].gte(cost))}
-	} else {
-		return 
+	else {
+		return !(player[layer].points.lt(cost))
 	}
-
-*/
-
-
-
-
-	/* 
-		Reference: 
-        currencyInternalName: () => { return player.Sol.activeCheck == "Heliosphere" ? "Heliostat['Solar_Shard']" : "Solar_Shards"},
-        currencyLayer: () => { return player.Sol.activeCheck == "Heliosphere" ? "Sol" :  "GL"},
-		
-		Target:
-		player.Sol.HelioStat["Solar_Shard"]
-
-		*/
 }
 
 function buyUpgrade(layer, id) {
@@ -84,17 +52,16 @@ function buyUpgrade(layer, id) {
 
 function buyUpg(layer, id) {
 	if (!tmp[layer].upgrades || !tmp[layer].upgrades[id]) return
-	
+	let upg = tmp[layer].upgrades[id]
 	if (!player[layer].unlocked || player[layer].deactivated) return
 	if (!tmp[layer].upgrades[id].unlocked) return
 	if (player[layer].upgrades.includes(id)) return
-	
-	
+	if (upg.canAfford === false) return
 	let pay = layers[layer].upgrades[id].pay
-
-	let upg = tmp[layer].upgrades[id]
-	if (upg.canAfford === false) return;
-
+	if (pay !== undefined)
+		run(pay, layers[layer].upgrades[id])
+	else {
+		
 		let cost = tmp[layer].upgrades[id].cost
 		if (cost == undefined) {
 			cost = upg.canAfford
@@ -121,7 +88,7 @@ function buyUpg(layer, id) {
 					if (player[layer].points.lt(cost)) return
 				player[layer].points = player[layer].points.sub(cost)
 		}
-	
+	}
 	player[layer].upgrades.push(id);
 	if (upg.onPurchase != undefined)
 		run(upg.onPurchase, upg)
@@ -464,106 +431,5 @@ function TSolStones(id=0) {let data = tmp["Sol"].Viewer[14].display(true); if (i
 function getMNG(item) {if (!item == undefined) return tmp["Sol"].MNG[item]; else alert("unfound data '" + item + "'")}
 function getScale(id) {return tmp["Sol"].clickables[id].scale}
 
-function MeltedSun() {
-	return player.Sol.TMSun
-}
-function RagingMoon() {
-	return player.Sol.TRMoon
-}
-function BleedingSun() {
-	return player.Sol.TBSun
-}
-function BrokenCore() {
-	return player.Sol.TBCore
-}
-
-function Selecting(type) {
-
-	if (type)
-		if (["x", "pending", "active"].includes(type))
-			{if (player.Sol.selected == "TMSun") return player.Sol.TMSun[type]
-				else if (player.Sol.selected == "TRMoon") return player.Sol.TRMoon[type]	
-				else if (player.Sol.selected == "TBSun") return player.Sol.TBSun[type]
-				else if (player.Sol.selected == "TBCore") return player.Sol.TBCore[type]
-				else return player.Sol.null[type]
-				}
-		else {console.error("Input error: " + type + " is not in the list")}		
-	else {console.error("Unknown error: Type is not defined or is redeclared")}
-	
-}
-
 
 // which is ${format(player["S"].bestPointsInDark.pow(11.11111111))}
-
-// general important things to save
-
-function delay(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
-	// /I want to make pancakes in vscode using arrays only
-const buffColor = "'rgba(100, 222, 0, 0.99)'" + "';>'"
-const projectedBuffColor = "'rgba(255, 226, 60, 0.99)'" + "';>'";
-
-function makeBuffTextLine(condition, buff, color) {
-let content = "<span style=" + color + buff + "</span>"
-//`${color} ${buff} </span>`
- if (condition) return content; else return ""
-}
-
-
-
-function gainOf(item) {
-	
-
-	if (item == "Solar Heat") {
-		//[1.05^sqrt1.5(x - 200)] player.Sol.SolarHeat
-		let baseHeatgen = decimalOne
-		heat = player.Sol.SolarHeat
-		
-		//bonuses here
-		if (getBuyableAmount("Sol",12).gte(1)) baseHeatgen = baseHeatgen.mul(getBuyableAmount("Sol",12).pow_base(1.12))
-		
-
-			
-		//nerfs here
-		if (heat.gte(200)) {
-			return baseHeatgen.div(heat.sub(200).root(1.75).pow_base(1.05)    )
-		}
-		else return baseHeatgen
-	
-	
-	}
-	else if (item == "Solar Fragments") {
-		let power = new Decimal(0.05).plus(getBuyableAmount("Sol",11).div(100))
-
-		return player.Sol.SolarHeat.sub(1).pow(power)
-	}
-
-}
-
-function gainOfEsolar() {
-	let gain = new Decimal(1)
-                  gain = player.E.Solinity.root(1.5).log(3).sub(1)
-                  let chimeraBoost = player.E.Chimera.pow_base(1.15).clampMin(1)
-                  if (player.E.Chimera.gt(1)) gain = gain.mul(chimeraBoost)
-                  chimeraBoost = softcap(chimeraBoost, new Decimal(10000), 0.05)
-                  
-                  let Hour = new Date()
-                  if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) gain = gain.times(1.5 ** (Hour.getHours() % 12))
-
-                return softcap(gain, new Decimal(10000), 0.15 )
-
-}
-
-
-
-
-
-
-
-
-
-
-//R-Swarm*'s 

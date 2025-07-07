@@ -3,7 +3,7 @@ addLayer("C", {
     startData() { return {
         unlocked: true,
         CenterPoints: new Decimal(0),
-        FreeCP: new Decimal(0),
+       
         Score: new Decimal(0),
         Highest: new Decimal(0),
         requirement: new Decimal(2000),
@@ -21,7 +21,7 @@ addLayer("C", {
     return `
     <p><img src="resources/Centrality.png" style="width:80px;height:80px;",></p>`
     },
-   
+    
    update(diff) {
 
     if (hasUpgrade("GL",21)) player["GL"].Time = player["GL"].Time.plus(decimalOne.times(diff)).clampMin(0)
@@ -31,27 +31,17 @@ addLayer("C", {
 
     if (Check("E",11).has) ScoreBoost = ScoreBoost.mul(getBuyableAmount("GL",11).clampMin(1))
     if (getBuyableAmount("L",21).gte(1) && Hour.getHours() >= 12) ScoreBoost = ScoreBoost.pow(1 + (Hour.getMinutes() * (1 + Hour.getHours() % 12) / 1000)) //buff this if DT is still too op
-    if (getBuyableAmount("L",21).gte(3) && Hour.getHours() <= 12) ScoreBoost = ScoreBoost.mul(1+(1.1 ** Hour.getMinutes())/2 * (1.25 ** (Hour.getHours() % 12)))
-    
-    
-
+    if (getBuyableAmount("L",21).gte(3) && Hour.getHours() <= 12) ScoreBoost = ScoreBoost.mul(1.12 ** Hour.getMinutes() * (1.3 ** (Hour.getHours() % 12)))
 
  // 1.12^M -> 1.35^H
 
-
-    let ScoreNerf = player.Sol.SolarHeat.sub(1).root(2.5).pow_base(1.02)
-
-    if (hasUpgrade("GL",31) ) player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(ScoreBoost).div(ScoreNerf)
+    if (hasUpgrade("GL",31) ) player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(ScoreBoost)
     if (player["E"].activeCheck == "Forgotton") player.C.Score = player.C.Score.pow(0.8)
    
 
 
     if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.mul(0)
     if (player.C.Score.gte(player.C.Highest)) player.C.Highest = player.C.Score
-    if (player.Sol["TMSun"].active) player.C.Score = player.C.Score.clampMax(new Decimal(100000).div(player.Sol["TMSun"].pending.sub(1).pow_base(10)))
-  
-
-
 
     //if (tmp["C"].hasFormality == undefined) {tmp["C"].hasFormality = false}
 
@@ -72,10 +62,7 @@ addLayer("C", {
     let reductions = new Decimal(1)
     if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - (Hour.getHours() % 12) / 100; else exponent = 1
 
-    let Compound = 1.35
-    if (player.Sol["TRMoon"].active) Compound = new Decimal(Compound).mul(player.Sol["TRMoon"].pending.pow_base(1.1))
-  
-    player.C.requirement = player.C.CenterPoints.clampMin(1).pow_base(Compound).times(2000).div(Divisor).pow(exponent)
+    player.C.requirement = player.C.CenterPoints.clampMin(1).pow_base(1.35).times(2000).div(Divisor).pow(exponent)
   }, 
   
 
@@ -85,31 +72,18 @@ addLayer("C", {
        ["display-text",
      function() { 
       let FourMTD = ``
-      let sS = player.Sol["TRMoon"].active ? `<s>` : ``
-      let sE = player.Sol["TRMoon"].active ? `</s>` : ``
-      if (player.L.activeCheck == "TimeTillDark") FourMTD = `/B<h3 style="color: #060114;"> 40 Dark Energy</h3>`; else FourMTD = `Center Points`
+      
+      if (player.L.activeCheck == "TimeTillDark") FourMTD = `/<h3 style="color: #060114;"> 40 Dark Energy</h3>`; else FourMTD = `Center Points`
 
-      if (player.Sol.activeCheck == "Heliosphere") 
-              return `<h1 style="color:rgba(255, 255, 255, 0.74); text-shadow: 0px 0px 20px rgb(100, 100, 100);"> ${player.C.FreeCP.gt(0) ? format(player.Sol.HelioStat["CP"].plus(player.C.FreeCP)) : format(player.Sol.HelioStat["CP"]) } </h1>`;
-      else if (player["C"].CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.L.activeCheck == "TimeTillDark") 
-        return `
-      You have ${format(player["C"].CenterPoints,1)}  
-      
-      ${sS}${player.C.FreeCP.gt(0) ? " (" + format(player.C.CenterPoints.plus(player.C.FreeCP)) + ") " : ""}${sE}
-      ${FourMTD} `;
-      
+
+      if (player["C"].CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.L.activeCheck == "TimeTillDark")
+       return `You have ${format(player["C"].CenterPoints )} ${FourMTD} `
   
      }],
        ["display-text",
      function() { 
-      let sS = player.Sol["TRMoon"].active ? `<s>` : ``
-      let sE = player.Sol["TRMoon"].active ? `</s>` : ``
-      
-      let hell = player.Sol["TRMoon"].active ? `<br> <br><i>Remember when the night was audacious..?</i> - Lunaris` : ``
+    
 
-      // <i> you'll never need them again... </i> - Glade
-      let extraCP = player.C.FreeCP.gt(0) ? `Thanks to TRNG-5, Extra CP has been added by +${format(player.C.FreeCP)} ` : ``
-       
 
 
       let HeirarchyBoost = ``
@@ -117,33 +91,15 @@ addLayer("C", {
       let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
 
       let newBaseText = ``
-      if (player.Sol.CPBoost.gt(0)) newBaseText = `Thanks to Aperature, Heirarchy's base is 5 -> ${format(player.Sol.CPBoost.plus(5))}`
+      if (player.Sol.CPBoost.gt(0 )) newBaseText = `Thanks to aperature, Heirarchy's base is 5 -> ${format(player.Sol.CPBoost.plus(5))}`
       
       if (player["C"].hasHeirarchy) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(GetHeirarchyBonus())}` 
-      
-
-
-      if (player.Sol.activeCheck == "") return `You have ${forgotten} <br><br> 
-      ${sS}${HeirarchyBoost}<br>
-      ${newBaseText}<br>
-      ${extraCP}
-      ${sE}
-      ${hell}
+ 
+      return `You have ${forgotten} <br> <br>
+      ${HeirarchyBoost}<br>
+      ${newBaseText}
       `
-      else return ` <h2 style="color:rgba(121, 121, 120, 0.5); text-shadow: 0px 0px 20px rgba(37, 37, 37, 0.82);"> ${format(player["C"].Score)} / ${format(player.C.requirement)} </h2>
-      <br>
-      <h3 style="color:rgba(10, 10, 10, 0.6); text-shadow: 0px 0px 20px rgba(219, 219, 219, 0.5);"> 
-      5 -> ${format(player.Sol.CPBoost.plus(5))} <br>
-      x${format(GetHeirarchyBonus())} <br>
-    
-      </h3>
-      <br>
-    
-      `
-
-      // The shadow of the sun is darker than you can imagine...
-      
-
+      //if (player.C.checkUpgrades.gte(2)) gain = gain.mul(Decimal.pow(5, player.C.CenterPoints).clampMin(1))
      }],
      "blank",
 
@@ -195,7 +151,6 @@ addLayer("C", {
     ["clickable",31],
   
     // player["C"].CenterPoints
-  /*
     ["display-text",
      function() { 
      /* 
@@ -204,10 +159,8 @@ addLayer("C", {
        Your Current Modifier Increases The Base effect of Multiplys base by ^${format(player.C.Score.clampMin(1).log(7).root(7))}  [Effector VII]
        
        </br> `
-  
+  */
      }],
-    */
-
      ["display-text",
       function() { 
         
@@ -274,35 +227,22 @@ addLayer("C", {
     11: {
       display() {
 
-        const useCurrency = player.Sol.activeCheck == "" ? player.S.points : player.Sol.HelioStat["Solar_Rays"];
-
-        //  
         const effects = [
-          { log: 2, boosts: "Solarity", keep: "Intricity", on: "ALL layer 1 Resets.", tier: "I", pressure: "IS FAR"},
-          { log: 4, boosts: "Solar Rays", keep: "Polarize", on: "ALL layer 1 Resets.", tier: "II", pressure: "GREATER THAN" },
-          { log: 9, boosts: "plasmates effect", keep: "Gravitation", on: "ALL layer 1 Resets.", tier: "III", pressure: "WHAT YOU" },
-          { log: 16, boosts: "multiply's effect", keep: "Solarizor", on: "ALL layer 1 Resets.",tier: "IV", pressure: "CAN COMPREHEND. SECONDLY," },
-          { log: 25, boosts: "Solarity Gain Cap", keep: "Shardism,Scorch, and Leverage", on: "ALL Recontrol Resets.",tier: "V", pressure: "AND THE BROKEN STARS" },
-          { log: 36, boosts: "Light/Dark Generation", keep: "Annular", on: "ALL Recontrol Resets.", tier: "VI", pressure: "WILL COLLAPSE ON YOUR OWN WILL"  },
+          { log: 2, boosts: "Solarity", keep: "Intricity", on: "ALL layer 1 Resets.", tier: "I" },
+          { log: 4, boosts: "Solar Rays", keep: "Polarize", on: "ALL layer 1 Resets.", tier: "II" },
+          { log: 9, boosts: "plasmates effect", keep: "Gravitation", on: "ALL layer 1 Resets.", tier: "III" },
+          { log: 16, boosts: "multiply's effect", keep: "Solarizor", on: "ALL layer 1 Resets.",tier: "IV" },
+          { log: 25, boosts: "Solarity Gain Cap", keep: "Shardism,Scorch, and Leverage", on: "ALL Recontrol Resets.",tier: "V" },
+          { log: 36, boosts: "Light/Dark Generation", keep: "Annular", on: "ALL Recontrol Resets.", tier: "VI" },
 
         ];
         
-        const effectsDisplay = player.Sol.activeCheck == "" ? effects.slice(0, player.C.EffectorTier.toNumber())
-                                      .map(({log, boosts, keep, on, tier}, index) => `<h2>TIER  ${tier}</h2> <h3> <br> log${log} of Solar Rays boosts ${boosts}. Keep ${keep} on ${on} <br /> Effector's Tier ${tier} effect is ${format(useCurrency.log(log).clampMin(1))}</h3>`)
-                                      .join('<br><br>') :
-                                      effects.slice(0, player.C.EffectorTier.toNumber())
-                                      .map(({log, tier, pressure}, index) => `
-
-                                      <h1>${tier}: ${format(useCurrency.log(log).clampMin(1))}</h1><br>
-                                      <h2> ${pressure} </h2>
-
-                                      `).join(`<br><br>`)
+        const effectsDisplay = effects.slice(0, player.C.EffectorTier.toNumber())
+                                      .map(({log, boosts, keep, on, tier}, index) => `<h2>TIER  ${tier}</h2> <h3> <br> log${log} of Solar Rays boosts ${boosts}. Keep ${keep} on ${on} <br /> Effector's Tier ${tier} effect is ${format(player.S.points.log(log).clampMin(1))}</h3>`)
+                                      .join('<br><br>');
         
    
-        if (player.E.EclipseTier.lt(1) || !player.C.EffectorTier.gte(1)) 
-          if (player.Sol.activeCheck == "") return `<h1>Locked.</h1><br><h3>Get Effector Tier I to unlock this board</h3>`; 
-          else return ``
-        else return `${effectsDisplay}`
+        if (player.E.EclipseTier.lt(1) || !player.C.EffectorTier.gte(1)) return `<h1>Locked.</h1><br><h3>Get Effector Tier I to unlock this board</h3>`; else return `${effectsDisplay}`
 
       },
       unlocked() {
@@ -350,9 +290,8 @@ addLayer("C", {
       },
       
     unlocked() {
-        if ( player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1) ) return true
-        else if (player.Sol.activeCheck == "Heliosphere") return false
-        else return false
+      if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
+      else false
       },
       
     canEnter() {
@@ -396,9 +335,8 @@ addLayer("C", {
       },
 
       unlocked() {
-        if ( player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1) ) return true
-        else if (player.Sol.activeCheck == "Heliosphere") return false
-        else return false
+        if (player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1)) return true
+        else false
       },
      
       
@@ -439,17 +377,13 @@ addLayer("C", {
         if (player["C"].activeCheck == "Twilight" && Check("C",13).CompReq == true ) {
           player["C"].hasTwilight = true
           player["C"].activeCheck = ""
-          doPopup("msg","Checkpoint: New theme unlocked", "Game Notifier",10)
-          // message player that they have unlocked a new theme
-
         }
         else if (Check("C",13).canEnter == true) player.C.activeCheck = "Twilight"; layer1Reset()
 
       },
       unlocked() {
         if ( player.C.EffectorTier.gte(4) || player.E.Eclipsium.gte(1) ) return true
-        else if (player.Sol.activeCheck == "Heliosphere") return false
-        else return false
+        else false
       },
   canEnter() {
     return (Check("C",13).EnterReq == true && !Check("C",13).has && player["C"].activeCheck == "")                                                             
@@ -473,12 +407,9 @@ addLayer("C", {
   upgrades: {
     11: {
       fullDisplay() {
-
-          if (player.Sol.activeCheck == "") return `<h2>Jear 1</h2> <br>
+          return `<h2>Jear 1</h2> <br>
           PATH SPLIT UPGRADE: <br>
           16x to Solarity
-          `; else return `
-            <h1> THE COMBINED </h1>
           `
       },
       canAfford() {
@@ -516,14 +447,10 @@ addLayer("C", {
     },
     12: {
       fullDisplay() {
-
-         if (player.Sol.activeCheck == "")  return `<h2>Jear 2</h2> <br>
+          return `<h2>Jear 2</h2> <br>
           PATH SPLIT UPGRADE: <br>
           8x to Solar Ray Gain
           `
-          else return `
-          <h1> FORCES OF </h1>
-        `
       },
       cost: new Decimal(1),
       currencyDisplayName: "CenterPoints",
@@ -559,13 +486,10 @@ addLayer("C", {
     },
     13: {
   fullDisplay() {
-    if (player.Sol.activeCheck == "")  return `<h2>Jear 3</h2> <br>
+      return `<h2>Jear 3</h2> <br>
       PATH SPLIT UPGRADE: <br>
       4x to Solarity AND Solar rays
       `
-      else return `
-          <h1> THE SUN's </h1>
-        `
   },
   cost: new Decimal(1),
   currencyDisplayName: "CenterPoints",
@@ -598,129 +522,137 @@ addLayer("C", {
       "color": "#3a3337"
     }
   },
-    },
-
-    21: {
-      fullDisplay() {
-        if (player.Sol.activeCheck == "")  return `<h2>Neaver</h2> <br>
-          PATH SPLIT UPGRADE II: <br>
-          ^1.05 Solar Rays Gain
-          `
-          else return `
-              <h1> PRESSURE WILL </h1>
-            `
-      },
-      cost: new Decimal(4),
-      currencyDisplayName: "CenterPoints",
-      currencyInternalName: "CenterPoints",
-      currencyLayer: "C",
-      canAfford() {
-        let maxUpgradesAllowed = new Decimal(1)
-        let UpgradesTaken = new Decimal(0)
-        if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
-        if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
-        if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
-
-        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+},
 
 
-        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
-      },
-      unlocked() {
-        if (player.C.EffectorTier.gte(3)) return true
-      },
-      style() {
-        return {
-          "width": "200px",
-          "height": "75px",
-          "border-radius": "0px",
-          "border": "0px",
-          "margin": "10px",
-          "text-shadow": "0px 0px 10px #000000",
-          "color": "#3a3337"
-        }
-      },
-    },
-    22: {
-      fullDisplay() {
-        if (player.Sol.activeCheck == "") return `<h2>Weaver</h2> <br>
-          PATH SPLIT UPGRADE II: <br>
-          ^1.15 Solarity gain 
-          `
-          else return `BRING YOU`
-      },
-      cost: new Decimal(4),
-      currencyDisplayName: "CenterPoints",
-      currencyInternalName: "CenterPoints",
-      currencyLayer: "C",
-
-      canAfford() {
-        let maxUpgradesAllowed = new Decimal(1)
-        let UpgradesTaken = new Decimal(0)
-        if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
-        if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
-        if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
-
-        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
 
 
-        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
-      },
-      unlocked() {
-        if (player.C.EffectorTier.gte(3)) return true
-      },
-      style() {
-        return {
-          "width": "200px",
-          "height": "75px",
-          "border-radius": "0px",
-          "border": "0px",
-          "margin": "10px",
-          "text-shadow": "0px 0px 10px #000000",
-          "color": "#3a3337"
-        }
-      },
-    },
-    23: {
-    fullDisplay() {
-      if (player.Sol.activeCheck == "")  return `<h2>Leaver</h2> <br>
-      PATH SPLIT UPGRADE II : <br>
-      3.14x solar Light cap and Generation speed
-      `; else return `TO YOUR KNEES.`
-    },
-    cost: new Decimal(4),
-    currencyDisplayName: "CenterPoints",
-      currencyInternalName: "CenterPoints",
-      currencyLayer: "C",
-      canAfford() {
-        let maxUpgradesAllowed = new Decimal(1)
-        let UpgradesTaken = new Decimal(0)
-        if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
-        if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
-        if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
+21: {
+  fullDisplay() {
+      return `<h2>Neaver</h2> <br>
+      PATH SPLIT UPGRADE II: <br>
+      ^1.05 Solar Rays Gain
+      `
+  },
+  cost: new Decimal(4),
+  currencyDisplayName: "CenterPoints",
+  currencyInternalName: "CenterPoints",
+  currencyLayer: "C",
+  canAfford() {
+    let maxUpgradesAllowed = new Decimal(1)
+    let UpgradesTaken = new Decimal(0)
+    if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
 
-        if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+    if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
 
 
-        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
-      },
-    unlocked() {
+    return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+  },
+  unlocked() {
     if (player.C.EffectorTier.gte(3)) return true
-    },
-    style() {
-      return {
-        "width": "200px",
-        "height": "75px",
-        "border-radius": "0px",
-        "border": "0px",
-        "margin": "10px",
-        "text-shadow": "0px 0px 10px #000000",
-        "color": "#3a3337"
-      }
-    },
-    },
-            
+  },
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "0px",
+      "border": "0px",
+      "margin": "10px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#3a3337"
+    }
+  },
+},
+22: {
+  fullDisplay() {
+      return `<h2>Weaver</h2> <br>
+      PATH SPLIT UPGRADE II: <br>
+      ^1.15 Solarity gain 
+      `
+  },
+  cost: new Decimal(4),
+  currencyDisplayName: "CenterPoints",
+  currencyInternalName: "CenterPoints",
+  currencyLayer: "C",
 
+  canAfford() {
+    let maxUpgradesAllowed = new Decimal(1)
+    let UpgradesTaken = new Decimal(0)
+    if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
+
+    if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+    return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+  },
+  unlocked() {
+    if (player.C.EffectorTier.gte(3)) return true
+  },
+  style() {
+    return {
+      "width": "200px",
+      "height": "75px",
+      "border-radius": "0px",
+      "border": "0px",
+      "margin": "10px",
+      "text-shadow": "0px 0px 10px #000000",
+      "color": "#3a3337"
+    }
+  },
+},
+23: {
+fullDisplay() {
+  return `<h2>Leaver</h2> <br>
+  PATH SPLIT UPGRADE II : <br>
+  3.14x solar Light cap and Generation speed
+  `
+},
+cost: new Decimal(4),
+currencyDisplayName: "CenterPoints",
+  currencyInternalName: "CenterPoints",
+  currencyLayer: "C",
+  canAfford() {
+    let maxUpgradesAllowed = new Decimal(1)
+    let UpgradesTaken = new Decimal(0)
+    if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
+    if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
+
+    if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
+
+
+    return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+  },
+unlocked() {
+if (player.C.EffectorTier.gte(3)) return true
+},
+style() {
+  return {
+    "width": "200px",
+    "height": "75px",
+    "border-radius": "0px",
+    "border": "0px",
+    "margin": "10px",
+    "text-shadow": "0px 0px 10px #000000",
+    "color": "#3a3337"
+  }
+},
+},
+        
+  
+
+  
+  
+          
+  
+  
+  
+  
+  
   
             },
   
@@ -729,11 +661,11 @@ addLayer("C", {
     11: {   
        
       display() {
-  let gain = hasMilestone("E",3) ? `Your CP will be set to ${player.Sol.activeCheck == "Heliosphere" ?  format(tmp["C"].CPgain.div(player.Sol.HelioStat["Reduction"].plus(player.C.FreeCP)  ),2) : tmp["C"].CPgain} on reset` : `You will earn +1 CP on reset`
+  let gain = hasMilestone("E",3) ? `Your CP will be set to ${tmp["C"].CPgain} on reset` : `You will earn +1 CP on reset`
   if (tmp["C"].CPgain == "0") gain = ``
         return `
       <br> 
-        Centralizing will center all things solar, resetting what Solarize does including its own content. <br>            
+        Doing a recontrol reset does everything Convertary does as well as rooting Solar Shards and Center Points by 3, it also resets some things. <br>            
            ${gain}
          `                       
                  },
@@ -742,21 +674,18 @@ addLayer("C", {
                 player.C.CenterPoints = tmp["C"].CPgain
                 else player.C.CenterPoints = player.C.CenterPoints.plus(1)
                   player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
-
-                layer1Reset(player.C.EffectorTier.gte(4), "C")
+                layer1Reset()
                 
                 },
              canClick() {
-              let TrueScore = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Modifier"] : player.C.Score
-              
 
-              if (TrueScore.gte(player.C.requirement)) return true
+              if (player.C.Score.gte(player.C.requirement)) return true
 
             },
                                  
               unlocked() { return true },
        
-             button: () => { if (!tmp["C"].CPgain.eq(0)) return !hasMilestone("E",3) ? `Centralize Once!` : `Centralize All!`; else return `Cant reset`},
+             button: () => { if (!tmp["C"].CPgain == "0") return !hasMilestone("E",3) ? `Centralize Once!` : `Centralize All!`; else return `Cant reset`},
                      },
        
                      
@@ -764,10 +693,6 @@ addLayer("C", {
            },        
 
    CPgain() {
-
-    let TrueScore = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Modifier"] : player.C.Score
-    ///TrueScore
-
     let Divisor = new Decimal(1)
     let mult = new Decimal()
       if (hasMilestone("E",1)) Divisor = player.E.EclipseTier.pow_base(1.35)
@@ -780,16 +705,8 @@ addLayer("C", {
       
       
     //this is the buyMax reset thing
+     if (hasMilestone("E",3) && player.C.Score.gte(player.C.requirement)) mult = player.C.Score.root(exponent).times(Divisor).div(2000).log(1.35).round()
 
-
-     
-  let Compound = 1.35
-  if (player.Sol["TRMoon"].active) Compound = new Decimal(Compound).mul(player.Sol["TRMoon"].pending.pow_base(1.1))
-  if (player.Sol["TRMoon"].x.gte(1)) Compound = new Decimal(Compound).sub(player.Sol.TRMoon.x.mul(0.02)) 
-
-     if (hasMilestone("E",3) && TrueScore.gte(player.C.requirement)) mult = player.C.Score.root(exponent).times(Divisor).div(2000).log(Compound).round()
-    
-      if (player.Sol.activeCheck == "Heliosphere") mult = mult.div(player.Sol.HelioStat["Reduction"])
     return mult
    },
            
@@ -806,12 +723,11 @@ addLayer("C", {
                 display() {
 
             
-                  if (player.Sol.activeCheck == "") return `
+                   return `
                    <h3>Effector Tier ${player.C.EffectorTier}<br> (max 7) </h3>
                    Unlock a new Effect. <br>  
                    cost: ${format(Decimal.pow(2, player.C.EffectorTier))} Center Points<br>
                    `
-                   else return `<h1> ${player.C.EffectorTier} / 4 </h1> `
                   
 
                 },
@@ -830,7 +746,7 @@ addLayer("C", {
             },
             unlocked() {
               if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
-
+    
             },
                 
                 

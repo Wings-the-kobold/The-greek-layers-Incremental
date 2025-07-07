@@ -315,6 +315,13 @@ function completeChallenge(layer, x) {
 
 
 
+
+
+
+
+
+
+
 VERSION.withoutName = "v" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSION.pre : VERSION.pre ? " Beta " + VERSION.beta : "")
 VERSION.withName = VERSION.withoutName + (VERSION.name ? ": " + VERSION.name : "")
 
@@ -345,7 +352,7 @@ function gameLoop(diff) {
 			diff = limit
 	}
 	if (!player.gameEnd || player.startedGame) addTime(diff)
-	player.points = player.points.add(tmp.pointGen.times(diff)).max(0);
+	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
 
 	for (let x = 0; x <= maxRow; x++){
 		for (item in TREE_LAYERS[x]) {
@@ -435,7 +442,7 @@ var interval = setInterval(function() {
 	gameLoop(diff)
 	fixNaNs()
 	adjustPopupTime(trueDiff)
-	updateParticles(trueDiff) 
+	updateParticles(trueDiff)
 	resizeCanvas();
 	ticking = false
 }, 80)
@@ -450,7 +457,7 @@ setInterval(function() {needCanvasUpdate = true}, 1)
 //ALL CUSTOM FUNCTIONS ARE HERE
 
 //Layer Resets
-function layer1Reset(keepUpgrades=false, type="Any") {
+function layer1Reset(keepUpgrades=false) {
 let resetPoints = 0
 if (player.C.EffectorTier.gte(5)) { resetPoints = 1 }
 else if (player.C.EffectorTier.gte(4) || keepUpgrades == true) { player.S.upgrades = [11,12,13,14] }
@@ -460,34 +467,26 @@ else if (player.C.EffectorTier.gte(1)) { player.S.upgrades = [11]}
 else { player.S.upgrades = [] }
 
 
-player["S"].points = decimalOne
+player["S"].points = player["S"].points.mul(resetPoints).plus(1)
 
 player["GL"].Solarlight = new Decimal(0)
-player.points = player.points.mul(0) //player.points = new Decimal(0)
-
-
-if ( player.Sol.TRMoon.x.gte(1) && type == "C") 
-	{
-	return;
-}
-else if (player.Sol.TMSun.x.gte(1) && type == "SL")
-	{
-	return;
-}
-else { setBuyableAmount("S", 11, new Decimal(0)); setBuyableAmount("S", 12, new Decimal(0))}
-
+player.points = player.points.mul(0)
+setBuyableAmount("S", 11, new Decimal(0)   )
+setBuyableAmount("S", 12, new Decimal(0) )	
 }
 
 
 function layer2Reset(force=false) {
 player.C.EffectorTier = new Decimal(0)
 player.GL.Solar_Shards = new Decimal(0)
+player.C.checkUpgrades = new Decimal(0)
 
 
 	if (!player.E.EclipseTier.gte(3) || force) player["C"].hasFormality = false
 	if (!player.E.EclipseTier.gte(4) || force) player["C"].hasHeirarchy = false
 	if (!player.E.EclipseTier.gte(5) || force) player["C"].hasTwilight = false
 
+	//if (force == partial && !player.E.EclipseTier.gte(5))
 
 player.C.CenterPoints = new Decimal(0)
 player.C.Highest = new Decimal(0)
@@ -498,7 +497,7 @@ player.GL.upgrades = []
 
 setBuyableAmount("GL", 11, new Decimal(0) )
 
-layer1Reset(false, "Default")
+layer1Reset(false)
 
 }
 //
@@ -641,17 +640,13 @@ function cSoftcap(val, start=[], nerf=[], format=false) {
 // cSoftcap(20,[10,40],[0.5,0.3])
 
 function start() {
-	 player.rot = 0; player.frames = 0;
-	 if (player.cutsceneName == "") player.cutsceneName = "gameStart"//; else player.cutsceneName = ""
+	 player.inCutscene = !player.inCutscene;  player.tab = 'none'; 
+	 if (player.cutsceneName = "") player.cutsceneName = "gameStart"; else player.cutsceneName = ""
 }
 
-
-
-
 function end() {
-	player.rot = 90; player.frames = 0;
-	if (player.cutsceneName == "") player.cutsceneName = "gameEnd"//; else player.cutsceneName = ""; 
-	player.finalTime = player.timePlayed
+	player.inCutscene = !player.inCutscene; player.gameEnd = !player.gameEnd; player.rot = 90; player.frames = 0;
+	if (player.cutsceneName = "" && player.inCutscene) player.cutsceneName = "gameEnd"; else player.cutsceneName = ""; player.finalTime = player.timePlayed
 //	tmp.gameEnded = !tmp.gameEnded
 }
 
@@ -672,21 +667,15 @@ function getSRCap() {
 
 function GetHeirarchyBonus() {
 	let base = new Decimal(5)
-    if (player.Sol.CPBoost.gte(0) && !player.Sol["TRMoon"].active ) base = base.plus(player.Sol.CPBoost)//
+    if (player.Sol.CPBoost.gte(0)) base = base.plus(player.Sol.CPBoost)
 
-	//if ()
-
-	let amnt = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["CP"].plus(player.C.FreeCP) : player.C.CenterPoints.plus(player.C.FreeCP)
-
-    let effect = amnt.pow_base(base).clampMin(1)
+    let effect = player.C.CenterPoints.pow_base(base).clampMin(1)
 	
 	if (hasUpgrade("L",11)) effect = effect.pow(1.15)
 		
-	if (player["C"].activeCheck == "Twilight") effect = effect.log(12).clampMin(1)
-	
-	effect = player.Sol.SolarHeat.gt(50) ? effect.mul(player.Sol.SolarHeat.sub(50).pow_base(1.02)) : effect
-
-	if (player["C"].hasHeirarchy && !player.Sol["TRMoon"].active) return effect; else return new Decimal(1)
+	if (player["C"].activeCheck == "Twilight") effect = effect.mul(effect.log(12)).clampMin(1)
+		
+if (player["C"].hasHeirarchy) return effect; else return new Decimal(1)
 }
 
 

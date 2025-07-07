@@ -1,6 +1,3 @@
-
-var useCurrency = ""
-
 addLayer("GL", {
     name: "Compression", // This is optional, only used in a few places, If absent it just uses the layer id.
     //symbol: "Sol+", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -42,16 +39,12 @@ addLayer("GL", {
           mult = Decimal.pow(getPointGen().clampMax(player.SolarityCap).pow(0.5), 0.2).sub(1)
           if (hasUpgrade("C",16)) speed = speed.times(3.14)
           if (player.E.EclipseTier.gte(5)) speed = speed.times(player.E.EclipseTier.sub(3).pow_base(1.5))
-            
+
         } 
         
         player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.times(speed).times(diff)).clampMin(0)
 
-
         if ( player["GL"].Solarlight.gt(player["GL"].Solarlightcap)) { player["GL"].Solarlight = player["GL"].Solarlightcap }              
-
-
-
 
         if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
         
@@ -63,10 +56,11 @@ addLayer("GL", {
         // Increasing Solar Light Cap
 
         let eff1 = new Decimal(1)
-        if (hasMilestone("E",1) && player.L.activeCheck == "") Base = Base.mul(player.E.TopLVL.pow_base(1.75))
+        if (hasMilestone("E",1)&& player.L.activeCheck == "") Base = Base.mul(player.E.TopLVL.pow_base(1.75))
+        
         if (hasUpgrade("C",23)) Base = Base.mul(3.14)
         if (hasUpgrade("E",11)) Base = Base.mul(upgradeEffect("E",11))
-        if (hasUpgrade("E",13)) Base = Base.mul(2)
+          if (hasUpgrade("E",13)) Base = Base.mul(2)
         Base = Base.mul(getBuyableAmount("E", 12).pow_base(1.35))
         if (hasMilestone("E",5)&& player.L.activeCheck == "") Base = Base.mul(player.C.Score.clampMin(1).pow(0.25)) 
         if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) Base = Base.mul(Hour.getMinutes() * (1.5 ** (Hour.getHours() % 12)))
@@ -112,27 +106,21 @@ addLayer("GL", {
               content: [
                 
                 
-      ["display-text",
+                ["display-text",
       function() { 
         
       let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> You Have Generated ${format(player["GL"].Solarlight)} / ${format(player["GL"].Solarlightcap)} Void...? </h3>`; else forgotten = `You Have Generated ${format(player["GL"].Solarlight)} / ${format(player["GL"].Solarlightcap)} Solar Light`
 
-      if (player.Sol.activeCheck == "Heliosphere") forgotten = `<h2 style="color:rgba(147, 147, 102, 0.4); text-shadow: 0px 0px 20px rgba(224, 221, 124, 0.7);"> ${format(player.Sol.HelioStat["Solar_Light"])} </h2>`
-      
         return `${forgotten}`
 
      }],
-      ["display-text",
+     ["display-text",
      function() { 
-      let forgotten = ``; 
-      if (player["E"].activeCheck == "Forgotton") 
-        forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> You have ${format(player["GL"].Solar_Shards )} Gloom...? </h3>`; 
-      else forgotten = `You Have ${format(player["GL"].Solar_Shards )} Solar Shards`
+      let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> You have ${format(player["GL"].Solar_Shards )} Gloom...? </h3>`; else forgotten = `You Have ${format(player["GL"].Solar_Shards )} Solar Shards`
 
-        if (player.Sol.activeCheck == "Heliosphere") forgotten = `<h2 style="color:rgba(255, 255, 0, 0.5); text-shadow: 0px 0px 20px rgba(105, 54, 6, 0.8);"> ${format(player.Sol.HelioStat["Solar_Shard"])} </h2>`
       if (player["GL"].Solar_Shards.gte(1))
  return `${forgotten}`
-      //player.Sol.activeCheck == "Heliosphere"
+
     }],
 
     // player["GL"].CenterPoints
@@ -171,24 +159,18 @@ addLayer("GL", {
  upgrades: {
           11: {
             fullDisplay() {
-
-                if (player.Sol.activeCheck == "")
                 return `<h2>Shardism</h2> <br>
                 
                 Plasmates Cost is ^0.9 and then /3 <br> <br>
                 Cost: 13.5 Solar Shards
-                `
-                else return `<h1> 13.5 </h1>
                 
-                <br> <h2> Attempts of </h2>
                 `
             },
             cost: new Decimal(13.5),
             //currencyInternalName: player["GL"].Solar_Shards,
             currencyDisplayName: "Solar Shards",
             currencyInternalName: "Solar_Shards",
-            currencyLayer: "GL",            
-
+            currencyLayer: "GL",
             unlocked() {
             return true
             },
@@ -214,11 +196,9 @@ addLayer("GL", {
                 Multiplys Cost is ^0.9 and then /3 <br> <br>
                 Cost: 22 Solar Shards
                 `
-                else return `<h1> 22 </h1>
-                
-                <br> <h2> Resistance will </h2>`
             },
             cost: new Decimal(22),
+            currencyDisplayName: "Solar Shards",
             currencyInternalName: "Solar_Shards",
             currencyLayer: "GL",
             unlocked() {
@@ -266,6 +246,7 @@ addLayer("GL", {
             return effect = player.Sol["TMSun"].active ? new Decimal(1) : player.points.pow(0.09)
           },
           cost: new Decimal(35),
+          currencyDisplayName: "Solar Shards",
             currencyInternalName: "Solar_Shards",
             currencyLayer: "GL",
 
@@ -343,7 +324,7 @@ addLayer("GL", {
           
           let max = 1.17
           let min = 0.9
-          let range = max-min
+
 
           //add max here
           max = new Decimal(max)
@@ -359,8 +340,7 @@ addLayer("GL", {
 
 
           let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `Forgotten Annulation?`; else forgotten = `Annular:`    
-             
-          if (player.Sol.activeCheck == "") return `
+              return `
               <h2>${forgotten}</h2> <br>
               <h3 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;"> Instability... </h3><br><br>
             Requires: <br>
@@ -374,18 +354,15 @@ addLayer("GL", {
             ^0.9 ~ ^${max.eq(1.17) ? max : format(max,3)} to Solarity <br><br>
             
             ${change}`
-           else return `<h1>${format(upgradeEffect("GL",21))}</h1>
            
-           <br> <h2>Vain. THE </h2>
-           `
-            
+
 
         },
 
         unlocked() {if ( hasUpgrade("GL",11) && hasUpgrade("GL",12) && hasUpgrade("GL",13) ) return true},
         branches: ["11","12","13"],
         cost: new Decimal(105),
-       
+        currencyDisplayName: "Solar Shards",
         currencyInternalName: "Solar_Shards",
         currencyLayer: "GL",
         
@@ -397,14 +374,9 @@ addLayer("GL", {
           //add max here
           max = new Decimal(max)
           if (hasUpgrade("Sol",11) && hasUpgrade("GL",21)) max = max.plus(player.Sol.CPBoost.root(4).sub(1)) 
-            
-            
-
-
-          max = max.toNumber()  
-        
-
           
+          max = max.toNumber()  
+
           let range = max-min
           let offset = (max-1)/2
 
@@ -412,7 +384,6 @@ addLayer("GL", {
 
 
            if (player["E"].activeCheck == "Forgotton") effect = new Decimal(0.8)
-
             return effect
         },
         
@@ -438,7 +409,7 @@ addLayer("GL", {
             if (hasUpgrade("GL",31)) change = `Oscillating... <br>Coronal's Effect is ${enter}`
             else change = `[Get Requirements to Unlock!]`
           
-            if (player.Sol.activeCheck == "") return  `
+            return `
             <h2>Coronal:</h2> <br>
             <h3 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;">Uncomfortibility </h3> <br><br>
           Requires:<br> Phaser #10<br> Plasmate #35<br> Multiply #70 <br><br>
@@ -450,10 +421,9 @@ addLayer("GL", {
           0.4x - 5.4x to Solar Rays<br><br>
           
           ${change}`
-          else return `<br> <h2> PRESSURE OF THE SUN </h2>`
          
 
-// THE PRESSURE OF THE SUN IS FAR GREATER THAN WHAT YOU CAN COMPREHEND
+
       },
       unlocked() {if (hasUpgrade("GL",21) ) return true},
       branches: ["21"],
@@ -507,8 +477,7 @@ addLayer("GL", {
   `
     },
     canAfford() {
-      if (player["Sol"].activeCheck == "Heliosphere") return getBuyableAmount("GL",11).lt(11) && player.Sol.HelioStat["Solar_Shard"].gte(this.cost())
-      else return player["GL"].Solar_Shards.gte(this.cost()) && getBuyableAmount("S",11).gte(3)
+      return player["GL"].Solar_Shards.gte(this.cost()) && getBuyableAmount("S",11).gte(3)
     },
     buy() {
       if (player["GL"].Solar_Shards.gte(this.cost)) player["GL"].Solar_Shards = player["GL"].Solar_Shards.minus(this.cost());
@@ -518,7 +487,7 @@ addLayer("GL", {
       let effect = decimalOne
       effect = effect.mul(getBuyableAmount(this.layer, this.id))
       effect = effect.mul(getBuyableAmount("E", 11).add(1))
-      effect = effect.mul( getBuyableAmount("Sol",14).pow_base(1.05).pow(player.Sol.SolarHeat.log(4)) )
+
       if (hasUpgrade("L",22)) effect = effect.pow(1.15)
 
       return effect;
@@ -546,7 +515,7 @@ addLayer("GL", {
  },
             
 
- clickables: {
+            clickables: {
                 11: {
                     display() {
                       let Inactive = `<h2>Start Up Solar Light Generation </h2> <br>[ Requires Solarizor ]<br>`
@@ -562,14 +531,14 @@ addLayer("GL", {
                       setClickableState("GL", 11, !currentState)
 
                       if (getClickableState("GL", 11) == true ) {
-                        player.points = decimalZero
+                        player.points = player.points.mul(0)
                         
                       }
                       if (getClickableState("GL", 11) == false)  {
                       let currentSOLARLIGHT = player.GL.Solarlight
-                        layer1Reset(player.C.EffectorTier.gte(4), "GL")
+                        layer1Reset()
                         player.GL.Solarlight = currentSOLARLIGHT
-                        currentSOLARLIGHT = decimalOne
+                        currentSOLARLIGHT = currentSOLARLIGHT.mul(0).plus(1)
                       }
                       
                       
@@ -627,7 +596,7 @@ addLayer("GL", {
             
                     let Active = `
                     ${nnb}
-                    `
+                    ` 
                     return getClickableState("GL", 11) ? Active : Inactive  
 
                   },
@@ -637,14 +606,14 @@ addLayer("GL", {
                     if (getClickableState("E",14) == true) gain = gain.root(3)
                     if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(2))
                     
-                    if (player["Sol"].activeCheck == "Heliosphere") gain = gain.root(player.Sol.HelioStat["Reduction"])    
+
 
                   player["GL"].Solar_Shards = player["GL"].Solar_Shards.plus(gain)
                   player["GL"].points = player["GL"].points.plus(gain)
                   // player["GL"].CenterPoints = player["GL"].CenterPoints.plus(1)
-                  player["GL"].Solarlight = decimalZero
+                  player["GL"].Solarlight = new Decimal(0)
                   setClickableState("GL", 11, !getClickableState("GL", 11))
-                  layer1Reset(player.C.EffectorTier.gte(4), "GL")
+                  layer1Reset()
 
 
 

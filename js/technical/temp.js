@@ -141,7 +141,7 @@ function updateTempData(layerData, tmpData, funcsData, useThis) {
 	for (item in funcsData){
 		if (Array.isArray(layerData[item])) {
 			if (item !== "tabFormat" && item !== "content") // These are only updated when needed
-				updateTempData(layerData[item], tmpData[item], funcsData[item], useThis)
+			updateTempData(layerData[item], tmpData[item], funcsData[item], useThis)
 		}
 		else if ((!!layerData[item]) && (layerData[item].constructor === Object) || (typeof layerData[item] === "object") && traversableClasses.includes(layerData[item].constructor.name)){
 			updateTempData(layerData[item], tmpData[item], funcsData[item], useThis)
@@ -178,25 +178,32 @@ function updateViewerTemp(layer) {
 
 
 function setupBuyables(layer) {
-	for (id in layers[layer].buyables) {
-		if (isPlainObject(layers[layer].buyables[id])) {
-			let b = layers[layer].buyables[id]
-			
-			b.actualCostFunction = b.cost
-			b.actualEffectFunction = b.effect //effect
+	if (!layer) return;
+		for (id in layers[layer].buyables) {
+			if (isPlainObject(layers[layer].buyables[id])) {
+				let b = layers[layer].buyables[id]
+				
+				b.actualCostFunction = b.cost
+				b.actualEffectFunction = b.effect //effect
+				
+				console.log(b.actualCostFunction)
+				console.log(b.cost)
+
+				b.cost = function(x) { //the cost
+					x = (x === undefined ? player[this.layer].buyables[this.id] : x)
+					
 
 
-			b.cost = function(x) { //the cost
-				x = (x === undefined ? player[this.layer].buyables[this.id] : x)
-				return layers[this.layer].buyables[this.id].actualCostFunction(x)
-			}
+					//console.log(layers[this.layer].buyables[this.id] + "|" + format(layers[this.layer].buyables[this.id].actualCostFunction(x)))
+					return layers[this.layer].buyables[this.id].actualCostFunction(x)
+				}
 
-			b.effect = function(x) { //the effect
-				x = (x === undefined ? player[this.layer].buyables[this.id] : x)
-				return layers[this.layer].buyables[this.id].actualEffectFunction(x)
+				b.effect = function(x) { //the effect
+					x = (x === undefined ? player[this.layer].buyables[this.id] : x)
+					return layers[this.layer].buyables[this.id].actualEffectFunction(x)
+				}
 			}
 		}
-	}
 }
 
 function ViewerSetup(layer) {
@@ -220,9 +227,3 @@ function ResetSetup(layer) {
 function checkDecimalNaN(x) {
 	return (x instanceof Decimal) && !x.eq(x)
 }
-
-
-
-
-
-
