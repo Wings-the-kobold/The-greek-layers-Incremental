@@ -43,7 +43,6 @@ function makeShinies(data, amount=1) {
     makeParticles(data, amount, "shiny")
 }
 
-
 function updateParticles(diff) {
 	for (p in particles) {
         let particle = particles[p]
@@ -125,8 +124,6 @@ const newParticles = {
         }
     },
 }
-
-
 
 function updateMouse(event) {
     mouseX = event.clientX

@@ -34,7 +34,6 @@ var colors = {
 		
 	},
 
-
 	Eclipse: {
 		unlocked: () => {return player.agreedTOS},
 		1: "#ff9036",//Branch color 1
@@ -87,8 +86,6 @@ var colors = {
 
 }
 
-
-
 function changeTheme() {
 
 	colors_theme = colors[options.theme || "default"];
@@ -132,6 +129,5 @@ function switchTheme(force) {
 	
 
 }
-
 
 //

@@ -10,8 +10,6 @@ const shiftList = [
 	"shadow"
 ]
 
-
-
 let modInfo = {
 	name: "The Solar Eclipse Guidance Incremental",
 	id: "OINOINOIN", //after I'm done with this mod, change mod id for balance check
@@ -85,13 +83,14 @@ Solaris... fuck you lol. <br>
 <h4> > Also made changelog easier to read just in case of people wanting to see how the game changed over the months </h4><br>
 <h4> > Finally decided to fix Gravitations text overlap (It annoyed me enough >:( )</h4><br><br>
 
-
 - Majorly Shortened and Compacted the Main visuals, like realm currencies. <br>
 - Added New Themes: Eclipse and Twilight<br>
 - Added and changed UI's of custom-made features<br>
 - Moved some features into other tabs to save space and clutter <br>
 	<br> Center Tree Respec moved from The Effector to The Center Tree
 <br>added a few secrets into the game 
+
+
 
 Fixes:<br>
 Fix 13: Layers no longer randomly switch places when reloading screens <br>
@@ -102,6 +101,8 @@ Fix 17: Fixed Expansion I buyable so that it shows itself when having at least 1
 Fix 18: Fixed Duality not following Dark requirements<br>
 Fix 19: Finally fixed what made the Duality checks not return to their normal color after leaving it. <br>
 Fix 20: Fixed Jear 1 being able to be purchased during specific conditions via "Jear 2 + Jear 3" <br>
+Fix 21: 
+
 
 <br>
 Balances <br>
@@ -120,6 +121,11 @@ Bal 17: buffed Dark check nerfs to be applied after all bonuses have been applie
 Bal 18: added a scaling to duality checks once it reaches 10. <br> 
 <br><br>
 
+
+
+
+
+
 <h3>v0.5 to v0.5.4, Fix 12, Balance 10</h3><br>
 Lunaris, do my laundry! <br>
 - added Eclipse tier 5 and 6 <br><br>
@@ -134,6 +140,9 @@ Lunaris, do my laundry! <br>
 - Added Chronology <br>
 - Changed Main layer 2 reset from Eclipsification to Eclipsify <br>
 <br> Dev note: 🐊 <br>
+
+
+
 
 
 <br>
@@ -151,6 +160,11 @@ Fix12: Fixed Solar Light generation displaying its unnerfed generation incorrect
 
 <br><br>
 
+
+
+
+
+
 <h3>v0.4 Fix 8, Balance 5</h3><br>
 <h4>Lol i just Eclips'd ur mom</h4><br>
 - there is now a Solarity Gain Cap of e308! [aka Infinity]
@@ -166,6 +180,10 @@ Fix8: Changed first tab in Solarizor reset layer date on where the solar eclipse
 Bal5: Plasmate has a new Conditional Scaling. where if its below 5 amount, it reduces the cost by 10% until you get to Layer 2. (this is to balance out Layer 1 stage, or Early game)<br>
 	<br><br>
 
+
+
+
+
 <h3>v0.3 Fix 2, Balance 4</h3><br>
 <h4>CENTER THESE BALLS IN YOUR MOUTH!</h4><br>
 - A prestige mechanic where its based off of Modifier Score! [A * B] = Output <br>
@@ -180,6 +198,9 @@ Bal4: Solar rays now have an exponent in which its base cap is ^2<br>
 
 	<br><br>
 
+
+
+
 <h3>v0.2 Fix 1, Balance 0</h3><br>
 <h4>Second layer has been added...</h4><br>
 - 2 Clickables that Reset 1st layer!<br>
@@ -187,7 +208,6 @@ Bal4: Solar rays now have an exponent in which its base cap is ^2<br>
 - You ONLY gain solar shards in a very unique and special way.<br>
 
 Fix1: Fixed PointGen() issues/boosts not responding very well (it was an "x= value bug) <br>
-
 
 	<br><br>
 
@@ -207,10 +227,6 @@ function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
 }
 
-
-
-
-
 // Determines if it should show points/sec
 function canGenPoints(){
 	return player.startedGame
@@ -223,11 +239,9 @@ function getPointGen() {
 	Hour = new Date()
 	let e2 = 0
 
-
-	let gain = new Decimal(0)
+	let gain = new Decimal(1)
 
 	//timer: 3 weeks of 5x solarity bonus, 2x SR and 1.5x Plasmate's effect 
-
 
 	/*  */
 	// PAST THIS POINT IS SOLARIZER EFFECTS
@@ -283,8 +297,6 @@ function getPointGen() {
 	if (LP.gt(100) && !player.Sol["TBSun"].active) gain = gain.div( (decimalOne.plus(player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4)).clampMin(1)).pow(new Decimal(0.9).pow(player.Sol["TBSun"].x))     )	
 	else if (player.Sol["TBSun"].active) gain = gain.div(c1DEBUFF)		
 
-
-
 	if (hasMilestone("E",1)) gain = gain.mul(player.E.EclipseTier.pow_base(9))
 	gain = gain.mul(upgradeEffect("E",12).pow(deAmp))
 	//if (hasUpgrade("E",11)) gain = upgradeEffect("E",11)
@@ -299,16 +311,12 @@ function getPointGen() {
 	if (TSolStones(1).unlocked) gain = gain.mul(TSolStones(1).effect); 
 	if (getClickableState("L",41) && hasUpgrade("Sol",13)) gain = gain.pow(1.05)
 
-
 	// --------- PESTILLESSENCE EFFECTS ----------
-
-
 
 	//--------------- Solarity generation nerf (after all bonuses) ----------------
 	if (getClickableState("GL", 11) == true) gain = gain.pow(0.5)
 	if (player.L.activeCheck == "TimeTillDark") gain = gain.pow(0.6)
 	if (getClickableState("L",42)) gain = gain.root(3)
-
 
 	// ------------------ SOLAR CHARGE EFFECTS --------------
 	let C = player.E.Esolar.clampMax(10000)
@@ -316,7 +324,6 @@ function getPointGen() {
 	let S = new Decimal(0)
 	if (buyableEffect("L",31).gt(1)) S = buyableEffect("L",31).log(4)
 	if (C.gt(1))  B = Decimal.add(1 , C.log(2)).add(S)
-
 
 	// ---------------- TRNG,BRNG,CRNG
 	
@@ -328,7 +335,6 @@ function getPointGen() {
 	if (getClickableState("L", 41) || player.L.activeCheck == "TimeTillDark") basegainCap = new Decimal(1)
 	
 
-
 	//---------- INCREASING SOLARITY CAP
 	if (hasMilestone("E",1)) basegainCap = basegainCap.mul(player.E.EclipseTier.pow_base(20))
 
@@ -336,13 +342,11 @@ function getPointGen() {
 	if (player.E.EclipseTier.gte(6)) moved = new Decimal(1e10)	
 	if (hasMilestone("E",2)) basegainCap = basegainCap.mul(player.E.Eclipsium.pow_base(1.45).clampMax(moved))
 
-
 	basegainCap = basegainCap.mul(getBuyableAmount("E", 11).mul(0.5).add(1))
 	basegainCap = basegainCap.mul(buyableEffect("E",12))
 
 	if (getBuyableAmount("L",12).gte(1)) basegainCap = basegainCap.mul(buyableEffect("S",12).pow(getBuyableAmount("L",12).add(1).log(10).div(15)))
 	if (getBuyableAmount("L",11).gte(1)) basegainCap = basegainCap.mul(buyableEffect("S",11).pow(getBuyableAmount("L",11).add(1).log(10).div(5)).clampMin(1))
-
 
 	if (hasMilestone("E",3)) basegainCap = basegainCap.mul(player.E.SolarCharge.log(2).add(1).pow(B)).clampMin(1)
 	
@@ -350,7 +354,6 @@ function getPointGen() {
 	//Heirarchy
 	
 	if (hasMilestone("E",5) && player.L.activeCheck == "") basegainCap = basegainCap.mul(GetHeirarchyBonus().pow(0.33))
-
 
 	let c1effect = decimalOne.plus(player.L.LunarPower.clampMin(1).log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
 	basegainCap = basegainCap.mul(c1effect)
@@ -362,12 +365,8 @@ function getPointGen() {
 	//	
 	if (getClickableState("L",41) && hasUpgrade("Sol",13)) basegainCap = basegainCap.pow(1.15)	
 
-
 	// HELIOSPHERE CHECK
 	if (Check("Sol",11).has) basegainCap = basegainCap.pow(1.2769) //don't ask why it's that specific 
-
-
-
 
 	//Time till dark
 	if (player.L.activeCheck == "TimeTillDark"){ 
@@ -379,11 +378,7 @@ function getPointGen() {
 
 	if (BSolStones(2).unlocked) basegainCap = basegainCap.mul(BSolStones(2).effect.clampMin(1))
 
-
 	if (player.Sol.SolarHeat.gt(1)) basegainCap = basegainCap.mul(player.Sol.SolarHeat.pow(3.75).clampMin(1))	
-
-
-
 
 	//this is in getPointGen() btw
 	player.SolarityCap = basegainCap
@@ -400,7 +395,6 @@ function getPointGen() {
 	if (player.Sol.activeCheck == "Heliosphere") basegainCap = basegainCap.pow(player.Sol.HelioStat["Reduction"].mul(2))
 
 	return gain.clampMax(basegainCap)
-
 
 }
 
@@ -423,10 +417,11 @@ function addedPlayerData() { return {
 	inCutscene: false,
 	cutsceneName: "",
 
-
 	//DO NOT CHANGE THIS
 	agreedTOS: false,
 	timerToAgree: 12,
+
+	TOSTime: 12,
 
 	finalTime: 0,
 	startedGame: false,
@@ -441,7 +436,7 @@ function addedPlayerData() { return {
 	 why: false,
 	},
 
-	eventActive: false,
+	eventActive: true,
 
 	thingy: 0,
 
@@ -450,17 +445,12 @@ function addedPlayerData() { return {
 
 	},
 
-
-
 }}   
-
 
 // The main animation of some texts, this might come in handy
 
-
   
  
-
 
 // Display extra things at the top of the page
 var displayThings = [
@@ -474,8 +464,6 @@ var displayThings = [
 		if (hasUpgrade("C",16)) speed = speed.times(3.14)
 			
 		if (player.E.EclipseTier.gte(5)) speed = speed.times(player.E.EclipseTier.pow_base(1.35))
-
-
 
 		//Challenges and Dilations	
 
@@ -547,9 +535,7 @@ var displayThings = [
 
 		//5b0935
 
-
 		//Solarity Generation:
-
 
 		let FMTDtext = ``
 
@@ -666,10 +652,7 @@ var displayThings = [
 				
 			}
 
-
-
 			
-
 
 			return nextText
 	},
@@ -699,7 +682,6 @@ var displayThings = [
 			//delay(250)
 			
 			document.title = `The clock is ticking...`
-
 
 		} 
 		else if (player.L.DarkCheck.gte(1) && player.L.LightCheck.gte(1)) {
@@ -762,16 +744,12 @@ To do list: <br>
 
 	
 
-
-
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
 	return player.Sol.solarBurst
 }
-
-
 
 // Less important things beyond this point!
 
@@ -805,8 +783,6 @@ player.Sol.TRNG = new Decimal(30000)
 player["Sol"].Heliosphere = true
 player.timePlayed = 1780488
 */
-
-
 
 // I should add an anti-cheat system 
 // where if the solar clock suddenly changes it gives them a warning

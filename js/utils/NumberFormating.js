@@ -22,7 +22,6 @@ function commaFormat(num, precision) {
     return portions[0] + "." + portions[1]
 }
 
-
 function regularFormat(num, precision) {
     if (num === null || num === undefined) return "NaN"
     if (num.mag < 0.0001) return (0).toFixed(precision)

@@ -10,14 +10,6 @@ var type7 = ``
 var type8 = ``
 var type9 = ``
 
-
-
-
-
-
-
-
-
 addLayer("dL", {
     name: "Solar Ray", 
     symbol: "", 
@@ -56,8 +48,6 @@ addLayer("dL", {
           ["Custom", {id:23}],
         ]],
 
-
-
         
                 
        ["display-text",
@@ -78,7 +68,6 @@ addLayer("dL", {
         if (player.E.EclipseTier.eq(1)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 2!`
         if (player["C"].activeCheck == "Twilight") dUnl = `<br>(Note that Twilight check has a large Timewall of around 6 hours) `
         if (Check("C",13).has && player.E.EclipseTier.eq(0)) dUnl `<br> [Unlock more dialogue at higher resets]`
-
 
         // Solaris has entered the chat. 
 
@@ -107,9 +96,7 @@ addLayer("dL", {
         <br> *Lunaris seems to be chanting in some sort of language, as if they are being forced to attack Glade. repeating the words over and over again*
         <h3 style="color:#7d0f9c">ANTE MEDIAM NOCTE PERIBIT, IRA DEORUM LUNARUM TE VERTERE</h3>
 
-
         `
-
 
         if (player.L.LightCheck.gte(2)) type6 = `
         <br> Glade: Hey user, it's me again, we haven't spoken in a while huh?
@@ -220,7 +207,6 @@ addLayer("dL", {
       else if (player.dL.sub == "Enlighten") phase = `${type2}${type3}${type4}${type5}`
       else if (player.dL.sub == "Lunaris") phase = `${type6}${type7}${type8}`
 
-
        let progression = `
       <h3> ${dUnl} </h3>
        ${phase} 
@@ -262,7 +248,6 @@ addLayer("dL", {
         Strategy usage/Tedious Gameplay: 6/10 [Complex] <br>
         Overall : 6.3 / 10
 
-
         `
 
         if (player.dL.tab == "Credits") return text; else return ``
@@ -286,8 +271,6 @@ addLayer("dL", {
          
         },      
       },
-
-
 
     Custom: {
       11: {
@@ -323,9 +306,7 @@ addLayer("dL", {
 
       },
 
-
     
-
 
       21: {
         display() {return `<h3>Sub: Centrality</h3>`},
@@ -361,9 +342,6 @@ addLayer("dL", {
 
       // add more 
 
-
-
-
       41: {
         display() {return `booga boogus?`},
         onClick() {alert("bunga")},
@@ -391,14 +369,9 @@ addLayer("dL", {
 
     },  
 
-
-
-
-
       tooltip: `Extra Stuffs`,
     layerShown(){return true}
 })
-
 
 /*
 

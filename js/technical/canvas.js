@@ -139,7 +139,6 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
 	if (document.getElementById(num1) == null || document.getElementById(num2) == null)
 		return
 
-
 	
 	let start = document.getElementById(num1).getBoundingClientRect();
     let end = document.getElementById(num2).getBoundingClientRect();

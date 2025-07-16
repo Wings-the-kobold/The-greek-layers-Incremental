@@ -12,7 +12,6 @@ var RawRNG = 1;
 var simulated = []
 var Heliosity = "";
 
-
 //i'd probably need this for TQET
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -70,9 +69,6 @@ const TBCQoL = [
 
 ]
 
-
-
-
 /*
   SETTINGS
   for later
@@ -88,7 +84,6 @@ function roll() {
     return animateArray(simulated);
   
 }
-
 
 const MNGStyle = {
   "width": "180px",
@@ -107,8 +102,6 @@ const Tier2QueuedUpgs = {
   "text-shadow": "1px 1px 10px #ffa500",
   "color": "#000000"
 }
-
-
 
   const SolarisDialogue = [
       "So… you made it, it’s about time that you came",
@@ -132,7 +125,6 @@ const Tier2QueuedUpgs = {
 
         latestReset: new Decimal(0),
 
-
         activeCheck: "",
 
         TRNG: new Decimal(0),
@@ -153,8 +145,8 @@ const Tier2QueuedUpgs = {
           Total: new Decimal(0),
           Quantify: new Decimal(0),
           Elevate: new Decimal(0), 
+          Rans: 0
         },
-
 
         TMSun:{ 
           x: new Decimal(0),
@@ -257,7 +249,6 @@ const Tier2QueuedUpgs = {
 
    player.C.FreeCP = free
 
-
   
 
    if (player.Sol.Heliosphere) {
@@ -283,7 +274,6 @@ const Tier2QueuedUpgs = {
           ["Custom", {id:22}],
           ["Custom", {id:23}],
         ]],
-
 
   //------------------Aperaturize-----------------
       () => player.Sol.tab == "Aparal" ? "blank" : "", 
@@ -329,9 +319,6 @@ const Tier2QueuedUpgs = {
         ["clickable",21],
         ["clickable",22],  
       ]],
-
-
-
 
       //player.E.EclipseTier = new Decimal(7)
 
@@ -383,7 +370,6 @@ const Tier2QueuedUpgs = {
 
         ["clickable",1111],
 
-
   //-------------------- The wall of checks -----------
   
   ["Viewer",  {id:31, title: "Solaritology: The study of all things solar."}],
@@ -405,7 +391,6 @@ const Tier2QueuedUpgs = {
         ]],
         
 ],},},
-
 
     //for unlockable content 
   Custom: {
@@ -502,8 +487,6 @@ const Tier2QueuedUpgs = {
     let TBEclReq = player.Sol["TBSun"].active ? new Decimal("5e430").div(player.Sol["TBSun"].pending.pow_base(1e15)) : 40
     let TMSunReq = player.Sol["TMSun"].active ? new Decimal(1200).mul(player.Sol["TMSun"].pending.pow_base(3.1111).round()) : 40
 
-
-
     if (!Selecting("active")) return `<h2>Begin studying the celestial bodies...</h2>`
     else {
       if (player.C.CenterPoints.lt(TRMoonReq) && player.Sol["TRMoon"].active) return `<h2>Goal: ${TRMoonReq} Center points </h2>`
@@ -565,7 +548,6 @@ const Tier2QueuedUpgs = {
       if (player.C.CenterPoints.gte(TRMoonReq) && player.Sol["TRMoon"].active) canLeave = true
       else if (player.points.gte(TBSunReq) && player.Sol["TBSun"].active) canLeave = true
       else if (player.GL.Solar_Shards.gte(TMSunReq) && player.Sol["TMSun"].active) canLeave = true
-
 
     if (Selecting("pending").gte(1) && Selecting("x").lte(0) && canLeave) {alert("Make sure to read the guide before entering a check!"); }
       player.Sol[player.Sol.selected].active = false
@@ -720,7 +702,6 @@ const Tier2QueuedUpgs = {
 
         if (getBuyableAmount("Sol",12).gte(1)) secondaryBoost = secondaryBoost.mul(aperationBonus)
 
-
         return base.mul(secondaryBoost)
       
       },
@@ -767,7 +748,6 @@ const Tier2QueuedUpgs = {
     unlocked() {
      return (player.Sol.tab == "Aparal" && (player.Sol.Aperativity.gte(1) || player.E.EclipseTier.gte(7)))
     }
-
 
   },
 
@@ -887,14 +867,11 @@ const Tier2QueuedUpgs = {
           ${!Roll.active && Roll.Amount > 0 && player.Sol.MNG.Quantify.gte(1) ? "(+" + format(player.Sol.CRNG.mul(QuantifyBonus)) + ")" : ""}
           <br>
 
-
        </span>
        ` 
 
-
        let canRoll = (Roll.cooldown <= 0 ) ? `Roll again!` : `Cooldown: ${Math.ceil(Roll.cooldown)}`
        if (player.Sol.Aperativity.lte(15)) canRoll = `Cannot Roll: Aperativity is too low`
-
 
        let roller = `
           <span>
@@ -913,7 +890,6 @@ const Tier2QueuedUpgs = {
         let spentAP = player.Sol.Aperativity.div(10)
         let boosted = Roll.Amount > 0 ? spentAP.root(3) : new Decimal(1)
 
-
         //turn on Roll
         Roll.active = true
         roll()
@@ -924,10 +900,8 @@ const Tier2QueuedUpgs = {
 
         let QuantifyBonus = player.Sol.MNG.Quantify.gte(1) ? (player.Sol.MNG.Quantify.plus(1).pow_base(1.1).pow(2)) : 1
 
-
        
        
-
 
         //set CRNG
         player.Sol.CRNG = new Decimal(1 / RawRNG)
@@ -1061,7 +1035,6 @@ const Tier2QueuedUpgs = {
 //<button> Roll BRNG </button>
  
 
-
 21: {
   display() {
     let E1 = ``
@@ -1079,7 +1052,6 @@ const Tier2QueuedUpgs = {
     // player.Sol.SolarFragments.pow(2.4) 
 
     // player.Sol.SolarFragments.log(10).div(100) //from Solar Fragments, which increase SR exponent
-
 
     
 
@@ -1107,7 +1079,6 @@ const Tier2QueuedUpgs = {
 
     else tutorial = ``
 
-
     return `
       
     ${tutorial}
@@ -1119,7 +1090,6 @@ const Tier2QueuedUpgs = {
     </span>
 
     ${Bonuses}
-
 
     `
   },
@@ -1140,9 +1110,7 @@ const Tier2QueuedUpgs = {
 
  
 
-
 },
-
 
 //not yet
 31: {
@@ -1190,8 +1158,6 @@ const Tier2QueuedUpgs = {
           `All 3 check upgrades are active at once. in addition, ALL pre-check measures are active<br>`
     ]
     //NON-QOL BONUS
-
-
 
     const TMSBuff = [
        `${decimalOne.plus(TMSun.mul(0.15))} to Solar light cap and Shards (Gen. AND Mult.)<br>`,
@@ -1250,7 +1216,6 @@ const Tier2QueuedUpgs = {
     const ProjectedTBCoreBuff = [
       
     ]
-
     if (player.Sol.TBCore.pending.eq(2)) BC_Influence = `
     <h3> Broken core's influence: </h3><br>
     TMS2 and TBS3 is active <br><br>
@@ -1337,16 +1302,10 @@ const Tier2QueuedUpgs = {
             `
       } //player.Sol.TRMoon.x
   } 
-
 //TRMoon.gte(1)
   let unknown=`???<br>`
-
-
 const buffColor = 'rgba(100, 222, 0, 0.99)';
 const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
-
-
-
   let totalBonus = `
   
       <span style="border: 2px solid gray; display: inline-block;"> 
@@ -1367,10 +1326,7 @@ const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
       ${ TBCore.eq(1) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[0] + "</span>" : unknown   } ${ TBCoreP.gte(1) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBCoreBuff[0] + " </span>" : ""   }
       ${ TBCore.eq(2) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[1] + "</span>" : unknown   } ${ TBCoreP.gte(2) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBCoreBuff[1] + " </span>" : ""   }
       ${ TBCore.eq(3) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[2] + "</span>" : unknown   } ${ TBCoreP.gte(3) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBCoreBuff[2] + " </span>" : ""   }
-
-
       </span>
-      
       <span style="border: 2px solid gray; display: inline-block;"> 
           All possible QoL effects <br><br>
          
@@ -1393,7 +1349,6 @@ const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
       </span>
     `
   //TMSQoL , TRMQoL , TBSQoL
-
 
     let stats = `
     <h3>${TMSun.gte(1) ? "Melted Sun " + TMSun : "Melted Sun Ø"}, ${TRMoon.gte(1) ? "Raging Moon " + TRMoon : "Raging Moon Ø"}, ${TBSun.gte(1) ? "Bleeding Eclipse  " + TRMoon : "Bleeding Eclipse Ø"} </h3>
@@ -1425,13 +1380,9 @@ const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
       }
     },
 
-
 },
 
-
-
  },
-
 
 buyables: {
   11: {
@@ -1444,7 +1395,6 @@ buyables: {
       // adds 1.2^x scaling
 
       if ( getBuyableAmount(this.layer,this.id).gte(33)) base = base.mul(getBuyableAmount("Sol",11).sub(32).pow_base(1.2))
-
 
       let cost = base.mul(x.pow_base(scale))
      
@@ -1742,9 +1692,6 @@ buyables: {
 },
  
 
-
-
-
  upgrades: {
   11: {
     fullDisplay() {
@@ -1797,7 +1744,6 @@ buyables: {
     let reward = ``
     let Dreward = ``
 
-
     if (getClickableState("L",42) && hasUpgrade("Sol",this.id)) Dreward = `<p>+ : ${format(player["S"].bestPointsInDark.pow(1/0.09))} -> ${format(player["S"].bestPointsInDark)} to SR cap </p>`
     if (hasUpgrade("Sol",this.id)) reward = `<span style='text-decoration: underline;'>Reward:</span><br> ^0.09 of Solar Rays boost themselves ${capIncrease} <br>
    SD-104's effect is ${format(effect)}<br>
@@ -1831,7 +1777,6 @@ buyables: {
     let mustBeIn = getClickableState("L",42) 
     let upgs = [11,12,13,21,31]
     for (id in upgs) hasUpgrade("GL",upgs[id]) ? Anti_has = false : 0;
-
 
    //
    //let restrictions = (!hasUpgrade())
@@ -1883,7 +1828,6 @@ buyables: {
     let mustBeIn = getClickableState("L",41) 
     let upgs = [11,12,13,21,22,23]
     for (id in upgs) hasUpgrade("C", upgs[id]) ? noCenterUpgrades = false : 0;
-
 
    //
    //let restrictions = (!hasUpgrade())
@@ -2132,7 +2076,6 @@ unlocked() {
 
     },
 
-
  
 //Start Solar Fragment generation! ${player.Sol.genActive=='2' ? '<br>Generating (^0.05 of Solar heat)>' : ''}
     
@@ -2177,7 +2120,6 @@ unlocked() {
 
       let exp = format(getBuyableAmount("Sol",11).div(100).plus(0.05),2)
       let gen = player.Sol.genActive=='2' ? ` <br>Generating... (^${exp} of Solar Heat) <br> = ${format(gainOf("Solar Fragments"))} ` : `` 
-
 
       return` <h2>
    Start Solar Fragments generation! </h2> <h4> ${gen}
@@ -2242,7 +2184,6 @@ style() {
         
         }
     },
-
 
     42: {
       display() {
@@ -2340,21 +2281,17 @@ style() {
         let TBSun = player.Sol.TBSun.x
         let TBCore = player.Sol.TBCore.x 
 
-
         let hasRequirements = false
 
         if (TBCore.eq(3)) hasRequirements = true
         if (TBCore.eq(2) && (TMSun.gte(2) && TRMoon.gte(3) && TBSun.gte(2) )) hasRequirements = true
         else if (TBCore.eq(1) && (TMSun.gte(1) && TRMoon.gte(1) && TBSun.gte(1) ) ) hasRequirements = true
 
-
-
         return player.Sol.sub == "WoC" && hasRequirements
       
 
       }
     },
-
 
     1111: {    
       display() {return `Respawn to redo this Check (Adds 1 to deaths) <br>
@@ -2385,7 +2322,6 @@ style() {
 
  },  
 
-
  Check: {
   
   
@@ -2398,8 +2334,6 @@ style() {
         let text = ``
         let req = ["1e200", "5e27", "100000", "30"]
         let first = ``
-
-
 
         
         if (!player["Sol"].Heliosphere) text = `
@@ -2430,7 +2364,6 @@ style() {
 
       }, 
     onClick() {
-
 
         if (player["Sol"].activeCheck == "Heliosphere" && Check("Sol",11).CompReq == true ) {
           player["Sol"].Heliosphere = true
@@ -2483,7 +2416,6 @@ style() {
  },
 
 // 4:31 -> 271 Seconds
-
 
   // if (player["GL"].Solar_shards.gte(1))
     tooltip: () => `<p>Open Solaris, side layer <br>(last unlock of v0.6 17F-15B)</p>`,       

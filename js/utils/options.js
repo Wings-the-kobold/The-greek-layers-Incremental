@@ -35,8 +35,6 @@ function updateStyle() {
 	needCanvasUpdate = true;
 }
 
-
-
 function changeTreeQuality() {
 	var on = options.hqTree;
 	document.body.style.setProperty('--hqProperty1', on ? "15px solid" : "4px solid");

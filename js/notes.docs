@@ -3,9 +3,6 @@ to get automation on dark check
     DO DILATION FIRST
     then use scaling
 
-
-
-
     SR Cap increment:
     DO DILATION FIRST
 
@@ -17,19 +14,12 @@ to get automation on dark check
 
     power Dilated 
 
-
-
     Light check automation
     - Create a function that calculates multipliers from base of 1
     - power it by Solar Rays
     - have it go through the normal scaling
 
-
 idea
 
-
 Increase Duality check base by 0.1 per level
-
-
-
 

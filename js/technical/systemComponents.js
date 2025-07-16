@@ -31,7 +31,6 @@ var systemComponents = {
 				else {run(layers[layer].onClick, layers[layer])}
 			}"
 
-
 			v-bind:class="{
 				treeNode: tmp[layer].isLayer,
 				treeButton: !tmp[layer].isLayer,
@@ -61,7 +60,6 @@ var systemComponents = {
 			)"></tooltip>
 			<node-mark :layer='layer' :data='tmp[layer].marked'></node-mark></span>
 		</button>
-
 
 		`
 	},
@@ -177,8 +175,6 @@ var systemComponents = {
 				
 				</td>
 
-
-
                 <td><button class="opt" onclick="adjustMSDisp()">Show Milestones: {{ MS_DISPLAYS[MS_SETTINGS.indexOf(options.msDisplay)]}}</button></td>
                 <td><button class="opt" onclick="toggleOpt('hqTree')">High-Quality Tree: {{ options.hqTree?"ON":"OFF" }}</button></td>
             </tr>
@@ -195,7 +191,6 @@ var systemComponents = {
         <button v-bind:class="back" onclick="goBack()">Close</button>
         `
     },
-
 
 	'tooltip' : {
 		props: ['text'],

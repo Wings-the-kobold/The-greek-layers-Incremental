@@ -35,9 +35,7 @@ addLayer("C", {
     
     
 
-
  // 1.12^M -> 1.35^H
-
 
     let ScoreNerf = player.Sol.SolarHeat.sub(1).root(2.5).pow_base(1.02)
 
@@ -45,13 +43,10 @@ addLayer("C", {
     if (player["E"].activeCheck == "Forgotton") player.C.Score = player.C.Score.pow(0.8)
    
 
-
     if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.mul(0)
     if (player.C.Score.gte(player.C.Highest)) player.C.Highest = player.C.Score
     if (player.Sol["TMSun"].active) player.C.Score = player.C.Score.clampMax(new Decimal(100000).div(player.Sol["TMSun"].pending.sub(1).pow_base(10)))
   
-
-
 
     //if (tmp["C"].hasFormality == undefined) {tmp["C"].hasFormality = false}
 
@@ -64,8 +59,6 @@ addLayer("C", {
 
     if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.25))
     if (hasUpgrade("L",13)) Divisor = Divisor.mul(upgradeEffect("L",13))
-
-
 
     Hour = new Date()
     let exponent = 0
@@ -111,7 +104,6 @@ addLayer("C", {
       let extraCP = player.C.FreeCP.gt(0) ? `Thanks to TRNG-5, Extra CP has been added by +${format(player.C.FreeCP)} ` : ``
        
 
-
       let HeirarchyBoost = ``
 
       let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
@@ -121,7 +113,6 @@ addLayer("C", {
       
       if (player["C"].hasHeirarchy) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(GetHeirarchyBonus())}` 
       
-
 
       if (player.Sol.activeCheck == "") return `You have ${forgotten} <br><br> 
       ${sS}${HeirarchyBoost}<br>
@@ -173,7 +164,6 @@ addLayer("C", {
        `
       if ((player["C"].hasFormality || player.E.EclipseTier.gt(0)) & !player["C"].hasHeirarchy) return `if you need a refresher on check upgrades, you can look at my docs, or you can wait until I add a button on refreshers on these types of things if you have unlocked them yet.`
       if (player["C"].hasHeirarchy || player.E.EclipseTier.gte(2)) return ``
-
 
      }],
      ["row", [
@@ -244,8 +234,6 @@ addLayer("C", {
             
         },
 
-
-
         "Darkness?": {
           content: [
             "buyables",
@@ -311,7 +299,6 @@ addLayer("C", {
       },
 
   
-
 
   },
 
@@ -415,7 +402,6 @@ addLayer("C", {
       has() { return player["C"].hasHeirarchy },
 
       png() {return `<p><img src="resources/Heirarchy.png" style="width:150px;height:150px;"></p> `}
-
 
   
 
@@ -581,7 +567,6 @@ addLayer("C", {
 
         
 
-
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
   unlocked() {
@@ -623,7 +608,6 @@ addLayer("C", {
 
         if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
 
-
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
       unlocked() {
@@ -663,7 +647,6 @@ addLayer("C", {
 
         if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
 
-
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
       unlocked() {
@@ -700,7 +683,6 @@ addLayer("C", {
         if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
 
         if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
-
 
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
@@ -781,7 +763,6 @@ addLayer("C", {
       
     //this is the buyMax reset thing
 
-
      
   let Compound = 1.35
   if (player.Sol["TRMoon"].active) Compound = new Decimal(Compound).mul(player.Sol["TRMoon"].pending.pow_base(1.1))
@@ -793,7 +774,6 @@ addLayer("C", {
     return mult
    },
            
-
 
      
 
@@ -821,7 +801,6 @@ addLayer("C", {
                 player.C.EffectorTier = player.C.EffectorTier.plus(1)
                 //if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.abs()
 
-
                 },
             canClick() {
               let maxPurchase = 4
@@ -847,7 +826,6 @@ addLayer("C", {
     
       player.C.upgrades = []
       //if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.abs()
-
 
       },
   canClick() {

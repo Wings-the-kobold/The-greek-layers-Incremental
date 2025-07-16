@@ -39,7 +39,6 @@
 </script>
 </head>
 
-
 <body onload="load()" onmousemove="updateMouse(event)">
 				
 	<canvas id="treeCanvas" class="canvas" v-if="!(tmp.gameEnded && !player.keepGoing)"></canvas>
@@ -72,7 +71,6 @@
 			onclick="showTab('changelog-tab')" class="overlayThing" 
 			style="margin-right: 1px; border: 2px solid gray; margin: auto; padding: 2px; background-color: rgb(53, 39, 39);" >
 				{{VERSION.withoutName}}</div>
-
 
 				<span id="screen">
 			<div id="treeOverlay" v-if="
@@ -119,8 +117,6 @@
 				col: (player.tab !== 'none' && player.navTab !== 'none'), 
 				left: (player.tab !== 'none' && player.navTab !== 'none')}">
 
-
-
 				<br><br><br><br>
 					
 						<overlay-head id="fakeHead" style="visibility: hidden;"></overlay-head>
@@ -135,7 +131,6 @@
 		<span id="screen">
 		<div id="info" v-if="player.tab!='info-tab'" class="overlayThing" onclick="showTab('info-tab')" v-bind:style="{'font-size': '16px'}"><br>stats</div>
 		
-
 
 			<!-- Popups -->
 			<div class="popup-container">
@@ -164,17 +159,12 @@
 				
 				<bg :layer="player.tab" ></bg>
 
-
-
 				</div>
 
 			
 			<div class = "bg2" v-bind:style = "tmp.backgroundStyle"></div>
 
-
-
 		
 	</div>
 </body>
-
 

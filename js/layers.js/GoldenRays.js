@@ -47,16 +47,10 @@ addLayer("GL", {
         
         player["GL"].Solarlight = player["GL"].Solarlight.plus(mult.times(speed).times(diff)).clampMin(0)
 
-
         if ( player["GL"].Solarlight.gt(player["GL"].Solarlightcap)) { player["GL"].Solarlight = player["GL"].Solarlightcap }              
-
-
-
 
         if (hasUpgrade("GL",14)) player["GL"].Time = player["GL"].Time.plus(1).clampMin(0)//.times(diff)
         
-
-
 
         let Base = new Decimal(2000)
 
@@ -79,9 +73,6 @@ addLayer("GL", {
         if ( player.E.EclipseTier.gte(6) && player.GL.Solarlightcap.gte(player.GL.bestCap)) player.GL.bestCap = player.GL.Solarlightcap
         if ( player.E.EclipseTier.gte(6)) player.GL.Solarlightcap = player.GL.bestCap
         if (player.Sol["TMSun"].active) player.GL.Solarlightcap = new Decimal(100000).div(player.Sol["TMSun"].pending.sub(1).pow_base(10)).pow(decimalOne.plus(player.Sol["TMSun"].x.mul(0.15)))
-
-
-
 
         
 
@@ -349,14 +340,12 @@ addLayer("GL", {
           max = new Decimal(max)
           if (hasUpgrade("Sol",11)) max = max.plus(player.Sol.CPBoost.root(4).sub(1)) 
 
-
           
           let enter;
           let change; 
               if (hasUpgrade("GL",21)) enter = format(upgradeEffect("GL",21),3)
               if (hasUpgrade("GL",21)) change = `Oscillating... <br>Annular's Effect is ^${enter}`
               else change = `Cost: 105 Solar Shards`
-
 
           let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `Forgotten Annulation?`; else forgotten = `Annular:`    
              
@@ -393,13 +382,11 @@ addLayer("GL", {
           let max = 1.17
           let min = 0.9
 
-
           //add max here
           max = new Decimal(max)
           if (hasUpgrade("Sol",11) && hasUpgrade("GL",21)) max = max.plus(player.Sol.CPBoost.root(4).sub(1)) 
             
             
-
 
           max = max.toNumber()  
         
@@ -409,7 +396,6 @@ addLayer("GL", {
           let offset = (max-1)/2
 
           let effect = Decimal.plus(offset+1, Math.sin(player["GL"].Time.div(30))*(range/2)).sub(0.05)
-
 
            if (player["E"].activeCheck == "Forgotton") effect = new Decimal(0.8)
 
@@ -479,7 +465,6 @@ addLayer("GL", {
   },
     
 
-
             },
 
  buyables: { 
@@ -490,8 +475,6 @@ addLayer("GL", {
       let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
 
       if (hasUpgrade("L",22)) Calculation = Calculation.pow(0.9)
-
-
 
       return Calculation;
     },
@@ -539,9 +522,6 @@ addLayer("GL", {
   },
 
   
-
-
-
 
  },
             
@@ -599,7 +579,6 @@ addLayer("GL", {
                     
                 },
 
-
                 // DOWN HERE IS A CONVERTARY RESET.
 
                 12: {
@@ -646,8 +625,6 @@ addLayer("GL", {
                   setClickableState("GL", 11, !getClickableState("GL", 11))
                   layer1Reset(player.C.EffectorTier.gte(4), "GL")
 
-
-
                   },
               canClick() {if (!player.Sol["TMSun"].active) return getClickableState("GL", 11); else return false},
               style() { 
@@ -693,12 +670,7 @@ addLayer("GL", {
 
                 // END OF CLICKABLE CODE
 
-
-
                 
-
-
-
 
             },
 
@@ -716,19 +688,5 @@ addLayer("GL", {
 
 )
 
-
-
-
-
-
 // SIDE LAYER BELOW
-
-
-
-
-
-
-
-
-
 

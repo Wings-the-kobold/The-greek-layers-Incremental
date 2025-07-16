@@ -41,9 +41,7 @@ addLayer("S", {
 
                 ["Reset", {id: 11, title: "SOLARIZE"}],
 
-
                 "blank",
-
 
                 ["row", [ //check upgrades
                    ["upgrade",11],
@@ -54,15 +52,12 @@ addLayer("S", {
                    
                ]], 
 
-
-
                 ["display-text",
       function() { 
       let RootEFF1 = new Decimal(40)
 	    let RootEFF2 = new Decimal(35)
       let MAX = (hasMilestone("E", 2) && player.L.activeCheck == "") ? 3 : 2
     
-
 
   	  let eff1 = player.S.points.root(RootEFF1.sub(upgradeEffect("S",12))).clampMin(1)
   	  let eff2 = player.S.points.root(RootEFF2.sub(upgradeEffect("S",12))).clampMin(1)
@@ -111,7 +106,6 @@ addLayer("S", {
         let textD = ``  
         
 
-
 //MetaScale
         let display = ``
         if (x.gte(25)) 
@@ -124,7 +118,6 @@ addLayer("S", {
         textD = `Meta Nerf: <p> After 300 of 'Multiply', its costs scale is ${format(antiscale)}^x`
         
 
-
         return `${textA} <br> ${textB} <br> ${textC} <br> ${textD} <br> `
 
      }],
@@ -136,7 +129,6 @@ addLayer("S", {
         },
        
       },
-
 
       Reset: {
         11: {
@@ -198,13 +190,11 @@ update(diff) {
   if (Check("C",12).has) BulkPurchase = new Decimal(5)
  // if (player.E.EclipseTier.gte(3)) BulkPurchase = BulkPurchase.plus(5)
 
-
   let Twilight = new Decimal(0.75)
   if (hasMilestone("E",3)) Twilight = Twilight.plus(0.15)
   if (hasMilestone("E",5)) Twilight = Twilight.plus(0.15)
 
   if (player["C"].hasTwilight) player.S.points = player.S.points.plus(getResetGain("S").pow(Twilight))
-
 
   //Twilight QoL
   if (hasMilestone("E",4)) player.S.points = player.S.points.plus(player.points.clampMin(1).log(10).times(diff))
@@ -215,19 +205,11 @@ update(diff) {
     
     (getClickableState("L",42) && tmp["S"].getResetGain.pow(0.09).gte(player["S"].bestPointsInDark)) ? (player["S"].bestPointsInDark = tmp["S"].getResetGain.pow(0.09)) : 0;
 
-
-
     
    
     if (getClickableState("L",42) && player.S.points.gte(getSRCap())) player.S.points = getSRCap()
 
       // /
-
-
-
-
-
-
 
     //generally for meta scale
 
@@ -235,7 +217,6 @@ update(diff) {
       scaledAmt = x.sub(player.S.metaNerf)
       metaScaling = scaledAmt.root(1.5).div(25).add(1).pow(scaledAmt)
       if (getBuyableAmount("S",12).gte(player["S"].metaNerf)) player["S"].multMeta = metaScaling
-
 
       if (hasUpgrade("S",13) && !hasUpgrade("S",21)) player.S.upgrades.push(21) 
       else if (hasUpgrade("S",21) && !hasUpgrade("S",13)) player.S.upgrades.push(13)
@@ -245,14 +226,12 @@ update(diff) {
 
      },
 
-
 getResetGain() {
   if (player.points.lt(1)) return Decimal.dZero;
     let Helio = player.Sol.activeCheck == "Heliosphere" ? 0.7 : 1
     let gain = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Solarity"].clampMin(1).log(10) : Decimal.pow(player.points, tmp.S.exponent).minus(1);
 
     let f = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Solar_Rays"].clampMin(1) : player.S.points   ;
-
 
     if (hasUpgrade("S", 14)) gain = Decimal.times(upgradeEffect("S", 14).pow(Helio), gain)
     if (hasUpgrade("GL",31)) gain = gain.times(upgradeEffect("GL",31).pow(Helio))
@@ -287,7 +266,6 @@ return  tmp["S"].getResetGain
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
-
 
     automate() {
       if ( player["C"].hasFormality && player.L.activeCheck == "") buyMaxBuyable("S",11)
@@ -531,9 +509,6 @@ return  tmp["S"].getResetGain
               let base = new Decimal(5)
               let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
 
-
-
-
               if (player["C"].activeCheck == "Heirarchy") {
                 let scaledAmt = getBuyableAmount("S",12)
                 let metaScaling = scaledAmt.root(1.5).div(25).add(1).pow(scaledAmt)
@@ -571,7 +546,6 @@ return  tmp["S"].getResetGain
              // player.S.points = player.S.points.minus(this.cost(amount));
             },
 
-
             unlocked() {
               if (player["S"].points.gte(1) || player["GL"].Solar_Shards.gte(1) || getBuyableAmount("S",11).gte(1)) return true
 
@@ -604,8 +578,6 @@ return  tmp["S"].getResetGain
               if (!player.Sol.activeCheck == "Heliosphere") if (player.S.points.gte(this.cost) && player.C.checkUpgrades.lt(1)) player.S.points = player.S.points.minus(this.cost());
               else  player.Sol.HelioStat["Solar_Rays"].minus(this.cost)
               
-
-
 
               addBuyables(this.layer, this.id, 1);
             },
@@ -690,9 +662,6 @@ return  tmp["S"].getResetGain
               else if (player.points.gte(this.cost)) addBuyables("S", 12, 1)
               else player.points = player.points.plus(1) // :trol:
 
-
-
-
              // player.S.points = player.S.points.minus(this.cost(amount));
             },
 
@@ -730,8 +699,6 @@ return  tmp["S"].getResetGain
             else if (player.points.gte(this.cost) && player.Sol.activeCheck == "Heliosphere") player.Sol.HelioStat["Solarity"] = player.Sol.HelioStat["Solarity"].minus(this.cost());
               
             if (!(getBuyableAmount("S",12).gte(100) && player.Sol.activeCheck == "Heliosphere")) addBuyables(this.layer, this.id, 1);
-
-
 
             },
             effect() {
@@ -773,10 +740,6 @@ return  tmp["S"].getResetGain
           },
         
     },
-
-
-
-
 
     
     row: 0, // Row the layer is in on the tree (0 is the first row)

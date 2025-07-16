@@ -195,7 +195,6 @@ ul {
 	display: inline-block;
 }
 
-
 #loadingSection {
 	display: flex;
 	flex-direction: column;
@@ -268,7 +267,6 @@ q.bg {
 	transform: translate(-50%,-50%);
 	content: attr(data-text);
 
-
 }
 
 .glitch::before {
@@ -299,7 +297,6 @@ q.bg {
 		
 	animation: glitch2 1s infinite linear alternate-reverse;
 	}
-
 
 /*.glitch:idle::before*/
 
@@ -404,6 +401,4 @@ q.bg {
 		clip: rect(random(100)+px, 9999px, random(100)+px, 0);
 	}
 }
-
-
 
