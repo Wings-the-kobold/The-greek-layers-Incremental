@@ -20,12 +20,13 @@ function resizeCanvas() {
 		canvas.height = window.innerHeight;
 		middleY = window.innerHeight / 2;
         middleX = window.innerWidth / 2
-			if (player.cutsceneName == "startGame") {startGameEclipse()}
-			else if (player.cutsceneName == "endGame")  {endGameEclipse(); }
+			if (player.cutsceneName == "startGame" && player.inCutscene ) {startGameEclipse()}
+			else if (player.cutsceneName == "endGame" && player.inCutscene )  {endGameEclipse(); }
 			else if (player.cutsceneName == "") drawTree();	
 }
 function fadeOutAt(n) {return 1 - (player.frames-n)/20}
 function fadeInAt(n) {return 0 + (player.frames-n)/20}
+
 function startGameEclipse() {
 //This is the sun. stays at center
 Circle(middleX, middleY, 300, "#ffa340")
@@ -39,9 +40,9 @@ F sequence: 15,40
 show text here IF player.frames = value
 or use fadeInAt()
 fade in sequences: 50, 65, 95, 120 [start button show: 150] */	
-text((middleX - 170), (middleY - 400), "The Eclipse just started...", fadeInAt(46) , 30)
-text((middleX - 210), (middleY + 350), "Your task:", fadeInAt(85) , 30)
-text((middleX - 50), (middleY + 350), "Survive the Eclipse", fadeInAt(120) , 30)
+text((middleX - 195), (middleY - 400), "The Eclipse has just started...", fadeInAt(46) , 30)
+text((middleX - 300), (middleY + 350), "Your task:", fadeInAt(85) , 30)
+text((middleX - 120), (middleY + 350), "Survive, and Tame the Eclipse.", fadeInAt(120) , 30)
 //shrink Eclipse down to minimum
 //then start game
 }
@@ -70,15 +71,17 @@ function drawEclipse() {
 
 	if (player.Sol.activeCheck == "Heliosphere") opac+=0.01; else epac = 0;
 	
-	if (player.Sol.activeCheck == "Heliosphere"){
+	if (player.Sol.activeCheck == "Heliosphere" && options.showEclipse){
 		Circle((canvas.width / 2), 500, new Decimal(sizeMultbestSize).mul(player.Sol.HelioRadiation.root(2).mul(0.5)).clampMax(575), "#9e6c20")
 		Circle((canvas.width / 2), 500, new Decimal(sizeMult ).mul(player.Sol.HelioRadiation.plus(35).pow(1.34)).clampMax(568), "#381803")
 		text((middleX - 120 ), (middleY - 40), "BREAK YOUR LIMITS", 1 , 25)
-		text((middleX - 110 ), (middleY - 0), format(player.Sol.HelioRadiation) , 1 , 25)
-		text((middleX + 50 ), (middleY - 0), "√" + format(player.Sol.HelioStat["Reduction"])  , 1 , 25)
+		text((middleX - 110 ), (middleY ), format(player.Sol.HelioRadiation) , 1 , 25)
+		text((middleX + 50 ), (middleY ), "√" + format(player.Sol.HelioStat["Reduction"])  , 1 , 25)
 	} else {
-		Circle((canvas.width / 2), 500, sizeMultbestSize, "#ffa340")
-		Circle((canvas.width / 2), 500, sizeMult, "#000000")
+		if (options.showEclipse){
+			Circle((canvas.width / 2), 500, sizeMultbestSize, "#ffa340")
+			Circle((canvas.width / 2), 500, sizeMult, "#000000")
+		}
 	}
 
 }
@@ -117,7 +120,7 @@ function drawComponentBranches(layer, data, prefix) {
 function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimensions & adjusted slightly
 	let num2 = data
 	let color_id = 1
-	let width = 15
+	let width = 8
 
 	
 
@@ -138,6 +141,7 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
 
 	if (document.getElementById(num1) == null || document.getElementById(num2) == null)
 		return
+
 
 	
 	let start = document.getElementById(num1).getBoundingClientRect();
@@ -164,6 +168,14 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
 	
 
 }
+
+
+
+
+
+
+
+// Fundamental shapes and things
 
 function Circle(x,y,s=10,color="#000000")
 {

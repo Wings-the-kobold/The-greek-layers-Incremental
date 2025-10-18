@@ -7,6 +7,8 @@ function save(force) {
 	localStorage.setItem(modInfo.id+"_options", btoa(unescape(encodeURIComponent(JSON.stringify(options)))));
 
 }
+
+
 function startPlayerBase() {
 	return {
 		tab: layoutInfo.startTab,
@@ -214,7 +216,7 @@ function load() {
 	changeTheme();
 	changeTreeQuality();
 	updateLayers();
-	setupModInfo();
+	//setupModInfo();
 
 	setupTemp();
 	updateTemp();
@@ -233,12 +235,13 @@ function loadOptions() {
 	fixData(options, getStartOptions())
 
 }
-
+/*
 function setupModInfo() {
 	modInfo.changelog = changelog;
 	modInfo.winText = winText ? winText : `Congratulations! You have reached the end and beaten this game, but for now...`;
 
-}
+}*/
+
 function fixNaNs() {
 	NaNcheck(player);
 }
@@ -282,10 +285,10 @@ function importSave(imported = undefined, forced = false) {
 		imported = prompt("Paste your save here");
 	try {
 		tempPlr = Object.assign(getStartPlayer(), JSON.parse(atob(imported)));
-		if (tempPlr.versionType != modInfo.id && !forced && !confirm("This save appears to be for a different mod! Are you sure you want to import?")) // Wrong save (use "Forced" to force it to accept.)
+		if (tempPlr.versionType != modInfo.id && !forced && !confirm("wrong save buddy, you should be using TSEGI's (or any TGLT related game)")) // Wrong save (use "Forced" to force it to accept.)
 			return;
 		player = tempPlr;
-		player.versionType = modInfo.id;
+		player.versionType = modInfo.id; //change modInfo.id into Universe_3 when finished
 		fixSave();
 		versionCheck();
 		NaNcheck(save)
@@ -330,4 +333,6 @@ window.onbeforeunload = () => {
     };
 	alert("saving...")
 };
+
+
 

@@ -18,7 +18,7 @@
 	border-radius: 100px;
 	border: 1px solid;
 	color: var(--color);
-    transition: 0.25s;
+    transition: 0.5s;
 }
 
 .tabButton:hover {
@@ -27,7 +27,7 @@
     transform: translateY(-10%)
 }
 
-.tooltip { 
+.tooltip {                                                      
     pointer-events: none;
     text-align: center;
     width: 150px;
@@ -60,8 +60,8 @@
     position: absolute;
     bottom: 100%;
     left: 50%;
-
-    top: 100%;
+     transform: translateX(-50%);
+    top: 110%;
     left: 50%;
     margin-left: -5px;
     border-width: 5px;

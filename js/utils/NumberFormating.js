@@ -22,6 +22,7 @@ function commaFormat(num, precision) {
     return portions[0] + "." + portions[1]
 }
 
+
 function regularFormat(num, precision) {
     if (num === null || num === undefined) return "NaN"
     if (num.mag < 0.0001) return (0).toFixed(precision)
@@ -55,7 +56,7 @@ function format(decimal, precision = 2, small) {
     }
     else if (decimal.gte("1e1000000")) return exponentialFormat(decimal, 0, false)
     else if (decimal.gte("1e10000")) return exponentialFormat(decimal, 0)
-    else if (decimal.gte(1e9)) return exponentialFormat(decimal, precision)
+    else if (decimal.gte(1e8)) return exponentialFormat(decimal, precision)
     else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
     else if (decimal.gte(0.0001) || !small) return regularFormat(decimal, precision)
     else if (decimal.eq(0)) return (0).toFixed(precision)
@@ -79,11 +80,11 @@ function formatWhole(decimal) {
 }
 
 function formatTime(s) {
-    if (s < 60) return format(s) + "seconds"
-    else if (s < 3600) return formatWhole(Math.floor(s / 60)) + " minutes and " + format(s % 60) + " seconds"
-    else if (s < 86400) return formatWhole(Math.floor(s / 3600)) + "hours, " + formatWhole(Math.floor(s / 60) % 60) + "minutes and " + format(s % 60) + "seconds"
-    else if (s < 31536000) return formatWhole(Math.floor(s / 86400) % 365) + " days, " + formatWhole(Math.floor(s / 3600) % 24) + " hours, " + formatWhole(Math.floor(s / 60) % 60) + " minutes and " + format(s % 60) + " seconds. "
-    else return formatWhole(Math.floor(s / 31536000)) + "years " + formatWhole(Math.floor(s / 86400) % 365) + "days " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
+    if (s < 60) return format(s) + " seconds"
+    else if (s < 3600) return formatWhole(Math.floor(s / 60)) + " Minutes and " + format(s % 60) + " seconds"
+    else if (s < 86400) return formatWhole(Math.floor(s / 3600)) + ":" + formatWhole(Math.floor(s / 60) % 60) + ":" + format(s % 60) + ""
+    else if (s < 31536000) return formatWhole(Math.floor(s / 86400) % 365) + " Days, " + formatWhole(Math.floor(s / 3600) % 24) + " Hours, " + formatWhole(Math.floor(s / 60) % 60) + " Minutes and " + format(s % 60) + " Seconds"
+    else return formatWhole(Math.floor(s / 31536000)) + "years " + formatWhole(Math.floor(s / 86400) % 365) + "days " + formatWhole(Math.floor(s / 3600) % 24) + "Hours, " + formatWhole(Math.floor(s / 60) % 60) + "Minutes, " + format(s % 60) + "Seconds"
 }
 
 function toPlaces(x, precision, maxAccepted) {

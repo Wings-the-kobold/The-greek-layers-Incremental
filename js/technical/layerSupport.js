@@ -6,6 +6,7 @@ const decimalNaN = new Decimal(NaN)
 
 const defaultGlow = "#ff0000"
 
+
 function layerShown(layer){
     return tmp[layer].layerShown;
 }
@@ -209,6 +210,7 @@ function setupLayer(layer){
     
 }
 
+
 function addLayer(layerName, layerData, tabLayers = null){ // Call this to add layers from a different file!
     layers[layerName] = layerData
     layers[layerName].isLayer = true
@@ -268,16 +270,15 @@ function someLayerUnlocked(row){
     return false
 }
 
+
 // This isn't worth making a .ts file over
 const UP = 0
 const DOWN = 1
 const LEFT = 2
 const RIGHT = 3
 
-addLayer("info-tab", {
-    tabFormat: ["info-tab"],
-    row: "otherside"
-})
+
+
 
 addLayer("options-tab", {
     tabFormat: ["options-tab"],

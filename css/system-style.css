@@ -33,6 +33,7 @@ td {
 	align-items: center;
 	max-width: 100%;
 	margin: 0 auto;
+	transition-duration: 2s
 }
 
 .upgRow {
@@ -56,6 +57,8 @@ td {
 	margin: 0 10px 0 10px;
 	vertical-align: left;
 	
+	transition-duration: 2s;
+	
 }
 
 .can.upg:hover {
@@ -75,7 +78,7 @@ td {
 	color: var(--color);
 	font-size: 40px;
 	cursor: pointer;
-	transition-duration: 1.5s;
+	transition-duration: 2s;
 }
 
 .other-back {
@@ -109,28 +112,31 @@ td {
 	 */
 	position: absolute;
 	z-index: -999;
+	transition-duration: 0.3s;
 	
 }
 
 .left {
 	position: absolute;
 	left: 0;
-	transition-duration: 1.5s;
+	transition-duration: 0.5s;
 }
 
 .remove {
 	height: 24px;
 	width: 24px;
 	cursor: pointer;
+	transition-duration: 2s;
 }
 
 .remove:hover {
 	transform: scale(1.1, 1.1);
+	transition-duration: 2s
 }
 
 .col {
 	min-width: 49.5%;
-	max-width: 49.5%;
+	max-width: 52%;
 	width: 49.5%;
 	height: 100%;
 	min-height: 100%;
@@ -138,7 +144,7 @@ td {
 	position: absolute;
 	overflow-y: auto;
 	overflow-x: auto;
-	transition-duration: 0s
+	transition-duration: 1.5s
 }
 
 .instant {
@@ -146,18 +152,28 @@ td {
 }
 
 .fast {
-	transition:color none
+	transition:color none;
+	transition-duration: 2s
 }
 
 .col.right {
 	top: 0;
-	right: 0;
+	position: absolute;
+	bottom: 0in;
+	
+	/* 18cm is minimum  
+	   36cm is maximum
+	*/
+	left: 19.75cm;
+	
+	transition-duration: 1.5s;
 }
 
 #app {
 	column-count: 2;
 	column-width: 50%;
 	min-height: 100%;
+	transition-duration: 2s
 }
 
 .vl2 {
@@ -176,7 +192,7 @@ ul {
 	min-width: 100%;
 	overflow-y: auto;
 	overflow-x: auto;
-	transition-duration: 1.2s
+	transition-duration: 2s
 }
 
 .tooltipBox { 
@@ -195,14 +211,17 @@ ul {
 	display: inline-block;
 }
 
+
 #loadingSection {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	transition-duration: 1.5s;
 }
 
 .treeOverlay {
 	pointer-events:none;
+	transition-duration: 1.5s;
 	
 }
 
@@ -222,11 +241,14 @@ ul {
 	right: 55px;
 	top: 65px;
 	background-color: transparent;
+	transition-duration: 2s;
+	
 }
 
 button > * {
 	pointer-events:none;
 	transition-duration: 1.5s;
+	
 }
 
 .ghost {
@@ -235,6 +257,7 @@ button > * {
 
 #treeTab td button {
     margin: 0 10px;
+	transition-duration: 2s
 }
 
 q.bg {
@@ -267,6 +290,7 @@ q.bg {
 	transform: translate(-50%,-50%);
 	content: attr(data-text);
 
+
 }
 
 .glitch::before {
@@ -298,7 +322,31 @@ q.bg {
 	animation: glitch2 1s infinite linear alternate-reverse;
 	}
 
+.startGame {
+	position: absolute;
+	top: 14cm;
+	left: 11cm;
+	transform: scale(1.5,1.5)
+}	
+
+.startGame::after {
+	position: absolute;
+	top: 100cm;
+	left: 11cm;
+	transform: scale(1.5,1.5)
+
+}
+
+
 /*.glitch:idle::before*/
+
+
+@keyframes SlideDown {
+	0% { offset-distance: 0%;}
+	50% { offset-distance: 0%; }
+	100% { offset-distance: 100%; }
+}
+
 
 @keyframes glitch1 {
 	0% {
@@ -401,4 +449,6 @@ q.bg {
 		clip: rect(random(100)+px, 9999px, random(100)+px, 0);
 	}
 }
+
+
 

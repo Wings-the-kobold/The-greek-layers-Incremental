@@ -1,0 +1,163 @@
+/+89⭕
+✅
+❌
+
+To do list:
+
+- Debuffs (), Balance (), Bonuses (): TBC1✅, TBC2, TBC3
+
+NEW ORDER OF 
+
+
+if (player.Sol[""].active) for debuffs
+Finish making scalings for TMS
+in display()
+
+
+
+- Add all Solaritology bonuses from (CX)3 and CX5
+- make TBC 2 and balance it
+
+
+
+LATER: 
+put something on The Main Window on "The Core" 
+like solar bursting when unlocked
+
+
+
+DO NOW:
+- Finish TBC2 rewards
+- Make the improved Darkness Tree Upgrades
+  - Add the effects of 'Bright, Hyper, and Shadow'
+
+- Create TBC2 QoL Rewards
+
+(LATER)
+- progress to TBC3 and make it
+- maybe add TBC3 influence?
+  BC3 influence: TRM4, TBE3, TMS2
+   
+
+
+
+(0.7 FIXES/BALANCES)
+- 4MUD resets solarity every minute (Or is reduced slowly to equal the current gain/gain cap)
+- 
+
+
+
+
+
+
+
+> For much later after TQET 0.2
+
+Pestillessence 'Distanced' check
+"They were useless..."
+- Day time or Night time effects become debuffs if not active
+- NM-1 is applied at a ^0.6 rate
+
+
+Pestillessence 'Distanced pt.2' check
+"Just get rid of them!"
+- All ECT debuffs are applied before its milestone's reached
+- Solar charge's effect is overhauled to equal its amount times it's bonuses
+- BRNG and TRNG milestones does nothing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for Pestillessence:
+Rewind Upgrades! or Rw-Upg! 
+how the new feature works:
+
+the player must choose one of the bonuses or clickable and confirm it is what they want before acting as a reset 
+
+in example: `it will give a specific bonus or stats boosting or nerfing things before doing what Eclipsification would do as well as all its content (in this case, it will clear Milestones 1-7). basically resetting everything before the current layer this clickable or thing resides in`
+
+the player of course cannot choose between one or the other if it only has ONE option. in that case will be a 'forced' layer reset.
+
+The second reset and onwards however will have a "Confirm option and do a Pestillation". the player can also chose the adjacant options as well
+- you're essentially completing an upgrade tree but every time an upgrade is bought it triggers a major reset. 
+  > it can also contain 'required checks' or challenges that REQUIRE you to complete them
+
+
+
+Every Compressed Solarity does the following:
+10% Enlightenment levels (+)
+25% Solarity and Solarity cap (x)
+
+
+'Reparity' 
+add 0.04 to the following:
+`Solar Rays exponent`,
+`Golden light cap & generation exponents`,
+`Modifier score exponents`,
+`
+
+also Unlock Blight Points

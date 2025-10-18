@@ -1,6 +1,6 @@
 
 var canGet =` You Can Aquire the next Eclipse Tier on This Eclipsication!` 
-
+// player.E.EclipseTier.gte(5)
 addLayer("E", {
     name: "Enlightenment", // This is optional, only used in a few places, If absent it just uses the layer id.
    // symbol: "⚡", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -24,22 +24,45 @@ addLayer("E", {
         Esolar: new Decimal(0),
         Chimera: new Decimal(0),
 
+
+
         // checkupgrade
 
         activeCheck: "",
+
 
         forgotton: false,
     }},
     color: "#3f5b96",
  
-    row: 2,
+    
 
+    nodeStyle() {
+
+      
+      return {
+        
+          "bottom": options.betterTree ? "0cm" :"2cm",
+          "right": "0cm",
+          "height": options.betterTree ? "150px" : "120px",
+          "width": options.betterTree ? "150px" : "120px",
+          "border": "var(--hqProperty1)",
+          "border-color": player.borders["E"],
+          "border-radius": "60%",
+          "z": 10
+      }
+
+    },
  //if (player.L.TimeTillDarkCheck == false)
     
  symbol() {
-  return `
+ return options.betterTree?  `<img src="resources/The Eclipse.png" style="width:100px;height:100px;",>` : 
+  
+   `
   <p><img src="resources/The Eclipse.png" style="width:80px;height:80px;",></p>`
   },
+
+
 
          update(diff) {
          let Hour = new Date()
@@ -57,6 +80,7 @@ addLayer("E", {
 
           if (player.points.div(1e308).clampMin(1).log(10).root(2).gte( player.E.PersistNoBoost )) player.E.PersistNoBoost = player.points.div(1e308).clampMin(1).log(10).root(2) //this will NEVER get reset, but no boost will be given
 
+
           player.E.ECSgain = player.E.ENLlevels.root(3)
          // player.E.falsity = player.postCap
 
@@ -65,6 +89,8 @@ addLayer("E", {
          //Solar Charge stuff
         let gainSC = player.E.ENLlevels.div(10) // the base gain generation      
         let gainL1 = tmp["E"].buyables["21"].gain//.times(diff)
+
+        if (player.Sol.TMSun.x.gte(3)) player.E.Eclipsium = player.E.Eclipsium.plus(Reset("E",11).gain.mul(0.05).times(diff))
 
     // BOOSTS AND MULTIPLIERS ARE HERE 
 
@@ -85,6 +111,8 @@ addLayer("E", {
         if (player.E.EclipseTier.gte(6)) player.E.Solinity = player.E.Solinity.plus(gainL1.div(10).times(diff))
         if (player.E.EclipseTier.gte(7) && !player.E.Esolar.lte(0.5) && player.E.Solinity.gte(2)) player.E.Esolar = player.E.Esolar.plus(gainOfEsolar().div(100).times(diff))  
 
+
+
         if (player.E.EclipseTier.eq(8))
             player.E.ETCost = new Decimal(105)
         else if (player.E.EclipseTier.eq(7))
@@ -96,7 +124,12 @@ addLayer("E", {
         else if (player.E.EclipseTier.eq(5))
          player.E.ETCost = new Decimal(9)
 
+
         else player.E.ETCost = player.E.EclipseTier.plus(1)
+
+
+
+
 
        
 
@@ -114,6 +147,9 @@ addLayer("E", {
 
         let ENLCapText = ``
         let CappedText = ``
+        
+       
+
         if (player.E.ENLlevels.gte(ENLcap)) CappedText = `If this wasn't capped, your Enlightenment Levels would instead be ${format(player.points.div(1e308).clampMin(1).log(10).root(2),4)}`
 
         if (Check("L",11).has) ENLcap = 16; else ENLCapText = `(capped)`
@@ -121,6 +157,8 @@ addLayer("E", {
             return `
             You Have ${format(player["E"].ENLlevels)} Enlightenment Levels ${ENLCapText}<br><br>
             ${CappedText}   
+            
+
             `     
      }],
 
@@ -130,12 +168,29 @@ addLayer("E", {
 
         let highestLVLtext = `${format(player.E.TopLVL)}` 
         let peakENLLVL = `` 
+
+         let pushThrough = ``
+        let multAfterCap = player.beforeCap.div(player.SolarityCap)
+			  let powerFormula = (player.beforeCap.div(player.SolarityCap).log(10)) .div(player.SolarityCap.log(10)).plus(1)
+
+        let fogger = `Solarity`
+		    if (player["E"].activeCheck == "Forgotton") fogger = `Shade...?`
+
+			  if (getPointGen().gte(player.SolarityCap) && powerFormula.lte(2) && !options.SolarityInfo) pushThrough = `<br>
+			  <p>If your ${fogger} gain was not capped, you would gain x${format(multAfterCap)} more than what you would have. which is ${format(player.beforeCap)} </p>`
+			
+          else if (powerFormula.gte(2) && player.SolarityCap.gte(1e308) && !options.SolarityInfo) pushThrough = `<br>
+        <p>If your ${fogger} gain was not capped, your gain would be raised to the ${format(powerFormula,3)}th. which is ${format(player.beforeCap)} </p>
+        `
+			  else pushThrough = ``
+
         if (player.E.EclipseTier.gte(6)) peakENLLVL = `<br> </h4> Peak Top Enlightenment levels ever reached is ${format(player.E.PersistNoBoost,4)}<br> </h4>`      
             return `
             
             
             The Highest Enlightenment Level you have reached is ${highestLVLtext}
             ${peakENLLVL}
+            ${pushThrough}
             `
         
      }],
@@ -175,6 +230,7 @@ addLayer("E", {
 
                    //return
 
+
                   let g = ``
                   if (player.E.EclipseTier.gte(1)) g = `
                   ${format(b1)} Solarity Gain <br> 
@@ -198,6 +254,7 @@ addLayer("E", {
 
              
 
+
                 "blank",
                "blank",
 
@@ -215,24 +272,30 @@ addLayer("E", {
           content: [
             ["display-text",
      function() { 
-
+    let TMSun = player.Sol.TMSun.x  
     let cap = new Decimal(100000)
 
     if (Check("L",11).has) cap = new Decimal(1e10)
+      
+    if (player.Sol.TMSun.x.gte(3)) cap = cap.mul(TMSun.sub(2).pow_base(4.6415e16))
+
+       comp = 1.45
+       if (player.Sol.TMSun.x.gte(3)) comp = new Decimal(1.45).plus(TMSun.sub(2).mul(0.02))
 
       let effect = new Decimal(1)
-        effect = player.E.Eclipsium.pow_base(1.45).clampMax(cap)
+        effect = player.E.Eclipsium.pow_base(comp).clampMax(cap)
        // effect = effect
         
         
 
       if (player.E.EclipseTier.gte(2) )
-       return `You Have ${format(player.E.Eclipsium)} Eclipsium , which multiplies Solarity gain cap by ${format(effect)} ${effect >= cap ? "" : "(Capped)" }<br>`
+       return `You Have ${format(player.E.Eclipsium)} Eclipsium , which multiplies Solarity gain cap by ${format(effect)} ${effect.gte(cap) ? "(Capped)" : "" }<br>`
 
     }],
     
     ["Reset", {id: 11, title: "RECONTROLLERIZE"}],
            
+
 
     
             "blank",
@@ -259,6 +322,7 @@ addLayer("E", {
               let S1 = new Decimal(1)
               S1 = S1.mul(buyableEffect("L",31).mul(10).clampMin(1) )
 
+
               
               let S1Text = ``
               if (getBuyableAmount("L",31).gte(1)) S1Text = `S = ${S1}`; else if (hasUpgrade("L",21)) S1Text = `<h4 style="color: #6c598f"> S = 0</h4>`
@@ -268,11 +332,17 @@ addLayer("E", {
 
               //[buyable thing here]
 
+
+
               let Hour = new Date()
               if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(2) && !Hour.getHours == 12) speed = speed.mul(1.5 ** Hour.getHours()) 
 
+
+
+
               //if (hasMilestone("E",5)) speed = speed.mul(1.7)
               if (player.E.EclipseTier.gte(3)) speed = speed.mul(player.E.EclipseTier.sub(2).pow_base(1.15))
+
 
               //speed text display
               let speedtext = `${format(speed.times(100))}% of `
@@ -284,6 +354,7 @@ addLayer("E", {
               let C = player.E.Esolar.clampMax(10000)
               let B = Decimal.add(1 , C.log(2))
                 
+
 
               let capped = ``
               if (C.gte(10000)) capped = `(capped)`
@@ -298,9 +369,15 @@ addLayer("E", {
                 .plus(S1.log(4))
           )
 
+
+
               //push text here
               if (player.E.EclipseTier.gte(2)) effect = effect.mul(player.E.Eclipsium.pow_base(1.45))
                 let SSS = `` 
+
+
+
+
 
               //Now display stuff goes down here
                 let formulatedText = `
@@ -382,6 +459,9 @@ addLayer("E", {
     Check: {
       11: {
         display() {
+          /*
+
+          */
           let text = ``
         
           if (!Check("E",11).has) text = `
@@ -390,7 +470,10 @@ addLayer("E", {
           `
           else if (player["E"].activeCheck == "Forgotton") text = `Goal: 1.16e20 Shade...? and 2 Center Points`       
           if (Check("E",11).has) text = `Phaser is added into the Modifier score formula. You now Generate Solar shards ^0.2 of your current golden light<br>`
-          return text
+         
+          if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) return `<h1> what are you waiting for... </h1>`
+          else return text
+          
         },
         onClick() {
           if (player["E"].activeCheck == "Forgotton" && Check("E",11).CompReq == true ) {
@@ -416,7 +499,8 @@ addLayer("E", {
     
     has() { return player["E"].forgotton },
     
-    png() {return `<p><img src="resources/The Forgotton.png" style="width:150px;height:150px;"></p> `}
+    png() {if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) return `<p><img src="resources/The Cores Vision.png" style="width:100px;height:100px;"></p> `
+         else return `<p><img src="resources/The Forgotton.png" style="width:150px;height:150px;"></p> `}
     
     
     
@@ -429,8 +513,28 @@ addLayer("E", {
     },
     },
 
+
+
+
+
+
+
+
+
 // if (player["GL"].Solar_shards.gte(1))
-    tooltip: () => `<p>Open Layer 2, Main Layer</p> <br> Your Current Eclipse Tier: ${player.E.EclipseTier}`,
+    tooltip() { 
+      let loreText = ``
+     
+      if (options.betterTree)
+        {
+        if (player.E.activeCheck == "Forgotton" ) return `<i><h4><b> How everything once was...</b></h4></i><h5>&nbsp;but then it all became forgotton...</h5>`
+       // if (player.E.activeCheck == "Forgotton" ) return `<i><h4><b> How everything once was...</b></h4></i><h5>&nbsp;but then it all became forgotton...</h5>`
+        else {return `<h3> The Eclipse... </h3><br> Eclipse Tier ${player.E.EclipseTier}`}
+      }
+      else return `<p>Open Layer 2, <i>The Eclipse</i></p> <br> Your Current Eclipse Tier: ${player.E.EclipseTier}`
+      //options.betterTree ? `<h3> The Eclipse... </h3><br> Eclipse Tier ${player.E.EclipseTier}` : `<p>Open Layer 2, <i>The Eclipse</i></p> <br> Your Current Eclipse Tier: ${player.E.EclipseTier}`
+    
+    },
  upgrades: {
 11: {
     fullDisplay() {
@@ -522,6 +626,7 @@ pay() {
 },
    
 
+
 13: {
                        fullDisplay() {
     
@@ -577,6 +682,7 @@ pay() {
       Queued Upgrade 4:<br> Solinity #100 Under Esolar #15, And all other upgrades bought <br><br><br>
       Unlock Chimera Reset (3rd Solinity reset) and Expansion I <br> 
 
+
       ${effectTXT}
       
       `
@@ -618,6 +724,9 @@ pay() {
   11: {
     cost(x) {
       let scale = new Decimal(1.75)
+
+      if (player.E.EclipseTier.gte(7)) scale = scale.pow(1.5)
+
       let base = new Decimal(1)
       let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
       return Calculation;
@@ -661,6 +770,7 @@ pay() {
   12: {
     cost(x) {
       let scale = new Decimal(1.25)
+      if (player.E.EclipseTier.gte(6)) scale = scale.pow(1.5)
       let base = new Decimal(10)
       let Calculation = new Decimal(base).mul(Decimal.pow(scale, x))
       return Calculation;
@@ -668,6 +778,8 @@ pay() {
     display() {
 
 let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
+
+
 
       return `<h2>Expansion I #${getBuyableAmount(this.layer, this.id)}</h2><br>
   <h2>  x${format(this.effect())} to Solar Gain Cap </h2>
@@ -677,6 +789,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   <h3>  ${format(tmp[this.layer].buyables[this.id].cost)} Chimera </h3>
      (Will root Chimera by 1.1 on purchase)`
     },
+
 
     canAfford() {
       return player.E.Chimera.gte(this.cost())
@@ -690,6 +803,8 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     effect() {
       let effect = decimalOne
       effect = effect.mul(getBuyableAmount(this.layer, this.id).pow_base(2))
+
+      if (player.E.EclipseTier.gte(7)) effect = decimalOne
       return effect;
     },
     style() {
@@ -703,9 +818,10 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
         "color": "#ffffff"
       }
     },
-    unlocked() {return player.E.Chimera.gte(10) || getBuyableAmount(this.layer, this.id).gte(1)}
+    unlocked() {return (player.E.Chimera.gte(10) || getBuyableAmount(this.layer, this.id).gte(1)) && !player.E.EclipseTier.gte(7)}
      
   },
+
 
   21: { //Just so you know, this buyable is not like the others, This acts like a reset instead so that it does not move with the background lmaoo
 
@@ -797,6 +913,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
         let Softcaptext = ``
         if (player.E.Esolar.gte(10000)) Softcaptext = `(Reduced gain)`
 
+
         let autoGenText = player.E.EclipseTier.gte(7) ? 
         `
         Current Esolar generation: ${format(gainOfEsolar().div(100))} 
@@ -856,6 +973,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
         let nf1 = ``
         let nf2 = ``
 
+
         if (effect.gte(10000)) nf1 = `(Reduced)`
         if (effect2.gte(10000)) nf2 = `(Reduced)`
    
@@ -904,6 +1022,9 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
               branches: ["21","22"],
                
   },
+
+
+
 
  },
             
@@ -981,6 +1102,8 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   requirementDescription: "Eclipse Tier 4",
   effectDescription() {
 
+
+
     if (player.E.EclipseTier.gte(this.id))
     return `
     - QOL3: You always generate Solar Rays based on log10 of Solarity<br>
@@ -1010,6 +1133,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     - Unlock ??? <br>`
 
     if (player.L.TimeTillDarkActive == true) TillDarkText = `<h3 style="color:#7d0f9c">...</h3><br>`
+
 
     if (player.E.EclipseTier.gte(this.id))
     return `
@@ -1042,8 +1166,11 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     - QOL6: Highest solar light cap is kept on Recontrol and Restabilize. <br>
     - Dark and Light generation is raised to 1.25<br>
     - Unlock Solaris, the solar sun.<br>
+     <p style="color:red"> DEBUFF: Recontrol buyables scalings is raised ^1.5</p><br>
     <p>Oh also, keep Eclarity on Future Eclipsifications. (and start with it) because at this point it's impossible to obtain.</p>
     ` 
+
+// player.E.EclipseTier.gte(6)
 
     else return `???`
   },
@@ -1069,8 +1196,11 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     - QOL9: You now start Eclipsifications with Lunarity performed <br> 
     - Raise all ongoing Solarity cap multipliers by 1.15 After all bonuses and powers <br>
     - Unlock The Core.<br>
+     <p style="color:red"> DEBUFF: Expansion I is removed.</p><br>
     <p>Oh also, keep all other Recontrol Upgrades on Eclipsifications, since you have been tortured enough<br>
     ` 
+
+
 
     else return `???`
   },
@@ -1136,6 +1266,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                   else if (player.E.EclipseTier.eq(5) && !Check("L",11).has)
                        ready = `An empty slot to the puzzle it seems... `    
 
+
                     } 
                     else ready = `Not enough enlightenment levels...`
                    
@@ -1148,6 +1279,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                    else if (player.E.Eclipsium.gte(1)) unlocker = `("The Factory" Content included)`
                     
                   let firstUnlock = ``
+
 
                    if (player.E.EclipseTier.lte(1)) firstUnlock = `Your first Eclipsication Unlocks a board in this tab that provides various boosts to help you get back to where you started! (after all nerfs) `
                   return `<h1>Eclipsify [LAYER 2 RESET]</h1><br> 
@@ -1163,9 +1295,11 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     if (player.E.EclipseTier.gte(6)) {}
                     else if (player.E.EclipseTier.eq(5)) player.E.upgrades = [11]; else player.E.upgrades = []
 
+
                     if (player.E.ENLlevels.gte(player.E.ETCost)) {
                     player.E.EclipseTier = player.E.EclipseTier.plus(1)
                     }
+
 
                     // reset ALL Layer Layer 2 progress
                     player.E.Eclipsium = player.E.Eclipsium.mul(0)
@@ -1288,6 +1422,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                   player.E.Esolar = new Decimal(15)
                   player.E.Solinity = new Decimal(0)
 
+
                 },
             canClick() {return true},
             style() { return {
@@ -1303,6 +1438,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                 
           unlocked() {
             if (hasUpgrade("E",11) && hasUpgrade("E",12) && hasUpgrade("E",13) && !hasUpgrade("E",14) && player.E.Esolar.gt(15)) return true
+
 
           }
     },
@@ -1334,7 +1470,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
         
         },
     ],
-    branches: ["GL"],
+    branches: [],
     layerShown(){ 
       hasCurrency = new Decimal(1)
       if ( player["E"].ENLlevels.gte(1) || player.points.gte(1e308) || player.E.EclipseTier.gte(1) )   return true; 

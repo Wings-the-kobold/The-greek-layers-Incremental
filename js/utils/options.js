@@ -8,6 +8,12 @@ function getStartOptions() {
 		msDisplay: "always",
 		theme: "default",
 		hqTree: false,
+		betterTree: false,
+		animateTree: false,
+		SolarityInfo: true,
+		showEclipse:true,		
+		debugMode: false, 
+
 		offlineProd: true,
 		hideChallenges: true,
 		showStory: true,
@@ -26,6 +32,10 @@ function toggleOpt(name) {
 		changeTreeQuality();
 	if (name == "oldStyle")
 		updateStyle();
+	if (name == "betterTree")
+	   options.betterTree = true
+
+
 }
 var styleCooldown = 0;
 function updateStyle() {
@@ -35,6 +45,11 @@ function updateStyle() {
 	needCanvasUpdate = true;
 }
 
+/*
+document.body.style.setProperty('--changePosX', val + 'px')
+document.body.style.setProperty('--changePosY', val2 + 'px')
+*/
+
 function changeTreeQuality() {
 	var on = options.hqTree;
 	document.body.style.setProperty('--hqProperty1', on ? "15px solid" : "4px solid");
@@ -42,14 +57,22 @@ function changeTreeQuality() {
 	document.body.style.setProperty('--hqProperty2b', on ? "0px 0px 35px rgb(255,215,0)" : "");
 	document.body.style.setProperty('--hqProperty3', on ? "2px 2px 4px rgba(120, 200, 110, 0.25)" : "none");
 }
+
+function useBetterTree() {
+	var on = options.betterTree
+
+}
+
+
+
 function toggleAuto(toggle) {
 	Vue.set(player[toggle[0]], [toggle[1]], !player[toggle[0]][toggle[1]]);
 	needCanvasUpdate=true
 }
 
-const MS_DISPLAYS = ["ALL", "LAST, AUTO, INCOMPLETE", "AUTOMATION, INCOMPLETE", "INCOMPLETE", "NONE"];
+const MS_DISPLAYS = ["ALL", "NEXT", "NONE"];
 
-const MS_SETTINGS = ["always", "last", "automation", "incomplete", "never"];
+const MS_SETTINGS = ["always", "next", "never"];
 
 function adjustMSDisp() {
 	options.msDisplay = MS_SETTINGS[(MS_SETTINGS.indexOf(options.msDisplay) + 1) % 5];
@@ -57,19 +80,16 @@ function adjustMSDisp() {
 function milestoneShown(layer, id) {
 	complete = player[layer].milestones.includes(id);
 	auto = layers[layer].milestones[id].toggles;
+	
+	//player.E.EclipseTier.eq()
+	
 
 	switch (options.msDisplay) {
 		case "always":
 			return true;
 			break;
-		case "last":
-			return (auto) || !complete || player[layer].lastMilestone === id;
-			break;
-		case "automation":
-			return (auto) || !complete;
-			break;
-		case "incomplete":
-			return !complete;
+		case "next":
+			return !complete /*|| hasMilestone(layer,id)*/;
 			break;
 		case "never":
 			return false;

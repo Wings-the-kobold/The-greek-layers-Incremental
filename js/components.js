@@ -103,6 +103,7 @@ function loadVue() {
 		`
 	})
 
+
 	// Data = width in px, by default fills the full area
 	Vue.component('h-line', {
 		props: ['layer', 'data'],
@@ -284,6 +285,7 @@ function loadVue() {
 			
 			v-on:click="if(!interval) buyBuyable(layer, data)" :id='"buyable-" + layer + "-" + data' @mousedown="start" @mouseleave="stop" @mouseup="stop" @touchstart="start" @touchend="stop" @touchcancel="stop">
 
+
 				<span v-if= "tmp[layer].buyables[data].title"><h2 v-html="tmp[layer].buyables[data].title"></h2><br></span>
 
 				<span v-bind:style="{'white-space': 'pre-line'}" v-html="run(layers[layer].buyables[data].display, layers[layer].buyables[data])"></span>
@@ -345,6 +347,8 @@ function loadVue() {
 	// data = id of clickable
 	//what
 
+
+
 	Vue.component('Custom', {
 		props: ['layer', 'data'],
 		data() {
@@ -364,6 +368,7 @@ function loadVue() {
 		> </button>
 		`
 	})
+
 
 	Vue.component('clickable', {
 		props: ['layer', 'data'],
@@ -417,6 +422,7 @@ function loadVue() {
 			v-on:click="run(tmp[layer].clickables.masterButtonPress, tmp[layer].clickables)" v-bind:class="{ longUpg: true, can: player[layer].unlocked, locked: !player[layer].unlocked }">{{tmp[layer].clickables.masterButtonText ? tmp[layer].clickables.masterButtonText : "Click me!"}}</button>
 	`
 	})
+
 
 	// data = optionally, array of rows for the grid to show
 	Vue.component('grid', {
@@ -488,6 +494,7 @@ function loadVue() {
 		`
 	})
 
+
 	// data = id of the bar
 	Vue.component('bar', {
 		props: ['layer', 'data'],
@@ -505,6 +512,7 @@ function loadVue() {
 		</div></div>
 		`
 	})
+
 
 	Vue.component('achievements', {
 		props: ['layer', 'data'],
@@ -594,6 +602,7 @@ function loadVue() {
 	`
 	})
 
+
 	// Updates the value in player[layer][data]
 	Vue.component('text-input', {
 		props: ['layer', 'data'],
@@ -637,6 +646,7 @@ function loadVue() {
 	`
 	})
 
+
 	Vue.component('Viewer', {	
 		props: ['layer','id','title','data'],		
 		data() {
@@ -677,6 +687,13 @@ function loadVue() {
 `,//v-if="tmp[layer].Viewer[data.id].unlocked"
 	} )
 
+
+
+
+
+
+
+
 	Vue.component('Reset', {	
 		props: ['layer','id','data'],		
 		data() {
@@ -693,6 +710,7 @@ function loadVue() {
 		methods: {
 			
 		},
+
 
 		template: `
 <div v-if="tmp[layer].Reset[data.id].unlocked">		
@@ -715,6 +733,8 @@ function loadVue() {
 
 	</span> 
 
+
+
 </div> 
 `, //v-html="tmp[layer].Reset[data.id].buttonText"
 
@@ -724,7 +744,9 @@ function loadVue() {
 
 	} )
 
+
 	
+
 
 	Vue.component('Check', {
 		props: ['layer','id','data'],	
@@ -754,6 +776,7 @@ function loadVue() {
 		},
 
 		},
+
 
 template: `<template><div v-if="Check(layer, data.id).unlocked"  >
 	
@@ -820,7 +843,14 @@ template: `<template><div v-if="Check(layer, data.id).unlocked"  >
 	</div></template>`
 	} )
 
+
+
 	// Unique Components / Custom Components as 1
+
+
+
+
+
 
 	// SYSTEM COMPONENTS
 	Vue.component('node-mark', systemComponents['node-mark'])
@@ -833,6 +863,7 @@ template: `<template><div v-if="Check(layer, data.id).unlocked"  >
 	Vue.component('tooltip', systemComponents['tooltip'])
 	Vue.component('particle', systemComponents['particle'])
 	Vue.component('bg', systemComponents['bg'])
+
 
 	app = new Vue({
 		el: "#app",

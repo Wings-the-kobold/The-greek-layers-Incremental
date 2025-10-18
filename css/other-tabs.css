@@ -2,33 +2,28 @@
 #optionWheel {
 	position: absolute;
 	top: 0;
-	left: 0;
+	transform: rotate(360deg); 
+	bottom: 9.33in;
+	right: 4cm;
 	height: 50px;
 	width: 50px;
 	cursor: pointer;
 }
 
 #optionWheel:hover {
-	transform: rotate(360deg);
+	transform: rotate(360deg); 
 }
 
-#info {
-	font-size: 20px;
-	color: white;
-	position: absolute;
-	top: 50px;
-	left: 4px;
-	cursor: pointer;
-	width: 40px;
-	height: 40px;
-	-webkit-text-stroke-width: 1px;
-	-webkit-text-stroke-color: #02f2f2;
-}
+
 
 #info:hover {
 	transform: scale(1.2, 1.2);
 	text-shadow: 5px 0 10px #02f2f2,
               -3px 0 12px #02f2f2;
+}
+
+#info {
+	height: 0;
 }
 
 #discord {
@@ -40,8 +35,8 @@
 }
 
 #discord img {
-	width: 100%;
-	height: 100%;
+	width: 1%;
+	height: 1%;
 }
 
 #discord-links {
@@ -50,7 +45,7 @@
 	padding-top: 44px;
 	left: -244px;
 	width: 200px;
-	transition: left 3.3s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+	
 }
 
 #discord:hover #discord-links {
@@ -59,17 +54,20 @@
 
 #version {
 	position: absolute;
-	right: 4px;
+	right: 0.3in;
 	top: 4px;
 	text-align: right;
 	color: rgb(194, 134, 36);
 	text-shadow: 0 0 10px var(--points);
 	cursor: pointer;
+	
 }
 
 #version:hover {
 	transform: scale(1.1, 1.1);
-	right: 4.8px;
+	
+	right: 0.3in;
+	top: 4px
 }
 
 a {
@@ -83,7 +81,7 @@ a {
 	font-size: 20px;
 	color: #41f5f5;
 	cursor: pointer;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-family: "Righteous";
 	-webkit-text-stroke-width: 1px;
 	-webkit-text-stroke-color: #02f2f2;
 	text-decoration: none;
@@ -110,10 +108,48 @@ a {
 	
 }
 
+.opt2 {
+	height: 100px;
+	width: 100px;
+	border-radius: 10%;
+	
+	margin: 3px;
+	padding: 2px;
+	border: 2px solid;
+	background-color: var(--color);
+	border-color: rgba(149, 93, 37, 0.922);
+	color: rgba(0, 0, 0, 0.5);
+	cursor:copy; /* eh why not lol */
+
+	
+
+}
+
 .opt:hover {
 	background-color: #439ea3;
 	transform: rotate(10deg);
 }
+
+.opt2:hover {
+	background-color: #af8b30;
+	transform: skewX(5deg);
+}
+
+.studies {
+	border: 2px solid gray; 
+	display: inline-block; 
+	overflow-x : scroll;
+}
+
+
+
+
+
+
+
+
+
+
 
 .hardReset:hover {
 	background-color: #ff0000;

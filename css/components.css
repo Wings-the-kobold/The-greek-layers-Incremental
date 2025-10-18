@@ -19,6 +19,8 @@
 	overflow: visible;
 }
 
+
+
 .achievement {
 	height: 90px;
 	width: 90px;
@@ -131,6 +133,7 @@
     margin-bottom: -2px;
 }
 
+
 /* Tiles are gridables */
 .tile {
 	height: 80px;
@@ -175,6 +178,9 @@
 	border: 2px solid;
 	border-color: rgba(0, 0, 0, 0.125);
 }
+
+
+
 
 .ignThemes {
 	color: antiquewhite;

@@ -1,6 +1,11 @@
 // ************ Themes ************
-var themes = ["default", "aqua", 'Eclipse', "Twilight", "Heliosphere"]
+var themes = ["default", "aqua", 'Eclipse', "Twilight", "Heliosphere", "Core"]
 //var unlTh
+
+var vib = 50
+var increment = 0
+
+//document.body.style.setProperty("--s", 4);
 
 var colors = {
 	default: {
@@ -33,6 +38,7 @@ var colors = {
 		background_tooltip: "rgba(0, 15, 31, 0.75)",
 		
 	},
+
 
 	Eclipse: {
 		unlocked: () => {return player.agreedTOS},
@@ -82,9 +88,28 @@ var colors = {
 		milestonelockedbg: "#000000", 
 		milestonelockedtxt: "#ffd86b",
 	
+},	
+	Core: {
+		unlocked: () => {return (player.Sol["TBCore"].pending.gte(1) && player.Sol["TBCore"].active) || player.Sol["TBCore"].x.gte(1) },
+		1: "#780000ff",//Branch color 1
+		2: "#570000ff",//Branch color 2
+		3: "#72400eff",//Branch color 3
+		color: "rgba(255, 122, 122, 0.46)",
+		points: "rgba(255," + vib + ", " + vib + ", 0.5)",
+		locked: "#000000",
+		background: "#050300ff",
+		background_tooltip: "rgba(46, 1, 1, 0.61)",
+		milestonebg: "#351803e4",
+		milestonetxt: "rgba(87, 87, 87, 1)",
+		milestonelockedbg: "#000000", 
+		milestonelockedtxt: "#000000",
+	
 },
 
 }
+
+
+
 
 function changeTheme() {
 
@@ -124,10 +149,7 @@ function switchTheme(force) {
 	changeTheme();
 	resizeCanvas();
 
-	
-
-	
-
 }
+
 
 //

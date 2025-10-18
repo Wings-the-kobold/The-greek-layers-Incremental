@@ -31,6 +31,7 @@ var systemComponents = {
 				else {run(layers[layer].onClick, layers[layer])}
 			}"
 
+
 			v-bind:class="{
 				treeNode: tmp[layer].isLayer,
 				treeButton: !tmp[layer].isLayer,
@@ -60,6 +61,7 @@ var systemComponents = {
 			)"></tooltip>
 			<node-mark :layer='layer' :data='tmp[layer].marked'></node-mark></span>
 		</button>
+
 
 		`
 	},
@@ -107,7 +109,7 @@ var systemComponents = {
 		template: `			
 		<div class="overlayThing" style="padding-bottom:7px; width: 90%; z-index: 1000; position: relative">
 		<span v-if="player.devSpeed && player.devSpeed != 1" class="overlayThing">
-			<br>The Current Game speed is {{format(player.devSpeed)}}x<br>
+			<br>The Current Game speed is {{format(player.devSpeed)}}x (you fucking cheater)<br>
 		</span>
 		<span v-if="player.offTime !== undefined"  class="overlayThing">
 			<br>Offline Production: {{formatTime(player.offTime.remain)}}<br>
@@ -127,63 +129,67 @@ var systemComponents = {
 
     'info-tab': {
         template: `
-        <div>
-        <h2>{{modInfo.name}}</h2>
-        <br>
-        <h3>{{VERSION.withName}}</h3>
-        <span v-if="modInfo.author">
-            <br>
-            Made by {{modInfo.author}}	
-        </span>
-        <br>
-        The Modding Tree <a v-bind:href="'https://github.com/Acamaeda/The-Modding-Tree/blob/master/changelog.md'" target="_blank" class="link" v-bind:style = "{'font-size': '14px', 'display': 'inline'}" >{{TMT_VERSION.tmtNum}}</a> by Acamaeda
-        <br>
-        The Prestige Tree made by Jacorb and Aarex
-		<br><br>
-		<div class="link" onclick="showTab('changelog-tab')">Changelog</div><span> </span><br>
-        <span v-if="modInfo.discordLink"><a class="link" v-bind:href="modInfo.discordLink" target="_blank">{{modInfo.discordName}}</a><br></span>
-        <a class="link" href="https://discord.gg/F3xveHV" target="_blank" v-bind:style="modInfo.discordLink ? {'font-size': '16px'} : {}">The Modding Tree Discord</a><br>
-        <a class="link" href="http://discord.gg/wwQfgPa" target="_blank" v-bind:style="{'font-size': '16px'}">Main Prestige Tree server</a><br>
-		<br><br>
-        Time Played: {{ formatTime(player.timePlayed) }}<br><br>
-        <h3>Hotkeys</h3><br>
-        <span v-for="key in hotkeys" v-if="player[key.layer].unlocked && tmp[key.layer].hotkeys[key.id].unlocked"><br>{{key.description}}</span></div>
+        
+        
     `
     },
 
     'options-tab': {
 		//<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'FourMinutes'" > Theme: Four Minutes Until Dark </button>
 				
+		//<td><button class="opt" onclick="toggleOpt('hideChallenges')">Completed Challenges: {{ options.hideChallenges?"HIDDEN":"SHOWN" }}</button></td>
         template: `
+
         <table>
+			
+			<h4 class="ignThemes">TMT's Options </h4>	
             <tr>
                 <td><button class="opt" onclick="save()">Save</button></td>
                 <td><button class="opt" onclick="toggleOpt('autosave')">Autosave: {{ options.autosave?"ON":"OFF" }}</button></td>
                 <td><button class="opt" onclick="hardReset()">HARD RESET</button></td>
-            </tr>
-            <tr>
-                <td><button class="opt" onclick="exportSave()">Export to clipboard</button></td>
+           		<td><button class="opt" onclick="exportSave()">Export to clipboard</button></td>
+			</tr>
+            <tr>  
                 <td><button class="opt" onclick="importSave()">Import</button></td>
                 <td><button class="opt" onclick="toggleOpt('offlineProd')">Offline Prod: {{ options.offlineProd?"ON":"OFF" }}</button></td>
-            </tr>
-            <tr>
-                <td>
-				<button class="opt" onclick="switchTheme()" v-if="getThemeName() == 'Eclipse'" > Theme: Eclipse...?</button>
-				<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'Twilight'" > Theme: Twilight...</button>
-				<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'Heliosphere'" > Theme: THE SURFACE OF THE SUN</button>
-				<button class="opt" onclick="switchTheme()" v-else> Theme: {{ getThemeName() }}</button>
-				
+				<td>
+					<button class="opt" onclick="switchTheme()" v-if="getThemeName() == 'Eclipse'" > Theme: Eclipse...?</button>
+					<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'Twilight'" > Theme: Twilight...</button>
+					<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'Heliosphere'" > Theme: THE SURFACE OF THE SUN</button>
+					<button class="opt" onclick="switchTheme()" v-else> Theme: {{ getThemeName() }}</button>
 				</td>
-
-                <td><button class="opt" onclick="adjustMSDisp()">Show Milestones: {{ MS_DISPLAYS[MS_SETTINGS.indexOf(options.msDisplay)]}}</button></td>
-                <td><button class="opt" onclick="toggleOpt('hqTree')">High-Quality Tree: {{ options.hqTree?"ON":"OFF" }}</button></td>
+				<td><button class="opt" onclick="adjustMSDisp()">Show Milestones: {{ MS_DISPLAYS[MS_SETTINGS.indexOf(options.msDisplay)]}}</button></td>
             </tr>
-            <tr>
-                <td><button class="opt" onclick="toggleOpt('hideChallenges')">Completed Challenges: {{ options.hideChallenges?"HIDDEN":"SHOWN" }}</button></td>
+            <tr>     
+                <td><button class="opt" onclick="toggleOpt('hqTree')">High-Quality Tree: {{ options.hqTree?"ON":"OFF" }}</button></td>
+				
                 <td><button class="opt" onclick="toggleOpt('forceOneTab'); needsCanvasUpdate = true">Single-Tab Mode: {{ options.forceOneTab?"ALWAYS":"AUTO" }}</button></td>
-				<td><button class="opt" onclick="toggleOpt('forceTooltips'); needsCanvasUpdate = true">Shift-Click to Toggle Tooltips: {{ options.forceTooltips?"ON":"OFF" }}</button></td>
+          		
+			</tr>
+			<br>
+			<h4 class="ignThemes">TSEGI Options </h4>
+				<br>
+				
+
+				<tr>
+				<td><button class="opt2" onclick="options.betterTree = !options.betterTree; options.animateTree = false; options.debugMode = false; nodePos.tick = 0">Tree layout: {{ options.betterTree?"Lore Accurate":"Game Accurate" }}</button></td>
+				<td v-if="options.betterTree && player.E.EclipseTier.gte(5)"><button class="opt2" onclick="options.animateTree = !options.animateTree;" > 
+				Animate tree: {{ options.animateTree?"True":"False" }}</button></td>
+				<td v-if="options.animateTree && player.E.EclipseTier.gte(5)"><button class="opt2" onclick="options.debugMode = !options.debugMode" v-if="options.betterTree ">
+				Debug Mode: {{ options.debugMode?"ON":"OFF" }}</button></td>
+				<td><button class="opt2" onclick="options.SolarityInfo = !options.SolarityInfo">{{ options.SolarityInfo?"Showing more Solarity gain info":"Showing less Solarity gain info" }}</button></td>
 				</tr> 
-        </table>`
+				<tr>
+				 <td v-if="player.points.gte(1e308) || player.E.EclipseTier.gte(1)"> <button class="opt2" onclick="options.showEclipse = !options.showEclipse">Draw BG Eclipse: {{ options.showEclipse?"true":"False" }}</button></td>
+				
+				</tr>
+			<tr>
+				
+			</tr>
+
+        </table>
+		
+		`
     },
 
     'back-button': {
@@ -191,6 +197,7 @@ var systemComponents = {
         <button v-bind:class="back" onclick="goBack()">Close</button>
         `
     },
+
 
 	'tooltip' : {
 		props: ['text'],

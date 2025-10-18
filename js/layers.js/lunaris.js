@@ -2,6 +2,7 @@ const TillDark = new Audio('resources/4MUD.mp3');
 
 const storedChecks = [];
 
+
 const dualityScaling = {
   Voided: {
     Start: new Decimal(10),
@@ -12,6 +13,8 @@ const dualityScaling = {
     Effect: 2
   },
 }
+
+var TimeIs = ``
 
 addLayer("L", {
     name: "Lunaris", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -29,6 +32,7 @@ addLayer("L", {
         Dark: new Decimal(0),  //base generation: 1.75^DarkCheck. 
         UnwantedChromia: new Decimal(0),
 
+
         
 
         TimeTillDarkActive: false,
@@ -44,17 +48,40 @@ addLayer("L", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
  
     symbol() {
-      return `
-      <p><img src="resources/Lunaris.png" style="width:80px;height:80px;",></p>`
+       if (options.betterTree) return ``
+      else return `
+      <p><img src="resources/Lunaris.png" style="width:80px;height:80px;"></p>`
       },
- 
+  nodeStyle() {            
+       let distance = player.Sol.activeCheck == "Heliosphere" ? 0.5: 1.5
+       let XoffSet = -3.15+(distance*Math.PI*Math.cos(nodePos.tick/60))
+       let YoffSet = 1+(distance*Math.PI*Math.sin(nodePos.tick/60))
+                                              //true      //false (resting pos)
+       nodePos.LunarisX = options.animateTree ? XoffSet   :    0.9                                       
+       nodePos.LunarisY = options.animateTree ? YoffSet  :   0.9 
+       
+       let size = player.L.TimeTillDarkActive ? "scale(2,2)"  : (player.Sol.activeCheck == "Heliosphere" ? "scale(0.6,0.6)" : "scale(1,1)")
+
+      return { // 
+          "padding":  options.betterTree ? "10px" : "0px",
+          "bottom": options.betterTree ? nodePos.LunarisY+"cm" : "2cm",
+          "right": options.betterTree ? nodePos.LunarisX+"cm":"0",
+          "height": options.betterTree ? "80px": "120px",
+          "width": options.betterTree ? "80px" : "120px",
+          "border": "var(--hqProperty1)",
+          "border-color": player.borders["L"],
+          "border-radius": "60%",
+           "transform":options.betterTree ? size : "", //For heliosphere
+          "z-index":options.betterTree && player.Sol.activeCheck == "Heliosphere" ?  1 : 100000
+      }
+
+    },
 
     //L1, D1, L2, D2, L3, DT2, D3
          update(diff) {          
          if (player.L.DarkCheck.gte(1)) player.L.Dark = player.L.Dark.plus(getBaseCheckGen("Dark").times(diff))   
          if (player.L.LightCheck.gte(1)) player.L.Light = player.L.Light.plus(getBaseCheckGen("Light").times(diff))
          
-
          if (player.L.Light.gte(player.L.LightCheck.pow_base(8).mul(100)) || player.L.Dark.gte(player.L.DarkCheck.pow_base(8).mul(100)) ) 
          if (getClickableState("L",41) || getClickableState("L",42)) player.L.UnwantedChromia = player.L.UnwantedChromia.plus(player.L.LightCheck.mul(player.L.DarkCheck).mul(diff))
  
@@ -65,22 +92,23 @@ addLayer("L", {
 
 //LPboost.mul(diff)
 
+
+// Time Until Dark Check
 if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
   player.L.TimeTillDark = player.L.TimeTillDark.sub(diff)
-  
-}
+  }
 
+  if (player.Sol.TBSun.x.gte(5)) player.L.LunarEssence = player.L.LunarEssence.plus(tmp["L"].Reset[11].gain.pow(0.25).times(diff))
+    
         },
          
-        
-
     tabFormat: {
         "Him...": {      
               content: [
                 
-                //tmp[layer].Viewer[data].display
+                
                 ["display-text",
-      function() { 
+      function() { //remember to make more dialogue (or move them to Storyline)
 
         let startFORGETTING = ``
         if (getClickableState("E",14)) startFORGETTING = `...these chains... help... they require... the shadows... to chip away...`
@@ -96,6 +124,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
         let PostLight= ``
         if (player.L.LightCheck.gte(1) && player.L.DarkCheck.gte(1)) PostLight = `
         <br>...What the hell? what is this~ What are you doing user???? with my power?`
+
 
         return `
         *You see a mysterious gray figure, chained into a wall, all bloody and covered with cuts and bruises* <br> 
@@ -157,14 +186,9 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
             function() { 
       
              
-              const time = new Date();
-              const hours = time.getHours() % 12;
-              const am_pm = time.getHours() < 12;
-              const minutes = time.getMinutes();
-              const seconds = time.getSeconds();
               
               //if (time.getHours() > 12) hours = hour
-              return `The Solar Clock: ${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${am_pm ? '(Day)' : '(Night)'}`
+              return `The Solar Clock: <h3>${TimeIs}</h3>`
       
            }],
            "blank",
@@ -189,17 +213,21 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
             
           ]],
 
+
+
           ["column", [
             "blank",
             "blank",
              ["display-text",
             function() {
-              if (getBuyableAmount("L",21).gte(2) && getBuyableAmount("L",22).gte(2)) 
+              
+              if (getBuyableAmount("L",21).gte(2) && getBuyableAmount("L",22).gte(2)) // DT2 and NT2
                 return `Chronology`; 
               else if (player.E.EclipseTier.gte(6) && getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5)) return `Re-unlock "Chronology" at DT2 and NT2`
               else if (player.E.EclipseTier.gte(6)) return `Re-Unlock "The Solar Clock" at Ektrosity #10 and Basity I #5`
                 else return `Requires Solock 16`
            }],
+
 
           ["row", [
             
@@ -211,6 +239,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
             ["upgrade",13],
             
           ]],
+
 
           ["row", [
             
@@ -327,8 +356,10 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
 
             },
           
-// if (player["GL"].Solar_shards.gte(1))
-    tooltip: () => `<p>Open Layer 2, Lunaris</p>`,
+
+    tooltip: () => options.animateTree || options.betterTree ? `<h3>Lunaris, The Lunar Sun. </h3><br>
+<h5><i> ${getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5)? "The solar clock reads: " + TimeIs : ""}</i></h5>` : `<p>Open Layer 2, Lunaris</p><br>
+<h5><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Time: ${getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5)? TimeIs : ""} `,
  upgrades: { 
  
 //First row
@@ -414,7 +445,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
   effect() {
     
     baseEffect = player.E.SolarCharge
-   effect = baseEffect.max(1).log(5).pow(0.8)
+    effect = baseEffect.max(1).log(5).pow(0.8)
 
     
     return effect
@@ -609,8 +640,11 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
 
 },  
 
-            },
 
+
+
+
+            },
  Reset: {
     11: {
       display() {
@@ -625,7 +659,9 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
         },     
       onClick() {
         let gain = tmp["L"].Reset[11].gain
-        player.L.LunarPower = new Decimal(0)                                              
+        
+        //fix later, the NaN is from player.S.poweredInst
+        player.L.LunarPower = new Decimal(0.00000000000001)                                              
         player.L.LunarEssence = player.L.LunarEssence.plus(gain)
         EclipsiumReset()
         player.E.TopLVL = new Decimal(0)
@@ -633,7 +669,9 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
       canClick() {if (player.L.LunarPower.gte(100)) return true},
       
       gain: () => { 
-        let bonus = player.E.EclipseTier.sub(5).pow_base(3); return player.E.EclipseTier.gte(6) ? player.L.LunarPower.clampMin(1).log(5).mul(bonus) : player.L.LunarPower.clampMin(1).log(5)
+        let bonus = player.E.EclipseTier.sub(5).pow_base(3); 
+        
+        return player.E.EclipseTier.gte(6) ? player.L.LunarPower.clampMin(1).log(5).mul(bonus) : player.L.LunarPower.clampMin(1).log(5)
       },
       button: () => { return `Restabilize Abnormalities` },
       unlocked() {
@@ -641,60 +679,93 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
       },
   },          
  },
-
  Viewer: {
 
       11: {
         display() {
           let LI_gain = TSolStones(4).unlocked ? player.E.TopLVL.div(10).mul(TSolStones(4).effect) : player.E.TopLVL.div(10)
           
-                
-          let Display = ``; let c1 = ``;let c1debufftext = ``; let c2 = ``; let c3 = ``; let c4 = ``; let c5 = ``; let THEBLEEDINGSUN = ``; let c6b = ``;
+         
 
+          let TBSunP = player.Sol["TBSun"].pending
+          let TBSun = player.Sol["TBSun"].x
+          
+          let plural = TBSun.plus(TBSunP).gte(3) ? `'s` : ``
+
+          let Display = ``; let c1 = ``;let c1debufftext = ``; let c2 = ``; let c3 = ``; let c4 = ``; let c5 = ``; let THEBLEEDINGSUN = ``; let c6b = ``;
           let c1effect = decimalOne.plus(player.L.LunarPower.log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
 
-           
-
+          // Broken core's influence
+          let BC2_INFL = false
+          if (player.Sol["TBCore"].active && getCoreDifficulty().eq(2)) BC2_INFL = true
+//-------------------------------------------          
+          //The Bleeding Sun 1 & 2
           let BLEEDINGSUN_POWER = 1
-          if (player.Sol["TBSun"].active) BLEEDINGSUN_POWER = player.Sol["TBSun"].pending.mul(2).plus(1)
-          let c1NOMERCYDEBUFF = decimalOne.plus(player.L.LunarPower.log(7.5)).pow(player.L.LunarPower.log(4)).clampMin(1).pow(BLEEDINGSUN_POWER)
-              
+          if (BC2_INFL) BLEEDINGSUN_POWER = 7 // Broken core influence
+          else if ( player.Sol["TBSun"].active && TBSun.plus(TBSunP).gte(1)) BLEEDINGSUN_POWER = TBSun.plus(TBSunP).mul(2).plus(1)
+          let base_NOMERCYDEBUFF = decimalOne.plus( player.L.LunarPower.log(7.5)).pow(player.L.LunarPower.log(4)) .clampMin(1).pow(BLEEDINGSUN_POWER)
+          let c1NOMERCYDEBUFF = base_NOMERCYDEBUFF
+//-------------------------------------------
+          //The Bleeding Sun 3
+          let BLED_SOLARS = decimalZero
+          if (BC2_INFL) BLED_SOLARS = 0.27 // Broken core influence
+          else if (TBSun.plus(TBSunP).gte(3)) BLED_SOLARS = TBSunP.plus(TBSun).div(11)
+          let BLEEDING_SOLARS = base_NOMERCYDEBUFF.pow(BLED_SOLARS)  
+          let BLEEDING_SOLARS_Text = (TBSun.plus(TBSunP).gte(3)) || BC2_INFL ? `Solar reduction: <h4 style="color:rgba(255, 122, 39, 1); text-shadow: 0px 0px 30px rgba(157, 38, 38, 1);">
+          ${format(BLEEDING_SOLARS)}
+          </h4><br>` : ``
+//-------------------------------------------
+          // The Bleeding Sun 5
+
+          let BLED_BUYABLES = decimalZero
+          if (TBSun.plus(TBSunP).gte(5)) BLED_BUYABLES = 0.27
+          let BLEEDING_BUYABLES = base_NOMERCYDEBUFF.pow(BLED_BUYABLES)  
+          let BLEEDING_BUYABLES_Text = (TBSun.plus(TBSunP).gte(5))  ? `Plasmate and Multiply is <h4 style="color:rgba(255, 154, 39, 1); text-shadow: 0px 0px 30px rgba(107, 22, 22, 1);">
+          ${format(BLEEDING_BUYABLES)}
           
+          </h4> weaker.<br>` : ``
+
+          
+
+          //Lunar Instability debuff
           let c1debuff = decimalOne.plus((player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4))  .pow(new Decimal(0.9).pow(player.Sol["TBSun"].x)) ).clampMin(1)
           
-          //.pow(BLEEDINGSUN_POWER)
+        
           
           
             let c1Text = `<h4 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;">Reduce Solarity gain by ${format(c1debuff)} (Based on Lunar Abnormality's effect)</h4>`
-            if (player.Sol["TBSun"].active) THEBLEEDINGSUN = `The Bleeding Sun's Effect: <h4 style="color:rgb(255, 89, 39); text-shadow: 0px 0px 30px rgb(205, 49, 49);">${format(c1NOMERCYDEBUFF)}</h4>`
+            if (player.Sol["TBSun"].active || BC2_INFL) THEBLEEDINGSUN = `The Bleeding Sun's Effect${plural} : 
+            <h4 style="color:rgb(255, 89, 39); text-shadow: 0px 0px 30px rgb(205, 49, 49);">/${format(c1NOMERCYDEBUFF)} to Solarity gain</h4><br>
+            ${BLEEDING_SOLARS_Text}
+            ${BLEEDING_BUYABLES_Text}
+            `
                       
 
           c1 = ``; c2 = ``
-          if (player.L.LunarPower.gte(100) && !player.Sol["TBSun"].active) c1debufftext = `
+          if (player.L.LunarPower.gte(100) && !player.Sol["TBSun"].active && !(player.Sol.TBCore.active && getCoreDifficulty().gte(2) )) c1debufftext = `
           <h3 style="color: #353852; text-shadow: 0px 0px 2px #ffffff";>Lunar Instability: </h3>
           ${c1Text}
           
           `
     
- 
-          if (player.L.LunarPower.gt(0)) c1 = `Lunar Abnormality multiplies solarity gain cap by ${format(c1effect)} <br>`       
-          if (player.L.LunarEssence.gt(0)) c2 = `<h3 style="color: #353852; text-shadow: 0px 0px 2px #ffffff";>Lunar Essence: ${format(player.L.LunarEssence)}.</h3>`  
+  
+            if (player.L.LunarPower.gt(0)) c1 = `Lunar Abnormality multiplies solarity gain cap by ${format(c1effect)} <br>`       
+            if (player.L.LunarEssence.gt(0)) c2 = `<h3 style="color: #353852; text-shadow: 0px 0px 2px #ffffff";>Lunar Essence: ${format(player.L.LunarEssence)}.</h3>`  
 
             if (player.L.Dark.gt(0)) c3 = `Dark: ${format(player.L.Dark)} boost to Solarity Gain Cap and ${format(player.L.Dark.pow(0.3))} boost to Solarity`
             if (player.L.Light.gt(0)) c4 = `Light: ${format(player.L.Light)} boost to Solarity Gain Cap and ${format(player.L.Light.pow(0.25))} boost to Solar Rays`
-          
-          if (player.L.UnwantedChromia.gt(0) && ( getClickableState("L",41) || getClickableState("L",42) ) ) c5 = `<h4 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;"> Unwanted Chromia: Divides Light and Dark generation by ${format(player.L.UnwantedChromia.log(10))}</h4>`
+            
+            if (player.L.UnwantedChromia.gt(0) && ( getClickableState("L",41) || getClickableState("L",42) ) ) c5 = `<h4 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;"> Unwanted Chromia: Divides Light and Dark generation by ${format(player.L.UnwantedChromia.log(10))}</h4>`
 
-          
-      
             if (getBaseCheckGen("Light").eq(getBaseCheckGen("Dark"))  )
            Display = "Light & Dark Generations: " + format(getBaseCheckGen("Dark"))
-            else if (player.L.Light.div(player.L.Dark).lte(2))
+            else if (player.L.Light.div(player.L.Dark).lte(9) && player.L.Dark.div(player.L.Light).lte(9))
            Display = "Light & Dark Generations: ~" + format(getBaseCheckGen("Dark"))   
             else
            Display = "Light Generation: " + format(getBaseCheckGen("Light")) + " | " + "Dark Generation: " + format(getBaseCheckGen("Dark"))
             
             if (player.Sol.activeCheck == "Heliosphere") Display = ``
+
 
            
 
@@ -705,6 +776,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
               <h3 style="color: #353852; text-shadow: 0px 0px 2px #ffffff";> Lunar Abnormality: ${format(player.L.LunarPower)} (+${format(LI_gain)}/sec). <br>${c1}</h3>
               ${c1debufftext}
               ${THEBLEEDINGSUN} <br> 
+
 
               ${c2}<br>  
               <h3 style="color: #160a21; text-shadow: 0px 0px 2px #ffffff";>${c3}<br>${c4}</h3>
@@ -735,6 +807,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
          return player.L.Lunarity == true
         }
 
+
       },
 
     },
@@ -743,6 +816,18 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
  Check: {
   11: {
     display() {
+
+      //(increases by 1.35 per hour)
+
+      let incNum = 1.35 / 59
+      let base = 34
+      let coreDiff = toNumber(getCoreDifficulty())
+      const time = new Date();
+      if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) base = base + (8 * (coreDiff - 1))
+      let goal = base + (time.getMinutes() ** 1.085 * incNum * coreDiff)
+      
+      // every minute 
+
         let text = ``
         if (!player["L"].TimeTillDarkCheck) text = `
        <span style="font-size:11px"> 
@@ -753,7 +838,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
             - Every minute that passes in this check upgrade divides Solar gain cap by 100 compounding<br>
             - It will also reset Solarity every minute (NYI)
             - You will be given a timer to complete this check upgrade.<br></h4> <h3 style="color: #d81111"> Do not let it reach 0. <br>
-          Recommend turning off autosave before entering this check because this can softlock you!
+          Recommend turning off autosave before entering this check because this can softlock you! (Ill add a death counter for 4MUD soon...)
         </span> `
         else if (player["L"].TimeTillDarkCheck) text = `
                   (Permenant Unlock) Unlock Eclipse Tier 6. <br> 
@@ -762,13 +847,12 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
        
         if (player.L.activeCheck == "TimeTillDark") text = `
         You know when to leave...<br> Remember: <p style="color: #d81111"> Do not let it reach 0.</p>`
-    
+        if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) return `<h1>It requires ${format(goal)} Core Energy...</h1>`
         return `             
         ${text}
       `
       }, 
     onClick() {
-
         if (player.L.activeCheck == "TimeTillDark" && Check("L",11).CompReq == true ) {
           
           player["L"].TimeTillDarkCheck = true
@@ -817,12 +901,14 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
       },
     has() { return player["L"].TimeTillDarkCheck },
 
-    png() {return `<p><img src="resources/4 Minutes Until dark.png" style="width:150px;height:150px;"></p> `},
+    png() {if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) return `<p><img src="resources/The Cores Vision.png" style="width:100px;height:100px;"></p> `
+         else return `<p><img src="resources/4 Minutes Until dark.png" style="width:150px;height:150px;"></p> `},
 
     
 
     },
  },
+
 
     buyables: { 
   11: { //Ektrosy
@@ -833,6 +919,8 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
       return Calculation;
     },
     display() {
+
+
 
       if (player.L.LunarEssence.gt(0)) return `<h2 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;">Ektrosy #${getBuyableAmount(this.layer, this.id)}</h2>
   <h3>  x${format(tmp[this.layer].buyables[this.id].effect)} to Plasmate
@@ -892,7 +980,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
     },
     display() {//
 
-      let Basity_II = getBuyableAmount("Sol",13).gte(1) ? `<h4>(1.2 -> ${getBuyableAmount("Sol",13).div(100).plus(1.2)}) </h4>` : ``
+      let Basity_II = getBuyableAmount("Sol",13).gte(1) ? `<h4>(1.2 -> ${format(getBuyableAmount("Sol",13).div(100).plus(1.2))}) </h4>` : ``
 
       if (player.L.LunarEssence.gt(0)) return `<h2 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;">Basity I #${getBuyableAmount(this.layer, this.id)}</h2>
   <h3>  x${format(tmp[this.layer].buyables[this.id].effect)} to Multiply</h3> ${Basity_II}
@@ -996,11 +1084,13 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
     canAfford() {
       const currTime = new Date()
 
+
       
       let b = new Decimal(1)
 
       let firstSc = b.times(1000).times(getBuyableAmount(this.layer,this.id).pow_base(100))
       let secondSc = b.times(2).plus(getBuyableAmount(this.layer, this.id).mul(2).round()).sub(1)
+
 
       if (getBuyableAmount(this.layer,this.id).eq(0)) 
       {
@@ -1012,10 +1102,13 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
        return true;
       } 
 
+
       else if (getBuyableAmount(this.layer,this.id).gte(1) ){ 
         if (player.L.Light.gte(firstSc) && player.L.LightCheck.gte(secondSc) && getBuyableAmount(this.layer,this.id).lt(3)) return true}
         
       
+
+
 
     },
     buy() {
@@ -1024,6 +1117,9 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
       /*
       
       */
+
+
+
 
       addBuyables(this.layer, this.id, 1);
     },
@@ -1078,6 +1174,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
       let firstSc = b.times(1000).times(getBuyableAmount(this.layer,this.id).pow_base(100))
       let secondSc = b.times(2).plus(getBuyableAmount(this.layer, this.id).mul(2).round()).sub(1)
 
+
       let NT = ``
       if (getBuyableAmount(this.layer,this.id).eq(0)) NT = `Requires:
       - 38 Center Points
@@ -1108,6 +1205,8 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
 
       let firstSc = b.times(100).times(getBuyableAmount(this.layer,this.id).pow_base(100))
       let secondSc = b.times(2).plus(getBuyableAmount(this.layer, this.id).mul(2).round()).sub(1)
+
+
 
       if (getBuyableAmount(this.layer,this.id).eq(0) && player.C.CenterPoints.gte(38) && player.GL.Solarlight.gte(1.5e11) && currTime.getHours() >= 12  ) return true;
       else {
@@ -1270,57 +1369,47 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                     let text = ``
                     let textActive = ``
                     let rewardDisplay = ``
-
-                    let IgnScale = player.L.LightCheck.gte(dualityScaling["Ignorant"].Start) ? (player.L.LightCheck.sub(dualityScaling["Ignorant"].Start)).pow_base(10000) : 1
-                    setBaseRequirements = new Decimal(1e15)
-                    setBaseRequirements = setBaseRequirements.mul(player.L.LightCheck.pow_base(10000)).mul(IgnScale)
-
-                   
-
+                    let setBaseRequirements = new Decimal(1e15)
+                    let projectedMax = player.S.points.div(1e15).log(10000).floor()
+                    let maximum = new Decimal(20).plus(player.Sol.TBCore.x.mul(5))
                     let lScale = player.L.LightCheck.gt(dualityScaling["Ignorant"].Start) ? `<h3 style="color:rgb(134, 0, 0);">The light grows Ignorant... (^${format(dualityScaling["Ignorant"].Effect)}) </h3>` : ``
-
+                    let IgnScale = player.L.LightCheck.gte(dualityScaling["Ignorant"].Start) ? (player.L.LightCheck.sub(dualityScaling["Ignorant"].Start)).pow_base(10000) : 1
+                    let GetReady = ``
+                    let scaleDebuff = ``
+                    let Goal_Text = ``
+                    setBaseRequirements = setBaseRequirements.mul(player.L.LightCheck.pow_base(10000)).mul(IgnScale)
                     
-
-                    if (!getClickableState(this.layer,this.id) ) text = `Enter Lightness, where the base Solarity cap starts at 1 instead of e308.  
-
+                    if (projectedMax.gte(dualityScaling["Ignorant"].Start)) projectedMax = player.S.points.mul( dualityScaling["Ignorant"].Start.pow_base(10000).div(1e15) ).log(10000).div(2)
+                    if (projectedMax.gte(dualityScaling["Ignorant"].Start) && player.L.LightCheck.lt(dualityScaling["Ignorant"].Start)) scaleDebuff = `NOTE: <h3 style="color:rgb(134, 0, 0);">Ignorant scaling has become active... </h3>`
+                     
+                    // if is in check and is over maximum
+                    if (getClickableState("L", this.id) && (player.L.LightCheck.gte(maximum) || projectedMax.gte(maximum))) text = `<br>You need TBC${player.Sol.TBCore.x.plus(1)} to get more Light!`          
+                    // if not in check but Player has >1 LK
+                    else if (!getClickableState("L", this.id) && player.L.LightCheck.gte(1)) text = `Enter Lightness again... <br> [Solarity gain cap base is 1 instead of 1e308]`
+                    // if not in check (but is entering for the first time)
+                    else if (!getClickableState(this.layer,this.id) ) text = `Enter Lightness, where the base Solarity cap starts at 1 instead of e308.  
                     - Upon entering, reset both Light and Dark on enter. 
                     - Upon reaching 100 light. Unwanted Darkness is generated which divides light generation.`
-                    if (!getClickableState("L", this.id) && player.L.LightCheck.gte(1)) text = `Enter Lightness again... <br> [Solarity gain cap base is 1 instead of 1e308]`
-
-                    else text = `Goal: ${format(setBaseRequirements)} Solar Rays`
-
-                    let GetReady = ``
                     
-                    let projectedMax = player.S.points.div(1e15).log(10000).floor()
-
-                    if (projectedMax.gte(dualityScaling["Ignorant"].Start)) projectedMax = player.S.points.mul( dualityScaling["Ignorant"].Start.pow_base(10000).div(1e15) ).log(10000).div(2)
-                  
-
-                    let scaleDebuff = ``
-                    if (projectedMax.gte(dualityScaling["Ignorant"].Start) && player.L.LightCheck.lt(dualityScaling["Ignorant"].Start)) scaleDebuff = `NOTE: <h3 style="color:rgb(134, 0, 0);">Ignorant scaling has become active... </h3>`
-      
-
+                    if (getClickableState("L", this.id)) Goal_Text = ` Goal: ${format(setBaseRequirements)} Solar Rays`
+                    
                     if (player.E.EclipseTier.gte(7) && player.S.points.gte(setBaseRequirements)) GetReady = `You will gain +${projectedMax.plus(1).sub(player.L.LightCheck).floor()} Level(s) on exit! <br> ${scaleDebuff}`
                     else if (player.S.points.gte(setBaseRequirements)) GetReady = `You can get +1 Level on exit!`
-
+               
                     if (getClickableState("L", this.id)) textActive = `[ACTIVE] <br>
                     ${GetReady}
                     <br>
                     ${lScale}
                     `
-                   
-                   
-                   
-
-                    
-                   if (player.L.LightCheck.gte(1) && !getClickableState("L", this.id)) rewardDisplay = `Start Generating Light. They boost Solarity gain cap and Solar Rays equal to its amount.`
+                                  
+                    if (player.L.LightCheck.gte(1) && !getClickableState("L", this.id)) rewardDisplay = `Start Generating Light. They boost Solarity gain cap and Solar Rays equal to its amount.`
       
                     return `
                     <h2>Light Check #${player.L.LightCheck}</h2>
                     <h4>Rep-Check 1</h4>
                     ${textActive}              
                     ${text} 
-                    
+                    ${Goal_Text}
                     ${rewardDisplay}
                     <br>`
                     
@@ -1337,6 +1426,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
 
                   console.log(format(gainMaxLightCheck))
 
+
                   if (getClickableState(this.layer, this.id) && player.S.points.gte(BaseRequirements)) { 
                    
                    if (player.E.EclipseTier.gte(7)) {
@@ -1350,6 +1440,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                   }
                    else player.L.LightCheck = player.L.LightCheck.plus(1)
                    
+
 
                   }   
                   if (!getClickableState(this.layer, this.id)) {
@@ -1368,6 +1459,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
               let IgnScale = player.L.LightCheck.gte(dualityScaling["Ignorant"].Start) ? (player.L.LightCheck.sub(dualityScaling["Ignorant"].Start)).pow_base(10000) : 1
               BaseRequirements = new Decimal(1e15)
               BaseRequirements = BaseRequirements.mul(player.L.LightCheck.pow_base(10000)).mul(IgnScale)
+
 
               //check if it has the check upgrade or is not in the check upgrade
               if (getClickableState(this.layer,this.id) == false && getClickableState("L",42) == false) 
@@ -1396,8 +1488,8 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                 "backgroundColor": "#e3d08a",
                 "color": "#160a21",
                 }
-              }
-
+              },
+             
               },
             
               //dark check: getClickableState("L",42)
@@ -1406,73 +1498,79 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                   let text = ``
                   let textActive = ``
                   let rewardDisplay = ``
-                  
-
-                  let VoidScale = player.L.DarkCheck.gte(dualityScaling["Voided"].Start) ? (player.L.DarkCheck.sub(dualityScaling["Voided"].Start)).pow_base(100000) : 1
-                  setBaseRequirements = new Decimal(1e15)
-                  setBaseRequirements = setBaseRequirements.mul(player.L.DarkCheck.pow_base(100000)).mul(VoidScale)  
-
-                  let dScale = player.L.DarkCheck.gt(dualityScaling["Voided"].Start) ? `<h3 style="color:rgb(116, 0, 0);"> The Darkness becomes Voided... (^${format(dualityScaling["Voided"].Effect)}) </h3>` : ``
-
-                  if (!getClickableState(this.layer,this.id) ) text = `Enter Darkness, where Solar rays is always capped to 1e15. You generate Dark Essence instead based on your solarity generation. 
-
-                  - Upon entering, reset both Light and Dark on enter. 
-                  - Upon reaching 100 Dark. Unwanted Lightness is generated which divides dark generation.`
-                  if (!getClickableState("L", this.id) && player.L.DarkCheck.gte(1)) text = `Enter Darkness again... 
-                  [Solar Rays is capped to 1e15. Dark Essence is Generated instead of Solarity]`
-                  else text = `Goal: ${format(setBaseRequirements)} Dark Essence`
-
-                  //Buy max text
-                  let GetReady = ``
-
                   let projectedMax = player.points.div(1e15).log(100000).floor()
+                  let maximum = new Decimal(20).plus(player.Sol.TBCore.x.mul(5))
+                  let GetReady = ``
+                  let metaScale = player.L.DarkCheck.gte(20) ? new Decimal(100000).mul(decimalOne.plus(player.L.DarkCheck.sub(20).mul(0.01))) : new Decimal(100000)
+                  let scaleDebuff = ``
+                  let setBaseRequirements = new Decimal(1e15)
+                  let dScale = player.L.DarkCheck.gt(dualityScaling["Voided"].Start) ? `<h3 style="color:rgb(116, 0, 0);"> The Darkness becomes Voided... (^${format(dualityScaling["Voided"].Effect)}) </h3>` : ``   
+                  let VoidScale = player.L.DarkCheck.gte(dualityScaling["Voided"].Start) ? (player.L.DarkCheck.sub(dualityScaling["Voided"].Start)).pow_base(100000) : 1
+                  let Goal_Text = ``
 
-                  if (projectedMax.gte(dualityScaling["Voided"].Start)) projectedMax = player.points.mul( dualityScaling["Voided"].Start.pow_base(100000).div(1e15) ).log(100000).div(2)
+                  setBaseRequirements = setBaseRequirements.mul(player.L.DarkCheck.pow_base(100000)).mul(VoidScale)  
                   
-                    let scaleDebuff = ``
+                  if (projectedMax.gte(dualityScaling["Voided"].Start)) projectedMax = player.points.mul( dualityScaling["Voided"].Start.pow_base(metaScale).div(1e15) ).log(100000).div(2).clampMax(maximum)   
                   if (projectedMax.gte(dualityScaling["Voided"].Start) && player.L.DarkCheck.lt(dualityScaling["Voided"].Start)) scaleDebuff = `NOTE: <h3 style="color:rgb(116, 0, 0);">Voided scaling has become active... </h3>`
 
-                  if (player.E.EclipseTier.gte(7) && player.points.gte(setBaseRequirements)) GetReady = `You will gain +${projectedMax.plus(1).sub(player.L.DarkCheck).floor()} Level(s) on exit! <br> ${scaleDebuff}`
-                    
-                  else if (player.points.gte(setBaseRequirements)) GetReady = `You can get +1 Level on exit!`
+
+                  // if is in check and is over maximum  
+                  if (getClickableState("L", this.id) && projectedMax.gte(maximum)) text = `<br>You need TBC${player.Sol.TBCore.x.plus(1)} to get more Dark!`
+                  // if not in check but Player has >1 LK
+                  else if (!getClickableState("L", this.id) && player.L.DarkCheck.gte(1)) text = `Enter Darkness again... [Solar Rays is capped to 1e15. Dark Essence is Generated instead of Solarity]`             
+                  // if not in check (but is entering for the first time)
+                  else if (!getClickableState(this.layer,this.id) ) text = `
+                  Enter Darkness, where Solar rays is always capped to 1e15. You generate Dark Essence instead based on your solarity generation. 
+                  - Upon entering, reset both Light and Dark on enter. 
+                  - Upon reaching 100 Dark. Unwanted Lightness is generated which divides dark generation.`
+                  // if the player is in the check anyway
+                  else text = ` Goal: ${format(setBaseRequirements)} Dark Essence` 
                   
+                  if (getClickableState("L", this.id)) Goal_Text = ` Goal: ${format(setBaseRequirements)} Dark Essence`
                   
+                  if (player.E.EclipseTier.gte(7) && player.points.gte(setBaseRequirements)) GetReady = 
+                  player.L.DarkCheck.gte(maximum) || projectedMax.gte(maximum) ? `` : `You will gain +${projectedMax.plus(1).sub(player.L.DarkCheck).floor()} Level(s) on exit! <br> ${scaleDebuff}`;  
+                  else if (player.points.gte(setBaseRequirements)) GetReady = `You can get +1 Level on exit!`;
 
                   //Active text
                   if (getClickableState("L", this.id)) textActive = `[ACTIVE] <br>${GetReady} <br>
                   ${dScale}
-                  `
-                 
-                 
-                 
+                  `                 
+
                   if (player.L.DarkCheck.gte(1) && !getClickableState("L", this.id)) rewardDisplay = `Start Generating Dark. They Boost Solarity gain cap and Solarity gain equal to its amount.`
     
+
+                  //` Goal: ${format(setBaseRequirements)} Dark Essence`  
                   return `
                   <h2>Dark Check #${player.L.DarkCheck}</h2>
                   <h4>Rep-Check 2</h4>
                   ${textActive}              
-                  ${text} 
-
+                  ${text}  
+                  ${Goal_Text}
                   ${rewardDisplay}
                   <br>`
                   
     
                 },
                 onClick() {
-                  
+                  //increases the scale power by 0.01 per Dark Check starting at 20                                                          OG cost scaling before 20
+                  let metaScale = player.L.DarkCheck.gte(20) ? new Decimal(100000).mul(decimalOne.plus(player.L.DarkCheck.sub(20).mul(0.01))) : new Decimal(100000)   
+
                   let VoidScale = player.L.DarkCheck.gte(dualityScaling["Voided"].Start) ? (player.L.DarkCheck.sub(dualityScaling["Voided"].Start)).pow_base(100000) : 1
                   let BaseRequirements = new Decimal(1e15)
                   BaseRequirements = BaseRequirements.mul(player.L.DarkCheck.pow_base(100000)).mul(VoidScale)
 
+                  let maximum = new Decimal(20).plus(player.Sol.TBCore.x.times(5)) 
+
                 if (getClickableState(this.layer, this.id) && player.points.gte(BaseRequirements)) { 
-                  
+                  BorderAlterations_SR = "rgba(26, 0, 68, 1)"
                   if (player.E.EclipseTier.gte(7)) {
 
-                    let getMax = player.points.div(1e15).log(100000).floor()
+                  let getMax = player.points.div(1e15).log(100000).floor()
 
-                    if (getMax.gte(dualityScaling["Voided"].Start)) getMax = player.points.mul( dualityScaling["Voided"].Start.pow_base(100000).div(1e15) ).log(100000).div(2)
+                  if (getMax.gte(dualityScaling["Voided"].Start)) getMax = player.points.mul( dualityScaling["Voided"].Start.pow_base(100000).div(1e15) ).log(100000).div(2)
                   
-                      player.L.DarkCheck = getMax.plus(1).floor()
+                  player.L.DarkCheck = getMax.plus(1).floor().clampMax(maximum)
 
                   }
                   else player.L.DarkCheck = player.L.DarkCheck.plus(1) 
@@ -1483,10 +1581,13 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                   EclipsiumReset() 
                     player.L.Light = new Decimal(0)
                     player.L.Dark = new Decimal(0)
+                    BorderAlterations_SR = "rgba(239, 149, 64, 0.883)"
                     
                 }
     
                 const currentState = getClickableState("L", this.id)
+                
+
                 setClickableState(this.layer, this.id, !currentState)
                 
     
@@ -1494,10 +1595,17 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
     
     
                 },
+
+
+
+                
                 canClick() {
                   let VoidScale = player.L.DarkCheck.gte(dualityScaling["Voided"].Start) ? (player.L.DarkCheck.sub(dualityScaling["Voided"].Start)).pow_base(100000) : 1
                   let BaseRequirements = new Decimal(1e15)
                   BaseRequirements = BaseRequirements.mul(player.L.DarkCheck.pow_base(100000)).mul(VoidScale)
+
+                  let maximum = new Decimal(20).plus(player.Sol.TBCore.x.times(5)) 
+
 
             //check if it has the check upgrade or is not in the check upgrade
             if (getClickableState(this.layer,this.id) == false && !getClickableState("L",41)) 
@@ -1511,12 +1619,13 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
               return true                                             
             }        
             
+            if (player.L.DarkCheck.gte(maximum)) return false
             
             
            
                 },  
                 unlocked() {
-              if (getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5)) return true
+              if (getBuyableAmount("L",11).gte(10) && getBuyableAmount("L",12).gte(5) ) return true
               else false
                 },
                 
@@ -1533,6 +1642,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
           },
 
             },
+
 
             //Displays for DET1 and NET2
           51: { //DT
@@ -1592,6 +1702,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                 ${D3}
                 </h4>`
 
+
                 
               },
               unlocked() {
@@ -1602,6 +1713,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
           canClick() {
             //if (player.C.CenterPoints.gte(Decimal.pow(2, player.C.EffectorTier))) return true
             return false
+
 
           },
           style() { return {
@@ -1623,6 +1735,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                 let e1 = ``;let e4 = ``;let e5 = ``
                 
 
+
                 let ActiveText = `` //#32068c
                 if (getBuyableAmount("L",22).gte(1)) {
                     if ( Hour.getHours() >= 12 ) ActiveText = `<h3 style="#32068c"> [ACTIVE] </h3>`; else ActiveText = `<h3 style="#3a3b33"> [INACTIVE] </h3>`
@@ -1643,6 +1756,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
                 let d = Hour.getHours() >= 12 ? 1 + (Hour.getMinutes() * (1 + Hour.getHours() % 12) / 1000) : 1;
                   // 
 
+
                 //NH-2: Hours boosts Solinity and Esolar gain by 1.5^H
                 if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) e4 = `H-2: boost Solinity and Esolar by ${format(1.5 ** (Hour.getHours() % 12))}`; else e4 = `H-2: boost Solinity and Esolar by 1`
                 
@@ -1650,6 +1764,8 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
 
              
                 
+
+
 
                 //tier 2 
                 let NT1 = ``
@@ -1680,6 +1796,7 @@ if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.gt(0)) {
         canClick() {
           //if (player.C.CenterPoints.gte(Decimal.pow(2, player.C.EffectorTier))) return true
           return false
+
 
         },
         style() { return {

@@ -1,213 +1,181 @@
 var layoutInfo = {
-  startTab: "none",
-  startNavTab: "tree-tab",
-  showTree: true,
+    startTab: "none",
+    startNavTab: "tree-tab",
+	showTree: true,
 
-  treeLayout: "",
-};
+    treeLayout: ""
+
+    
+}
+
 
 // A "ghost" layer which offsets other layers in the tree
 
-addNode("sNode", {
-  color() {
-    return tmp.S.color;
-  },
-  row: 0,
-  position: 1,
 
-  symbol() {
-    return `<span style='margin-left:> You have ${format(
-      player.S.points
-    )} Solar Rays`;
-  },
-  nodeStyle() {
-    return {
-      position: "absolute",
-      height: "85px",
-      width: "175px",
-      "margin-left": options.mobileShortcuts ? "80px" : "-160px",
-      "margin-top": "8px",
-      "z-index": "0",
-      transform: "scale(" + (options.mobileShortcuts ? "1" : "0") + ",1)",
-    };
-  },
-});
+
+addNode("sNode", {
+    color() {return tmp.S.color},
+    row: 0,
+    position: 1,
+    
+    symbol() {
+        return `<span style='margin-left:> You have ${format(player.S.points)} Solar Rays`
+
+    },
+    nodeStyle() { return {
+        "position": "absolute",
+        "height": "85px",
+        "width": "175px",
+        "margin-left": (options.mobileShortcuts?"80px":"-160px"),
+        "margin-top": "8px",
+        "z-index": "0",
+        "transform":"scale("+(options.mobileShortcuts?"1":"0")+",1)",
+    }
+    },
+
+}, 
+)
+
 
 //function s() {return player.showScreen = !player.showScreen};
 
+
 addLayer("tree-tab", {
-  tabFormat: [
-    "blank",
-    [
-      "tree",
-      function () {
-        //yeah i couldn't figure out how to fade out thi thing
+    tabFormat: [        
+        "blank",
+        ["tree", function() {
+            //yeah i couldn't figure out how to fade out thi thing
+            
+          if (!player.inCutscene) return (layoutInfo.treeLayout ? layoutInfo.treeLayout : TREE_LAYERS )
+        }],
+        ["Custom", {id:12}],
+        ["Custom", {id:13}],
 
-        if (!player.inCutscene)
-          return layoutInfo.treeLayout ? layoutInfo.treeLayout : TREE_LAYERS;
-      },
+        () => player.inCutscene ? ["column", Array.from({ length: 20 }, () => "blank")] : "blank",
+        
+        ["Custom", {id:11}],
+
+
+    
     ],
-    ["Custom", { id: 12 }],
-    ["Custom", { id: 13 }],
+    previousTab: "",
+    leftTab: true,
 
-    () =>
-      player.inCutscene
-        ? ["column", Array.from({ length: 20 }, () => "blank")]
-        : "blank",
 
-    ["Custom", { id: 11 }],
-    ["Custom", { id: 14 }],
-  ],
-  previousTab: "",
-  leftTab: true,
-
-  update(diff) {
-    //console.log(diff);
+    update(diff) { 
+        
     if (player.finishedStCutscene == false && player.inCutscene == false) {
-      player.inCutscene = true;
-      player.cutsceneName = "startGame";
+        player.inCutscene = true
+        player.cutsceneName = "startGame"
+        player.showScreen = false
+        options.theme = themes[0];
+        changeTheme();
     }
 
-    //if (player.TOSTime === NaN) player.TOSTime = 12;
-   if (player.finishedStCutscene == true && player.cutsceneName == "startGame") {
-      if (player.TOSTime != 0  ) player.TOSTime -= diff;
-      //console.log("p:" + diff)
-      if (player.TOSTime >= 0)
-        //to fix the number
-        player.TOSTime = Math.floor(player.TOSTime * 100) / 100;
-      if (player.TOSTime != 0 && player.TOSTime <= 0) player.TOSTime = 0;
-    }
+    else if (player.finishedStCutscene == true){ 
+        if (player.timerToAgree >= 0) player.timerToAgree -= diff
+           //to fix the number
+           player.timerToAgree = Math.floor(player.timerToAgree * 100) / 100
+        if (player.timerToAgree != 0 && player.timerToAgree <= 0) player.timerToAgree = 0 
+        }
+        
+        //game initializer
+     if (player.inCutscene){
+        
+            if (player.cutsceneName == "startGame") {
+                if (player.frames < 180) player.frames += 1
+                if (player.rot < 90) player.rot += 2 
+                resizeCanvas()
+                }
+            if (player.cutsceneName == "endGame") {
+                if (player.frames < 180) player.frames += 1
+                if (player.rot < 180) player.rot += 2
+                resizeCanvas()
+            }   
+         player.tab = 'none'
+        }
 
-    //game initializer
-    if (player.inCutscene) {
-      if (player.cutsceneName == "startGame") {
-        if (player.frames < 180) player.frames += 1;
-        if (player.rot < 90) player.rot += 2;
-        resizeCanvas();
-      }
-      if (player.cutsceneName == "endGame") {
-        if (player.frames < 180) player.frames += 1;
-        if (player.rot < 180) player.rot += 2;
-        resizeCanvas();
-      }
-      player.tab = 'none';
-    }
+       
+        
+// general cutscene initializer
 
-    // general cutscene initializer
-
-    document.getElementById("screen").style.opacity =
-      player.showScreen == false ? 0 : 1;
-  },
-
-  Custom: {
-    //this should appear on frame 150
     
-    
-    11: {
-      display() {
-        return `<h2>...Continue?</h2>`;
-      },
-      onClick() {
-        player.finishedStCutscene = !player.finishedStCutscene;
-      },
-      canClick() {
-        return true;
-      },
-      style() {
-        return {
-          width: "100px",
-          height: "50px",
-        };
-      },
-      unlocked() {
-        return player.frames == 180 && player.finishedStCutscene == false;
-      },
+ document.getElementById("screen").style.opacity = player.showScreen == false ? 0 : 1; 
+        
+
+
     },
 
-    12: {
-      display() {
-        return `<h1>NOTICE:</h1><br><br>
-               <h4>
-               This game is HARD, slowpaced, and requires strategies to beat the game. <br><br>
+    Custom: {
+        //this should appear on frame 150
+        11: {
+            display() {
+                
+       
+                return `<h2>...Continue?</h2>`
+            
+            },
+            onClick() {player.finishedStCutscene = !player.finishedStCutscene},
+            canClick() {return true},
+            style() {return {
+              "width": "100px",
+              "height": "50px",
+              }},  
+            unlocked() {return (player.frames == 180 && player.finishedStCutscene == false)}
+          },
 
+        12: {
+            display() { 
+               return `<h1>NOTICE:</h1><br><br>
+               
+              <h3> This game is HARD, slowpaced, and requires strategies to beat the game. </h3><br><br>
+                <h4>
                This game IS part of a series known as 'the greek layer tower'. which is a slow paced incremental game which may involve beating other games of thatonekobold or my incremental mods.<br>
                Expect alot of timewalls and a few forcewalls in this game.<br>
-               Also Expect a bit of labor near endgame <br>
+               Also Expect a bit of labor and complex strategies near endgame <br><br>
 
                If you cannot handle this concept or idea, then dont continue and play some other game! <br>
-               The game is also balanced enough the way it is, so DO NOT COMPLAIN ABOUT HOW IMBALANCED THIS GAME IS. <br>
-
+               The game is also balanced enough the way it is, so DO NOT COMPLAIN ABOUT HOW IMBALANCED THIS GAME IS. instead you can suggest balance requests in my discord server! <br><br>
+               
+               
                </h4>
                
                <br>
                Oh also, in addition to such. this is NOT inspired by the roblox game GCI from "supernova". check the games credits on the top right when accepting TOS<br>            
                 
                You cannot continue until you have read the TOS <br> 
-               You can accept in ${player.TOSTime}<br>
-               `;
-      },
-      onClick() {
+               You can accept in ${player.timerToAgree}<br>
+               `
+            },
+            
+            canClick() {return false},
+            style() {return {
+              "width": "400px",
+              "height": "300px",
+              }},  
+            unlocked() {return (player.finishedStCutscene == true && player.inCutscene)}
+        },
 
-      },
-      canClick() {
-        return false
-      },
-      style() {
-        return {
-          width: "400px",
-          height: "300px",
-        };
-      },
-      unlocked() {
-        return (
-          player.finishedStCutscene == true &&
-          player.inCutscene &&
-          player.agreedTOS == false
-        );
-      },
+        13: {
+            display() {
+                
+       
+                return `<h2>I accept. lets play the game!</h2>`
+            
+            },
+            onClick() {player.agreedTOS = true; player.startedGame = true; player.inCutscene = false; player.showScreen = true; save(); doPopup("msg","New theme unlocked!", "Game Notifier",10);},
+            canClick() {return true},
+            style() {return {
+              "width": "400px",
+              "height": "50px",
+              }},  
+            unlocked() {return (player.timerToAgree == 0 && player.inCutscene)}
+          },
+        
     },
 
-    13: {
-      display() {
-        return `<h2>I accept. lets play the game!</h2>`;
-      },
-      onClick() {
-        player.agreedTOS = true;
-        player.startedGame = true;
-        player.inCutscene = false;
-        player.cutsceneName = "";
-        doPopup("msg", "New theme unlocked!", "Game Notifier", 10);
-      },
-      canClick() {
-        return true;
-      },
-      style() {
-        return {
-          width: "400px",
-          height: "50px",
-        };
-      },
-      unlocked() {
-        return player.TOSTime <= 0 && player.inCutscene && player.agreedTOS == false;
-      },
-    },
+    
 
-    14: {
-        display() {
-        return `<h2>Skip cutscene</h2>`;
-      },
 
-        style() {
-        return {
-          width: "400px",
-          height: "50px",
-        };
-      },
-      canClick() {return true},
-       onClick() {
-        player.frames = 180
-        player.rot = 90}, 
-         unlocked() {return false}
-    }
-  },
-});
+})
+

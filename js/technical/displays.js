@@ -24,6 +24,7 @@ function constructNodeStyle(layer){
     return style
 }
 
+
 function challengeStyle(layer, id) {
 	if (player[layer].activeChallenge == id && canCompleteChallenge(layer, id)) return "canComplete"
 	else if (hasChallenge(layer, id)) return "Finish Challenge"

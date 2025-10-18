@@ -9,6 +9,18 @@ var type6 = ``
 var type7 = ``
 var type8 = ``
 var type9 = ``
+var type10 = ``
+var type11 = ``
+var type12 = ``
+
+
+
+
+
+
+
+
+
 
 addLayer("dL", {
     name: "Solar Ray", 
@@ -20,10 +32,14 @@ addLayer("dL", {
   }},
   
     color: "#ff6a00",
-    position: "side", 
+    position: "0", 
     
     row: "side", 
-  
+    nodeStyle() {
+      return {
+        
+      }
+    },
   tabFormat: {
     ":)": {       
       content: [
@@ -46,7 +62,11 @@ addLayer("dL", {
           ["Custom", {id:21}],
           ["Custom", {id:22}],
           ["Custom", {id:23}],
+          ["Custom", {id:24}],
+          ["Custom", {id:25}],
         ]],
+
+
 
         
                 
@@ -56,20 +76,74 @@ addLayer("dL", {
         
         let dUnl = ``
         
+
         if (player.E.EclipseTier.eq(6)) dUnl = `Discover The Randomizer to unlock more dialogue!`
-        if (Check("L",11).has) dUnl = `Get Eclipse Tier 6 to unlock more dialogue!`
-        if (player.L.activeCheck == "TimeTillDark") dUnl = `<br> Beat '4 Minutes Until Dark' to unlock more dialogue`
-        if (hasUpgrade("L",23) && !Check("E",11).has) dUnl = `start '4 Minutes Until Dark' to unlock more dialogue` 
-        if (!player.L.LightCheck.gte(2)) dUnl = `<br> Acheive Light Check level 2 to unlock more dialogue`
-        if (!Check("E",11).has && player.E.EclipseTier.eq(5)) dUnl = `<br> Beat 'The Forgotton' to unlock more dialogue`
-        if (player.E.EclipseTier.eq(4)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 5!`
-        if (player.E.EclipseTier.eq(3)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 4!`
-        if (player.E.EclipseTier.eq(2)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 3!`
-        if (player.E.EclipseTier.eq(1)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 2!`
-        if (player["C"].activeCheck == "Twilight") dUnl = `<br>(Note that Twilight check has a large Timewall of around 6 hours) `
-        if (Check("C",13).has && player.E.EclipseTier.eq(0)) dUnl `<br> [Unlock more dialogue at higher resets]`
+        else if (Check("L",11).has) dUnl = `Get Eclipse Tier 6 to unlock more dialogue!`
+        else if (player.L.activeCheck == "TimeTillDark") dUnl = `<br> Beat '4 Minutes Until Dark' to unlock more dialogue`
+        else if (hasUpgrade("L",23) && !Check("E",11).has) dUnl = `start '4 Minutes Until Dark' to unlock more dialogue` 
+        else if (!player.L.LightCheck.gte(2)) dUnl = `<br> Acheive Light Check level 2 to unlock more dialogue`
+        else if (!Check("E",11).has && player.E.EclipseTier.eq(5)) dUnl = `<br> Beat 'The Forgotton' to unlock more dialogue`
+        else if (player.E.EclipseTier.eq(4)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 5!`
+        else if (player.E.EclipseTier.eq(3)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 4!`
+        else if (player.E.EclipseTier.eq(2)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 3!`
+        else if (player.E.EclipseTier.eq(1)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 2!`
+        else if (player["C"].activeCheck == "Twilight") dUnl = `<br>(Note that Twilight check has a large Timewall of around 6 hours) `
+        else if (Check("C",13).has && player.E.EclipseTier.eq(0)) dUnl = `<br> [Unlock more dialogue at higher resets]`
+        else dUnl = `Hey, this is the storyline of this game, go ahead and check it out every so often because we're here for a WILD ride :)`
 
         // Solaris has entered the chat. 
+        let sub_type1 = hasUpgrade("Sol",14) ? `
+        <br> ----------------- <br>
+        <br> Solaris: oh, it looks like you found my favorite pla-
+        <br> Lunaris: of course you would show this. 
+        <br> Glade: oh great, we have a gamble addict~
+        <br> Solaris: IM NOT A GAMBLE ADDICT! I JUST REALLY LIKE TO GAMBLE
+        <br> Lunaris: That's called being an addict moron
+        <br> Solaris: <s>Do you want to be put back in your chains again?</s> Sure asshole.
+        <br> Glade: What was that? 
+        <br> Solaris: Nothing~ you heard nothing
+        <br> Glade: <-<     >->
+        <br> Solaris: Get to work, user.
+        <br> Glade: Fine. ill play your stupid games...
+        <br> Solaris: Good. I'll reward you well if you do well...
+        ` : ``
+
+        if (player.Sol.activeCheck == "Heliosphere" || player.Sol.Heliosphere ) type10 = `
+        <br>--------------------------------<br>
+        WIP :)
+        <br> 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        `
+
+        if (player.E.EclipseTier.gte(6)) type9 = `
+        <br> WIP :)
+        <br> 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        ${sub_type1}
+      
+        `
+
 
         if (Check("L",11).has) type8 = `
         <br>--------------------------------<br>
@@ -82,21 +156,33 @@ addLayer("dL", {
           <br> Lunaris: They abandoned you, right?
           <br> Glade: ...I-... 
           <br> Lunaris: Answer. me.
-          <br> Glade: y-yes... they did...
+          <br> Glade: y-yes... they did... honestly, I feel like they were my only friends... but I, myself felt like i was growing dista-
+          <br> Lunaris: I'm gonna have to stop you right there, buddy. Not that i dont want to listen, but we have someone to meet now... 
+          <br> Glade: oh~... I wonder who it is?
+          <br> Lunaris: oh dont worry, you'll see when we get there :)
         `
         
         if (player.L.activeCheck == "TimeTillDark" || Check("L",11).has) type7 = `
-        <br>--------------------------------<br>
+        <br>--------------------------------<br><br>
+        <b><i>After freeing Lunaris, a powerful explosion booms nearby your location, say 40 feet northwest in the dark wilting forest, 
+        yet you are undeterred, the force almost knocking you down, although glade is seen on the ground. 
+        you look around, yet Glade is anxiously and frantically looks around trying to pinpoint where the explosion came from...</i></b><br><br>
 
-        <br> Glade: USER WHAT THE HELL DID YOU JUST DO 
-        *the ground shifts viciously, twisting and turning, trying to attack anything it sees, 
-        a big monster emerges, strands of dark matter and entropy tails around its mouth, body, and eyes as it begins charging at Glade, 
-        Glade begins to run, trying their absolute best to avoid it, while they shout at the user*
-        <br> Glade: USER HELP, DO SOMETHING, PLEASE
-        <br> *Lunaris seems to be chanting in some sort of language, as if they are being forced to attack Glade. repeating the words over and over again*
-        <h3 style="color:#7d0f9c">ANTE MEDIAM NOCTE PERIBIT, IRA DEORUM LUNARUM TE VERTERE</h3>
+        <br> Glade: PLAYER WHAT THE HELL DID YOU JUST DO 
+
+        <br> <br><b><i>the ground shifts viciously, twisting and turning, trying to attack anything it sees, 
+        a big monster emerges, strands of dark matter and entropy tails around its mouth, body, and eyes as it begins charging at Glade </i></b><br> <br>
+
+        Glade gets up in a bolt trying to scape this aggro'd being lunging after you and Glade, as they begin trying their absolute best to avoid it themselves, while they shout at the user</i>
+        <br> Glade: PLAYER HELP, DO SOMETHING, PLEASE 
+
+        <br><br><b> <i>Lunaris seems to be chanting in some sort of language, as if they are being forced to attack Glade. repeating the words over and over again </i> </b>
+        <br><br><h3 style="color:#7d0f9c">ANTE MEDIAM NOCTE PERIBIT, IRA DEORUM LUNARUM TE VERTERE</h3><br>
+        
+        <br>Glade now is attempting to escape the land, or area. trying to hide away, you are left by yourself, only to deal with glades mishaps
 
         `
+
 
         if (player.L.LightCheck.gte(2)) type6 = `
         <br> Glade: Hey user, it's me again, we haven't spoken in a while huh?
@@ -114,6 +200,9 @@ addLayer("dL", {
         <br> Glade: oh nothing, I was talking to the user, or player.
         <br> Lunaris: Who is player? are they the one that is messing with my stuff?
         <br> Glade: no that's me, I'm the one Experimenting...
+
+        
+
         
         `
         
@@ -203,9 +292,12 @@ addLayer("dL", {
       
 
       let phase = ``  
+
       if (player.dL.sub == "Center") phase = `${type0}${type1}`  
       else if (player.dL.sub == "Enlighten") phase = `${type2}${type3}${type4}${type5}`
       else if (player.dL.sub == "Lunaris") phase = `${type6}${type7}${type8}`
+      else if (player.dL.sub == "Solaris") phase = `${type9}${type10}`  
+      else if (player.dL.sub == "The Core") phase = `${type11}${type12}`  
 
        let progression = `
       <h3> ${dUnl} </h3>
@@ -235,10 +327,10 @@ addLayer("dL", {
         <br>
 
         Additional resources:<br>
-        April 8th 2024, <a href="https://science.nasa.gov/eclipses/future-eclipses/eclipse-2024/" target="__blank" rel="noopener noreferrer">
-        The total solar eclipse event </a> that caused HUGE inspiration for this game 
-
-<br>
+        April 8th 2024, <a href="https://science.nasa.gov/eclipses/future-eclipses/eclipse-2024/" target="__blank" rel="noopener noreferrer">The Total Solar Eclipse!</a>
+        The total solar eclipse event </a> that caused HUGE inspiration for this game <br>
+        Uses some assets from The Modding Tree from version 2.6.6.2 - Remixed by ThatOneKobold (me!) 
+<br><br>
         This game IS part of a series known as 'the greek layer tower', Otherwise known as TGLT. there is ALOT more to expect so get ready!<br>
         
 
@@ -247,6 +339,21 @@ addLayer("dL", {
         Timewalls/Forcewalls: 7/10 [Irritation] <br>
         Strategy usage/Tedious Gameplay: 6/10 [Complex] <br>
         Overall : 6.3 / 10
+<br>----------------------------------------------<br>
+<span class="ignThemes" > 
+Statistics: <br>
+</span>
+You have spent <b>${formatTime(player.timePlayed)}</b> Taming this eclipse.<br>
+You are ${format(player.points.log(10).div(1000).mul(100))}% close to Taming the eclipse in this version (V0.6). <br>
+It has been ${formatTime(player.resetTime)} since you made any reset.<br>
+<br>
+${player.TSEGI_COMPLETIONS > 0 ? "You have tamed the eclipse " + player.TSEGI_COMPLETIONS + " times." : ""}<br>
+${player.GL.points.gte(1) ? "(V0.4) you have accumulated a total of: " + format(player.GL.points) + " Solar Points <br><h5>(They do nothing lol they're just for show) </h5>" : ""}
+
+
+
+
+
 
         `
 
@@ -271,6 +378,8 @@ addLayer("dL", {
          
         },      
       },
+
+
 
     Custom: {
       11: {
@@ -306,7 +415,9 @@ addLayer("dL", {
 
       },
 
+
     
+
 
       21: {
         display() {return `<h3>Sub: Centrality</h3>`},
@@ -339,8 +450,30 @@ addLayer("dL", {
           }},  
         unlocked() {return Check("E",11).has && player.dL.tab == "Storyline"}
       },
-
+       24: {
+        display() {return `<h3>Sub: Solaris </h3>`},
+        onClick() {if (player.dL.tab == "Storyline") player.dL.sub = "Solaris"},
+        canClick() {return true},
+        style() {return {
+          "width": "100px",
+          "height": "40px",
+          }},  
+        unlocked() {return player.E.EclipseTier.gte(6) && player.dL.tab == "Storyline"}
+      },
+       25: {
+        display() {return `<h3>Sub: The Core. </h3>`},
+        onClick() {if (player.dL.tab == "Storyline") player.dL.sub = "The Core"},
+        canClick() {return true},
+        style() {return {
+          "width": "100px",
+          "height": "40px",
+          }},  
+        unlocked() {return player.E.EclipseTier.gte(7) && player.dL.tab == "Storyline"}
+      },
       // add more 
+
+
+
 
       41: {
         display() {return `booga boogus?`},
@@ -369,9 +502,14 @@ addLayer("dL", {
 
     },  
 
-      tooltip: `Extra Stuffs`,
+
+
+
+
+      tooltip: `<h5>Extras, Credits, Lore and Info</h5>`,
     layerShown(){return true}
 })
+
 
 /*
 
