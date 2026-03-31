@@ -1,3 +1,10 @@
+var MaxSlotsPerRow = 1
+
+var SR_tag = "Solar Rays"
+
+
+
+
 addLayer("C", {
     position: 1, 
     startData() { return {
@@ -13,6 +20,11 @@ addLayer("C", {
         hasHeirarchy: false,
         hasTwilight: false,  
         activeCheck: "",
+        maxslots1: 1,
+        maxslots2: 1,
+        HeirarchyNerfStartAt: new Decimal(1e150), //VERY neccesary to be e150 rather than e140
+
+        adaptiveReq: new Decimal(1e10),
     
     }},
     color: "#1f2129",
@@ -23,25 +35,46 @@ addLayer("C", {
     },
    
    update(diff) {
+    if  (player.Sol.TBCore.active) SR_tag = "Solar Energy" 
+
+
+
 
     if (hasUpgrade("GL",21)) player["GL"].Time = player["GL"].Time.plus(decimalOne.times(diff)).clampMin(0)
 
     let ScoreBoost = new Decimal(1)
-    Hour = new Date()
+    let Hour = new Date()
 
+    let TBC3Improve = 1
+    if (player.Sol.TBCore.x.gte(3)) TBC3Improve = 1.25
+
+let NT2Buff = ((1 + (Hour.getMinutes() * (1 + Hour.getHours() % 12) / 1000)) ** TBC3Improve)
     if (Check("E",11).has && !(player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) ScoreBoost = ScoreBoost.mul(getBuyableAmount("GL",11).clampMin(1))
-    if (getBuyableAmount("L",21).gte(1) && Hour.getHours() >= 12) ScoreBoost = ScoreBoost.pow(1 + (Hour.getMinutes() * (1 + Hour.getHours() % 12) / 1000)) //buff this if DT is still too op
+    if (getBuyableAmount("L",21).gte(1) && Hour.getHours() >= 12) ScoreBoost = ScoreBoost.pow(
+      NT2Buff
+    ) //buff this if DT is still too op
+    
     if (getBuyableAmount("L",21).gte(3) && Hour.getHours() <= 12) ScoreBoost = ScoreBoost.mul(1+(1.1 ** Hour.getMinutes())/2 * (1.25 ** (Hour.getHours() % 12)))
     
     
-
+fixNaNs()
 
  // 1.12^M -> 1.35^H
 
 
     let ScoreNerf = player.Sol.SolarHeat.sub(1).root(2.5).pow_base(1.02)
 
-    if (hasUpgrade("GL",31) ) player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(ScoreBoost).div(ScoreNerf)
+    
+    if (hasUpgrade("GL",31) ) { 
+    
+     if (hasUpgrade("dL",11) && player.Sol.TBCore.active) {
+      player.C.Score = getBuyableAmount("S", 12).pow(2.2).mul(ScoreBoost).div(ScoreNerf)
+     } 
+      else {
+      player.C.Score = getBuyableAmount("S", 11).mul(getBuyableAmount("S", 12)).mul(ScoreBoost).div(ScoreNerf)
+    }
+    }
+    
     if (player["E"].activeCheck == "Forgotton") player.C.Score = player.C.Score.pow(0.8)
    
 
@@ -78,13 +111,18 @@ addLayer("C", {
 
     if (hasMilestone("E",1)) Divisor = Divisor.mul(player.E.EclipseTier.pow_base(1.25))
     if (hasUpgrade("L",13)) Divisor = Divisor.mul(upgradeEffect("L",13))
+    if (player.Adaptive && player.Sol.TRMoon.active && hasUpgrade("C", 22) ) {
+      Divisor = Divisor.mul((getBuyableAmount("S",11).plus(getBuyableAmount("S",12))).clampMin(1).pow(0.4))
+    }  
 
 
-
-    Hour = new Date()
-    let exponent = 0
     
-    if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - (Hour.getHours() % 12) / 100; else exponent = 1
+    let exponent = 0
+
+    if (player.Sol.TBCore.x.gte(3)) TBC3Improve = 1.25
+    if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - ((Hour.getHours() % 12) * TBC3Improve ) / 100; else exponent = 1
+    
+
 
     let Compound = 1.35 
     if (player.Sol["TBCore"].active && getCoreDifficulty().eq(1)) Compound = new Decimal(1.6335) 
@@ -95,9 +133,15 @@ addLayer("C", {
 
 //
    // 1.35 * 1.21 = 1.6335
-
+    if (hasMilestone("E",4)) player.C.maxslots1, player.C.maxslots2 = 2;
+    else player.C.maxslots1, player.C.maxslots2 = 1;
+    
 
     player.C.requirement = player.C.CenterPoints.clampMin(1).pow_base(Compound).times(2000).div(Divisor).pow(exponent)
+
+    
+   
+    
   }, 
   
  nodeStyle() {
@@ -144,7 +188,7 @@ addLayer("C", {
 
       if (player.Sol.activeCheck == "Heliosphere") 
               return `<h1 style="color:rgba(255, 255, 255, 0.74); text-shadow: 0px 0px 20px rgb(100, 100, 100);"> ${player.C.FreeCP.gt(0) ? format(player.Sol.HelioStat["CP"].plus(player.C.FreeCP)) : format(player.Sol.HelioStat["CP"]) } </h1>`;
-      else if (player["C"].CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.L.activeCheck == "TimeTillDark") 
+      else if (player["C"].CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.L.activeCheck == "TimeTillDark" || (Selecting("active") && player.Sol.TBCore.x.gte(2))) 
         return `
       You have ${format(player["C"].CenterPoints,1)}  
       
@@ -164,8 +208,34 @@ addLayer("C", {
       //
       let extraCP = player.C.FreeCP.gt(0) ? `Thanks to TRNG-5, You have formed an extra +${format(player.C.FreeCP)} Center Points` : ``
        
+      let boost = `<h4 style="color:rgba(159, 22, 22, 0.99)";> /${format(Heirarchys_ValueBeforeSelfNerf.div(GetHeirarchyBonus()))} </h4>`
+      if (Heirarchys_ValueBeforeSelfNerf.div(GetHeirarchyBonus()).lt(1)) boost = `<h4 style="color:rgba(17, 233, 28, 0.99)";> ${format(new Decimal(1).div(Heirarchys_ValueBeforeSelfNerf.div(GetHeirarchyBonus()))) } </h4>`
+      let stateMode = `<span style="color:rgba(200, 150, 0, 0.99)"> Disdained </span>`
+      if (Heirarchys_ValueBeforeSelfNerf.div(GetHeirarchyBonus()).gte(1)) stateMode = `<span style="color:rgba(192, 0, 0, 0.99)"> Harshcapped </span>`
 
 
+
+      //down here is where the formula changes to make it better or less disparaging
+      
+
+
+      //Remove this if Solarity doesn't reach e800 by the time the player completes 5th studies of everything but not TBC3
+      let increasedRoot= new Decimal(0)
+      let baseRoot = new Decimal(1.5)
+      if (GetHeirarchyBonus().gte(player.C.HeirarchyNerfStartAt) ) {
+        increasedRoot = GetHeirarchyBonus().div(player.C.HeirarchyNerfStartAt).log(150).div(150).clampMin(0)
+      }
+      baseRoot = baseRoot.plus(increasedRoot)
+      
+      let Disdained = `${stateMode}: ${boost} to Heirarchy effect  <br> 
+      <h5>root${format(baseRoot,4)} || Starts at: ${format(player.C.HeirarchyNerfStartAt)} </h5> 
+      <h6>(Might get changed or removed at v0.7 depending on earlier progressions)</h6>
+      ` //i think it should be just root(2) with +0.1 per log100 gng
+      
+      let PreDisdained =`` 
+      if ( Heirarchys_ValueBeforeSelfNerf.gte(player.C.HeirarchyNerfStartAt) && Heirarchys_ValueBeforeSelfNerf.div(GetHeirarchyBonus()).gte(1) ) PreDisdained = `<span style="color:rgba(159, 22, 22, 0.99);"> ${format(Heirarchys_ValueBeforeSelfNerf)} -> </span>` 
+      if ( Heirarchys_ValueBeforeSelfNerf.gte(player.C.HeirarchyNerfStartAt) && Heirarchys_ValueBeforeSelfNerf.div(GetHeirarchyBonus()).lt(1)) PreDisdained = `<span style="color:rgba(17, 233, 28, 0.99);"> ${format(Heirarchys_ValueBeforeSelfNerf)} -> </span>`
+      
       let HeirarchyBoost = ``
 
       let forgotten = ``; if (player["E"].activeCheck == "Forgotton") forgotten = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #ffffff;"> ${format(player["C"].Score )} Emptyness...? </h3>`; else forgotten = `${format(player["C"].Score )} / ${format(player.C.requirement)} Modifier Score.`
@@ -173,9 +243,18 @@ addLayer("C", {
       let newBaseText = ``
       if (player.Sol.CPBoost.gt(0)) newBaseText = `Thanks to Aperature, Heirarchy's base is 5 -> ${format(player.Sol.CPBoost.plus(5))}`
       
-      if (player["C"].hasHeirarchy) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${format(GetHeirarchyBonus())}` 
+      if (player["C"].hasHeirarchy) HeirarchyBoost = `Thanks to Heirarchy, Solarity is being boosted by ${PreDisdained} ${format(GetHeirarchyBonus())}
       
+      <br>
+      ${Heirarchys_ValueBeforeSelfNerf.gte(player.C.HeirarchyNerfStartAt) ? Disdained : ""}
+      ` 
+       // put the Harshcap text here! it starts at 1e150!
+      
+
       if (player.Sol["TBCore"].active) HeirarchyBoost = `<i>why do we exist just to leave ourselves tenuous..?</i> - The Eclipse..? <br> <s>Thanks to Heirarchy, Solarity is being boosted by ${format(player.points.log(20).pow_base(5).pow(player.S.points.root(7)))}</s> `
+     
+     
+     
       if (player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(2)) newBaseText = `<i>yet our eyes become weaker every falling second~</i> - The Core...?`
       if (player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(3)) extraCP = `<i>do you wish to harm his ego this bad?</i> - Glade...?`
 
@@ -249,7 +328,7 @@ addLayer("C", {
       ["clickable",23],
     ]],
     
-    ["clickable",31],
+    
   
     // player["C"].CenterPoints
   /*
@@ -304,6 +383,61 @@ addLayer("C", {
           content: [
             "buyables",
             "blank",
+
+
+            /*
+               ["display-text",
+                function() { 
+                  let tempCalc = [new Decimal(256), new Decimal(30), new Decimal(DarknessUpgs_Row1[2])   ]
+                 // let JearBonus = player.points.log(20).mul(). Math.round(10000*(Core_effValue*0.01))/10000 
+                 let baseCoreThing = player.points.log(20).mul(CoreEffectMul)
+                 let coreBoost = baseCoreThing.pow_base(20)
+                  
+                 //boost the thing
+                 step1 = [tempCalc[0].mul(coreBoost), tempCalc[1].mul(coreBoost), tempCalc[2].mul(coreBoost)] 
+                 //done!
+
+                 //Apply formality for display and to make it accurate
+                 step2 = [step1[0].pow(0.666), step1[1], step1[2].pow(0.666)] 
+
+                 step3 = [step2[0].log(12), step2[1], step2[2].log(12) ]
+
+                 step4 = [step2[0].log(20), step2[1], step2[2].log(20) ] 
+                 // convert to core energy 
+
+                  if (player.Sol.TBCore.x.gte(2)) return `<h5>Jear upgrade multiplier breakdown: <br>
+                  
+                  
+                  
+                  ${"log20 of JEAR1 (Base core energy): " + format(tempCalc[0].log(20)     )  }
+                  <br>
+
+                  
+                  ${format(CoreEffectMul*100) + "% of core energy : " +"( "+ format(player.points.log(20).mul(CoreEffectMul) ) + " ) " }
+                  <br>
+                  ${"which translates to: " +" "+ format(coreBoost) + " to all Jear paths (before Formality/Twilight)" }
+                  <br>
+                  ${"jear paths are now: " + format(step1[0]) + " to Solarity, " + format(step1[1]) + " to SR, " + format(step1[2]) + " and " + format(step1[2]) + " to Solarity and SR"  }<br>
+
+
+                  <br>
+                  ${"Formality applied (Jear1, Jear2, Jear3): "  + format(step2[0] ) + " Solarity, NA" + ", " + format(step2[2] )+ " and " + format(step1[2]) + " SR"  }.
+                  <br>
+                  ${"Twilight applied after: " + format(step3[0]) + " Solarity , NA" +", " + format(step3[2] ) + " and " + format(step1[2]) + " SR"  }
+                  <br>
+                  ${"Converting to Core energy: " + format(step3[0].log(20)) + " Solarity , NA" +", " + format(step3[2].log(20) ) + " and " + format(step1[2]) + " SR"  }
+                  
+
+                  </h5>
+        
+                  
+                  
+                  `
+             
+            
+              }],
+            */
+
              ["display-text", `Row cost: 1 CP` ],
             ["row", [ //Row 1 Darkness tree upgrades
               
@@ -330,20 +464,41 @@ addLayer("C", {
               ["upgrade",32],
               ["upgrade",33],  
             ]],
+            ["row", [ //Row 3 Darkness tree upgrades (Not unlocked until The Broken Core 2)
+              ["clickable",31],
+              ["clickable",21], // Adaptive
+               
+            ]],
+
+            // let Notice = `Note: Adaptive is only temporary and resets on Recontrol!`
+             ["display-text",
+                function() { 
+                  
+                  if (player.Sol.TBCore.x.gte(2)) return `----------- Note: Adaptive is only temporary and resets on Recontrol! -----------`
+             
             
+              }],
             "blank",
+
+
+
+
             "blank",
             "blank",
             
           ],
           
-  
+          
+
+              
         },
 
         //if (player.C.EffectorTier.gte(2)) {
         
         
-
+        /* 
+        
+        */
           
         },
 
@@ -356,10 +511,10 @@ addLayer("C", {
 
         //  
         const effects = [
-          { log: 2, boosts: "Solarity", keep: "Intricity", on: "ALL layer 1 Resets.", tier: "I", pressure: "IS FAR"},
-          { log: 4, boosts: "Solar Rays", keep: "Polarize", on: "ALL layer 1 Resets.", tier: "II", pressure: "GREATER THAN" },
-          { log: 9, boosts: "plasmates effect", keep: "Gravitation", on: "ALL layer 1 Resets.", tier: "III", pressure: "WHAT YOU" },
-          { log: 16, boosts: "multiply's effect", keep: "Solarizor", on: "ALL layer 1 Resets.",tier: "IV", pressure: "CAN COMPREHEND. SECONDLY," },
+          { log: 2, boosts: player.Sol.TBCore.active ? "Free core energy" : "Solarity", keep: "Intricity", on: "ALL layer 1 Resets.", tier: "I", pressure: "IS FAR"},
+          { log: 4, boosts: SR_tag, keep: "Polarize", on: "ALL layer 1 Resets.", tier: "II", pressure: "GREATER THAN" },
+          { log: 9, boosts: player.Sol.TBCore.active ? "Free core energy " : "Plasmate's effect", keep: "Gravitation", on: "ALL layer 1 Resets.", tier: "III", pressure: "WHAT YOU" },
+          { log: 16, boosts: "Multiply's effect", keep: "Solarizor", on: "ALL layer 1 Resets.",tier: "IV", pressure: "CAN COMPREHEND. SECONDLY," },
           { log: 25, boosts: "Solarity Gain Cap", keep: "Shardism,Scorch, and Leverage", on: "ALL Recontrol Resets.",tier: "V", pressure: "AND THE BROKEN STARS" },
           { log: 36, boosts: "Light/Dark Generation", keep: "Annular", on: "ALL Recontrol Resets.", tier: "VI", pressure: "WILL COLLAPSE ON YOUR OWN WILL"  },
 
@@ -371,8 +526,20 @@ addLayer("C", {
            //.pow(TBC1Bonus)
           }
 
+        let GuidanceBoost = decimalOne
+        if (hasUpgrade("dL",11) && player.Sol.TBCore.active){ GuidanceBoost = player.C.CenterPoints.clampMin(1).log(3);
+        GuidanceBoost = GuidanceBoost.pow_base(20)
+      }
         const effectsDisplay = player.Sol.activeCheck == "" ? effects.slice(0, player.C.EffectorTier.toNumber())
-                                      .map(({log, boosts, keep, on, tier}, index) => `<h2>TIER  ${tier}</h2> <h3> <br> log${log} of Solar Rays boosts ${boosts}. Keep ${keep} on ${on} <br /> Effector's Tier ${tier} effect is ${format(useCurrency.log(log).pow(TBC1Bonus).clampMin(1))}</h3>`)
+                                      .map(({log, boosts, keep, on, tier}, index) => `
+                                      <h2>TIER  ${tier} </h2> <h3> 
+                                      <br>${player.Sol.TBCore.active ? "(???) " : "log " + log + " of "}  ${SR_tag} ${player.Sol.TBCore.active ? " adds to " : "boosts"} ${boosts}. Keep ${keep} on ${on} 
+                                      <br /> ${player.Sol.TBCore.active ? "+" + format(useCurrency.log(log).pow(TBC1Bonus).mul(GuidanceBoost).log(20).clampMin(1))
+                                        
+                                        + " to " + boosts :
+                                        
+                                      "Effector Tier " + tier + "effect is " + format(useCurrency.log(log).pow(TBC1Bonus).clampMin(1))  } 
+                                      `)
                                       .join('<br><br>') :
                                       effects.slice(0, player.C.EffectorTier.toNumber())
                                       .map(({log, tier, pressure}, index) => `
@@ -584,8 +751,22 @@ addLayer("C", {
     11: {
       fullDisplay() {
 
-          let TBC2_Improve = `16x to Solarity`
-          if (player.Sol.TBCore.x.gte(2)) `256x to Solarity AND it's cap`
+          let TBC2_Improve = `16x to Solarity gain`
+          if (player.Sol.TBCore.x.gte(2)) TBC2_Improve = `256x to Solarity gain & it's cap`
+          if (player.Sol.TBCore.active) TBC2_Improve = `${format(new Decimal(256).log(20))} Free Core energy`
+
+
+
+
+          //NOTE: DO THIS EFFECT AFETR FORMALITY AND TWILIGHT
+          
+          if (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) TBC2_Improve = `${format(new Decimal(256).log(12).pow(0.666).log(20) )} Free Core energy
+          <br>
+          
+       
+
+
+          `
 
           if (player.Sol.activeCheck == "") return `<h2>Jear 1</h2> <br>
           PATH SPLIT UPGRADE: <br>
@@ -744,12 +925,12 @@ addLayer("C", {
         if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
 
         if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
-
+        if (player.Adaptive) UpgradesTaken = UpgradesTaken.plus(1)
 
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
       unlocked() {
-        if (player.C.EffectorTier.gte(3)) return true
+        if (player.C.EffectorTier.gte(3)&& !player.Adaptive) return true
       },
       style() {
         return {
@@ -768,35 +949,163 @@ addLayer("C", {
     },
     22: {
       fullDisplay() {
-        if (player.Sol.activeCheck == "") return `<h2>Weaver</h2> <br>
+
+          // Change the effects to the following:
+
+          // if has TBC2, and is not inside of any "realms"
+          // When light is active: ^1.15 to Solarity gain cap
+          // When dark is active: ^1.04 to SR cap
+          // When TMS is active: ^1.25 Modifier score (Post Hardcap)
+          // ${format(player.C.Score.root(1.25))} -> ${format(player.C.Score)} 
+
+          // When TBE is active: Lunar Inst debuff now starts later based on LE
+          // Curently: 500 -> ${format(basedLALater)} <h5>(x${format(formulaLI_StartsLater),3}) 
+
+
+          // When TRM is active: Plasmate and Multiply reduces CP requirement ✅ 
+          // When TBC is active: 2% of Core energy boosts all Jear paths.  
+          // Currently: +format(player.points.log(20).times(0.02),4) 
+
+
+          // Outside of "realms": Solarity gain by ^1.15, and 
+          // else if not have TBC2: Boost solarity gain by ^1.15
+
+          
+          //if there is an upgrade that increases row 2 slot by 1, add the effect prior to adaptive here in the display
+        
+           let basedLALater = new Decimal(100)
+           let formulaLI_StartsLater = player.L.LunarEssence.pow(0.33)
+           if (player.L.LunarEssence.gte(1)) basedLALater = basedLALater.mul(formulaLI_StartsLater)
+
+           
+
+           let formulaCP_ReduceCPReq = getBuyableAmount("S",11).plus(getBuyableAmount("S",12)).clampMin(1).pow(0.4)
+
+         
+          let AdaptiveEffDis = ``
+          
+          
+          let requiresToBuy_TMS = ``
+          if (player.Sol.TMSun.active && TMSun.plus(TMSunP).eq(5) && player.Adaptive && !hasUpgrade("C",22)) requiresToBuy_TMS = `Requires: >2.15e117 Solarity to aquire`
+          else if (player.Sol.TMSun.active && TMSun.plus(TMSunP).eq(4) && player.Adaptive && !hasUpgrade("C",22)) requiresToBuy_TMS = `Requires: >7.15e134 Solarity to aquire`
+          else if (player.Sol.TBCore.active && getCoreDifficulty().gte(3) && player.Adaptive && !hasUpgrade("C",22)) requiresToBuy_TMS = `Requires 16 Core energy to aquire`
+
+          if (player.Sol.TBSun.active ) {
+            if (player.Sol.TBSun.active && !player.L.LunarEssence.gte(1) ) AdaptiveEffDis = `<br>Note: This effect cannot be applied due to insufficent Lunar Essence.`
+            else AdaptiveEffDis = `<br>The new Lunar Instability nerf is now: 100 -> ${format(basedLALater)} <h5>(x${format(formulaLI_StartsLater,3)}) `
+          }
+          
+          let JearBonus = Math.round(10000*(Core_effValue*0.01))/10000 
+
+          JearEffectBoost_Core = player.points.log(20).times(JearBonus)
+
+          let difference = Core_effValue-prevCore_eff_Val
+          let differText = `NA`
+          if (difference>=1 && difference != 0) differText = `⬆️ +${format(difference,2)}`
+          else if (difference<=1 && difference != 0) differText= `⬇️ ${format(difference,2)}`
+         
+          
+          let result = new Decimal(0)
+          let addedBonus = player.points.log(20).mul(JearBonus)
+          if (player.Adaptive && player.Sol.TBCore.active ) {
+          for (id in player.S.upgrades)  { if (id != 21 && getCoreDifficulty().gte(3)) result = result.plus(addedBonus) }
+          for (id in player.GL.upgrades) { if (id != 14 && getCoreDifficulty().gte(3)) result = result.plus(addedBonus) }
+          for (id in player.C.upgrades) { result = result.plus(addedBonus) }
+
+            
+		    
+        
+
+		}
+
+
+          if (player.Sol.TBCore.active ) AdaptiveEffDis = `<br><br>
+          You are getting ${format(JearEffectBoost_Core,3)} core energy per upgrade<br>
+          Gave +${format(result,3)} free core energy (Ignores other check debuffs)
+          <br><h4>(${format(100*JearBonus)}% of core energy) || ${format(cooldownBeforeChange-CoreEffectChange,1) } seconds to next change || ${differText}</h4> `
+
+
+
+          if (player.Sol.TRMoon.active ) AdaptiveEffDis = `<br> ${format(player.C.requirement.mul(formulaCP_ReduceCPReq))} -> ${format(player.C.requirement)}. 
+         (/${format(formulaCP_ReduceCPReq,3)})
+        
+          
+          `
+          if (player.Sol.TMSun.active  ) AdaptiveEffDis = `<br> Weaver's Adaptive for The Melted Sun is ${format(player.GL.Solar_Shards.log(7))}) `;
+
+
+
+          if (getActiveRealmType() == "Dark") AdaptiveEffDis = `<br>SR Cap increased by ${format(getSRCap().div(SRCap_BeforeAdaptiveBonus))}`
+          if (getActiveRealmType() == "Light") AdaptiveEffDis = `<br>Solarity Cap increased by ${format(capBeforeLightAdaptive.div(player.SolarityCap )) } (amount)`  
+          
+   //if (player.Adaptive && getActiveRealmType("Any") && hasUpgrade("C",22)) {effect = effect}
+
+          let Adaptive = ``
+          if (player.Sol.TBCore.x.gte(2) ) Adaptive = `(Adaptive)`
+
+
+          let AdaptText = "^1.17 Solarity Gain"
+          if (player.Adaptive) AdaptText = AdaptiveDisp[getActiveRealmType()]
+
+
+          // copy: if (player.Adaptive && hasUpgrade("C" , 22) && getActiveRealmType("Any") ) {effect = effect}
+
+          if (player.Sol.activeCheck == "") return `<h2>Weaver ${Adaptive}</h2> <br>
           PATH SPLIT UPGRADE II: <br>
-          ${ player.Sol.TBCore.x.gte(2) ? "^1.17 Solarity gain" : "^1.15 Solarity gain"} 
+          ${ player.Sol.TBCore.x.gte(2) ? AdaptText : "^1.15 Solarity gain"} 
+          ${player.Adaptive && getActiveRealmType() != "None" && hasUpgrade("C",22) ? AdaptiveEffDis : "" }<br>
+          ${requiresToBuy_TMS}
           `
           else return `BRING YOU`
       },
-      cost: new Decimal(4),
+      cost() { 
+         TMSun = player.Sol["TMSun"].x
+         TMSunP = player.Sol["TMSun"].pending
+         if (player.Sol.TMSun.active && TMSun.plus(TMSunP).eq(5) && player.Adaptive) return player.points.gte("6.15e116")
+         else if (player.Sol.TMSun.active && TMSun.plus(TMSunP).eq(4) && player.Adaptive) return player.points.gte("7.15e137")
+       
+         if (player.Sol.TBCore.active && getCoreDifficulty().gte(3) && player.Adaptive) return player.points.log(20).gte(16)
+         else if (hasUpgrade("C",22)) return new Decimal(4)
+
+      },
       currencyDisplayName: "CenterPoints",
       currencyInternalName: "CenterPoints",
       currencyLayer: "C",
 
       canAfford() {
+
+         TMSun = player.Sol["TMSun"].x
+            TMSunP = player.Sol["TMSun"].pending
+
         let maxUpgradesAllowed = new Decimal(1)
         let UpgradesTaken = new Decimal(0)
         if (hasUpgrade("C",21)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",22)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (player.Adaptive) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
 
         if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
 
-
-        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+        if (player.Sol.TMSun.active && TMSun.plus(TMSunP).eq(5) && player.Adaptive) return player.points.gte("2.15e117")
+        else if (player.Sol.TMSun.active && TMSun.plus(TMSunP).eq(4) && player.Adaptive) return player.points.gte("7.15e138") //might change idk
+        else if (player.Sol.TBCore.active && getCoreDifficulty().gte(3) && player.Adaptive) return player.points.log(20).gte(16)
+        else return (UpgradesTaken.lt(maxUpgradesAllowed)) 
       },
       unlocked() {
+        let TMSun = player.Sol.TMSun.x
+         let TMSunP = player.Sol.TMSun.pending
+        let TMSDiff = TMSun.plus(TMSunP)
+
         if (player.C.EffectorTier.gte(3)) return true
+        if (player.Sol.TMSun.active && TMSDiff.gte(4)) return true
+        if (hasUpgrade("C",22) && player.Adaptive) return true
+        
       },
       style() {
+        let baseWidth = "200px"
+        if (player.Adaptive) baseWidth = "400px"
         return {
-          "width": "200px",
+          "width": baseWidth,
           "height": "75px",
           "border-radius": "0px",
           "border": "0px",
@@ -807,6 +1116,7 @@ addLayer("C", {
       },
       onPurchased() {
         if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) Self_Reset("C")
+
       },
     },
     23: {
@@ -828,12 +1138,12 @@ addLayer("C", {
         if (hasUpgrade("C",23)) UpgradesTaken = UpgradesTaken.plus(1)
 
         if (hasMilestone("E",4)) maxUpgradesAllowed = maxUpgradesAllowed.plus(1)
-
+        if (player.Adaptive) UpgradesTaken = UpgradesTaken.plus(1)  
 
         return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
       },
     unlocked() {
-    if (player.C.EffectorTier.gte(3)) return true
+    if (player.C.EffectorTier.gte(3) && !player.Adaptive) return true
     },
     style() {
       return {
@@ -868,31 +1178,47 @@ addLayer("C", {
     */
     31: {
       fullDisplay() {
+
+        let PostNerf = ``
+        if (Heirarchys_ValueBeforeSelfNerf.gte(1e150)) PostNerf = `<h5>(Ignores Disdained nerf!)</h5>`
+
+
       return `<h2>Bright</h2> <br>
       PATH SPLIT UPGRADE III : <br>
-      x3.78e5 to Heirarchy Effect
+      x${format(DarknessUpgs_Row3[0])} to Heirarchy bonus<br><br>
+      
       `
       //or /4 Modifier score requirement
+      // maybe scales with harshcap?
+
     },
-    cost: new Decimal(16),
     currencyDisplayName: "CenterPoints",
       currencyInternalName: "CenterPoints",
       currencyLayer: "C",
       canAfford() {
+
+        let hasTBC2 = player.Sol.TBCore.x.gte(2)
+
+        let thing = Selecting("active")
+
         let maxUpgradesAllowed = new Decimal(1)
         let UpgradesTaken = new Decimal(0)
         if (hasUpgrade("C",31)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",32)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",33)) UpgradesTaken = UpgradesTaken.plus(1)
-        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+        
+        if (!thing) return (!UpgradesTaken.eq(maxUpgradesAllowed) && player.C.CenterPoints.gte(16)) 
+        else return (hasTBC2 && !UpgradesTaken.eq(maxUpgradesAllowed))
       },
-    unlocked() {
-     if (player.Sol.TBCore.x.gte(2)) 
-      return true
+
+    unlocked() { 
+      if (Selecting("active") && player.C.CenterPoints.lt(16) ) return false
+      else return player.Sol.TBCore.x.gte(2) 
+
     },
     style() {
       return {
-        "width": "200px",
+        "width": "140px",
         "height": "75px",
         "border-radius": "0px",
         "border": "0px",
@@ -901,30 +1227,43 @@ addLayer("C", {
         "color": "#67017dff"
       }
     },  
+    
+     pay() {
+      if (!Selecting("active")) player.C.CenterPoints = player.C.CenterPoints.sub(this.cost);
+      else if (Selecting("active")) player.C.CenterPoints = new Decimal(0.5)  //set to 0 if respeccing
+    },
+    
 
     },
     32: {
       fullDisplay() {
        return `<h2>Hyper</h2> <br>
       PATH SPLIT UPGRADE III : <br>
-      /1.05 to Meta nerf strength
+      /${DarknessUpgs_Row3[1]} to Meta nerf strength
       `
     },
-    cost: new Decimal(16),
+   // cost: new Decimal(16),
     currencyDisplayName: "CenterPoints",
       currencyInternalName: "CenterPoints",
       currencyLayer: "C",
       canAfford() {
+
+        let hasTBC2 = player.Sol.TBCore.x.gte(2)
+
+        let thing = Selecting("active")
+
         let maxUpgradesAllowed = new Decimal(1)
         let UpgradesTaken = new Decimal(0)
         if (hasUpgrade("C",31)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",32)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",33)) UpgradesTaken = UpgradesTaken.plus(1)
-        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+        
+        if (!thing) return (!UpgradesTaken.eq(maxUpgradesAllowed) && player.C.CenterPoints.gte(16)) 
+        else return (hasTBC2 && !UpgradesTaken.eq(maxUpgradesAllowed))
       },
     unlocked() {
-    if (player.Sol.TBCore.x.gte(2)) 
-      return true
+    if (Selecting("active") && player.C.CenterPoints.lt(16) ) return false
+      else return player.Sol.TBCore.x.gte(2) 
     },
     style() {
       return {
@@ -938,32 +1277,48 @@ addLayer("C", {
       }
     },  
 
+     pay() {
+      if (!Selecting("active")) player.C.CenterPoints = player.C.CenterPoints.sub(this.cost);
+      else if (Selecting("active")) player.C.CenterPoints = new Decimal(0.5)
+    },
 
     },
     33: {
-      fullDisplay() {
+      fullDisplay() { //not done with this one yet
        return `<h2>Light</h2> <br>
       PATH SPLIT UPGRADE III : <br>
       ^2 to BOTH Coronal ranges <br>
       (/6.25 to x29.16)
       `
     },
-    cost: new Decimal(16),
+    //cost: new Decimal(16),
     currencyDisplayName: "CenterPoints",
       currencyInternalName: "CenterPoints",
       currencyLayer: "C",
       canAfford() {
+
+        let hasTBC2 = player.Sol.TBCore.x.gte(2)
+
+        let thing = Selecting("active")
+
         let maxUpgradesAllowed = new Decimal(1)
         let UpgradesTaken = new Decimal(0)
         if (hasUpgrade("C",31)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",32)) UpgradesTaken = UpgradesTaken.plus(1)
         if (hasUpgrade("C",33)) UpgradesTaken = UpgradesTaken.plus(1)
-        return (!UpgradesTaken.eq(maxUpgradesAllowed)) 
+        
+        if (!thing) return (!UpgradesTaken.eq(maxUpgradesAllowed) && player.C.CenterPoints.gte(16)) 
+        else return (hasTBC2 && !UpgradesTaken.eq(maxUpgradesAllowed))
       },
     unlocked() {
-    if (player.Sol.TBCore.x.gte(2)) 
-      return true
+     if (Selecting("active") && player.C.CenterPoints.lt(16) ) return false
+      else return player.Sol.TBCore.x.gte(2) 
     },
+    pay() {
+      if (!Selecting("active")) player.C.CenterPoints = player.C.CenterPoints.sub(this.cost);
+      else if (Selecting("active")) player.C.CenterPoints = new Decimal(0.5)
+    },
+
     style() {
       return {
         "width": "140px",
@@ -1004,7 +1359,7 @@ addLayer("C", {
                  onClick() {
                   if (hasMilestone("E",3) && !getClickableState("E",14))
                   player.C.CenterPoints = tmp["C"].CPgain
-                  else player.C.CenterPoints = player.C.CenterPoints.plus(1)
+                //  else player.C.CenterPoints = player.C.CenterPoints.plus(1)
                   if (player.Sol["TBCore"].x.eq(0)) player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
 
                   layer1Reset(player.C.EffectorTier.gte(4), "C")
@@ -1037,9 +1392,16 @@ addLayer("C", {
       if (hasMilestone("E",1)) Divisor = player.E.EclipseTier.pow_base(1.35)
       if (hasUpgrade("L",13)) Divisor = Divisor.mul(upgradeEffect("L",13))
 
+
+     if (player.Adaptive && player.Sol.TRMoon.active && hasUpgrade("C" , 22)) {
+      Divisor = Divisor.mul((getBuyableAmount("S",11).plus(getBuyableAmount("S",12))).clampMin(1).pow(0.4))
+    }  
+        
       Hour = new Date()
       let exponent = 0
-      if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - (Hour.getHours() % 12) / 100; else exponent = 1
+      let TBC3Improve = 0
+    if (player.Sol.TBCore.x.gte(3)) TBC3Improve = 1.25
+    if (Hour.getHours() >= 12 && getBuyableAmount("L",22).gte(1)) exponent = 1 - ((Hour.getHours() % 12) * TBC3Improve ) / 100; else exponent = 1
 
       
       
@@ -1099,17 +1461,21 @@ addLayer("C", {
             },   
       31: {
       display() {
+        let RemoveAdaptive = ``
+        if (player.Sol.TBCore.x.gte(2)) RemoveAdaptive = `Note: This will also deactivate Adaptive!`
          return `
          <h3>Recenter the upgrade tree and do a Convertary reset (respec)<br>
+         ${RemoveAdaptive}
          `
       },
       onClick() {
       
       layer1Reset()
-    
+     if (player.Adaptive) player.Adaptive = false
+
       player.C.upgrades = []
       //if (player.C.CenterPoints.lte(0)) player.C.CenterPoints = player.C.CenterPoints.abs()
-
+        if (Selecting("active")) player.C.CenterPoints = decimalZero
 
       },
   canClick() {
@@ -1117,10 +1483,86 @@ addLayer("C", {
   },
   unlocked() {
     if (player.E.EclipseTier.gte(4)) return true
+    
   },
   style() { return {
     "width": "250px",
-    "height": "35px",
+    "height": "65px",
+    "border-radius": "0px",
+    "border": "10px",
+    "margin": "33px",
+    "text-shadow": "0px 0px 10px #000000",
+    
+  }
+}, 
+      
+  }, 
+      21: {
+      display() {
+        let effectDisplay = getActiveRealmType() == "None" ? `EFFECT: Not in check...` : `EFFECT: ${getActiveRealmType()}`
+        let active = !player.Adaptive ? `DISABLED` : `ENABLED`
+       //${Notice}
+        let canAdaptText = `Cannot Adapt: Weaver Required to adapt<br>` 
+        let UpgradeTreeConditions = hasUpgrade("C",22) && !(hasUpgrade("C",21) || hasUpgrade("C",23))
+        let CPAdaptiveConditions = player.C.Score.gte(player.C.adaptiveReq)
+        //<br> Requires at least 5 Non-free CP
+        if (CPAdaptiveConditions && (UpgradeTreeConditions) ) canAdaptText = `Click here to adapt Weaver! (Disables Neaver+Leaver)<br>`;
+        else if (UpgradeTreeConditions && !CPAdaptiveConditions) canAdaptText = `Needs at least ${format(player.C.adaptiveReq)} Modifier Score to Go Adaptive! (Nothing this OP is free you know...)`;
+        else if ([21, 22, 23].filter(id => hasUpgrade("C", id)).length >= player.C.maxslots2 ) canAdaptText = `Cannot adapt: Not enough slots to activate<br>`
+        if (player.Adaptive) canAdaptText = ` `
+
+        // (Centralizes and resets CP) </br> STATUS: ${} <br> Requires at least 5 Non-free CP`}
+
+
+        return `<h3>ADAPTIVE MODE</h3>
+
+        (Centralizes and resets CP)
+         STATUS: ${active}<br>
+         ${player.Adaptive ? effectDisplay : "EFFECT: Needs Adaptive..."} <br>
+         ${canAdaptText} 
+         
+         `
+      },
+      onClick() {
+      
+        player.Adaptive = !player.Adaptive
+        layer1Reset()
+        player.C.CenterPoints = decimalZero
+      },
+  canClick() {
+    /*
+    player cannot get adaptive bonuses if:
+
+    - the player has 2 upgrades in the row (including itself)
+    - the player is not in any check
+    - the player already have another upgrade purchased already
+
+
+    if the player has purchased an upgrade from row 2, it will prevent you from activating adaptive bonuses
+    */
+
+    let AdjustReq = 1.5e10 // (at least 7PM)
+    //should adjust these later
+    if (player.Sol.TRMoon.active) player.C.adaptiveReq = new Decimal(1e8)
+
+    else player.C.adaptiveReq = new Decimal(1.5e10)
+
+    if (!player.Adaptive && player.C.Score.gte(player.C.adaptiveReq))//this gets cleared when exiting checks or respeccing
+        {
+          if (hasUpgrade("C",22) && !(hasUpgrade("C",21) || hasUpgrade("C",23))) return true
+          else if ([21, 22, 23].filter(id => hasUpgrade("C", id)).length > player.C.maxslots2) return false
+      
+      } 
+    
+
+
+  },
+  unlocked() {
+    if (player.Sol.TBCore.x.gte(2)) return true
+  },
+  style() { return {
+    "width": "250px",
+    "height": "65px",
     "border-radius": "0px",
     "border": "10px",
     "margin": "33px",
@@ -1145,3 +1587,5 @@ addLayer("C", {
   }
   
   )
+
+

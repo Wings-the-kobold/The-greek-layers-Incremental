@@ -486,7 +486,7 @@ function Selecting(type) {
 				else if (player.Sol.selected == "TBCore") return player.Sol.TBCore[type]
 				else return player.Sol.null[type]
 				}
-		else {console.error("Input error: " + type + " is not in the list")}		
+		else {console.error("Input error: " + type + " is not in the list"); throw new Error}		
 	else {console.error("Unknown error: Type is not defined or is redeclared")}
 	
 }
@@ -547,18 +547,51 @@ function gainOfEsolar() {
                   chimeraBoost = softcap(chimeraBoost, new Decimal(10000), 0.05)
                   
                   let Hour = new Date()
-                  if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) gain = gain.times(1.5 ** (Hour.getHours() % 12))
+				  let TBC3Improve = 1
+                  if (player.Sol.TBCore.x.gte(3)) TBC3Improve = 1.25
+					let NT2Bonus = 1.5 ** (Hour.getHours() % 12) ** TBC3Improve
+                  if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) gain = gain.times(NT2Bonus)
 
                 return softcap(gain, new Decimal(10000), 0.15 )
 
 }
 
-function generateRandomNumber(min, max) {
+function gainOfSolinity() {
+	 let gain = new Decimal(1)
+          gain = player.E.SolarCharge.root(10).sub(1)
+          let EsolarBoost = player.E.Esolar.root(1.35)
+          let chimeraBoost = player.E.Chimera.pow_base(1.15).clampMin(1)
+          let Hour = new Date()
+          
+         let TBC3Improve = 1
+       	 if (player.Sol.TBCore.x.gte(3)) TBC3Improve = 1.25
+		 let NT2Bonus = 1.5 ** (Hour.getHours() % 12) ** TBC3Improve
+         if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) gain = gain.times(NT2Bonus)
+
+
+          EsolarBoost = softcap(EsolarBoost, new Decimal(1000), 0.175)
+            
+          chimeraBoost = softcap(chimeraBoost, new Decimal(10000), 0.05)
+
+           if (player.E.Esolar.gt(1)) gain = gain.mul(EsolarBoost)
+          if (player.E.Chimera.gt(1)) gain = gain.mul(chimeraBoost)
+            
+         gain = softcap(gain, new Decimal(7.5e8), 0.05  )
+		return gain
+}
+
+function gainOfChimera() {
+
+
+}
+
+function generateRandomNumber(min, max, int=true) {
   // Ensure min is less than or equal to max
   if (min > max) {
     [min, max] = [max, min]; // Swap values if min is greater than max
   }
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  if (int) return Math.floor(Math.random() * (max - min + 1)) + min;
+  else return Math.random() * (max - min) + min
 }
 
 //ALL TBC related things
@@ -568,7 +601,10 @@ function generateRandomNumber(min, max) {
 	player.C.Highest = new Decimal(0)
 	player.C.Score = new Decimal(0)
 	player.C.EffectorTier = new Decimal(0)
-	player.C.upgrades = []
+	if (player.Adaptive && getCoreDifficulty().gte(3) && player.Sol.TBCore.active && hasUpgrade("C",22)) {player.C.upgrades = []; player.C.upgrades.push(22);}
+	else player.C.upgrades = []
+
+	//if (player.Adaptive)  
 
 	}
 	function reset_GoldRays() {
@@ -577,11 +613,14 @@ function generateRandomNumber(min, max) {
 	setBuyableAmount("GL", 11, new Decimal(1))
 	}
 	// for TBC2
+
+	//
+
 	function Self_Reset(upgLayer="none") {
 		//	Origionally they were supposed to set it to 0, but that would be a little too harsh...
-		
 		if (upgLayer == "GL") player.GL.Solar_Shards = player.GL.Solar_Shards.root(5)
-		else if (upgLayer == "C") player.C.CenterPoints = player.C.CenterPoints.div(2)	
+
+	    else if (upgLayer == "C") player.C.CenterPoints = player.C.CenterPoints.div(2)	
 		else if (upgLayer == "S") player.S.points = player.S.points.root(2)
 	}
 
@@ -590,6 +629,123 @@ function generateRandomNumber(min, max) {
          let TBCoreP = player.Sol.TBCore.pending
 		return TBCore.plus(TBCoreP)
 	}
+
+// gets the name of active Realm check, 
+// paramaters are used to check if that realm is active
+//maybe leave the parameter stuff out for now
+function getActiveRealmType(TargetCheck=null) {
+	let activeCheck;
+
+	
+
+  for (const type of ["TMSun", "TRMoon", "TBSun", "TBCore"]) {
+    if (player.Sol[type].active) return type;
+	activeCheck = type
+  }
+  if (getClickableState('L', 42)) {activeCheck = "Dark"; return "Dark";}
+  else if (getClickableState('L', 41)) {activeCheck = "Light"; return "Light";}
+
+
+  if (TargetCheck != null && activeCheck == TargetCheck) return true;
+
+  else return "None";
+
+  
+
+}
+
+//should probably add the bonuses soon if i have not already...
+
+//In the future, there WILL be an upgrade or QoL that will allow ONE Adaptive effect to override the origional one
+
+function IsAdapting() {
+	if (player.Adaptive) {
+		 if (getActiveRealmType() != "None") player.AdaptiveType = getActiveRealmType()
+
+
+
+		/*
+
+		if (player.AdaptiveType == "Dark") SRCap = SRcap.pow(1.05)
+		else if (player.AdaptiveType == "Light") effect = effect.pow(1.08)
+		else if (player.AdaptiveType == "TRMoon") ReduceRquirements = player.L.LunarPower.log(9).mul(0.1)
+		else if (player.AdaptiveType == "TMSun") SRCap = SRcap.pow(1.05)
+		else if (player.AdaptiveType == "TBSun") StartLater = player.L.LunarEssence.pow(0.47)
+
+
+
+		*/
+
+
+
+		if ( getActiveRealmType("Dark")) player.AdaptiveType = getActiveRealmType()
+		else if (getActiveRealmType("Light")) lightAdaptive() 
+	        // ^1.08 to Hierarchy bonus
+		else if ( getActiveRealmType("TMSun")) TMSunAdaptive()
+			// ^1.2 Modifier score cap
+		else if (getActiveRealmType("TRMoon")) TRMoonAdaptive()
+			// Reduce Center Point requirements by 10% per log9 of L.A (Additive)
+		else if (getActiveRealmType("TBSun")) TBSunAdaptive()
+			// L.I debuff starts later based on L.E ) (^0.47)
+		else if (getActiveRealmType("TBCore")) TBCoreAdaptive()
+			// 2% of Core Energy boosts Jear paths
+
+	}
+	else player.AdaptiveType = ""
+}		
+
+
+
+
+
+
+
+
+
+/*
+
+Adaptive = {
+        
+    Light: ^1.08 to Heirarchy bonus
+    Dark: ^1.05 to SR cap
+    The Melted Sun: ^1.2 Modifier score cap 
+    The Bleeding Eclipse: L.I Debuff begins at ${format(basedLALater)} L.A </span>`, //Based on 500 * Lunar Essence^0.65
+    The Raging Moon: /1.25 to modifier requirements 
+    The Broken Core: 2% of Core Energy increases all Jear paths. 
+    // Jear 1 +1.85 Core Energy -> ???
+    // 
+    
+    "None": `<span style="color:rgba(255, 255, 255, 0.74)> Weaver on standby... ^1.15 to Solarity gain </span>`,
+  
+    }
+
+
+/*
+
+
+function glitchArray(arr, delay) {
+  if (arr && arr.isArray())
+	setTimeout(() => {
+		// Generate a random index within the array's bounds
+		const randomIndex = Math.floor(Math.random() * arr.length);
+
+		// Select the item at the random index
+		const selectedItem = arr[randomIndex];
+
+		return selectedItem
+		// You can perform other actions with the selectedItem here
+	}, delay);
+  else console.error("missing array")
+}
+
+
+
+
+
+
+
+// if (getRepCheck())
+
 
 
 
@@ -618,3 +774,5 @@ devtools.toString = function() {
 
 
 //R-Swarm*'s 
+
+

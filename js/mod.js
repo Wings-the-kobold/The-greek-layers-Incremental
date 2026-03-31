@@ -13,6 +13,12 @@ var nodePos = {
 
 }
 
+const tempGlitch = [
+				`the time is ticking...`, 
+				`ThE t1me !s t1cKinG`,
+				 `tH3 t!Me i$ T!C<!N&`,
+				 `TH3 tIM3 1S tIC>InG`,
+		]
 
 //if (getClickableState("E",14) == true ) Display = `<h3 style="color: #170f1c; text-shadow: 0px 0px 20px #cc0000;"> Shadows...? </h3`
 
@@ -51,9 +57,17 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6 F21-B19",
-	name: "Breaking the Core.",
+	num: "ersion 0.6, F22-B20",
+	name: "studying the core.",
+	
 }
+
+// IMPORTANT, THIS DETERMINES THE GAME COMPLETIONS, WHICH SAVES AFTER EVERY RESTART
+const VRSN = "0.6"
+
+
+
+
 /*
 6 Unique Upgrade types that are probably exclusive to SLOWPACED games
 basic upgrade check, queued/quest upgrade, repeatable check, modifier check, intersection/conditional check, 
@@ -72,15 +86,17 @@ Randized buyables(Has no scaling, but increases cost between x and y per bought)
 let changelog = ` <span class="ignThemes">
 <h1>Changelog:</h1><br><br>
 <h2>Start Date: 4/13/2024</h2> <br><br>
+<h2>Release Date: 3/27/2026</h2> <br><br>
 
 <span> <i>and yet, the sun rises, why must we no longer appreciate it for its volatility...</i><br></span>
 <span> <i>will it ever be trusting enough to allow our gaze within? we will never know...</i></span><br><br>
 
-<h3>v0.6 Fix 21, Balance 19</h3><br>
+<h3>v0.6 Fix 22, Balance 20</h3><br>
 Solaris... fuck you lol. <br>
 - Added ECT 7, and a bit of Quality Of Life... <br><br>
 - Added Aperation, The Randomizor, and The Core.<br>
 - Updated and changed Annular and Coronal's styling just slightly <br>
+
 - Added unlockable themes, and new Themes as well: <b> Eclipse, Twilight, Heliosphere</b>, And <b> The Core </b><br>
 - Added The wall of checks.  <br>
 - Added the heliosphere, and its content <br>
@@ -90,16 +106,19 @@ Solaris... fuck you lol. <br>
 
 - Added and changed UI's of custom-made features<br>
 - Moved some features into other tabs to save space and clutter <br>
-- Center Tree Respec moved from The Effector to The Center Tree <br>
+- Center Tree Respec moved from The Effector to The Darkness Tree <br>
 - added a few secrets into the game<br>
 - also added a couple more stats info 
  <br><br>
 
+TMT Remix update v0.0.2 : <br>
 <h4> > I also slightly altered the Viewer component to be customizable to a default </h4><br>
+<h5> >* and also added 'forceColumn' which forces the viewer to be displayed when necessary!
 <h4> > Also made changelog easier to read just in case of people wanting to see how the game changed over the months </h4><br>
 <h4> > Finally decided to fix Gravitations text overlap (It annoyed me enough >:( )</h4><br>
-<h4> > You should also go check out the settings! I made it a bit more customizable ;) </h4><br><br>
-<h4> > There was also a huge bug that prevented  </h4><br><br>
+<h4> > You should also go check out the settings! I made it a bit more customizable ;) </h4><br>
+<h4> > removed some deprecated functions from the game, as well as compacting some as well  </h4><br>
+<h4> >     </h4><br><br>
 
 <h3>Fixes for v0.6: </h3> <br>
 Fix 13: Layers no longer randomly switch places when reloading screens <br>
@@ -111,6 +130,9 @@ Fix 18: Fixed Duality not following Dark requirements<br>
 Fix 19: Fixed Jear 1 being able to be purchased during specific conditions via "Jear 2 + Jear 3" <br>
 Fix 20: Fixed Dark and Light Generation info being incorrect<br>
 Fix 21: Fixed Polarize upgrade showing its base effect before purchase and changing effects after its purchased<br>
+Fix 21.1: Removed deprecated implementated values ie player.C.checkUpgrades (just for performance related)
+Fix 22: <br> Capitalized Effector Tiers 2 and 3 for the uhh... thingy
+ 
 
 <h3> Balances for v0.6 </h3><br>
 Bal 11: Added a cap to Eclipsium at a base of 100,000<br>
@@ -127,6 +149,9 @@ Bal 16: completely changed the formula for MH-2 <br>
 Bal 17: buffed Dark check nerfs to be applied after all bonuses have been applied <br>
 Bal 18: added a scaling to duality checks once it reaches 10. <br> 
 Bal 19: Added a debuff to ECT6<br>
+Bal 20: Changed how Coronal's effect works. via, the speed of which it increases it's dividing factor is about the same as it is increasing<br>
+Bal 21: added a harshcap to Heirarchy starting at 1e150 (root self-scales by its own effect)<br>
+Bal 22: Multiply and some other buyables now need at least 1 of its amount for its effect to be applied <br>
 <br><br>
 
 <h3>v0.5, Fix 12, Balance 10</h3><br>
@@ -144,7 +169,18 @@ Lunaris, do my laundry! <br>
 - Changed Main layer 2 reset from Eclipsification to Eclipsify <br>
 <br> Dev note: 🐊 <br>
 
+TMT Remix notice: v0.0.1 <br>
+<h4>
+> At this point, I changed mostly everything from TMT, welcome to TMT:R, or TMT Remixed/Reimagined <br>
+> Added The Viewer component <br>
+> added The Reset component, a better version of the classic reset button from tmt <br>
+> edited how the 'cursor' reacts with the components and buttons wether or not the can be clicked based on their functionality <br>
+> edited some canvas.js things, including changing how the game renders branches and adding an eclipse as a bg <br>
+> fixed how themes work to make it much more easier to add custom themes, AND added a new feature to it via 'unlocked' <br>
+> added a custom endgame animation and made a customizable loading screen via png <br>
+</h4>
 
+</h4>
 <h3>Balances for v0.5: </h3><br>
 Bal6: Reduced PK44's Plasmate Queue Requirements slightly (75 -> 74) [It was too long] <br>
 Bal7: Added a softcap gain to Esolar and added a roofcap to it (starts at 10,000)<br>
@@ -164,7 +200,7 @@ Fix12: Fixed Solar Light generation displaying its unnerfed generation incorrect
 
 <h3>v0.4 Fix 8, Balance 5</h3><br>
 <h4>Lol i just Eclips'd ur mom</h4><br>
-- there is now a Solarity Gain Cap of e308! [aka Infinity]
+- there is now a Solarity Gain Cap of e308! [aka Infinity]<br>
 - Added Enlightenment <br>
 - Added Eclipse Tiers 1 through 4 <br>
 - Milestone Feature?????? <br><br>
@@ -174,7 +210,7 @@ Fix5: Fixed how Effector Tiers spent Center Points (It incremented by 1, THEN su
 Fix6: Fixed incorrect row placements and adjusted them to look better<br>
 Fix7: Updated Color theory on all upgrades, they should be easier to read now :)<br>
 Fix8: Changed first tab in Solarizor reset layer date on where the solar eclipse actually happened (i was off by a month)<br>
-Bal5: Plasmate has a new Conditional Scaling. where if its below 5 amount, it reduces the cost by 10% until you get to Layer 2. (this is to balance out Layer 1 stage, or Early game)<br>
+Bal5: Plasmate has a new Conditional Scaling. where if its below 5 amount, it reduces the cost by 10% until you get to Layer 1. (this is to balance out Layer 0 stage, or Early game)<br>
 	<br><br>
 
 <h3>v0.3 Fix 2, Balance 4</h3><br>
@@ -212,7 +248,7 @@ modInfo.changelog = changelog;
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "rollAP"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "rollAP", "Self_Reset"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -265,43 +301,103 @@ function getPointGen() {
 	if (hasUpgrade("S",13)) gain = gain.mul(upgradeEffect("S",13).pow(deAmp)).max(1) //
 	if (hasUpgrade("GL",13)) gain = gain.mul(upgradeEffect("GL",13).pow(deAmp)).max(1) 
 	
-	if (hasUpgrade("C",13)) gain = gain.times(2.5 ** deAmp)
-	if (hasUpgrade("C",11)) gain = gain.times(16 ** deAmp)
+	
 	
 	let sPoints = player.S.points
 
 	let MAX = (hasMilestone("E", 2) && player.L.activeCheck == "") ? 3 : 2
 
-	if (player.Sol["TBCore"].active && getCoreDifficulty(3)) MAX = 0.85;
-	else if (player.Sol["TBCore"].active && getCoreDifficulty(2)) MAX = 1;
-	else if (player.Sol["TBCore"].active && getCoreDifficulty(1)) MAX = 1.5;
+	if (player.Sol["TBCore"].active && getCoreDifficulty().eq(3)) MAX = 0.85;
+	else if (player.Sol["TBCore"].active && getCoreDifficulty().eq(2)) MAX = 1;
+	else if (player.Sol["TBCore"].active && getCoreDifficulty().eq(1)) MAX = 1.5;
 
 	let RootEFF1 = new Decimal(40)
 	let RootEFF2 = new Decimal(35)
   	let SolarRay1 = sPoints.root(RootEFF1.sub(upgradeEffect("S",12).pow(deAmp)))
   	let SolarRay2 = sPoints.root(RootEFF2.sub(upgradeEffect("S",12).pow(deAmp)))	
     if (SolarRay1.gt(2)) SolarRay1 = softcap(SolarRay1, new Decimal(2), 0.3)
-	if (!player.Sol["TBSun"].active) gain = gain.pow(SolarRay1.clampMax(MAX)).clampMin(1)   
-	if (!player.Sol["TBSun"].active) gain = gain.mul(SolarRay2).clampMin(1)
+
+	if (!player.Sol.solarBurst == false || player.Sol.testBurst == false) {
+		if (!player.Sol["TBSun"].active || !(player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.pow(SolarRay1.clampMax(MAX)).clampMin(1)   
+		if (!player.Sol["TBSun"].active || !(player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.mul(SolarRay2).clampMin(1)
+		}
+
+
+ 		let basePower = 1.5
+        if (hasUpgrade("S",12)) basePower = 1.7
+        if (hasUpgrade("S",12) && player.E.EclipseTier.gte(2)) basePower = 1.9
+
+    else if (player.Sol.solarBurst || player.Sol.testBurst) gain = gain.pow(basePower)
+
+	// ----------- Solar Light effects ---------	
 
 	
-	//
+	//player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))
 	if (hasUpgrade("GL",21)) gain = gain.pow(upgradeEffect("GL",21).pow(deAmp))
 	
 	//Check Upgrade 1 and Check Upgrade 2 Debuffs
+	
+	
+	
+	// ------------ CENTRALITY EFFECTS -----------
+	if (hasUpgrade("C",13)) gain = gain.times(DarknessUpgs_Row1[2] ** deAmp)
+	if (hasUpgrade("C",11)) gain = gain.times(DarknessUpgs_Row1[0] ** deAmp)
 	if (player.C.activeCheck == "Formality" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ) gain = gain.pow(0.666)
 	if (player["C"].activeCheck == "Twilight" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ) gain = gain.log(12)
-	// ------------ CENTRALITY EFFECTS -----------
-	//hasUpgrade("Sol")
+	
 	gain = gain.mul(GetHeirarchyBonus()) 
+	
+	
+	if (hasUpgrade("C",22)) gain = gain.pow(1.15);
 
-	if (hasUpgrade("C",22)) gain = gain.pow(1.15)
-	if (player.C.EffectorTier.gte(1)) gain = Decimal.mul(gain, player.S.points.log(2).clampMin(1))
-	if (player["C"].activeCheck == "Twilight" && hasMilestone("E",2) && player.L.activeCheck == "" ) gain = gain.pow(1.15)
+     
+	//let  = player.Sol["TBCore"].x 
+	 let TBC1Bonus = decimalOne
+	
+        if (player.Sol["TBCore"].x.gte(1)) {
+           
+        TBC1Bonus = decimalOne.plus((TBCore.mul(0.25)).mul(new Decimal(1.5).pow_base(TBCore)));
+		
+        
+	}
+
+	 let EffectorTier1_Boost = player.S.points.log(2).clampMin(1).pow(TBC1Bonus) // Base effect
+	 let EffectorTier3_Boost = player.S.points.log(9).clampMin(1).pow(TBC1Bonus)
+	 
+	 let GuidanceBoost = decimalOne
+        if (hasUpgrade("dL",11) && player.Sol.TBCore.active){ GuidanceBoost = player.C.CenterPoints.clampMin(1).log(3);
+        EffectorTier1_Boost = EffectorTier1_Boost.mul(GuidanceBoost.pow_base(20))
+		EffectorTier3_Boost = EffectorTier3_Boost.mul(GuidanceBoost.pow_base(20))
+		
+      }
+
+	if (getBuyableAmount("GL", 11).gte(1) && hasUpgrade("dL",11) && player.Sol.TBCore.active) gain = gain.mul(buyableEffect("GL", 11).clampMin(1))
+
+	if (player.C.EffectorTier.gte(1)) gain = Decimal.mul(gain, EffectorTier1_Boost)
+	if (player.C.EffectorTier.gte(3) && hasUpgrade("dL",11) && player.Sol.TBCore.active) gain = Decimal.mul(gain,EffectorTier3_Boost)	
+
+
+
+	if (player["C"].activeCheck == "Twilight" && hasMilestone("E",2) && player.L.activeCheck == ""  || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.pow(1.15)
 	
 	if (player["C"].hasFormality) {
 		if (!(player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) gain = gain.pow(1.25)
 	}// The Forgotton... Check upgrade
+
+
+
+		
+			let JearBonus = Math.round(10000*(Core_effValue*0.01))/10000 
+			let addedBonus = player.points.clampMin(1).log(20).mul(JearBonus)
+			let CE_SY__Translation = addedBonus.pow_base(20)	
+
+			let result = new Decimal(1)
+			if (player.Adaptive && player.Sol.TBCore.active && hasUpgrade("C",22)) {
+			for (id in player.S.upgrades)  { if (id != 21 && getCoreDifficulty().gte(3)) result = result.mul(CE_SY__Translation) }
+			for (id in player.GL.upgrades) { if (id != 14 && getCoreDifficulty().gte(3)) result = result.mul(CE_SY__Translation) }
+			for (id in player.C.upgrades) { result = result.mul(CE_SY__Translation) } 
+			gain = gain.mul(result)
+		}
 
 	// --------- ENLIGHTENMENT EFFECTS ---------
 	if (player["E"].activeCheck == "Forgotton") gain = gain.root(7)
@@ -318,7 +414,10 @@ function getPointGen() {
 											// [1 + (log7.5(LP))^log4(LP))] ^ TBE_Debuff
 				c1DEBUFF = decimalOne.plus(LP.log(7.5)).pow(player.L.LunarPower.log(4)).clampMin(1).pow(BLEEDINGSUN_POWER)	
 			}	                                                                    //  [1 + ( log7.5(LP-100)^log4(LP-100) )] ^ [0.9^TBE_Bonus]
-			if (LP.gt(100) && !player.Sol["TBSun"].active) gain = gain.div( (decimalOne.plus(player.L.LunarPower.sub(100).log(7.5)).pow(player.L.LunarPower.sub(100).log(4)).clampMin(1)).pow(new Decimal(0.9).pow(player.Sol["TBSun"].x))     )	
+
+
+
+			if (LP.gt(player.L.InstibilityStart) && !player.Sol["TBSun"].active) gain = gain.div( (decimalOne.plus(player.L.LunarPower.sub(player.L.InstibilityStart).log(7.5)).pow(player.L.LunarPower.sub(player.L.InstibilityStart).log(4)).clampMin(1)).pow(new Decimal(0.9).pow(player.Sol["TBSun"].x))     )	
 			else if (player.Sol["TBSun"].active || BC2_INFL) gain = gain.div(c1DEBUFF)		
 
 
@@ -327,11 +426,13 @@ function getPointGen() {
 	gain = gain.mul(upgradeEffect("E",12).pow(deAmp))
 	//if (hasUpgrade("E",11)) gain = upgradeEffect("E",11)
 	
-	if (player.L.DarkCheck.gte(1) && player.L.Dark.gte(1)) gain = player.Sol.activeCheck == "Heliosphere" ? gain.mul(player.Sol.HelioStat["Dark"].pow(0.3))  : gain.mul(player.L.Dark.pow(0.3)) 
+	if (player.L.DarkCheck.gte(1) && player.L.Dark.gte(1)) gain = player.Sol.activeCheck == "Heliosphere" ? gain.mul(player.Sol.HelioStat["Dark"].pow(0.3)).clampMin(1)  : gain.mul(player.L.Dark.pow(0.3)).clampMin(1) 
 	
 
 	//--------- LUNARIS EFFECTS -------------
-	if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) gain = gain.mul(1.15 ** Hour.getMinutes())
+	let TBC3Improve = 1
+        if (player.Sol.TBCore.x.gte(3)) TBC3Improve = 1.25
+	if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) gain = gain.mul((1.15 ** Hour.getMinutes()) ** TBC3Improve)
 	
 	//--------- SOLARIS' EFFECTS -------------
 	if (TSolStones(1).unlocked) gain = gain.mul(TSolStones(1).effect); 
@@ -367,6 +468,7 @@ function getPointGen() {
 
 	
 	let basegainCap = player.BasepointsCap
+	
 	// --------------- check upgrade Lightness
 	if (getClickableState("L", 41) || player.L.activeCheck == "TimeTillDark") basegainCap = new Decimal(1)
 	
@@ -405,13 +507,16 @@ function getPointGen() {
 	//Heirarchy
 	
 	if (hasMilestone("E",5) && player.L.activeCheck == "") basegainCap = basegainCap.mul(GetHeirarchyBonus().pow(0.33))
-
+	
+	////////
 
 	let c1effect = decimalOne.plus(player.L.LunarPower.clampMin(1).log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
 	basegainCap = basegainCap.mul(c1effect)
-	if (player.L.Light.gt(1)) basegainCap = basegainCap.mul(player.L.Light)
-	if (player.L.Dark.gt(1)) basegainCap = basegainCap.mul(player.L.Dark)
-	if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) basegainCap = basegainCap.mul(1.15 ** Hour.getMinutes())
+	if (player.L.Light.gt(1)) basegainCap = basegainCap.mul(player.L.Light.clampMin(1))
+	if (player.L.Dark.gt(1)) basegainCap = basegainCap.mul(player.L.Dark.clampMin(1))
+		
+		//LUNARIS DAY TIME EFFECTS
+	if (Hour.getHours() <= 12 && getBuyableAmount("L",21).gte(1)) basegainCap = basegainCap.mul((1.15 ** Hour.getMinutes()) ** TBC3Improve)
 	
 	if (BSolStones(2).unlocked) basegainCap = basegainCap.mul(BSolStones(2).effect); 
 	//	
@@ -421,7 +526,9 @@ function getPointGen() {
 	// HELIOSPHERE CHECK
 	if (Check("Sol",11).has) basegainCap = basegainCap.pow(1.2769) //don't ask why it's that specific 
 
+	// TBC2
 
+	if (player.Sol.TBCore.x.gte(2) && hasUpgrade("C",11)) basegainCap = basegainCap.mul(DarknessUpgs_Row1[0])
 
 
 	//Time till dark
@@ -441,7 +548,24 @@ function getPointGen() {
 	let TMSun_MELT_MYSELF = new Decimal(5).pow(currentActive.div(15)).plus(currentActive.sub(2))
 	
 	if (player.Sol["TMSun"].active) basegainCap = basegainCap.root(TMSun_MELT_MYSELF)
+	
+	
+	// SOLAR BURSTING CAP INCREASE
+		let BurstBonus = new Decimal("1e200")
+	// remember the formula for extra bursts is 
+	// e(100 * 1.146^(SB-1)^2)	
 
+	if (player.Sol.solarBurst || player.Sol.testBurst) basegainCap = basegainCap.mul(BurstBonus)
+ 	
+	
+    capBeforeLightAdaptive = basegainCap
+	if (getActiveRealmType() == "Light" && hasUpgrade("C",22) && player.Adaptive) basegainCap = basegainCap.pow(1.08)
+
+
+
+
+
+		
 	//this is in getPointGen() btw
 	player.SolarityCap = basegainCap
 	player.postCap = gain.div(player.BasepointsCap)
@@ -450,18 +574,29 @@ function getPointGen() {
 	if (player.L.activeCheck == "TimeTillDark" && player.L.TimeTillDark.lte(0)) {
 		player.L.activeCheck == ""
 
+		//"Respawn/revive" sets player.L.TimeTillDark to 1
 		player.L.TimeTillDark = new Decimal(0)
 		gain = gain.mul(0).add(1)
 	}
 	//change later
 	if (player.Sol.activeCheck == "Heliosphere") basegainCap = basegainCap.pow(player.Sol.HelioStat["Reduction"].mul(2))
 	
-
+	
+	
 
 	if ( player.timerOfBonus != 0 ) gain = gain.mul(5)	
+	let SpecialCap = new Decimal(1e800)
+	if (player.Sol.solarBurst || player.Sol.testBurst) SpecialCap = new Decimal("e9999999999999999999999999999")
+		
+	
+		
+	basegainCap = basegainCap.clampMax(SpecialCap) //might remove if Sgain doesnt breach e800 before bursting
+
+
 	return gain.clampMax(basegainCap)
 
-
+	// after 1st pestillessence, Lunar Inst. will divide after the cap so the debuff stays relevant
+	// 
 }
 
 
@@ -474,12 +609,16 @@ function addedPlayerData() { return {
 	SolarityCap: new Decimal(1),
 	postCap: new Decimal(1),
 	beforeCap: new Decimal(1),
+
+	//this is useless until TBC2 
+	Adaptive: false,
+	AdaptiveType: "",
 	
-	//this is basically useless until 5th Study which is about endgame
-	
+	//this is basically until any 5th Studies
 	resetTime: new Decimal(0),
+     
 
-
+			// 
 	rot: 0,
 	tick: 0,
 	frames: 0,
@@ -490,7 +629,7 @@ function addedPlayerData() { return {
 	inCutscene: false,
 	cutsceneName: "",
 
-	// random movement tickers for TBC
+	// random movement tickers for 
 	RMT: 0,
 	
 	borders: {
@@ -525,11 +664,6 @@ function addedPlayerData() { return {
 	timerOfBonus: 86400,
 
 	thingy: 0,
-
-	TSEGI_COMPLETIONS: {
-		"V0.6" : false,
-		"V0.6_Amount" : 0,
-	},
 
 	youMust: 0
 
@@ -571,7 +705,7 @@ var displayThings = [
 		let fogger = `Solarity`
 		if (player["E"].activeCheck == "Forgotton") fogger = `Shade...?`
 	
-		let SD104_Eff = getSRCap().gt(1e15) && getClickableState("L",42) ? `<span style="color: #0f032b;">The Current Solar ray cap is ${format(getSRCap())} </span><br>` : ``
+		let SD104_Eff = getSRCap().gt(1e15) && getClickableState("L",42)  ? `<span style="color: #0f032b;">The Current Solar ray cap is ${format(getSRCap())} </span><br>` : ``
 
 		//Hardcaps and other things
 			// Solarity Hardcap
@@ -587,7 +721,7 @@ var displayThings = [
 			`
 			else pushThrough = ``
 
-			if (player.SolarityCap.neq(1e308)) capped = `
+			if (player.SolarityCap.neq(1e308) && options.SolarityInfo) capped = `
 			<br>
 			The Current ${fogger} Gain Cap is ${format(player.SolarityCap)}<br> 
 			${SD104_Eff}
@@ -608,12 +742,12 @@ var displayThings = [
 		let forgotten1 = ``; 
 
 		{
-		if (player["E"].activeCheck == "Forgotton") forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Shade...? </h2><br>`; 
-		else forgotten = `<h2 style="color: #ffaf47; text-shadow: 0px 0px 10px #de482a;"> You Have ${format(player.points)} Solarity </h2>`
-		if (getClickableState("L",42) == true) forgotten = `<h2 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> You Have ${format(player.points)} Dark Essence<br>`
+		if (player["E"].activeCheck == "Forgotton") forgotten = `<h2 style="color: #170f1c; text-shadow: 0px 0px 10px #ffffff;"> You have ${format(player.points)} Shade...? </h2><br>`; 
+		else forgotten = `<h2 style="color: #ffaf47; text-shadow: 0px 0px 10px #de482a;"> You have ${format(player.points)} Solarity </h2>`
+		if (getClickableState("L",42) == true) forgotten = `<h2 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> You have ${format(player.points)} Dark Essence<br>`
 		if (player.L.activeCheck == "TimeTillDark") forgotten = `<h2 style="color: #044c76"> ${format(player.points)} / 2.91e41 </h2> <h2 style="color: #61036b"> Dark Entropy </h2><br>`
 		if (player.Sol.activeCheck == "Heliosphere" ) forgotten = `<i><h2 style="color:rgba(94, 65, 27, 0.61); text-shadow: 0px 0px 10px rgb(86, 0, 0);">-------------- ${format(player.Sol.HelioStat["Solarity"])}          </h2> </i>`
-		if (player.Sol["TBCore"].active) forgotten = `<h2 style="color: rgba(255, ${vib}, ${vib}, 1); text-shadow: 0px 0px 10px rgba(210, ${vib+10}, ${vib+10}, 1)"> ${format(player.points.log(20))} Core Energy </h2> <br>`
+		if (player.Sol["TBCore"].active) forgotten = `<h2 style="color: rgba(255, ${vib}, ${vib}, 1); text-shadow: 0px 0px 10px rgba(210, ${vib+10}, ${vib+10}, 1)"> ${format(player.points.log(20), getCoreDifficulty().plus(0) )} Core Energy </h2> <br>`
 			
 	}
 
@@ -623,7 +757,7 @@ var displayThings = [
 		else if (getClickableState("L", 42)) forgotten1 = `<h5 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Current Dark Essence Generation: ${OOMTEXT} Per second </h5><br>`; 
 		else if (player.L.activeCheck == "TimeTillDark") forgotten1 = `<h4 style="color: #0f032b; text-shadow: 0px 0px 10px #ffffff;"> Solarity Generation is hidden... </h4><br>`; 
 		else if (player.Sol["TBCore"].active) forgotten1 = `<h4 style="color: rgba(${110-(vib*-1)}, ${(vib+10)/1.5}, ${(vib/3)+5}, 1); text-shadow: 0px 0px 10px rgba(210, ${vib+10}, ${vib+10}, 1)"> watch how the core will collapse... </h4> <br>`
-		else forgotten1 = `<h5> Current Solarity Generation: ${OOMTEXT} </h5>`
+		else forgotten1 = options.SolarityInfo /* add the thing that removes cap */? `<h5> Current Solarity Generation: ${OOMTEXT} </h5>` : `<h5> Current Solarity Generation: ${OOMTEXT} ${ player.SolarityCap.neq(player.BasepointsCap) ? "/ " + format(player.SolarityCap) : ""}</h5>`
 	}
 
 		// ${shiftText(shiftList, player.Sol.activeCheck == "Heliosphere")}
@@ -666,15 +800,33 @@ var displayThings = [
 		let Noter = ``
 		if (options.autosave) Noter = `Autosave is on.`
 		//options.SolarityInfo
-		let TimeSpentOn = `<h5 >You have  <p style="color: #ecad26ff";>${format(player.resetTime.div(60))}</p> Solar Time </h5>`
+
+		let TBSunPassive =``;
+		let TMSunPassive=``;
+		let TRMoonPassive=``;
+		if (player.Sol.TBSun.x.gte(5) && options.SolarityInfo) TBSunPassive = `|  TBS 5: Multiply comp. effect increased 1.1 -> <span style="color: rgb(145, 123, 73)"> ${format(new Decimal(1.2).plus(player.resetTime.div(60).mul(0.01)),3)} </span><br>`
+	    if (player.Sol.TMSun.x.gte(5) && options.SolarityInfo) TMSunPassive = `|  TMS 5: Plasmate effect raised to <span style="color: rgb(145, 123, 73)">${format(new Decimal(1.1).plus(player.resetTime.div(60).mul(0.01)),3)}</span>  <br>`
+	    if (player.Sol.TRMoon.x.gte(5) && options.SolarityInfo) TRMoonPassive = `|  TRM 5: Meta nerf starts <span style="color: rgb(145, 123, 73)">+${format(new Decimal(50).plus(player.resetTime.div(60).mul(2),2) )} later</span> <br>`
+		
+		let passives = `<h6>${TBSunPassive}${TMSunPassive}${TRMoonPassive}</h6>`
+
+		
+		let TimeSpentOn = `<h5 >You have  <p style="color: #ecad26ff";>${format(player.resetTime.div(60))}</p> Solar Time </h5>
+		${passives}
+		
+		`
 
 	//let timerOfBonus_Text = `<h5> Thanks for waiting!<br>You have ${formatTime(player.timerOfBonus)} </h5>`
 
 		// return everything
+
+		let SpecialCapped = ``
+		if (player.points.gte("1e800") || player.PeakReached) SpecialCapped = `<h5 style="color: rgb(124, 0, 0)";>Extra solarity has become evanescent... <h5><br> Maybe... the sun is its problem... perhaps its too... frangible...`
+
 		return `
 		
 		${forgotten}${(player.Sol.TBSun.x.gte(5) || player.Sol.TMSun.x.gte(5) || player.Sol.TRMoon.x.gte(5)) && options.SolarityInfo ? TimeSpentOn : ""}${forgotten1}
-		
+		${SpecialCapped}
 		${FMTDtext} 
 		${genText} 
 		${ player.startedGame ? capped : ""}		
@@ -696,8 +848,11 @@ var displayThings = [
 	function c() {
 		let nextText;
 
-		if (player.E.EclipseTier.eq(7)) {
-			nextText = `Solock XX (20): Next unlock at <i> The Broken Core #3</i>`
+		if (player.Sol.TBCore.x.eq(3) || player.Sol.solarBurst) {
+			nextText = `Solock XXI: Next unlock at Checktice [coming soon!]`
+		}
+		else if (player.E.EclipseTier.eq(7)) {
+			nextText = `Solock XX (20): Final unlock at <i> The Broken Core #3</i>`
 			}
 		else if (getBuyableAmount("Sol",13).gte(6)) { //unlocks MNG upgrades
 			nextText = `Solock (19.5): Eclipse Tier 7 awaits you :)`
@@ -791,65 +946,64 @@ var displayThings = [
         let TBCore = player.Sol.TBCore.x
 		let totalCompletedWoC = TMSun.plus(TRMoon).plus(TBSun).plus(TBCore)
 	if (player.agreedTOS) {
-
-		if (totalCompletedWoC.gte(1)) {
-			document.title = `TSEGI - ${totalCompletedWoC} / 18 total Solaritology studies made`
+		if (TBCore.gte(1)) {
+			document.title = `TSEGI - Solaritology: The Broken Core ${TBCore}`
+		}
+		else if (totalCompletedWoC.gte(1)) {
+			document.title = `TSEGI - Solaritology: ${totalCompletedWoC} Studies completed`
 		}
 		else if (player.Sol.SolarHeat.gt(1) || player.E.EclipseTier.gte(7)) {
-			document.title = `TSEGI - ${format(player.Sol.SolarHeat)} Solar Heat`
+			document.title = `TSEGI - The Heliosphere: ${format(player.Sol.SolarHeat)} Solar Heat`
 		}
 		else if (player.Sol.MNG.Total.gt(0)) {
-			document.title = `TSEGI - ${player.Sol.MNG.Total} Total MNG's`
+			document.title = `TSEGI - The Randomizor: ${player.Sol.MNG.Total} Total MNG's`
 		}
 		else if (player.Sol.Aperativity.gte(35) || (player.Sol.CRNG.gt(0) || Roll.Amount > 0)) {
-			document.title = `TSEGI - ${format(player.Sol.Aperativity)} Aperativity`
+			document.title = `TSEGI - Solaris: ${format(player.Sol.Aperativity)} Aperativity`
 			} 
 		else if (player.L.activeCheck == "TimeTillDark") {
 			//couldn't get this working :(
-			tempGlitch = {
-				1: `the time is ticking...`, 
-				2: `ThE t1me !s t1cKinG`,
-				3: `tH3 t!Me i$ T!C<!N&`,
-				4: `TH3 tIM3 1S tIC>InG`,
-			}
 			
+			// was supposed to scroll though these randomly
 			//delay(250)
 			
+			//tempGlitch[]
+
 			document.title = `The clock is ticking...`
 
 
 		} 
 		else if (player.L.DarkCheck.gte(1) && player.L.LightCheck.gte(1)) {
-			document.title = `TSEGI - DK #${player.L.DarkCheck} and LK #${player.L.LightCheck}`
+			document.title = `TSEGI - Lunaris: DK #${player.L.DarkCheck}, LK #${player.L.LightCheck}`
 		} 
 		else if (player.L.lunarity) {
-			document.title = `TSEGI - ${format(player.E.LunarPower)} LP`
+			document.title = `TSEGI - Lunaris: ${format(player.E.LunarPower)} LP`
 		} 
 		else if (player.E.EclipseTier.eq(3)) {
-			 document.title = `TSEGI - ${format(player.E.SolarCharge)} Solar Charge`
+			 document.title = `TSEGI - The Solar Factory: ${format(player.E.SolarCharge)} Solar Charge`
 		} 
 		else if (player.E.EclipseTier.eq(2) && player.E.Eclipsium.gt(0)) {
-			document.title = `TSEGI - ${format(player.E.Eclipsium)} Eclipsium`
+			document.title = `TSEGI - The Solar Factory: ${format(player.E.Eclipsium)} Eclipsium`
 		}
 		else if (player.C.checkUpgrades.gte(3) || player.E.TopLVL.gte(1)) {
-			document.title = `TSEGI - ${format(player.E.TopLVL)} Enlightenment (Best)`
+			document.title = `TSEGI - Enlightenment: ${format(player.E.TopLVL)} ENL (Best)`
 		}
 		else if (hasUpgrade("GL",15)) {
-			document.title = `TSEGI - ${format(player["C"].CenterPoints)} CP`
+			document.title = `TSEGI - Centrality: ${format(player["C"].CenterPoints)} CP`
 		}
 		else if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
 			
-			document.title = `TSEGI - ${format(player["GL"].Solar_Shards)} Solar Shards`
+			document.title = `TSEGI - The Converter: ${format(player["GL"].Solar_Shards)} Solar Shards`
 
 		} 
 		else if (getBuyableAmount("S",11).gte(5)) {			
-			document.title = `TSEGI - ${format(player.S.points)} SR`
+			document.title = `TSEGI - The Sun: ${format(player.S.points)} SR`
 		} 
 		else if (player["S"].points.gte(5) || getBuyableAmount("S",11).gte(1)){
-			document.title = `TSEGI - ${format(player.S.points)} SR`
+			document.title = `TSEGI - The Sun: ${format(player.S.points)} SR`
 			
 		} else {
-			document.title = `TSEGI - ${format(player.points)} Solarity`
+			document.title = `TSEGI - The Sun: ${format(player.points)} Solarity`
 			
 		}
 
@@ -863,7 +1017,8 @@ var displayThings = [
 
 	function gh() {
 		if (true) return `<br>
-self reminder: check the todo list if you dont know what to do!
+self reminder: check the todo list if you dont know what to do!<br>
+also: add Tabs to Viewers for v0.7
 `
 /*
    (0.7) Rebalance, and buff NMH-1 <br>	

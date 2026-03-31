@@ -1,9 +1,15 @@
 // ************ Save stuff ************
 
+
 function save(force) {
 	NaNcheck(player)
 	if (NaNalert && !force) return
 	localStorage.setItem(modInfo.id, btoa(unescape(encodeURIComponent(JSON.stringify(player)))));
+	
+	//Importing is coming VERY soon!
+	// make NewPlayer variable stats and an option: "Recover wins"
+	localStorage.setItem("VersionFinishes",encodeURIComponent(JSON.stringify(TSEGICompletions))); //"completions are from player"
+
 	localStorage.setItem(modInfo.id+"_options", btoa(unescape(encodeURIComponent(JSON.stringify(options)))));
 
 }
@@ -190,13 +196,19 @@ function fixData(defaultData, newData) {
 function load() {
 	let get = localStorage.getItem(modInfo.id);
 
-	if (get === null || get === undefined) {
+	let GameFinishes = localStorage.getItem("VersionFinishes")
+
+
+	TSEGICompletions = Object.assign(TSEGICompletions, JSON.parse(decodeURIComponent((GameFinishes))))  ;
+	if (get === null || get === undefined ) {
 		player = getStartPlayer();
 		options = getStartOptions();
 	}
 	else {
 		
 		player = Object.assign(getStartPlayer(), JSON.parse(decodeURIComponent(escape(atob(get)))));
+		
+
 		
 		/*
 		alert("dude how the hell did you break " + item + "? if its an exported file go join the community server to discuss abvout the issue. ")
@@ -257,6 +269,7 @@ function NaNcheck(data) {
 			if (!NaNalert) {
 				clearInterval(interval);
 				NaNalert = true;
+				alert("Invalid value found in player, named '" + item + "'. Please let the creator of this mod know! You can refresh the page, and you will be un-NaNed.")
 				
 				return
 			}

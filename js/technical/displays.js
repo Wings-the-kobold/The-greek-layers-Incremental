@@ -1,3 +1,4 @@
+//redundant
 function prestigeButtonText(layer) {
 	if (layers[layer].prestigeButtonText !== undefined)
 		return run(layers[layer].prestigeButtonText(), layers[layer])
@@ -24,13 +25,13 @@ function constructNodeStyle(layer){
     return style
 }
 
-
+//redundant
 function challengeStyle(layer, id) {
 	if (player[layer].activeChallenge == id && canCompleteChallenge(layer, id)) return "canComplete"
 	else if (hasChallenge(layer, id)) return "Finish Challenge"
     return "Locked"
 }
-
+//redundant
 function challengeButtonText(layer, id) {
     return (player[layer].activeChallenge==(id)?(canCompleteChallenge(layer, id)?"Finish":"Exit Early"):(hasChallenge(layer, id)?"Completed":"Start"))
 

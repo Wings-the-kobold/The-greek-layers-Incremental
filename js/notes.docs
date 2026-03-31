@@ -33,3 +33,53 @@ Increase Duality check base by 0.1 per level
 
 
 
+
+
+
+
+
+
+
+
+The Enstranged Eclipse:
+
+- TMS and TBE 3 is applied at the same time
+- ^0.6 of its effect reduces the solarity gain cap
+- 
+
+
+
+Weakened compressions
+
+- Dark and Light generation is disabled
++ LK+DK have a static boost to solarity gain cap of 2x compounding
+- LK+DK also reduces all other currency gains by /2 compounding
+- ECT7 Qol8 bonus is limited to at max 3 completions
+
+Reward: 
+Bonus: Compounding bonus is improved based on total of both light and dark +((LK + DK / 10)^0.8)
+QOL: 
+
+The Spiteful Moon
+- TRM and TMS 4 is applied at the same time
+- Adds an extra scaling for CP starting at 40 by 1.1^x
+- Darkness tree upgrades cost 2x more
+- Plasmate x Multiply amount reduces the solarity gain cap and its gain
++ ECT5 bonuses are ^1.35 stronger
+
+Reward: Improve ECT5 Bonuses. CP is kept on most resets (excludes beginning a study or checks)
+
+
+
+
+
+
+
+Check challenge idea:
+
+"Self-Doubtation
+- The latest reset becomes much weaker every time you perform it
+- The nerf gets cleared as soon as a higher reset is performed
+- Repeatable checks compounding rate is reduced to %25
+- Studies Requirements (Except TBC) are increased at a harsher rate
+- 

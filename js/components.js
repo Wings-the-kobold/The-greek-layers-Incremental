@@ -648,7 +648,7 @@ function loadVue() {
 
 
 	Vue.component('Viewer', {	
-		props: ['layer','id','title','data'],		
+		props: ['layer','id','title','data','forceColumn'],		
 		data() {
 			return { 
 				id: "in-component id",
@@ -664,12 +664,13 @@ function loadVue() {
 				}
 			}							
 		},
+		
 		template: `
-<div >		
+<div>		
 	<h2  v-if="tmp[layer].Viewer[data.id].unlocked" class="ignThemes"> 
 	<span style="border: 2px solid gray; display: inline-block; padding: 2px; background-color: #5a5b5c;" v-if="data.title" v-html="data.title" >
 	</span>	</h2> 
-<br> 
+<br v-if="data.forceColumn || (tmp[layer].Viewer[data.id].forceColumn != undefined && tmp[layer].Viewer[data.id].forceColumn == true)">
 
 	<span 
 	
@@ -681,7 +682,7 @@ function loadVue() {
 	v-html="tmp[layer].Viewer[data.id].display()" 
 	> 		
 </span>
-<br><br>
+
 
 </div>
 `,//v-if="tmp[layer].Viewer[data.id].unlocked"

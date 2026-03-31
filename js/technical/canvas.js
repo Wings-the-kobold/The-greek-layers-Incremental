@@ -67,7 +67,7 @@ var opac = 0
 
 function drawEclipse() {
 	let sizeMult = player.E.EclipseTier.mul(2).mul(player["E"].ENLlevels.clampMin(0.1))
-	let sizeMultbestSize = player.E.EclipseTier.mul(2).mul(player["E"].TopLVL).clampMin(0.1)
+	let sizeMultbestSize = player.E.EclipseTier.mul(2).mul(player["E"].TopLVL.plus(0.01)).clampMin(0.1)
 
 	if (player.Sol.activeCheck == "Heliosphere") opac+=0.01; else epac = 0;
 	
@@ -79,8 +79,55 @@ function drawEclipse() {
 		text((middleX + 50 ), (middleY ), "√" + format(player.Sol.HelioStat["Reduction"])  , 1 , 25)
 	} else {
 		if (options.showEclipse){
+
+			//The Raging moons "Eclipse"
+			if (player.Sol["TRMoon"].active) {
+			Circle((canvas.width / 2)+(Math.sin(player.RMT/40) * Math.cos(player.C.CenterPoints.mul(1.2))), 500-((player.RMT/40) * Math.sin(player.C.CenterPoints) ), player.C.Score.log(1.5).clampMax(500), "#823c3c")
+			Circle((canvas.width / 2)+(Math.sin(player.RMT/50) * Math.cos(player.C.CenterPoints)), 500-((player.RMT/50) * Math.sin(player.C.CenterPoints) ), player.C.CenterPoints.mul(1.25).clampMax(450), "#656561")
+
+			}
+			// The Melted Suns "Eclipse"
+			else if (player.Sol["TMSun"].active) {
+			Circle((canvas.width / 2)+0.01, 500, player.points.root(player.Sol["TMSun"].x.plus(player.Sol["TMSun"].pending)).log(1.79).plus(0.01).clampMax(450), "#005ad8", Math.PI*2.2)	//base of the circle
+			Circle((canvas.width / 2), 500, player.SolarityCap.root(player.Sol["TMSun"].x.plus(player.Sol["TMSun"].pending)).log(1.8).clampMax(500), "#04044c", Math.PI*2.4)
+			Circle((canvas.width / 2)+0.01, 500, player.points.root(player.Sol["TMSun"].x.plus(player.Sol["TMSun"].pending)).log(1.735).plus(0.01).clampMax(450), "#005ad8", Math.PI/1.3)
+			Circle((canvas.width / 2), 500, player.SolarityCap.root(player.Sol["TMSun"].x.plus(player.Sol["TMSun"].pending)).log(1.74).clampMax(500), "#04044c", Math.PI/1.8)	
+			}
+			//TBSun's "Eclipse"
+			else if (player.Sol["TBSun"].active) { 
+			
+			let TBSun = player.Sol.TBSun.x
+			let TBSunP = player.Sol.TBSun.pending
+				
+			let c1effect = decimalOne.plus(player.L.LunarPower.log(5)).pow(player.L.LunarPower.log(2)).clampMin(1)
+
+          // Broken core's influence
+          let BC2_INFL = false
+          if (player.Sol["TBCore"].active && getCoreDifficulty().eq(2)) BC2_INFL = true
+				//-------------------------------------------          
+          //The Bleeding Sun 1 & 2
+          let BLEEDINGSUN_POWER = 1
+          if (BC2_INFL) BLEEDINGSUN_POWER = 7 // Broken core influence
+          else if ( player.Sol["TBSun"].active && TBSun.plus(TBSunP).gte(1)) BLEEDINGSUN_POWER = TBSun.plus(TBSunP).mul(2).plus(1)
+          let base_NOMERCYDEBUFF = decimalOne.plus( player.L.LunarPower.log(7.5)).pow(player.L.LunarPower.log(4)) .clampMin(1).pow(BLEEDINGSUN_POWER)
+
+          let c1NOMERCYDEBUFF = base_NOMERCYDEBUFF
+
+				Circle((canvas.width / 2), 500, player.points.log(10).root(1.25).clampMax(500), "#baa921", Math.PI*2)
+				
+					Circle((canvas.width / 2), 500, c1effect.log(1.32).pow(1.21).clampMax(500), "#786400", Math.PI*2.5)	
+					
+				Circle((canvas.width / 2), 500, player.L.LunarPower.log(1.1).pow(1.1).clampMax(500), "#702500", Math.PI)
+					
+				Circle((canvas.width / 2), 500, c1NOMERCYDEBUFF.log(2).clampMax(500), "#baa921", Math.PI/1.5)
+					
+			}
+
+			else {
 			Circle((canvas.width / 2), 500, sizeMultbestSize, "#ffa340")
 			Circle((canvas.width / 2), 500, sizeMult, "#000000")
+		    }
+		
 		}
 	}
 
@@ -177,14 +224,14 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
 
 // Fundamental shapes and things
 
-function Circle(x,y,s=10,color="#000000")
+function Circle(x,y,s=10,color="#000000",arc=Math.PI * 2)
 {
    // ctx.clearRect(0, 0, canvas.width, canvas.height);
    ctx.fillStyle = color;
    // var startPoint = (Math.PI/180)*0; Kinda redundant, it's just 0
    // var endPoint = (Math.PI/180)*360; Again, it's just PI times 2
    ctx.beginPath(); 
-   ctx.arc(x, y, s, 0, Math.PI * 2, true);    
+   ctx.arc(x, y, s, 0, arc, true);    
    ctx.fill();
    ctx.closePath(); 
 } 

@@ -1,15 +1,122 @@
 var player;
 var needCanvasUpdate = true;
 
+var TSEGICompletions = {
+		"V0.6" : false,
+		"V0.6_Amount" : 0,
+
+		"V0.7" : false,
+		"V0.7_Amount" : 0,
+
+		"V0.8" : false,
+		"V0.8_Amount" : 0,
+	}
+const cooldownBeforeChange = 15
+var CoreEffectChange = 0
+var Core_effValue = 3
+var prevCore_eff_Val = 3
+var CoreEffectMul = 0.03
+var JearEffectBoost_Core;
+
+var AdaptiveDisp = { //every time I try to change the text I have to change the name of it?????
+
+                //dude i hated doing this, now this looks kinda sloppy
+            "Light": `<span style="color:rgba(255, 231, 112, 0.91)"> Light:<b> ^1.08 to Solarity gain cap </b></span>`,
+            "Dark": `<span style="color:rgba(123, 51, 144, 1)"> Dark: <b>^1.05 to SR cap </b> </span>`,
+            "TMSun": `<span style="color:rgba(0, 27, 161, 0.74)"> The Melted Sun: Solar shards boost themselves at a log7 rate </span>`,
+            "TBSun": `<span style="color:rgba(94, 44, 8, 1)"> The Bleeding Eclipse: <b>Lunar Instability Debuff begins later based on Lunar Essence </b></span>`, //Based on 100 * Lunar Essence^0.5
+          //${format(basedLALater)} L.A <h5>(x${format(formulaLI_StartsLater),3}) 
+            "TRMoon": `<span style="color:rgba(94, 8, 85, 1)" > The Raging Moon: <b>Plasmate and Multiply asunderingly divides CP requirements </b> </span>`,
+			// (x + y)^0.25
+
+                                // or Gain 20 Free Multiply and Plasmate levels that counts towards Modifier Score
+            "TBCore": `<span style="color:rgb(147, 0, 0)"> The Broken Core: <b> give free core energy for each upgrade purchased based on a percentage of core energy (effect changes every 15 Seconds)<b></span>`,
+			//5 - 10% range. changes every 15 seconds; maybe an idea or not
+          //${hasUpgrade("C",22) ? "<br> Currently: " + format(player.points.log(20).times(0.02),4) : ""} 
+            
+            "None": `<span style="color:rgba(255, 255, 255, 0.74)"> Weaver on standby... ^1.15 to Solarity gain </span>`,
+          
+            }
+
+
+//Core_effValue*0.01
+// 100*Math.round(10000*(Core_effValue*0.01))/10000    
+
+const yes = true;
+const no = false;
+
+var Heirarchys_ValueBeforeSelfNerf = new Decimal(1)
+var SRCap_BeforeAdaptiveBonus = new Decimal(1)
+var capBeforeLightAdaptive = new Decimal(1)
 // Don't change this
+// Remixed note: oh but what if i do >:3
 const TMT_VERSION = {
 	tmtNum: "2.6.6.2",
 	tmtName: "Fixed Reality"
 }
 
+var DarknessUpgs_Row1 = [16, 8, 4]
+var DarknessUpgs_Row2 = [1.05, 1.15, 3.14]
+const DarknessUpgs_Row3 = [6.75e5, 1.09, 2] //this is a const for now maybe
+
+var CoronalEffectRanges = [0.4 , 5.4]
+
+var optionWheelElement = document.getElementById("optionWheel");
 
 
 
+const loadingTips = [
+`Tooltips added since 11/6/2025!`, // Message or "tooltip" here in every line
+`Did you know? That if you try hitting F5 the page refreshes?`,
+`Thank you for playing!`,
+`<i>"We will always see the moon, before it collapses into rage"</i> - The Dark Sun`,
+`<i>"Our Selfless opposition leaves ourselves in such a wither"</i> - The Decaying Sun`,
+`<i>"Why do our ends fall deep in such constant pressure"</i> - Solaris`,
+`<i>"Please, I beg you to forget me no longer. These chains peirce my broken soul..."</i> - Lunaris`,
+`<i>"Do you trust the light? Will you ever find our paths to satisfy the darkness?"</i> - The Light Sun `,
+`<i>"From the pressure of the sun, to the calefaction of what you witness" </i> - The Heliosphere`,
+`"<i>Share the light, Our presence of magnitation falls upon you"</i> - Theia`,
+`"<i>The wrath of our light, mixed with your hopefullness... "</i> - The Raging Moon`,
+`*🐊 crocodile noises*`,
+`There are 20 Current tooltips in this loading screen! 60% of them are quotations`,
+`:3 hai uwu :D >:(`, // 1 in 1,000, 0.1%
+`"<i>My effectiveness... is it all real? or is it all but a dream?" </i>- The Melted Sun`,
+`"<i>Wounds of my pride bled none, from all means of new power useless..." </i>- The Bleeding Eclipse`,
+`"<i>Do they all hate me...? why am I here to be left distant with another... "</i> - Glade `, //5x rarer than other quotes
+`"<i>The sun sheds a new dark, shadows never seen before... "</i> - The shade unknown`,
+`"<i>The moon turns our way, off from our helpless bodies"</i> - Lunaris`,
+`"<i>Perished rays of light that only wanted chaos..."</i> - Lunaris`,
+`"<i>The weak sun provides no more, feel its heart teetering."</i> - Solaris`,
+`"<i>And yet, the sun rises, why must we no longer appreciate it for its volatility?</i>"`,
+`"<i>Do we sin for the sake of our own pleasurable gains?" - The Sinful sun</i>`,
+`"<i>Death awaits to those who succumb to the <b>fools eclipse</b> </i>" - The Core`,
+`<i>"Nothing can explain how the sun can feel our souls..."</i> - Spectrometer`,
+`<i>"...Joy is just an illusion that you breathe. of which we will no longer feel. </i> - The Apathetic Sun`,
+`<i>"Do you trust the things that used to be?"</i> - The Decaying Sun`,
+`*Greed has stolen this loading tip*`,
+`<i>"From all the rocks to things that no longer can be usable... yet we are all broken"</i> - ???`,
+`<i>" " </i> - Name`,
+`<i>" " </i> - Name`,
+`<i>" " </i> - Name`,
+`<i>" " </i> - Name`,
+`<i>" " </i> - Name`,
+`If you see this then that means you have eyes! (yes! really!)`,
+``,
+
+]
+
+const rareLoadingTips = [ // > 10000, or 0.1% chance
+	
+	`The chance of this tooltip appearing is 1 in 1000!`, // 1 in 10000
+	`<h1> BIG TEXT YEAHHH!!!!1 </h1>`, // 1 in 25000
+	`damn bro, you need to take a shower, I can smell you through the screen 🤢`, // 1 in 27500
+	`<i>"Forget ourselves again, Just like... Echo..."</i> - <b>???</b>`, // 1 in 30000
+
+	//1 in 3 if RNG is over 1/50000
+	`<i>"THE FUCKING PAIN, I CAN'T LIVE BEING TORTURED ANYMORE SOLARIS! IT HURTS, STOP DOING THIS TO ME"</i> - Lunaris..?`, // 1 in 50000
+	`<i>"You will stay in that corner, chained for eternity, Lunaris. I don't care what you think about <b>them</b>"</i> - Solaris..?`, // 1 In 50000
+	`<h3><i>"...Am I... a soul~ that's... cursed? I cant...</i>" - Greed..?</h3>`
+]
 
 
 
@@ -399,12 +506,35 @@ function gameLoop(diff) {
 }
 
 function hardReset(resetOptions) {
-	if (!confirm("Are you sure you want to do this? You will lose all your progress!")) return
+	
+	alert("Yo, I gotta tell you something")
+	alert("If you hard reset the game")	
+	alert("You'll lose <i>everything</i>. excluding TSEGI Completions")	
+	if (confirm("are you sure you want to reset this game?")) alert("Like, listen to me.")
+
+	if (!confirm("do you REALLY want to hard reset this game?")) return
+	
+
+
 	player = null
 	if(resetOptions) options = null
 	save(true);
 	window.location.reload();
 }
+
+function startOver() 
+{
+    player = null
+	if(resetOptions) options = null
+
+	TSEGICompletions["V" + VRSN] = true
+	TSEGICompletions["V" + VRSN + "_Amount"] += 1
+
+	save(true);
+	window.location.reload();
+}
+
+
 
 var ticking = false
 
@@ -444,6 +574,16 @@ var interval = setInterval(function() {
 	let now = Date.now()
 	let diff = ((now - player.time) / 1e3)
 	let trueDiff = diff
+
+
+	CoreEffectChange+=1*diff
+	if (CoreEffectChange>=cooldownBeforeChange) {
+		CoreEffectChange=0; 
+		prevCore_eff_Val=Core_effValue;
+		Core_effValue=format(generateRandomNumber(1.5,4.5,false));
+		CoreEffectMul = Core_effValue/100
+	}
+
 	if (player.offTime !== undefined) {
 		if (player.offTime.remain > modInfo.offlineLimit * 3600) player.offTime.remain = modInfo.offlineLimit * 3600
 		if (player.offTime.remain > 0) {
@@ -465,31 +605,28 @@ var interval = setInterval(function() {
 	updateOomps(diff);
 	updateWidth()
 	updateTabFormats()
-	gameLoop(diff)
+	
+	if (!options.pauseGame) gameLoop(diff)
 	fixNaNs()
 	adjustPopupTime(trueDiff)
 	updateParticles(trueDiff) 
 	resizeCanvas();
+	
+	ticking = false
 	//custom non-TMT functions
 	if (options.betterTree) UpdateBorders();
 	UpdateCoresColor();
 	UpdateBranches();
 	UpdateRealTime();
-	
-	ticking = false
-
-	//change branches
+	changeImagesIndirect();
 	
 
 	if (options.animateTree) {
 		nodePos.tick += 1
 		if ( nodePos.tick>360 ) nodePos.tick=0
 	}
-
 			// Remove deprecated things
 			if (document.getElementById("info")) document.getElementById("info").remove()
-			if (document.getElementById("optionWheel").src == "options_wheel.png") document.getElementById("optionWheel").src = "resources/settings.png"
-
 }, 80)
 
 setInterval(function() {
@@ -498,7 +635,6 @@ setInterval(function() {
 	needCanvasUpdate = true
 
 }, 1)
-
 
 function UpdateCoresColor() {
 	let max = 90
@@ -529,6 +665,17 @@ function UpdateRealTime() {
 	const minutes = time.getMinutes();
 	const seconds = time.getSeconds();
 	TimeIs = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${am_pm ? '(Day)' : '(Night)'}`
+}
+
+function changeImagesIndirect() {
+	var optionWheelElement = document.getElementById("optionWheel");	 
+	if (optionWheelElement != null && optionWheelElement.getAttribute("src") === "options_wheel.png") optionWheelElement.setAttribute("src", "resources/settings.png");
+}
+
+function outerGameUpdates() {
+	
+
+
 }
 
 //ALL CUSTOM FUNCTIONS ARE HERE
@@ -623,9 +770,11 @@ function exitGeneration() {
     if (currentState == true) setClickableState("GL", 11, false)
 }
 // Custom made reset
-function EclipsiumReset(Queuereset=false) {
-	
-	player.C.EffectorTier = new Decimal(0)
+function EclipsiumReset(type="recontrol" , Queuereset=false) {
+	let varControl = true ? type!="recontrol" : true	
+					// if player has Pest-1A or something
+
+	if (!player.Sol["TBCore"].x.gte(2) && type!="recontrol") player.C.EffectorTier = new Decimal(0)
 	player.GL.Solar_Shards = player.GL.Solar_Shards.root(3).floor()
 	
 	player.C.CenterPoints = player.C.CenterPoints.root(3)
@@ -754,8 +903,16 @@ if (Error) document.title = "Cannot Load Content."
 
 function getSRCap() {
 	let baseSRCap = new Decimal(1e15)
-	if (hasUpgrade("Sol",12) && getClickableState("L",42)) baseSRCap = baseSRCap.mul(player["S"].bestPointsInDark)
+	if ( getClickableState("L",42))
+		  {
+		if (hasUpgrade("Sol",12)) baseSRCap = baseSRCap.mul(player["S"].bestPointsInDark)
+		
+		SRCap_BeforeAdaptiveBonus = baseSRCap
 
+		if (player.Adaptive && getClickableState('L', 42) && hasUpgrade("C" , 22)) baseSRCap = baseSRCap.pow(1.05)
+      
+		}
+	
 		return baseSRCap
 }
 
@@ -772,6 +929,7 @@ function GetHeirarchyBonus() {
 	if (hasUpgrade("L",11)) effect = effect.pow(1.15)
 		
 	if (player["C"].activeCheck == "Twilight") effect = effect.log(12).clampMin(1)
+	
 	SolarHeat_softcap = softcap((player.Sol.SolarHeat.sub(50)).pow_base(1.02) ,new Decimal(1e30), 0.35 )
 
 
@@ -780,6 +938,34 @@ function GetHeirarchyBonus() {
 
 	effect = player.Sol.SolarHeat.gt(50) ? effect.mul(SolarHeat_softcap) : effect
 	
+	
+
+	Heirarchys_ValueBeforeSelfNerf = effect
+	if (hasUpgrade("C",31)) effect = effect.mul(DarknessUpgs_Row3[0])
+	
+	//Disdained/ Harshcap
+						
+					//just in case if the idea is ass
+	if (!player.Sol.solarBurst && true) {
+		//Increase the root, which starts at 1.5
+		let increasedRoot= new Decimal(0)
+		let baseRoot = new Decimal(1.5)
+		if (effect.gte(player.C.HeirarchyNerfStartAt) ) {
+			increasedRoot = effect.div(player.C.HeirarchyNerfStartAt).log(150).div(150).clampMin(0)
+		}
+		baseRoot = baseRoot.plus(increasedRoot)
+
+
+		if (effect.gte(player.C.HeirarchyNerfStart)) effect = effect.div(player.C.HeirarchyNerfStartAt).root(baseRoot).mul(player.C.HeirarchyNerfStartAt)
+	}
+
+	if (hasUpgrade("C",31)) Heirarchys_ValueBeforeSelfNerf = Heirarchys_ValueBeforeSelfNerf.mul(DarknessUpgs_Row3[0])
+	
+	
+	
+
+	
+//format(GetHeirarchyBonus().div(1e130))
 	if (player["C"].hasHeirarchy && !player.Sol["TRMoon"].active && !player.Sol["TBCore"].active) return effect; else return new Decimal(1)
 }
 
@@ -792,7 +978,7 @@ function getSolarLightGain() {
             TBCore.mul(0.25).mul(new Decimal(1.5).pow_base(TBCore))
           );
         }
-
+//
          //The Bleeding Eclipse 3+
               let TBSunP = player.Sol["TBSun"].pending;
               let TBSun = player.Sol["TBSun"].x;
@@ -807,7 +993,7 @@ function getSolarLightGain() {
         if (getClickableState("E", 14) == true) gain = gain.root(3);
         if (hasMilestone("E", 1))
           gain = gain.mul(player.E.EclipseTier.pow_base(2));
-
+			
         if (player["Sol"].activeCheck == "Heliosphere")
           // Heliosphere's reduction currency
         gain = gain.root(player.Sol.HelioStat["Reduction"]);
@@ -828,7 +1014,229 @@ function getSolarLightGain() {
         else if (player.Sol["TBSun"].active && TBSun.plus(TBSunP).gte(3)) {
           gain = gain.div(BLEEDING_SOLARS);
         }
-
+		
 		return gain
 }
+
+function passiveShardGen() 
+        {
+		
+		let TBSunP = player.Sol["TBSun"].pending;
+        let TBSun = player.Sol["TBSun"].x;
+        let passiveReduction = decimalOne  
+		 let BC2_INFL = false
+
+   
+		let TBSunBonus = TBSun.mul(0.15)
+
+    // Reduce passive gains QoL
+        let BLEEDINGSUN_POWER = 1;
+        if (player.Sol["TBSun"].active && TBSun.plus(TBSunP).gte(1))
+          BLEEDINGSUN_POWER = TBSun.plus(TBSunP).mul(2).plus(1);
+        
+        let BLED_SOLARS = decimalZero;
+		  
+        let BLED_SOLARS_POWER = decimalZero
+        let BLEEDING_SOLARS = player.S.poweredInst.pow(BLED_SOLARS_POWER) 
+        if (BC2_INFL) BLED_SOLARS_POWER = new Decimal(0.27);
+		if (player.Sol["TBCore"].active && getCoreDifficulty().eq(2)) BC2_INFL = true;
+		
+		if (TBSun.plus(TBSunP).gte(3)) BLED_SOLARS = TBSunP.plus(TBSun).div(11);
+        else if (TBSun.plus(TBSunP).gte(3)) BLED_SOLARS_POWER = TBSunP.plus(TBSun).div(11);  
+
+        if (player.Sol.TBCore.active && getCoreDifficulty().gte(2))  passiveReduction = passiveReduction.mul(BLEEDING_SOLARS);
+        else if (player.Sol["TBSun"].active && TBSun.plus(TBSunP).gte(3))  passiveReduction = passiveReduction.mul(BLEEDING_SOLARS);	
+			
+			let passive =
+      player["Sol"].activeCheck == "Heliosphere"
+        ? player.Sol.HelioStat["Solar_Light"].pow(0.2)
+        : player.GL.Solarlight.pow(0.2);
+
+
+      if (player.Adaptive && hasUpgrade("C" , 22) && getActiveRealmType() == "TMSun" ) passive = passive.mul(player.GL.Solar_Shards.log(7))
+       
+       return passive
+          .pow(decimalOne.plus(TBSunBonus))
+		
+		
+		}
+
+function hasCheck(item) {
+
+}
+
+/* Pseudocode for registering Darkness tree upgrades for ROW 2
+// Paramater: row
+ if (has TBC2) 
+  {
+    if (has Jeaver) {
+      if (AdaptiveIsActive) slots += 2
+      else slots += 1
+      }
+    else if (has Weaver) slots += 1
+    else if (has Neaver) slots += 1
+  } 
+ else 
+  {
+    if (has Jeaver) slots += 1
+    else if (has Weaver) slots += 1
+    else if (has Neaver) slots += 1
+  }
+
+	if slots > maxSlots
+
+  (end)
+*/
+
+
+
+/* 
+if (has Neaver) slots += 1
+else if (has Weaver) {
+	if (has TBC2 && AdaptiveActivated) slots += 2
+	else slots += 1
+}
+else if (has Leaver) slots += 1
+
+if slots >= maxSlots || 
+
+*/
+
+let maxR2Slots = 1
+
+
+function row2Mechanic(startingSlots) {
+	let TBC2 = player.Sol.TBCore.x.gte(2)
+	let slots = startingSlots
+	var Neaver=false, Weaver=false, Leaver=false
+
+	let maxSlots=1
+
+	const row2Names = [Neaver, Weaver, Leaver]
+	for (item in row2Names) {
+		row2Names[item].val() = hasUpgrade("C", 21+item)
+	}
+
+	if (row2Names[0]) slots += 1
+	if (TBC2 && row2Names[1])
+		{
+		if (player.Adaptive) slots += 2
+		else slots += 1
+		}
+	if (row2Names[2]) slots += 1
+
+	if (slots >= maxSlots) {
+		return undefined 
+	}
+}
+
+//if row2Mechanic(  )
+
+
+//deprecated
+function getDarknessTree(row) {
+	
+	
+	// to "register" or to define the darkness upgrade tree from CP Layer
+	//supposed to call the variables in these arrays 
+	const row1Names = [Jear1, Jear2, Jear3]
+	const row2Names = [Neaver, Weaver, Leaver]
+	const row3Names = [Bright, Hyper, Light]
+
+	//and then set the values to them
+	for (item in row1Names) {
+		row1Names[item] = hasUpgrade("C", 11+item)
+	}
+	for (item in row2Names) {
+		row2Names[item] = hasUpgrade("C", 21+item)
+	}
+	for (item in row3Names) {
+		row3Names[item] = hasUpgrade("C", 31+item)
+	}
+
+	//and then I could call them using if (row1[0]) or just if (Jear1) 
+
+	/*
+	//this was supposed to add 1 "Slot space" for each row
+	if (row == 1) {
+		// scaling for this row is 1
+		if (hasUpgrade("C",11))
+		if (hasUpgrade("C",12)) 		 	
+		if (hasUpgrade("C",13)) 
+		}
+	if (row == 2)
+		{ //scaling for this row is 4
+		if (hasUpgrade("C",21)) 	
+		if (hasUpgrade("C",22)) 	
+		if (hasUpgrade("C",23)) 
+			}
+		if (player.Sol.TBC.x.gte(2)){
+			if (row == 3) //scaling for this row is 4
+				//these also get unlocked at TBC2 or player.Sol.TBC.x.gte(2)
+				if (hasUpgrade("C",31)) 	
+				if (hasUpgrade("C",32)) 	
+				if (hasUpgrade("C",33)) 	 				
+	}
+				*/
+}
+
+
+//for the canClick
+function AdaptDarknessTree(row) {
+	//checks if the player has any upgrades
+		let maxUpgradesAllowed = player.C.maxSlots
+        let UpgradesTaken = new Decimal(0)
+        if (hasUpgrade("C",row*10+1)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",row*10+2)) UpgradesTaken = UpgradesTaken.plus(1)
+        if (hasUpgrade("C",row*10+3)) UpgradesTaken = UpgradesTaken.plus(1)
+		
+     
+		if (row=2) {
+			if (hasUpgrade("C",22) && player.Adaptive) UpgradesTaken = UpgradesTaken.plus(1)
+		}
+
+
+		if (row=1) {return }
+					
+        return (UpgradesTaken.lt(player.C.maxSlots)) 
+}
+
+
+//
+/*
+player cannot get adaptive bonuses if:
+
+- the player has 2 upgrades in the row (including itself)
+- the player is not in any check
+- the player already have another upgrade purchased already
+
+
+if the player has purchased an upgrade from row 2, it will prevent you from activating adaptive bonuses
+*/
+
+//for 21 and 23
+
+
+
+/*	
+//maybe for activating the adaptive setting
+ canClick() {
+	if (!player.Adaptive)//this gets cleared when exiting checks
+		{
+			if ([21, 22, 23].filter(id => hasUpgrade("C", id)).length >= player.C.maxslots2)
+	//for 22, if adaptive is on it takes 2 slots instead of 1
+	// 	
+	} else if (player.C.maxslots2 >= 1)
+	
+};
+
+
+
+*/
+
+
+
+//Only when the game is finished
+//function _ () {debugger; /*Cheating? I hardly know her :clueless:*/}
+
 

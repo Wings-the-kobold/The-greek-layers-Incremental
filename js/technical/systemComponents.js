@@ -119,20 +119,12 @@ var systemComponents = {
 		
 		
 		
-		<br>
-		
-		
 		<div v-for="thing in tmp.displayThings" class="overlayThing"><span v-if="thing" v-html="thing"></span></div>
 	</div>
 	`
     },
 
-    'info-tab': {
-        template: `
-        
-        
-    `
-    },
+    
 
     'options-tab': {
 		//<button class="opt" onclick="switchTheme()" v-else-if="getThemeName() == 'FourMinutes'" > Theme: Four Minutes Until Dark </button>
@@ -146,7 +138,7 @@ var systemComponents = {
             <tr>
                 <td><button class="opt" onclick="save()">Save</button></td>
                 <td><button class="opt" onclick="toggleOpt('autosave')">Autosave: {{ options.autosave?"ON":"OFF" }}</button></td>
-                <td><button class="opt" onclick="hardReset()">HARD RESET</button></td>
+                <td><button class="opt" onclick="hardReset()">HARD RESET (Keeps Game Completions)</button></td>
            		<td><button class="opt" onclick="exportSave()">Export to clipboard</button></td>
 			</tr>
             <tr>  
@@ -172,6 +164,8 @@ var systemComponents = {
 				
 
 				<tr>
+				<td> <button class="opt2" onclick="changeNotationStart()">Scientific notation start: >{{ format(options.NotationStart[options.NotationStartSelect]) }}</button></td>	
+				
 				<td><button class="opt2" onclick="options.betterTree = !options.betterTree; options.animateTree = false; options.debugMode = false; nodePos.tick = 0">Tree layout: {{ options.betterTree?"Lore Accurate":"Game Accurate" }}</button></td>
 				<td v-if="options.betterTree && player.E.EclipseTier.gte(5)"><button class="opt2" onclick="options.animateTree = !options.animateTree;" > 
 				Animate tree: {{ options.animateTree?"True":"False" }}</button></td>
@@ -181,7 +175,8 @@ var systemComponents = {
 				</tr> 
 				<tr>
 				 <td v-if="player.points.gte(1e308) || player.E.EclipseTier.gte(1)"> <button class="opt2" onclick="options.showEclipse = !options.showEclipse">Draw BG Eclipse: {{ options.showEclipse?"true":"False" }}</button></td>
-				
+				 <td> <button class="opt2" onclick="">Notation Precision max: (TBI)</button></td>
+				 <td v-if="!player.L.TimeTillDarkActive" > <button class="opt2" onclick="options.pauseGame = !options.pauseGame"> Pause game (Joke) {{ options.pauseGame ?  "⏸️" : "▶️" }} </button></td>	
 				</tr>
 			<tr>
 				

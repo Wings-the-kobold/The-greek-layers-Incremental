@@ -26,7 +26,7 @@ function commaFormat(num, precision) {
 function regularFormat(num, precision) {
     if (num === null || num === undefined) return "NaN"
     if (num.mag < 0.0001) return (0).toFixed(precision)
-    if (num.mag < 0.1 && precision !==0) precision = Math.max(precision, 4)
+    if (num.mag < 0.1 && precision !==0) precision = Math.max(precision, 3) //this part here controls the precision in the decimal numbers
     return num.toStringWithDecimalPlaces(precision)
 }
 
@@ -56,7 +56,7 @@ function format(decimal, precision = 2, small) {
     }
     else if (decimal.gte("1e1000000")) return exponentialFormat(decimal, 0, false)
     else if (decimal.gte("1e10000")) return exponentialFormat(decimal, 0)
-    else if (decimal.gte(1e8)) return exponentialFormat(decimal, precision)
+    else if (decimal.gte(options.NotationStart[options.NotationStartSelect])) return exponentialFormat(decimal, precision)
     else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
     else if (decimal.gte(0.0001) || !small) return regularFormat(decimal, precision)
     else if (decimal.eq(0)) return (0).toFixed(precision)

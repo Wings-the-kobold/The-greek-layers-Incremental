@@ -464,9 +464,13 @@ addLayer("E", {
           */
           let text = ``
         
+          let modifiedReq = ``
+
+          if (player.Sol.solarBurst || player.Sol.testBurst) modifiedReq = `<s>Expansion I #10,</s> Phaser #68, <i>Cytochrisy #12</i>, Multiply #674`
+
           if (!Check("E",11).has) text = `
           It is unknown, for the darkness lurks with pure rage...<br><br>
-          Requires:Expansion I #10, Phaser #68, Cytochrisy #8, Multiply #674
+          Requires:${modifiedReq}
           `
           else if (player["E"].activeCheck == "Forgotton") text = `Goal: 1.16e20 Shade...? and 2 Center Points`       
           if (Check("E",11).has) text = `Phaser is added into the Modifier score formula. You now Generate Solar shards ^0.2 of your current golden light<br>`
@@ -491,7 +495,9 @@ addLayer("E", {
       return (Check("E",11).EnterReq == true && !Check("E",11).has && player["E"].activeCheck == "")                                                             
       },  
     EnterReq() {
-     return (getBuyableAmount("E",12).gte(10) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(10) && getBuyableAmount("E",11).gte(8))   
+
+    if (player.Sol.solarBurst || player.Sol.testBurst) return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(12))   
+    else return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(10) && getBuyableAmount("E",11).gte(8))   
     },   
     CompReq() {
     return player.C.CenterPoints.gte(2) && player.points.gte(1.16e20)
@@ -585,6 +591,7 @@ addLayer("E", {
     let showReq = `Requires: 1 Eclipsium`
     if (hasUpgrade("E",12)) showReq = ``
     if (hasUpgrade("E",this.id)) effectTXT = `Pneomic's Effect is ${format(this.effect())} <br>`
+    if (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) effectTXT = `Pneomic gives ${format(this.effect().log(20))} free core energy `
       return `<h2>Pneomic</h2> <br>
       Queued Upgrade 2:<br> Reach 5.11e13 Solarity without any Solarize Upgrades and Solar Shard Upgrades<br><br>
       Solar Charge Boosts Solarity Gain by ^0.45 of its effect <br>
@@ -852,23 +859,8 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
         },
 
         gain() {
-          let gain = new Decimal(1)
-          gain = player.E.SolarCharge.root(10).sub(1)
-          let EsolarBoost = player.E.Esolar.root(1.35)
-          let chimeraBoost = player.E.Chimera.pow_base(1.15).clampMin(1)
-          let Hour = new Date()
-          if (getBuyableAmount("L",22).gte(2) && Hour.getHours() >= 12) gain = gain.times(1.5 ** (Hour.getHours() % 12))
-
-          EsolarBoost = softcap(EsolarBoost, new Decimal(1000), 0.175)
-          
-            
-          chimeraBoost = softcap(chimeraBoost, new Decimal(10000), 0.05)
-
-           if (player.E.Esolar.gt(1)) gain = gain.mul(EsolarBoost)
-          if (player.E.Chimera.gt(1)) gain = gain.mul(chimeraBoost)
-            
-         gain = softcap(gain, new Decimal(7.5e8), 0.05  )
-         return gain
+         
+         return gainOfSolinity()
         },
 
         style() {
@@ -1055,9 +1047,13 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   2: {
     requirementDescription: "Eclipse Tier 2",
     effectDescription() {
+       let bonus = 0.2
+        let polarizeImp = `Polarize: -5 -> -10 root base`
+      if (player.Sol.solarBurst || player.Sol.testBurst) polarizeImp = `Polarize: 0.2 -> 0.4`
+
       let TillDarkText = `
-      - Intricity and Polarized is Improved <br> Intricity: +0.05 -> +0.08 <br> Polarize: -5 -> -10 root base <br> 
-      - Solar Rays's First hardcap is ^3 instead of ^2. but its formula is worse after ^2 <br>
+      - Intricity and Polarized is Improved <br> Intricity: +0.05 -> +0.08 <br> ${polarizeImp} <br> 
+      ${player.Sol.solarBurst || player.Sol.testBurst ? "- Solar Rays's First hardcap is ^3 instead of ^2. but its formula is worse after ^2 <br>" : ""}
       - ^1.15 Solarity Gain While inside Twilight check after the log nerf.`
 
       if (player.L.TimeTillDarkActive == true) TillDarkText = `<h3 style="color:#7d0f9c">Leave this page...<br></h3>`
@@ -1214,13 +1210,15 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   },
 
   8: {
-    requirementDescription: "Thank you player, for playing :)",
+    requirementDescription: "(NYI) Thank you cursor, for playing :)",
     effectDescription() {
   
      
   
       //if (player.E.EclipseTier.gte(this.id))
-      return `
+      return ` 
+            
+
           The core is trusting, but can you see it? <br>
           get your feet ready, for its about to go <br>
           new souls come burning, but can you see it? <br>
@@ -1232,7 +1230,20 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
           soon, the eclipse will have more to offer. as we, will wait for you.<br>
       ` 
   
-  
+     /*
+     <b> Welcome to pestilessence's first Milestone! You will get less bonus</b><br><br>
+     - QoL10: Allows centralizing before completing the light tree <br>
+     - QoL11: passively generate 0.5% of Chimera levels gain per second (locks chimera reset) <br>
+     - QoL12: Light and dark are instead divided by 2 when entering a study <br>
+
+     - QoL13: (for a diff check) Autobuy duality buyables without reducing resources
+
+     - +15% Core Energy (The Broken Core), ^0.8 Leaking nerf (The Fragmented Sun),  
+
+     DEBUFF: TMS, TBE, and TBC study requirements are slightly harder to complete now...
+     
+     */
+
   
       //else return `???`
     },
@@ -1240,6 +1251,43 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   
      },
     unlocked() {return player.E.EclipseTier.gte(7) },
+    onComplete() {
+      doPopup("msg","Good thing that you studied. Player. A smart move indeed...", "Lunaris:",10)  
+  
+    },
+
+},
+  9: {
+    requirementDescription: "NYI",
+    effectDescription() {
+  
+     
+  
+      //if (player.E.EclipseTier.gte(this.id))
+      return `
+         Please wait until v0.7 is released to see this!
+      ` 
+  
+     /*
+     <b> Welcome to pestilessence's second Milestone! most bonuses are in the higher up layers now!</b><br><br>
+     - QoL14: Unlock Auto-Roll, which generates 1 RollPower per 90 seconds (Can be reduced later on)
+     [Up to a minimum of 20 seconds]
+     - TBC1 Is always kept on Eclipsifications and 
+     - QoL13: (for a diff check) Autobuy duality buyables without reducing resources
+
+     - 
+
+     DEBUFF: Solar heat nerf is ^2, 
+     
+     */
+
+  
+      //else return `???`
+    },
+    done() { return player.E.EclipseTier.gte(this.id) // impossible to get
+  
+     },
+    unlocked() {return player.E.EclipseTier.gte(8) },
     onComplete() {
       doPopup("msg","TQET", "Game:",10)  
   
@@ -1321,7 +1369,14 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     */
 
                     // Lunarity
-
+                    player.E.Eclipsium = player.E.Eclipsium.mul(0)
+                    setBuyableAmount("E", 11, new Decimal(0) )
+                    setBuyableAmount("E", 12, new Decimal(0) )
+                    player.E.SolarCharge = new Decimal(1)
+                    player.E.Solinity = new Decimal(1)
+                    player.E.Esolar = new Decimal(1)
+                    player.E.Chimera = new Decimal(1)
+                    
                     player.L.Lunarity = player.E.EclipseTier.gte(7) ? true : false
                     player.L.LunarPower = new Decimal(1)
                     player.L.LunarEssence=  new Decimal(0)
@@ -1349,7 +1404,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                     player["Sol"].Aperature = new Decimal(0)
                     
             
-                    activeCheck = ""
+                    activeCheck = "" // ?
             
                     player["Sol"].TRNG = new Decimal(1)
                     player["Sol"].BRNG = new Decimal(1)

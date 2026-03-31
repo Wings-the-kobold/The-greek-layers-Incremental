@@ -50,8 +50,8 @@ First you might want to build yourself right back up again,
 
 # Eclipse Tier 5 - Lunaris.
 
-
-
+(I forgot to write a guide and i forgot how i progressed into this stage lol)
+(Just do me a favor and help me out and write ts out fr)
 
 
 
@@ -87,9 +87,12 @@ First you might want to build yourself right back up again,
 # 4 Minutes until dark
 
 this was a weird check to balance
-
 Every minute should do a solarity reset idk
 
+
+
+Turn saving OFF, if you want to have a deathless run, but it would feel less legit 
+(I think i added 'add death by counter' button somewhere??? )
 
 
 
@@ -100,7 +103,7 @@ Welcome to solaris, the solar sun. where there will be many types of 'altered su
 in this stage, you will be mostly recovering, yet again. but don't worry, because ahead of time you will be able to
 control mostly all of them in a higher reset. but since this is v0.6, you'll only be controlling 1 - `The Wading Suns.`
 `To see about their lore, and his story, check on extras in the node on the top right corner!`
-
+also since this is endgame for 0.6, prepare for ALOT of layer switching and stratedgy based progression 
 
 # Aperativity to Queued Upgrades
     
@@ -176,7 +179,7 @@ few ways you can do this, but take this preperation as mandatory:
 
     First requirements: you should try getting is the TRNG, since you will need 1000 to 5000, it would not take much to get to.
     You can buy upgrades as long as it doesnt pose a barrier to your progress
-* you can also abuse how you get rng by turning off saving! but be warned, you might forget to turn it back on and lose progress. I personally wouldn't recomend doing this because its tedious
+* you can also abuse how you get rng by turning off saving! but be warned, you might forget to turn it back on and lose progress. I personally wouldn't recomend doing this because its tedious and time consuming
 
     Second requirements: you should aim for is the CP base. which is about 233 AP, I would not recomend trying to invest much into RNG machine, but I would roll only once or twice to get a certain bonus.
 * try to get a bit of extra free CP so that Heliosphere will be easier!
@@ -264,6 +267,7 @@ Also, I hope you're using Use Neaver and Jear 2 to help with LK clear as well as
 
 # The Core to Solar bursting ( end of v0.6 )
 
+- ##  Core 0 -> Core 1
 Recomended stat requirements to proceed, or bare minimum :
  > +2.8 CP base (+3 is better)
  > Light check 17 and Dark check 17
@@ -304,7 +308,7 @@ Broken core will instead equal to all combined checks ever gotten.
 * For EACH TBC it is recomended you do MANUAL saving if you do not want to be softlocked, more importalntly make a new tab BEFORE you enter this check 
 
 
-- #  Core 0 -> Core 1:
+
 
 I recomend getting your Fragmented Sun buyables to these levels: `20-20-15-10`
 > Also quick note: that the ORDER of these are: `Innvation-Solaritisicm-Exponentiate-BasityII`. Remember that! It also does not matter which order you buy these upgrades in my opinion.
@@ -327,7 +331,11 @@ Also this is a choice between Solar Light and Convertary mostly. so strategize w
 
 
 
-- # Core 1 -> Core 2:
+- ## Core 1 -> Core 2
+
+Something before you enter this check you need to know that 
+
+
 After you have finished with the next set of Studies via if you have done TBE, TRM, and TMS (in order) go ahead and grind Heliosphere buyables/upgrades to:
 `25-25-16-15`
 
@@ -351,38 +359,100 @@ You also have TBE3, which will very much help ALOT in TBC2
 
 Also switch Solar Fragments bonus, since you probably want to fight TBE's effect for The Broken Core
 - Just progress to Centrality as you would normally, and wait quite a while (but not TOO long) to buy all of the upgrades in Solar light (or get to annular and drop Coronal)
-* DO NOT ENTER SOLAR LIGHT GENERATION AS THIS WILL JEOPARDIZE THE OTHER LAYER!
-* DO NOT CENTRALIZE UNLESS YOU CAN GET MAX or +5 CP EVERY TIME
+* DO NOT ENTER SOLAR LIGHT GENERATION AS THIS WILL SOFTLOCK THE OTHER LAYER!
+* DO NOT CENTRALIZE UNLESS YOU CAN GET MAX or +5 CP EVERY CENTRALIZATION
 you also may have to save a bit of time by buying less Plasmate 
 also go for Leverage FIRST instead of the other two (shardism and Scorch) because it will help 
 Coronal is optional but i'll probably balance that later to also include that (You'll might gotta go faster)
 
 [Takes about 9 Minutes]
+>> ### note: Im well aware Coronal's effect NaNs when reaching below 0 when the actual effect is "midified" , so please bear with me as i will fix that next update!
+- ## > Core 2 -> Core 3
 
-- # > Core 2 -> Core 3.
+>>
+
+
 As you soon reach to this point, you may be introduced with a new type of nerf in the game, these are called 'harshcaps'. they are usually more harsher and aggressive than normal softcaps. instead of being the usual `nerf this by logY (x)` or `nerfed by rootY(x)` its also more like 'self-divide' kind of thing with various nerfs. think of it like the nerfs somewhat similar to multiply's meta-nerf but it's usually more applied to bonuses rather than scalings. 
 
-`30-30-17-20`
+Heliosphere upgrades Amount recomendation for 5th Studies`30-30-17-20`
 You will also need LK/DK 30/30
 anyways enough explaining, lets get right into the pre-core strategy.
+
+
+
+
 Go do these studies in these order: `TMS, TRM, TBE`
+then
+`TMS, TBE, TRM`
+
+
 `NOTE: You might need to do 4th studies instead of the 5th studies because The third debuffs are VERY HARSH`
+
+`DO NOT FORGET TO DO LIGHT AND DARK CHECKS!!!!`
 
 After you get 5th Studies the last one will get pretty interesting
 
+> Since TBC2 makes 3rd row darkness row can be always bought, you can use that for your advantage. yes, really! 
+Adaptive will be very essential to beating 5th studies of such, as well as The Broken Core 3! 
+
+For Dark check, and TRM4, Use Hyper
+For Light check, and TMS4, Use Light
+For Non-RepCheck, and TBE4 use Bright.
+
+For TMS, Doing the 4th study will be easy if you use Bright
+For TRM, Doing the 4th study will be easy if you use Hyper (At 7 PM minimum)
+For TBE, doing the 4th study will be easy if you use Light
+
+
+Beacause of Adaptive:
+ TRM4 - Make sure your Solar heat is low so you can have a better time beating TRM4 and 5! (and spend some on upgrades if you need that final push!)
+ TRM5 - Make sure to farm Basity I and go for Exponentiate instead of random Solar heat purchasing! this requires at least 7+ on the Solar Clock!
+  (fun fact, the requirements to TRM5 used to be 35 but that just seemed too high)
+        Also, if you have TBE 5 before TRM 5 you are now allowed to use the Randomizer. it will help alot in TRM5
+ 
+ TBE4 - Before you start on The Bleeding Eclipse, Start farming Lunar Essence! The more the better! you need as much delay as much as possible to gain extra time to gain alot of resources!
+ TBE5 - get about 400-500 Lunar Esesence to beat this one!
+
+ TMS4 - Wait until you get just enough eclipsium Remember cytochorisy? the one you abandoned? or forgot about? or i told you to forget about? go ahead and get as much as you can before you enter TMS because 
+ adaptive for TMS requires something other than CP...
+ TMS5 - Yeah, this one is kind of a forcewall, would be easy if you just get adaptive and do Jear 1 and Jear 2.
 
 
 
 
-- Recomended time: 11PM (or later)
+- Recomended time to beat TBC3: 10PM (or later)
 
+for TBC3, you are very much switching from Center Points to Convertary quite a bit
 
-Since Row 3 Darkness upgrades are pretty essential to progressing you should choose the following if
+1hr 30 mins
 
+Use Hyper.
+do NOT go above 80 multiply as getting TBC's adaptive is going to take 5-10 minutes unless you are past 7PM
 
-ALright once you 
+7-20 minutes forcewall to aquire adaptive [if doing it any other time below 11PM]
+5-15 minutes forewall for 11 PM
 
+Get Adaptive very early before doing a convertary reset a bunch of times since the other bonuses are kinda weaker compared to convertary upgrades!
++ This is because adaptive is kept regardless of TBC2's restriction! how neat!
 
+Now here is where you wait for a good while, while upgrading or keeping an eye on multiply and Basity I because they will be important
+
+>> note: if you started from below 11PM you might have to wait a couple extra 30 minutes or so
+
+>> tip: there is something hidden that can help you. to get it you might need to switch your "layer focus" from CP to SL 
+(27.5 Core Energy)
+or 
+(28)
+or 
+(30)
+
+- once you have 'guidance' switch your "layer focus" from Solar Light back to Center Points for the final push of Core Energy
+
+click here to reveal the solution if you are stuck on finding the hidden thing -> || Check Extras tab and look for "The Core" in the lore section!
+
+And then after that, get about 23 Solar Energy and Keep buying Multiply until you get to the goal.
+which is probably around multiply 200+. and then the rest is just waiting for Adaptive to get a high enough bonus 
+once you reac it however, you much get it IMMEDIATELY, or else you have to wait to get lucky again
 
 
 > Core 3 -> Solar Bursting

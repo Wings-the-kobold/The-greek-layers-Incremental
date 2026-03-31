@@ -26,24 +26,55 @@ like solar bursting when unlocked
 
 
 
-DO NOW:
-- Finish TBC2 rewards
-- Make the improved Darkness Tree Upgrades
-  - Add the effects of 'Bright, Hyper, and Shadow'
+DO NOW (Checklist)
 
-- Create TBC2 QoL Rewards
+Implement heirarchy for TBC3 (Meta scale starts at 0 and also affects plasmate)
+Adaptive boost goes after formality+twilight
 
-(LATER)
+
+
+
+
+
+
+
+
+DO LATER:
+make displays for effects since all checks are activated in 
+
+
+D: Make Solar Bursting 
+-> info: Solar bursting also removes the cap of Enlightenment levels and makes the rewards of ECT1 much stronger 
+-> 
+-> it also makes Enlightenment levels formula slightly better Root: 2 -> 1.85
+
+Solar bursting will do the following things:
+- removes Enlightenment levels hardcap
+- adds e175 - e200 to the base solarity gain cap and removes solarity's initial hardcap 
+
+
+-> Modify Forgotton gate requirements to only need cytochorisy
+
+
+
+
 - progress to TBC3 and make it
 - maybe add TBC3 influence?
   BC3 influence: TRM4, TBE3, TMS2
-   
+  
+  - Harshcapped: Solarity gain above e800 is dramatically reduced to log100(bonuses)
 
 
 
 (0.7 FIXES/BALANCES)
-- 4MUD resets solarity every minute (Or is reduced slowly to equal the current gain/gain cap)
-- 
+- 4MUD now resets solarity every minute (Or is reduced slowly to equal the current gain/gain cap)
+- Added a new harshcap for Light and Dark if the generations go too far apart from each other 
+if (log10(Lightness/Darkness) > 10)
+    if (darkness > lightness) darkness reduced to /3^(log10(Light/Dark)-9)
+    else if (lightness > darkness) lightness reduced to /3^(log10(Light/Dark)-9)
+BALANCES:
+ buffed Daytime effects including: MH-2,  MH-1
+
 
 
 
@@ -52,6 +83,11 @@ DO NOW:
 
 
 > For much later after TQET 0.2
+
+Theias "Cap removal" will remove the solarity gain cap for good. but will put a harshcap on Leverage and Gravitation with a value of log5 past e75 and e100. while converting solarity gain cap increases into 
+actual solarity bonuses at a rate of ^0.6
+
+
 
 Pestillessence 'Distanced' check
 "They were useless..."
@@ -133,6 +169,21 @@ Pestillessence 'Distanced pt.2' check
 
 
 for Pestillessence:
+Pestilessence scaling:
+
+starting at e1100:
+^1.1 every 1
+e1200 -> e1320 -> e1452 -> e1321 -> e1597 ...
+
++1  ->  +2  ->  +3  -> 4
+
+First:
+Compressed Solarity boosts Solarity gain cap by e10x each (This upgrade does not spend, but the rest will!)
+Unlock Blight Points. which will help do some recovery.
+Unlock ECT 8 and ECT 9. (They are not reset on Pestilessence except for checks past this point)
+
+
+
 Rewind Upgrades! or Rw-Upg! 
 how the new feature works:
 

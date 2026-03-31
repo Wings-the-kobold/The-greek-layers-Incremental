@@ -8,11 +8,8 @@ function getStartOptions() {
 		msDisplay: "always",
 		theme: "default",
 		hqTree: false,
-		betterTree: false,
-		animateTree: false,
-		SolarityInfo: true,
-		showEclipse:true,		
-		debugMode: false, 
+			
+		
 
 		offlineProd: true,
 		hideChallenges: true,
@@ -20,6 +17,16 @@ function getStartOptions() {
 		forceOneTab: false,
 		oldStyle: false,
 		tooltipForcing: false,
+		
+		//custom non-TMT settings
+		betterTree: false,
+		animateTree: false,
+		SolarityInfo: true,
+		showEclipse: true,	
+		debugMode: false, 
+		NotationStart: [1e3, 1e5, 1e8, 1e10],
+		NotationStartSelect: 0,
+		pauseGame: false //idk lol i made this just in case if i dont wanna play the game atm
 	}
 }
 
@@ -60,7 +67,6 @@ function changeTreeQuality() {
 
 function useBetterTree() {
 	var on = options.betterTree
-
 }
 
 
@@ -96,4 +102,13 @@ function milestoneShown(layer, id) {
 			break;
 	}
 	return false;
+}
+
+
+
+
+function changeNotationStart() {
+ if (options.NotationStartSelect >= options.NotationStart.length-1) options.NotationStartSelect = 0
+ else options.NotationStartSelect += 1
+
 }

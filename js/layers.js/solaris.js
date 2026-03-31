@@ -1,7 +1,7 @@
 var setCRNG = new Decimal(0)
 
-const s = `<s>`
-const _s = `</s>`  
+const s = `<i><s>`
+const _s = `</i></s>`  
 
 const Roll = {
   cooldown: 5,
@@ -26,16 +26,19 @@ async function animateArray(arr) { //only for RNG
   let slowDown = 1
 
   for (x in arr) {
-    text = arr[x] 
+    let text = arr[x] 
     
     pritArr.push(1 / arr[x]) 
 
     RawRNG = x != (arr.length - 1) ? arr[x] + " [!]" : arr[x]
+    Roll.trueVal = 1/arr[x]
     await delay(100 + ((25 * Roll.baseCoolDown) * slowDown))
     slowDown += 1
 
+    
   }
-  Roll.trueVal = 1/arr[x]
+  
+  
   console.log(pritArr)
   simulated = []
 }
@@ -62,12 +65,13 @@ const TBSQoL = [
     `All Solarize Upgrades are kept on layer 2 resets`,
     `You now generate Solar light outside of dilation at ^0.3 of its gains`,
     // 
-    `You now generate Lunar Essence and Aperativity ^0.25 of it's gains`, //NOT DONE
+    `You now generate Lunar Essence and Aperativity ^0.25 of it's gains`, 
 ]
 const TBCQoL = [
     `Centralizing no longer roots Solar Shards. `,
     `Effector tiers are no longer reset on Lunar and Solar Resets<br>`, //NOT DONE
     `+10 to Multiply's bulk purchase.` //NOT DONE
+    // or "Removes Solarizor's requirement for Solar Light Generation"
 
 ]
 
@@ -193,7 +197,11 @@ const Tier2QueuedUpgs = {
         sub: "",
         activeCheck: "",
         selected: "",
-        solarBurst: false, //should move base Solarity cap to 1e1000, for Pestillessence
+        multiBurstAllowed: false, //v0.7 and later!
+        solarBurst: false, //should move base Solarity cap to 1e1000, for Pestillessence, and removes CP harshcaps permenantly
+        burstAmount: decimalZero,
+
+        testBurst: false,
         Heliosphere: false,
         HelioRadiation: new Decimal(1),
         HelioStat: {
@@ -321,8 +329,16 @@ const Tier2QueuedUpgs = {
    }
    if (player.Sol["TBCore"].active && player.points.log(20).gte(player.SolarityCap.log(20))) player.points = player.SolarityCap
 
-   if (player.Sol.TBSun.x.gte(5)) player.Sol.Aperativity = player.Sol.Aperativity.plus(tmp["Sol"].Reset[11].gain.pow(0.25).times(diff))
+   if (player.Sol.TBSun.x.gte(5)) player.Sol.Aperativity = player.Sol.Aperativity.plus(tmp["Sol"].Reset[11].gain.clampMin(0).pow(0.25).times(diff))
+
+    //Updates the Darkness row upgrades               
+    if (player.Sol.TBCore.x.gte(2)) DarknessUpgs_Row1 = [256, 64, 30]
+    //if (player.Adaptive && player.Sol.TBCore.active) DarknessUpgs_Row1 = [new Decimal(256).times(JearEffectBoost_Core.pow_base(20).root(0.666)) ]
+    if (player.Sol.TBCore.x.gte(2)) DarknessUpgs_Row2 = [1.08, 1.17, 36.33]
+    if (hasUpgrade("C",33)) CoronalEffectRanges = [0.4 ** DarknessUpgs_Row3[2] , 5.4 ** DarknessUpgs_Row3[2]]
   }, 
+
+  // 
    
   tabFormat: {
     "": {      
@@ -370,12 +386,17 @@ const Tier2QueuedUpgs = {
   //-------------------Randomizor-----------------
       
       ["row", [ //Randomizor machine
-        ["Viewer",  {id:12, title: "BRNG Milestones"}],
-        ["Viewer",  {id:13, title: "-----[ Machine ]-----"}],
-        ["Viewer",  {id:14, title: "TRNG Milestones"}],
         
-      ]],
+        
 
+        ["Viewer",  {id:12, title: "BRNG Milestones",}],
+        "blank",
+        ["Viewer",  {id:13, title: "-----[ Machine ]-----"}],
+        "blank",
+        ["Viewer",  {id:14, title: "TRNG Milestones"}],
+        "blank",
+      ]],
+      "blank",
       ["row", [ //check upgrades
         ["clickable",11],
         ["clickable",12],  
@@ -471,7 +492,12 @@ const Tier2QueuedUpgs = {
         ["row", [ //check upgrades
          ["Custom", {id:201}],
         ]],
+      
         
+//-------------------- Solar Bursting -----------
+  //"...And then, the cacophonus sun fell to a silent yet derisioned gaze. its attention is brought to you." - ???
+   ["Viewer",  {id:41, title: "<span style='color: rgb(232, 186, 101)'>Solar Bursting...?</span>"}],
+
 ],},},
 
 
@@ -540,7 +566,7 @@ const Tier2QueuedUpgs = {
       unlocked() {return player.Sol.TBCore.x.gte(3) && player.Sol.tab == "Core"},
     },
  
-// the UI thing
+// the UI thing for solaritology
 111: {
   display() {
     let short = ""
@@ -570,7 +596,8 @@ const Tier2QueuedUpgs = {
       let base = 34
       let coreDiff = toNumber(getCoreDifficulty())
       const time = new Date();
-      if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) base = base + (6 * (coreDiff - 1))
+      if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) base = base + (6.25 * (coreDiff - 1))
+      //if (player.Sol.TBCore.active && getCoreDifficulty().eq(3)) base = base + 0. 
       let Coregoal = base + (time.getMinutes() ** 1.085 * incNum)
 
   let TMSun = player.Sol.TMSun.x
@@ -588,10 +615,11 @@ const Tier2QueuedUpgs = {
 
     let TRMoonReq = player.Sol["TRMoon"].active ? new Decimal(47).sub((TRMoon.plus(TRMoonP)).mul(3.5)).round().plus(TRMoon.plus(TRMoonP).sub(2).clampMin(0).mul(1.75).round()) : 30
     let TBEclReq = player.Sol["TBSun"].active ? new Decimal("5e430").div((TBSun.plus(TBSunP)).pow_base(3)) : 40
-    let TMSunReq = player.Sol["TMSun"].active ? new Decimal(1200).mul((TMSun.plus(TMSunP)).pow_base(3.1111).round()) : 40
-    let TBCore1Req = player.Sol["TBCore"].active ? Coregoal : 90
+    let TMSunReq = player.Sol["TMSun"].active ? new Decimal(1250).mul((TMSun.plus(TMSunP)).pow_base(3.2222).round()) : 40
 
-    
+    if (TMSun.plus(TMSunP).gte(5)) TMSunReq = new Decimal(7.58e5)
+    if (TRMoon.plus(TRMoonP).gte(5)) TRMoonReq = new Decimal(30)
+    if (TBSun.plus(TBSunP).gte(5)) TBEclReq = new Decimal("1.11e546")
 
     if (!Selecting("active")) return `<h2>Begin studying the celestial bodies...</h2>`
     else {
@@ -609,9 +637,12 @@ const Tier2QueuedUpgs = {
       let base = 34
       let coreDiff = toNumber(getCoreDifficulty())
       const time = new Date();
-      if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) base = base + (6 * (coreDiff - 1))
+      if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) base = base + (6.25 * (coreDiff - 1))
+     // if (player.Sol.TBCore.active && getCoreDifficulty().eq(3)) base = base + 0.3
       let Coregoal = base + (time.getMinutes() ** 1.085 * incNum)
 
+    //  if (player.Sol.TBCore.active && getCoreDifficulty().eq(3)) Coregoal = 50.92
+       
     let TMSun = player.Sol.TMSun.x
     let TRMoon = player.Sol.TRMoon.x
     let TBSun = player.Sol.TBSun.x
@@ -624,8 +655,13 @@ const Tier2QueuedUpgs = {
     let total_Difficulty = Selecting("x").plus(Selecting("pending"))
     let TRMoonReq = player.Sol["TRMoon"].active ? new Decimal(47).sub((TRMoon.plus(TRMoonP)).sub(1).mul(3.5).round()) : 30
     let TBSunReq = player.Sol["TBSun"].active ? new Decimal("5e430").div((TBSun.plus(TBSunP)).sub(1).pow_base(5.5e11)) : 40
-    let TMSunReq = player.Sol["TMSun"].active ? new Decimal(1200).mul((TMSun.plus(TMSunP)).pow_base(3.1111).round()) : 40
+    let TMSunReq = player.Sol["TMSun"].active ? new Decimal(1200).mul((TMSun.plus(TMSunP)).pow_base(3.25).round()) : 40
     let TBCore1Req = player.Sol["TBCore"].active ? Coregoal : 90
+
+
+   if (TMSun.plus(TMSunP).gte(5)) TMSunReq = new Decimal(7.58e5)
+    if (TRMoon.plus(TRMoonP).gte(5)) TRMoonReq = new Decimal(30)
+    if (TBSun.plus(TBSunP).gte(5)) TBEclReq = new Decimal("1.11e546")
 
     // base = base.plus(getCoreDifficulty().sub(1).mul(10))
 
@@ -724,10 +760,14 @@ const Tier2QueuedUpgs = {
       let base = 34
       let coreDiff = toNumber(getCoreDifficulty())
       const time = new Date();
-      if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) base = base + (6 * (coreDiff - 1))
+      if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) base = base + (6.25 * (coreDiff - 1))
+      //if (player.Sol.TBCore.active && getCoreDifficulty().eq(3)) base = base + 0.3 
+      
+      /*
+       
+      */
       let goal = base + (time.getMinutes() ** 1.085 * incNum * coreDiff)
-
-   
+      
     if (getCoreDifficulty().gte(1)) moreDifficulty = new Decimal(10).mul(getCoreDifficulty())
     let TBCore1Req = player.Sol["TBCore"].active ? new Decimal(goal) : 90
                               
@@ -877,7 +917,7 @@ const Tier2QueuedUpgs = {
 
   },
   
-  Reset: {
+Reset: {
     11: {
       display() {         
         let nBAR = ``
@@ -944,7 +984,7 @@ const Tier2QueuedUpgs = {
         
         player.Sol.Aperativity = player.Sol.Aperativity.plus(Reset("Sol",11).gain)
         
-        EclipsiumReset()
+        EclipsiumReset("Solaris")
         player.L.LightCheck = new Decimal(1)
         player.L.DarkCheck = new Decimal(1)
         player.L.Light = new Decimal(1)
@@ -963,7 +1003,7 @@ const Tier2QueuedUpgs = {
         if (player.L.LightCheck.gte(6) && player.L.DarkCheck.gte(6) && !Selecting("active")) return true},
       
       gain: () => { 
-        let base = player.L.LightCheck.mul(player.L.DarkCheck).log(3).div(player.Sol.Aperativity.clampMin(1).log(100).clampMin(1)) ; 
+        let base = player.L.LightCheck.clampMin(1).mul(player.L.DarkCheck.clampMin(1)).log(3).div(player.Sol.Aperativity.clampMin(1).log(100).clampMin(1)) ; 
         let secondaryBoost = player.L.Light.mul(player.L.Dark).log(10).pow(0.5); 
         
         
@@ -988,7 +1028,7 @@ const Tier2QueuedUpgs = {
         return base.mul(secondaryBoost)
       
       },
-      button: () => { return !Selecting("active") ? `Aperate!` : `You cannot Aperate while studying...` },
+      button: () => { return !Selecting("active") ? `Aperate!` : `Can't Aperate while studying...` },
       unlocked() {
          return player.Sol.tab == "Aparal" //this is the base unlock for Eclipse Tier 6
       },
@@ -1011,8 +1051,8 @@ const Tier2QueuedUpgs = {
 
 		  if (player.Sol.TBSun.x.gte(5) && !options.SolarityInfo) TBSunPassive = `TBS 5: Multiply comp. effect increased 1.1 -> ${format(new Decimal(1.2).plus(player.resetTime.div(60).mul(0.01)),3)}<br>`
 	    if (player.Sol.TMSun.x.gte(5) && !options.SolarityInfo) TMSunPassive = `TMS 5: Plasmate effect raised to ${format(new Decimal(1.1).plus(player.resetTime.div(60).mul(0.01)),3)}  <br>`
-	    if (player.Sol.TRMoon.x.gte(5)&& !options.SolarityInfo) TRMoonPassive = `TRM 5: Meta nerf starts +${format(new Decimal(50).plus(player.resetTime.div(60).mul(2),2) )} later     `
-      let TimeSpentOn = !options.SolarityInfo ? `<br>You have ${format(player.resetTime.div(60))} Solar Time. (based on time since last reset)<br>
+	    if (player.Sol.TRMoon.x.gte(5) && !options.SolarityInfo) TRMoonPassive = `TRM 5: Meta nerf starts +${format(new Decimal(50).plus(player.resetTime.div(60).mul(2),2) )} later     `
+      let TimeSpentOn = !options.SolarityInfo ? `<br>You have ${formatTime(player.resetTime.div(60))} of Solar Time. (based on time since last reset)<br>
       ${player.Sol.TBSun.x.gte(5) || player.Sol.TMSun.x.gte(5) || player.Sol.TRMoon.x.gte(5) ? "Which boosts the following:<br>" : ""}
       
       ${TBSunPassive}
@@ -1152,7 +1192,9 @@ const Tier2QueuedUpgs = {
 
     unlocked() {
      return (player.Sol.tab == "RNG" )
-    }
+    },
+
+    forceColumn: true
   },
 
   13: {
@@ -1261,7 +1303,8 @@ const Tier2QueuedUpgs = {
 
     unlocked() {
      return (player.Sol.tab == "RNG")
-    }
+    },
+    forceColumn: true
   },
 
   14: {
@@ -1280,7 +1323,7 @@ const Tier2QueuedUpgs = {
         2: {
           unlocked: TRNG.gte(30) || player.Sol.MNG.Total.gte(1),
           text: `TRNG-2`,
-          effect: CRNG.log(7).pow(1.25).plus(1),
+          effect: CRNG.log(7).pow(1.25).clampMin(1),
           reward: `Boost Aperature Points gain`
         },
         3: {
@@ -1351,7 +1394,9 @@ const Tier2QueuedUpgs = {
 
     unlocked() {
      return (player.Sol.tab == "RNG")
-    }
+    },
+
+    forceColumn: true
   },
 
 //<button> Roll BRNG </button>
@@ -1486,7 +1531,7 @@ const Tier2QueuedUpgs = {
       ,
       `- Phaser’s cost scaling is Overhauled to ${choosingScale}^x <br>`
       ,
-      `- Completely Overhaul Plasmates and Multiply's cost scalings to 5^x But Meta nerf is disabled <br>`
+      `- Plasmates and Multiply's cost scalings are completely Overhaulled to 5^x But Meta nerf is disabled <br>`
     ]
     const TBSDebuff = [
       `- Lunar Inst. debuff is significantly stronger (^${format(choosingScale.mul(2).plus(1))}) <br>`
@@ -1500,7 +1545,9 @@ const Tier2QueuedUpgs = {
           , // Why do i suddenly feel... vacuous?
           `>> All upgrads acts as special kind of reset when bought <br>` // SL: (roots its currency by 5), C: Divides Center Points by 2 
           , // These bonuses... are they all a lie? or am I staggering?
-          `>>> Formality, Heirarchy, and Twilight are all active at once. in addition, ALL pre-check measures are active<br>`
+          `>>> Formality, Heirarchy, and Twilight are all active at once. in addition, ALL other pre-check measures are active<br>
+          
+          `
             // I just... dont believe in myself anymore... The pressure of the core, is it too much for us to handle?
     ]
     //NON-QOL BONUS
@@ -1534,10 +1581,11 @@ const Tier2QueuedUpgs = {
     const TBCoreBuff = [
       
       `Solar Shard gain and Effector Tier Effects is ^${format(decimalOne.plus((TBCore.mul(0.25)).mul(new Decimal(1.5).pow_base(TBCore))),2)}<br>`,
-      `(1)Improve darkness tree's row 1 and 2 upgrade paths<br>(2) unlock darkness tree's row 3 upgrade paths<br>`,
-      `Solar Light generation is ^0.75 of Solarity instead of ^0.5 <br>`
+      `(1) Unlock <b>Adaptability</b> and Improve Jear paths <br>(2) Unlock darkness tree's row 3 upgrade paths<br>`,
+      `<br>The Solar Clock bonus effects are 25% stronger`
+      // or ``
     ]
-
+//player.Sol["TBSun"].x.gte(3)
      const ProjectedTMSBuff = [
          `^${decimalOne.plus(TMSunP.plus(TMSun).mul(0.15))} to Solar light cap and Shards (Gen. AND Mult.)<br>`
           ,
@@ -1562,10 +1610,11 @@ const Tier2QueuedUpgs = {
        `Solar Time increases Multiply's base [+0.1] +0.01/min`
     ] 
  
-    const ProjectedTBCoreBuff = [
-       `Solar shards is raised ${format(decimalOne.plus((getCoreDifficulty().mul(0.25)).mul(new Decimal(1.5).pow_base(getCoreDifficulty()))),2)} <br>`,
-       `(1) Improve darkness tree's row 1 and 2 upgrade paths<br>(2) Unlock darkness tree's row 3 upgrade paths`,
-       `Solar Light generation is ^0.75 of Solarity instead of ^0.5 <br>`
+    const ProjectedTBCoreBuff = [      
+       `Solar shards and Effector Tiers effects is raised ${format(decimalOne.plus((getCoreDifficulty().mul(0.25)).mul(new Decimal(1.5).pow_base(getCoreDifficulty()))),2)} <br>`,
+       `(1) Unlock <b>Adaptability</b> and Improve Jear paths <br>(2) Unlock darkness tree's row 3 upgrade paths<br>`,
+       `???` //Night time effects are more raised by ^1.25 rather than x1.25
+       // if (player.Sol["TBCore"].x.gte(3)) effect*1.25 
     ]
 
     if (TBCore.plus(TBCoreP).eq(2)) BC_Influence = `
@@ -1583,6 +1632,9 @@ const Tier2QueuedUpgs = {
         (caps Solar light and Modifier score to 100,000) <br> 
         (increases CP scale by 21%) </span>
       `
+
+    // Leverage, Gravitation, Heirarchy, Solar Ray bonuses are disabled. 
+
   //player.Sol.selected == "TMSun"
     let type = ``
      {
@@ -1608,7 +1660,7 @@ const Tier2QueuedUpgs = {
               <h2> The Raging Moon ( ${TRMoon} / 5 ) </h2>
               
             <br>
-             Pre-Check measures: Extra CP gained from TRNG-5 are disabled.<br>
+             Pre-Check measures: Heirarchy is disabled.<br>
               <h3>
                 <span style='color:rgba(114, 15, 53, 0.99)';>
                   ${ choosingScale.gte(1) ? TRMDebuff[0] : ""   }
@@ -1642,6 +1694,7 @@ const Tier2QueuedUpgs = {
           let CoreType = `Broken`
 
 
+          let AllPrecheckMeasure = `(ie. <p style='color:rgba(152, 157, 11, 0.99)'>Leverage, Gravitation</p>, <p  style='color:rgba(83, 69, 88, 0.99)'>Heirarchy</p> and <p style='color:rgba(218, 80, 0, 0.99)'>Solar Ray bonuses</p> are disabled)`
 
         type = `
             <span> 
@@ -1651,15 +1704,17 @@ const Tier2QueuedUpgs = {
              
              Pre-check measures (I): All other check upgrades and effects are disabled,  <br>
              ${TBCoreP.gte(1) && TBCoreP.plus(TBCore).gte(2) ? "Pre-check measures (II): Dark and Light generations are heavily weakened (^0.02) <br>" : ""} 
-             ${TBCoreP.gte(1) && TBCoreP.plus(TBCore).gte(3) ? "Pre-check measures (III): The first and second bonus effects of all studies are also disabled<br>" : ""} 
+             ${TBCoreP.gte(1) && TBCoreP.plus(TBCore).gte(3) ? "Pre-check measures (III): The first bonus effects of the first three studies are also disabled<br>" : ""} 
               <br><h3>
               Unstable core influence: ${badRays}<br>
               <span style='color:rgba(255, 0, 0, 0.99)';>
                 ${ choosingScale.gte(1) ? TBCDebuff[0] : ""   }
                 ${ choosingScale.gte(2) ? TBCDebuff[1] : ""   }
                 ${ choosingScale.gte(3) ? TBCDebuff[2] : ""   }
+                
                 </span>
               </h3>
+              ${ choosingScale.gte(3) ? AllPrecheckMeasure : ""}
             <br>
             ${BC_Influence}
          </span>
@@ -1673,8 +1728,8 @@ const buffColor = 'rgba(100, 222, 0, 0.99)';
 const projectedBuffColor = 'rgba(255, 226, 60, 0.99)';
 
 
-let no1st = TBCoreP.plus(TBCore).gte(3) ? s : ``
-let e_no1st = TBCoreP.plus(TBCore).gte(3) ? _s : ``
+let no1st = TBCoreP.plus(TBCore).gte(3) && player.Sol.selected == "TBCore"? s : ``
+let e_no1st = TBCoreP.plus(TBCore).gte(3) && player.Sol.selected == "TBCore"? _s : ``
 
 let noBonus = TBCoreP.plus(TBCore).gte(3)
 
@@ -1707,8 +1762,10 @@ let noBonus = TBCoreP.plus(TBCore).gte(3)
     <br> 
     ${TBSun.gte(1) ? "<h3>The Bleeding Eclipse:</h3><br>" : ""}<h5>
       
-    ${ TBSun.gte(1) && TBSunP.eq(0) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[0] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[0] + " </span>" : ""   }
-      
+    ${no1st}
+     ${TBSun.gte(1) && TBSunP.eq(0) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[0] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSun.gte(0) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[0] + " </span>" : ""   }
+    ${e_no1st}   
+
     ${ TBSun.gte(3) && TBSunP.eq(0) ? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBSBuff[1] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSunP.plus(TBSun).gte(3) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[1] + " </span>" : ""   }
       
     ${ TBSun.gte(5) && TBSunP.eq(0) ? "<span style='color:rgba(120, 122, 254, 0.99)';>" + TBSBuff[2] + "</span>" : unknown   } ${ TBSunP.gte(1) && TBSunP.plus(TBSun).gte(5) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBSunBuff[2] + " </span>" : ""   }
@@ -1722,7 +1779,12 @@ let noBonus = TBCoreP.plus(TBCore).gte(3)
       ${ TBCore.gte(3) && TBCoreP.eq(0)? "<span style='color:rgba(100, 222, 0, 0.99)';>" + TBCoreBuff[2] + "</span>" : unknown   } ${ TBCoreP.gte(1) && TBCoreP.plus(TBCore).gte(3) ? "<span style='color:rgba(255, 226, 60, 0.99)';>" + ProjectedTBCoreBuff[2] + " </span>" : ""   }
     </h5> <br>
       </span>
-      
+       
+
+
+  
+
+
 
 
       <span style="border: 2px solid gray; display: inline-block; padding: 0.1cm"> 
@@ -1801,12 +1863,141 @@ let noBonus = TBCoreP.plus(TBCore).gte(3)
 
 },
 
+41: {
+    display() {
+      /*
+      let befReduceAP = tmp["Sol"].Reset[11].gain.gte(100) ? tmp["Sol"].Reset[11].gain.mul(player.Sol.Aperativity.clampMin(1).log(100).clampMin(1)) : new Decimal(1)
+      let afterReduceAP = tmp["Sol"].Reset[11].gain
 
+      let subAP = `<h2 style="color:rgba(159, 22, 22, 0.99);">-${format()} </h2>`
+     */
+      
+   let showButton = ``
+   let requirementsToBurst = new Decimal("1e800")
+
+
+   let burstReqText = `<span>You will need to reach ${format(requirementsToBurst)} solarity to burst the sun. </span>`
+ 
+
+   if (player.points.gte("1e765")) showButton = `<button class="Bursting"; style="background-color: #fff642; cursor: alias;" onclick="tmp['Sol'].Viewer[41].burstReset()";> 
+          <h1 style='color: #be5117'> Burst the <span style="color: #816305"><u>SUN</u></span>.</h1>
+          </button>
+     `
+                             // multiBurstAllowed
+   if (player.Sol.testBurst && player.Sol.multiBurstAllowed==true) {
+    showButton = `<button class="Bursting"; style="background-color: #fff642; cursor: alias;" onclick="tmp['Sol'].Viewer[41].burstReset()";> 
+          <h1 style='color: #be5117'> Burst the Sun <span style="color: #816305"><u>AGAIN</u></span>.</h1>
+          </button>
+     `
+    
+    }
+   else if (player.Sol.testBurst && player.Sol.multiBurstAllowed==false /*&& player.Sol.burstAmount.eq(1)*/) {showButton = `<button class="Bursting"; style="background-color: #fff642; cursor: not-allowed;"> 
+   <h3 style='color: #be5117'>You have its attention.</h3>
+          </button>
+     `
+
+
+      }
+     return `<h1>The sun lies cacophonous...</h1>
+     
+     <br>
+    <h3 style='color: #be5117'> Solar Bursting will reset </h3> <h3 style='color: #9c0909'> Solarity, Solar Rays, Center Points,Solar Light/Solar 
+Shards ,Eclipsium, Solar Charge, Solinity-Chimera,Lunar Essence, Light/Dark Check, 
+Lightness/Darkness, Aperature Points, CRNG/TRNG/BRNG, Solar Heat, Solar 
+Fragments, NT1-3, DT1-3 and Upgrade checks 1-4 For a very large boost to solarity gain cap.
+</span>
+<br><br>
+<b><h3>However, </h3><h3='color: rgb(165, 11, 11)'> Solar ray bonuses will be permanently removed furthermore, replaced with a static exponential boost of 1.5</h3> </b>
+<br><br>
+<span style='color: #be5117'> Bursting for the first* time will increase base solarity gain cap by 1e200, and will remove the first solarity roofcap. </span><br> <h6>*:(more Solar Burstings above 1 increases this by effect by e(100 * 1.146^(SB-1)^2), 
+but gets <b><i><span style='color: #bd0000'> exponentially expensive.</span></b></i> <span style='color: #be5117'>but you’ll unlock this much later, despite impossible in this version). </h6></span></h5>
+<br><br>
+
+${burstReqText}
+<br>
+${showButton}
+`
+
+    },
+    unlocked() {
+     return (player.Sol.tab == "Core" && player.Sol.sub == "Bursting")
+    },
+
+
+    burstReset() {
+      layer2Reset(true)
+      player.E.Eclipsium = decimalZero
+      player.E.forgotton = false
+
+      /*
+      Solarity, 
+      Solar Rays, 
+      Center Points,
+      Solar Light/Solar Shards,
+      Eclipsium,
+      Checks 1,2,3,4
+      */
+
+        player.E.SolarCharge = new Decimal(1)
+        player.E.Solinity = new Decimal(1)
+        player.E.Esolar = new Decimal(1)
+        player.E.Chimera = new Decimal(1)
+      /*
+       Solar Charge, 
+       Solinity-Chimera,
+      */
+
+      player.L.LightCheck = new Decimal(1)
+      player.L.DarkCheck = new Decimal(1)
+      player.L.Light = new Decimal(1)
+      player.L.Dark = new Decimal(1) 
+        
+      /*
+        Lunar Essence, 
+        Light/Dark Check, 
+        Lightness/Darkness, 
+      */
+
+
+
+       player["Sol"].Aperativity = new Decimal(1)
+                    
+            
+      
+            
+       player["Sol"].TRNG = new Decimal(1)
+       player["Sol"].BRNG = new Decimal(1)
+       player["Sol"].SRNG = new Decimal(0) //stored RNG?
+                  
+       player["Sol"].CRNG = new Decimal(1)         
+       player["Sol"].SolarHeat = new Decimal(1)
+       player["Sol"].SolarFragments = new Decimal(1)
+
+       /*
+         Aperature Points, 
+       CRNG/TRNG/BRNG, 
+       Solar Heat, 
+       Solar Fragments, 
+      */
+      
+      setBuyableAmount("L", 21, new Decimal(0) )
+      setBuyableAmount("L", 22, new Decimal(0) )
+      
+      //and finally, DT, NT
+
+      
+     player.Sol.testBurst = true
+    
+       
+
+    }
+
+ },
 
  },
 
 
-buyables: {
+ buyables: {
   11: {
     cost() {
       let scale = new Decimal(1.16)
@@ -2527,10 +2718,12 @@ unlocked() {
       display() {
         let heat = player.Sol.SolarHeat
         let deprecate = player.Sol.SolarHeat.gte(200) && player.Sol.genActive=='1' ? `Leaking: gains reduced by <h4 style="color:rgba(159, 22, 22, 0.99);"> ${format(heat.sub(200).root(1.75).pow_base(1.05))}`: ``     
-     
-
+        let underValued = format(gainOf("Solar Heat"),3) + ' Solar Heat per second'
+        if (gainOf("Solar Heat").lt(0.1)) underValued = format(gainOf("Solar Heat").mul(60),4)  + ' Solar Heat per minute'
+        if (gainOf("Solar Heat").mul(60).lt(0.1)) underValued = format(gainOf("Solar Heat").mul(3600),5) + "0 Solar heat per hour"
+        if (gainOf("Solar Heat").mul(3600).lt(0.1)) underValued = `Absolutely nothing! (wowie an easter egg almost!)`
         return` <h2>
-     Start solar heat generation! </h2> <h4>${player.Sol.genActive=='1' ? '<br>Generating... <br> Gaining ' + format(gainOf("Solar Heat")) + ' Solar Heat per second': ''} </h4>
+     Start solar heat generation! </h2> <h4>${player.Sol.genActive=='1' ? '<br>Generating... <br> Gaining ' + underValued : ''} </h4>
      ${deprecate}`
      
   },
@@ -2604,9 +2797,12 @@ style() {
 
         let TMSPT = (TMSunPend.gte(1) || TMSunX.gte(1)) && player.Sol.selected == "TMSun"  ? `Difficulty: ${TMSunPend.plus(TMSunX)} / 5` : ``
 
+         let mastered = ``
+         if (TMSunX.gte(5)) mastered = `<br>Mastered!`  
+
         return `<h2>The Melted Sun </h2> 
         
-        ${TMSPT}
+        ${TMSPT}${mastered}
         `
       },
       onClick() {  player.Sol.selected = "TMSun";  },
@@ -2645,9 +2841,13 @@ style() {
 
         let TRMPT = (TRMoonPend.gte(1) || TRMoonX.gte(1)) && player.Sol.selected == "TRMoon" ? `Difficulty: ${TRMoonPend.plus(TRMoonX)} / 5` : ``
 
+        let mastered = ``
+        if (TRMoonX.gte(5)) mastered = `<br>Mastered!`  
+
        return `<h2>The Raging Moon</h2>
         
         ${TRMPT}
+        ${mastered}
         `
         
         },
@@ -2684,9 +2884,12 @@ style() {
 
         let TBSPT = (TBSunPend.gte(1) || TBSunX.gte(1)) && player.Sol.selected == "TBSun" ? `Difficulty: ${TBSunPend.plus(TBSunX)} / 5` : ``
 
+         let mastered = ``
+        if (TBSunX.gte(5)) mastered = `<br>Mastered!`  
+
         return `<h2> The Bleeding Eclipse </h2> 
         
-        ${TBSPT}
+        ${TBSPT}${mastered}
         `
       
       },
@@ -2769,7 +2972,7 @@ style() {
         //else return false
 
        // return true 
-        return player.Sol.sub == "WoC" && canShow || player.Sol.selected == "TBCore"
+        return player.Sol.sub == "WoC" && canShow //|| player.Sol.selected == "TBCore"
         
         
 
@@ -2922,4 +3125,5 @@ style() {
     },
 
   })
+  
   

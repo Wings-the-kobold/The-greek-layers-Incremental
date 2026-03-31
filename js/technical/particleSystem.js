@@ -87,7 +87,7 @@ const newParticles = {
             y: mouseY,
             width: 35,
             height: 35,
-            image: "resources/genericParticle.png", //remember, to add particles make it a different png
+            image: "resources/Core_Shard_Particle.png", //remember, to add particles make it a different png
             angle: 0,
             spread: 30,
             offset: 10,
@@ -110,7 +110,7 @@ const newParticles = {
             y: Math.random() * (tmp.other.screenHeight - 100) + 50,
             width: 50,
             height: 50,
-            image: "resources/genericParticle.png",
+            image: "resources/Core_Shard_Particle.png", //get the other png later
             angle: 0,
             spread: 0,
             offset: 0,

@@ -135,13 +135,17 @@ addLayer("tree-tab", {
                Also Expect a bit of labor and complex strategies near endgame <br><br>
 
                If you cannot handle this concept or idea, then dont continue and play some other game! <br>
-               The game is also balanced enough the way it is, so DO NOT COMPLAIN ABOUT HOW IMBALANCED THIS GAME IS. instead you can suggest balance requests in my discord server! <br><br>
-               
-               
+               The game is also balanced enough the way it is, so please refrain from complaining about how "poorly balanced" this game is, instead you can suggest balance requests in my discord server! <br><br>
+               <br>
+
+               You can instead ask for a <b>Balance request</b> in the discord server if a certain mechanic or feature is needed to be rebalanced. in which you can join on the extra things page, or on the left side of the screen.
+               however, the owner of the TGLT series/TSEGI (me) not just <i>only</i> decide whether or not it should be balaced, but the majority of people can or may decide if a feature urgently needs a rebalance.
+               <br> Essentially, other people have to agree the feature can be rebalanced. not just me.
+
                </h4>
                
                <br>
-               Oh also, in addition to such. this is NOT inspired by the roblox game GCI from "supernova". check the games credits on the top right when accepting TOS<br>            
+               Oh also, in addition to such. this is NOT inspired by the roblox game Grass Cutting Incremental from "supernova". check the games credits on the top right when accepting TOS<br>            
                 
                You cannot continue until you have read the TOS <br> 
                You can accept in ${player.timerToAgree}<br>
@@ -151,7 +155,7 @@ addLayer("tree-tab", {
             canClick() {return false},
             style() {return {
               "width": "400px",
-              "height": "300px",
+              "height": "350px",
               }},  
             unlocked() {return (player.finishedStCutscene == true && player.inCutscene)}
         },
@@ -175,6 +179,15 @@ addLayer("tree-tab", {
     },
 
     
+    21: {
+         display() {
+                
+       
+                return `<h2>Complete TSEGI </h2>`
+            
+            },
+
+    }
 
 
 })

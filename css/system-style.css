@@ -232,6 +232,7 @@ ul {
 .overlayThing {
 	z-index: 10000;
 	pointer-events:auto;
+	transform: rotate(360deg); 
 }
 
 .sideLayers {
