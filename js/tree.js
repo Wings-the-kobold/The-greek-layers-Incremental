@@ -127,7 +127,7 @@ addLayer("tree-tab", {
               "width": "100px",
               "height": "50px",
               }},  
-            unlocked() {return (player.frames == 180 && player.finishedStCutscene == false && player.cutsceneName == "endGame")}
+            unlocked() {return (player.frames == 180 && player.finishedStCutscene == false && player.cutsceneName != "endGame")}
           },
 
         12: {
