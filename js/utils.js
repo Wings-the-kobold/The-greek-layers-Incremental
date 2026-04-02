@@ -701,7 +701,6 @@ function IsAdapting() {
 
 
 
-
 /*
 
 Adaptive = {

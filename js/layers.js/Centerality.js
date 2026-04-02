@@ -538,7 +538,7 @@ fixNaNs()
                                         
                                         + " to " + boosts :
                                         
-                                      "Effector Tier " + tier + "effect is " + format(useCurrency.log(log).pow(TBC1Bonus).clampMin(1))  } 
+                                      "Effector Tier " + tier + " effect is " + format(useCurrency.log(log).pow(TBC1Bonus).clampMin(1))  } 
                                       `)
                                       .join('<br><br>') :
                                       effects.slice(0, player.C.EffectorTier.toNumber())

@@ -1,6 +1,7 @@
 var player;
 var needCanvasUpdate = true;
 
+//SAVED ASIDE FROM player
 var TSEGICompletions = {
 		"V0.6" : false,
 		"V0.6_Amount" : 0,
@@ -11,6 +12,8 @@ var TSEGICompletions = {
 		"V0.8" : false,
 		"V0.8_Amount" : 0,
 	}
+
+	
 const cooldownBeforeChange = 15
 var CoreEffectChange = 0
 var Core_effValue = 3
@@ -517,6 +520,7 @@ function hardReset(resetOptions) {
 
 
 	player = null
+
 	if(resetOptions) options = null
 	save(true);
 	window.location.reload();
@@ -619,7 +623,7 @@ var interval = setInterval(function() {
 	UpdateBranches();
 	UpdateRealTime();
 	changeImagesIndirect();
-	
+	checkEndgame()
 
 	if (options.animateTree) {
 		nodePos.tick += 1
@@ -673,10 +677,24 @@ function changeImagesIndirect() {
 }
 
 function outerGameUpdates() {
-	
-
-
 }
+
+
+//           THIS IS THE ONLY FUNCTION USED TO DO ENDGAME CUTSCENE!           EDIT THIS EVERY UPDATE!
+function checkEndgame() {
+	if (!(player.inCutscene && player.cutsceneName == "endGame"))
+		{
+		if (player.Sol.solarBurst) 
+			{
+				//do not uncomment when everything isnt done
+				/*options.autosave=false; save()*/
+			
+			
+			; return end(); } 
+	
+	}
+}
+
 
 //ALL CUSTOM FUNCTIONS ARE HERE
 
@@ -891,9 +909,10 @@ function start() {
 	 if (player.cutsceneName == "") player.cutsceneName = "gameStart"//; else player.cutsceneName = ""
 }
 function end() {
-	player.rot = 90; player.frames = 0;
-	if (player.cutsceneName == "") player.cutsceneName = "gameEnd"//; else player.cutsceneName = ""; 
+	player.inCutscene = true; player.cutsceneName = "endGame"; player.frames=0; player.rot=90; player.showScreen = false
 	player.finalTime = player.timePlayed
+
+	
 //	tmp.gameEnded = !tmp.gameEnded
 }
 

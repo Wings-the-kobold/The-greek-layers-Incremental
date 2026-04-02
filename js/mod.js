@@ -64,7 +64,10 @@ let VERSION = {
 
 // IMPORTANT, THIS DETERMINES THE GAME COMPLETIONS, WHICH SAVES AFTER EVERY RESTART
 const VRSN = "0.6"
+var nonPlayerValues = {
+continuePlaying: false
 
+} 
 
 
 
@@ -1016,9 +1019,11 @@ var displayThings = [
 
 
 	function gh() {
-		if (true) return `<br>
-self reminder: check the todo list if you dont know what to do!<br>
-also: add Tabs to Viewers for v0.7
+		if (true) return `<h6><br>
+self reminder: make 'run it back' actually work and endgame buttons<br>
+also: add Tabs to Viewers for v0.7<br>
+also also: publish the official TSEGI guide
+</h6>
 `
 /*
    (0.7) Rebalance, and buff NMH-1 <br>	
@@ -1037,7 +1042,8 @@ also: add Tabs to Viewers for v0.7
 ]
 
 
-function isEndgame() {return player.Sol.solarBurst};
+function isEndgame() { return false
+};
 
 
 

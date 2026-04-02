@@ -55,7 +55,13 @@ addLayer("tree-tab", {
         
         ["Custom", {id:11}],
 
+        ["row", [
+            ["Custom", {id:21}],
+            ["Custom", {id:22}],
+            ["Custom", {id:23}],
 
+            ],
+        ],
     
     ],
     previousTab: "",
@@ -121,7 +127,7 @@ addLayer("tree-tab", {
               "width": "100px",
               "height": "50px",
               }},  
-            unlocked() {return (player.frames == 180 && player.finishedStCutscene == false)}
+            unlocked() {return (player.frames == 180 && player.finishedStCutscene == false && player.cutsceneName == "endGame")}
           },
 
         12: {
@@ -157,7 +163,7 @@ addLayer("tree-tab", {
               "width": "400px",
               "height": "350px",
               }},  
-            unlocked() {return (player.finishedStCutscene == true && player.inCutscene)}
+            unlocked() {return (player.finishedStCutscene == true && player.inCutscene && player.cutsceneName == "startGame")}
         },
 
         13: {
@@ -173,21 +179,39 @@ addLayer("tree-tab", {
               "width": "400px",
               "height": "50px",
               }},  
-            unlocked() {return (player.timerToAgree == 0 && player.inCutscene)}
+            unlocked() {return (player.timerToAgree == 0 && player.inCutscene && player.cutsceneName == "startGame")}
           },
         
+
+          //finish the game off by adding these special options
+            21: {
+                display() {
+                            
+                
+                    return `<h2>Complete TSEGI (+1 to v${VRSN} TSEGI Completions)</h2>`
+                        
+                },
+                        unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
+                        onClick() {player.finishedStCutscene = !player.finishedStCutscene},
+                        canClick() {return true},
+                },
+            22: {
+                display() {return `<h2>Let me continue playing! (+1 v${VRSN} to TSEGI Completions)</h2>`},
+                unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
+                onClick() {player.cutsceneName = ""; player.inCutscene = false; },
+                canClick() {return true},
+            },
+            
+            23: {
+                display() {return `<h2>Run it back!</h2>`},
+                unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
+                onClick() {player = null},
+                canClick() {return true},
+            }    
     },
 
     
-    21: {
-         display() {
-                
-       
-                return `<h2>Complete TSEGI </h2>`
-            
-            },
-
-    }
+   
 
 
 })

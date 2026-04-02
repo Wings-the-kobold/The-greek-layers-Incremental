@@ -1879,7 +1879,7 @@ let noBonus = TBCoreP.plus(TBCore).gte(3)
    let burstReqText = `<span>You will need to reach ${format(requirementsToBurst)} solarity to burst the sun. </span>`
  
 
-   if (player.points.gte("1e765")) showButton = `<button class="Bursting"; style="background-color: #fff642; cursor: alias;" onclick="tmp['Sol'].Viewer[41].burstReset()";> 
+   if (player.points.gte("1e800")) showButton = `<button class="Bursting"; style="background-color: #fff642; cursor: alias;" onclick="tmp['Sol'].Viewer[41].burstReset()";> 
           <h1 style='color: #be5117'> Burst the <span style="color: #816305"><u>SUN</u></span>.</h1>
           </button>
      `
@@ -1986,7 +1986,7 @@ ${showButton}
       //and finally, DT, NT
 
       
-     player.Sol.testBurst = true
+     player.Sol.solarBurst = true
     
        
 

@@ -58,8 +58,9 @@ function endGameEclipse() {
 	Circle((x + 300) + (-300 * Math.cos(radia - 90)), ( y - 50 ) + ( (50 - (frame * 12) ) * Math.sin((radia)  )) , 295, `rgb(0,0,0,${fadeOutAt(45)})`)
 	text((middleX - 125), (middleY - 200), "...", 1 , 300)
 	text((middleX - 135), (middleY - 120), "The Eclipse is over...", fadeInAt(65) , 30)
-	text((middleX - 500), (middleY - 100), `The Eclipse Lasted ${formatTime(finalTime)}...`, fadeInAt(105) , 30)
-	text((middleX - 140), (middleY + 150), `There will soon be more to discover...`, fadeInAt(125),20)
+	text((middleX - 220), (middleY - 50), `The Eclipse Lasted ${formatTime(finalTime)}...`, fadeInAt(105) , 15, "200, 140, 0"  )
+	//prob need help making this based on the length of the text instead of just eyeballing it :/
+	text((middleX - 140), (middleY + 150), `There will soon be more to discover...`, fadeInAt(145),20)
 }
 //static -> does not move
 
@@ -236,9 +237,9 @@ function Circle(x,y,s=10,color="#000000",arc=Math.PI * 2)
    ctx.closePath(); 
 } 
 
-function text(x,y,t,o,size=100){	
-	ctx.fillStyle = `rgb(0,0,0,${o})`;
-	ctx.strokeStyle = `rgb(0,0,0,${o})`;
+function text(x,y,t,o,size=100,color="0,0,0"){	
+	ctx.fillStyle = `rgb(${color+','+o})`;
+	ctx.strokeStyle = `rgb(${color+','+o})`;
 	ctx.font = `${size}px Righteous`
 	ctx.textBaseline = "hanging";
 	ctx.fillText(`${t}`, x, y);

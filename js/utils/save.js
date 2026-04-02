@@ -9,7 +9,7 @@ function save(force) {
 	//Importing is coming VERY soon!
 	// make NewPlayer variable stats and an option: "Recover wins"
 	localStorage.setItem("VersionFinishes",encodeURIComponent(JSON.stringify(TSEGICompletions))); //"completions are from player"
-
+	localStorage.setItem("nonPlayerValues",encodeURIComponent(JSON.stringify(nonPlayerValues))); //"nonPlayer Values"
 	localStorage.setItem(modInfo.id+"_options", btoa(unescape(encodeURIComponent(JSON.stringify(options)))));
 
 }
@@ -297,9 +297,13 @@ function importSave(imported = undefined, forced = false) {
 	if (imported === undefined)
 		imported = prompt("Paste your save here");
 	try {
+
+		// add support for TGLT related games exports here 
 		tempPlr = Object.assign(getStartPlayer(), JSON.parse(atob(imported)));
 		if (tempPlr.versionType != modInfo.id && !forced && !confirm("wrong save buddy, you should be using TSEGI's (or any TGLT related game)")) // Wrong save (use "Forced" to force it to accept.)
 			return;
+
+
 		player = tempPlr;
 		player.versionType = modInfo.id; //change modInfo.id into Universe_3 when finished
 		fixSave();
