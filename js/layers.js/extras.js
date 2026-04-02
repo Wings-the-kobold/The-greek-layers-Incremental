@@ -148,7 +148,7 @@ addLayer("dL", {
         else if (player.Sol.TMSun.x.gte(1)) dUnl = `Get TBC1 to unlock a bit more dialogue!`
         
         if (player.E.EclipseTier.eq(7)) dUnl = `Finish your first studies to unlock more dialogue!`
-        else if (player.Sol.TMNG.Total.gte(1) ) dUnl = `More dialogue at Eclipse Tier 7!`
+        else if (player.Sol.TRNG.Total.gte(1) ) dUnl = `More dialogue at Eclipse Tier 7!`
         else if (player.E.EclipseTier.eq(6)) dUnl = `Discover The Randomizer to unlock more dialogue!`
         else if (Check("L",11).has) dUnl = `Get Eclipse Tier 6 to unlock more dialogue!`
         else if (player.L.activeCheck == "TimeTillDark") dUnl = `<br> Beat '4 Minutes Until Dark' to unlock more dialogue`
