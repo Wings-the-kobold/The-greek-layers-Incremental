@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6, F22-B20",
+	num: "ersion 0.6.07, F23-B20",
 	name: "studying the core.",
 	
 }
@@ -89,10 +89,16 @@ Randized buyables(Has no scaling, but increases cost between x and y per bought)
 let changelog = ` <span class="ignThemes">
 <h1>Changelog:</h1><br><br>
 <h2>Start Date: 4/13/2024</h2> <br><br>
-<h2>Release Date: 3/27/2026</h2> <br><br>
+<h2>Release Date: 4/2/2026</h2> <br><br>
 
 <span> <i>and yet, the sun rises, why must we no longer appreciate it for its volatility...</i><br></span>
 <span> <i>will it ever be trusting enough to allow our gaze within? we will never know...</i></span><br><br>
+
+Fix 23:<br>
+- Fixed Extra.js breaking the game when opening the thingy<br>
+<br>
+
+
 
 <h3>v0.6 Fix 22, Balance 20</h3><br>
 Solaris... fuck you lol. <br>
