@@ -197,9 +197,11 @@ function load() {
 	let get = localStorage.getItem(modInfo.id);
 
 	let GameFinishes = localStorage.getItem("VersionFinishes")
-
+	let npv = localStorage.getItem("nonPlayerValues")
 
 	TSEGICompletions = Object.assign(TSEGICompletions, JSON.parse(decodeURIComponent((GameFinishes))))  ;
+	nonPlayerValues = Object.assign(nonPlayerValues, JSON.parse(decodeURIComponent((npv))))  ;
+	
 	if (get === null || get === undefined ) {
 		player = getStartPlayer();
 		options = getStartOptions();

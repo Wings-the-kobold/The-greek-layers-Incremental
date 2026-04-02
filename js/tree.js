@@ -188,25 +188,25 @@ addLayer("tree-tab", {
                 display() {
                             
                 
-                    return `<h2>Complete TSEGI (+1 to v${VRSN} TSEGI Completions)</h2>`
+                    return `<h2>Complete TSEGI (+1 to v${VRSN} TSEGI Completions) [still WIP]</h2>`
                         
                 },
                         unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
-                        onClick() {player.finishedStCutscene = !player.finishedStCutscene},
-                        canClick() {return true},
+                        onClick() {player.finishedStCutscene = !player.finishedStCutscene;  TSEGICompletions["V"+VRSN+"_Amount"] += 1; save();},
+                        canClick() {return TSEGICompletions["V"+VRSN+"_Amount"] != 0},
                 },
             22: {
-                display() {return `<h2>Let me continue playing! (+1 v${VRSN} to TSEGI Completions)</h2>`},
+                display() {return `<h2>Let me continue playing! (+1 v${VRSN} to TSEGI Completions) [still WIP]</h2>`},
                 unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
-                onClick() {player.cutsceneName = ""; player.inCutscene = false; },
-                canClick() {return true},
+                onClick() {player.cutsceneName = ""; player.inCutscene = false; nonPlayerValues.continuePlaying = true },
+                canClick() {return !nonPlayerValues.continuePlaying },
             },
             
             23: {
-                display() {return `<h2>Run it back!</h2>`},
+                display() {return `<h2>Run it back! [NYI, sorry!]</h2>`},
                 unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
-                onClick() {player = null},
-                canClick() {return true},
+                onClick() {startOver()},
+                canClick() {return false},
             }    
     },
 

@@ -824,7 +824,7 @@ var displayThings = [
 		// return everything
 
 		let SpecialCapped = ``
-		if (player.points.gte("1e800") || player.PeakReached) SpecialCapped = `<h5 style="color: rgb(124, 0, 0)";>Extra solarity has become evanescent... <h5><br> Maybe... the sun is its problem... perhaps its too... frangible...`
+		if ((player.points.gte("1e800") || player.PeakReached) && !player.Sol.solarBurst) SpecialCapped = `<h5 style="color: rgb(124, 0, 0)";>Extra solarity has become evanescent... <h5><br> Maybe... the sun is its problem... perhaps its too... frangible...`
 
 		return `
 		

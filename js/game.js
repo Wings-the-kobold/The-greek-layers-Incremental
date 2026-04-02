@@ -13,7 +13,7 @@ var TSEGICompletions = {
 		"V0.8_Amount" : 0,
 	}
 
-	
+	// TSEGICompletions["V0.6_Amount"] += 1; save()
 const cooldownBeforeChange = 15
 var CoreEffectChange = 0
 var Core_effValue = 3
