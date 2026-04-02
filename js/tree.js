@@ -127,7 +127,7 @@ addLayer("tree-tab", {
               "width": "100px",
               "height": "50px",
               }},  
-            unlocked() {return (player.frames == 180 && player.finishedStCutscene == false && player.cutsceneName != "endGame")}
+            unlocked() {return (player.frames == 180 && player.finishedStCutscene == false && player.cutsceneName == "startGame")}
           },
 
         12: {
@@ -161,7 +161,7 @@ addLayer("tree-tab", {
             canClick() {return false},
             style() {return {
               "width": "400px",
-              "height": "350px",
+              "height": "370px",
               }},  
             unlocked() {return (player.finishedStCutscene == true && player.inCutscene && player.cutsceneName == "startGame")}
         },
