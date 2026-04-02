@@ -112,11 +112,10 @@ addLayer("dL", {
                   if (player.dL.tab = "Social") return 
                   `
                   <h1> My socials and extra things :) </h1>
-                  <a href="https://discord.com/invite/tJDWU7twvB" target="__blank" rel="noopener noreferrer"> Join my comminuty server! </a>
-                  <a href="https://discord.com/invite/F3xveHV" target="__blank" rel="noopener noreferrer"> General TMT community server! </a>
-                  <a href="https://www.youtube.com/watch?v=_5T6EdPy4_4" target="__blank" rel="noopener noreferrer"> Voliik - Eclipse </a>
-
-                  //
+                  <a href="https://discord.com/invite/tJDWU7twvB" target="__blank" rel="noopener noreferrer"> Join my comminuty server! </a><br>
+                  <a href="https://discord.com/invite/F3xveHV" target="__blank" rel="noopener noreferrer"> General TMT community server! </a><br>
+                  <a href="https://www.youtube.com/watch?v=_5T6EdPy4_4" target="__blank" rel="noopener noreferrer"> Voliik - Eclipse </a><br>
+                  <a href="https://youtu.be/UKaWcE-GXWg" target="__blank" rel="noopener noreferrer"> Donbor - 86 Minutes until dark </a><br>          
                   `
 }
 
