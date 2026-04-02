@@ -1,4 +1,6 @@
 const TillDark = new Audio('resources/4MUD.mp3');
+const EclipseTamed = new Audio('resources/WinSong.mp3');
+
 
 const storedChecks = [];
 

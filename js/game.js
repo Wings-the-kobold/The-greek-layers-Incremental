@@ -681,13 +681,16 @@ function outerGameUpdates() {
 
 
 //           THIS IS THE ONLY FUNCTION USED TO DO ENDGAME CUTSCENE!           EDIT THIS EVERY UPDATE!
+var endgameCon = player.Sol.solarBurst
+
 function checkEndgame() {
 	if (!(player.inCutscene && player.cutsceneName == "endGame"))
 		{
-		if (player.Sol.solarBurst) 
+		if (endgameCon) 
 			{
-				//do not uncomment when everything isnt done
-				/*options.autosave=false; save()*/
+				
+			EclipseTamed.play();	
+			options.autosave=false; save()
 			
 			
 			; return end(); } 
