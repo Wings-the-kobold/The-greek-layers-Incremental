@@ -680,10 +680,13 @@ function outerGameUpdates() {
 }
 
 
-//           THIS IS THE ONLY FUNCTION USED TO DO ENDGAME CUTSCENE!           EDIT THIS EVERY UPDATE!
-var endgameCon = player.Sol.solarBurst
+
+
 
 function checkEndgame() {
+	//           THIS IS THE ONLY FUNCTION USED TO DO ENDGAME CUTSCENE!           EDIT THIS EVERY UPDATE!
+	var endgameCon = player.Sol.solarBurst
+
 	if (!(player.inCutscene && player.cutsceneName == "endGame"))
 		{
 		if (endgameCon) 

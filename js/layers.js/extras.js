@@ -109,7 +109,7 @@ addLayer("dL", {
       content: [
                 
                 ["display-text", function() {
-                  if (player.dL.tab = "Social") return 
+                  if (player.dL.tab == "Social") return 
                   `
                   <h1> My socials and extra things :) </h1>
                   <a href="https://discord.com/invite/tJDWU7twvB" target="__blank" rel="noopener noreferrer"> Join my comminuty server! </a><br>
@@ -671,7 +671,7 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
           "width": "100px",
           "height": "40px",
           }},  
-        unlocked() {return player.C.checkUpgrades.gte(3) || player.E.EclipseTier.gte(1)}
+        unlocked() {return player["C"].activeCheck == "Twilight" || player["C"].hasTwilight == true|| player.E.EclipseTier.gte(1)}
       },
       
       13: {

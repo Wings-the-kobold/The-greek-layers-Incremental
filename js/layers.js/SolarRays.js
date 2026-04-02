@@ -536,7 +536,7 @@ return  tmp["S"].getResetGain
             style() {
               return {
                 "width": "160px",
-                "height": "75px",
+                "height": "85px",
                 "border-radius": "0px",
                 "border": "0px",
                 "margin": "5px",
@@ -594,7 +594,7 @@ return  tmp["S"].getResetGain
           style() {
             return {
               "width": "160px",
-              "height": "75px",
+              "height": "85px",
               "border-radius": "0px",
               "border": "0px",
               "margin": "5px",

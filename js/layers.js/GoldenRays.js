@@ -333,7 +333,8 @@ addLayer("GL", {
         };
       },
       onPurchase() {
-            if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) Self_Reset("GL")
+            if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) Self_Reset("GL");
+            else return;
             },
     },
     12: {
@@ -1020,6 +1021,7 @@ addLayer("GL", {
       hasUpgrade("S", 14) ||
       player["GL"].Solar_Shards.gte(1) ||
       player["GL"].Solarlight.gte(1) ||
+      hasUpgrade("GL",11)    ||
       player.E.EclipseTier.gte(1)
     )
       return true;

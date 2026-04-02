@@ -702,6 +702,8 @@ fixNaNs()
       onClick() {
         if (player["C"].activeCheck == "Twilight" && Check("C",13).CompReq == true ) {
           player["C"].hasTwilight = true
+
+          //
           player["C"].activeCheck = ""
           doPopup("msg","Checkpoint: New theme unlocked", "Game Notifier",10)
           // message player that they have unlocked a new theme

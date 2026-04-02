@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6.07, F23-B20",
+	num: "ersion 0.6.09 F23-B20",
 	name: "studying the core.",
 	
 }
@@ -94,8 +94,12 @@ let changelog = ` <span class="ignThemes">
 <span> <i>and yet, the sun rises, why must we no longer appreciate it for its volatility...</i><br></span>
 <span> <i>will it ever be trusting enough to allow our gaze within? we will never know...</i></span><br><br>
 
+<h3> Extra Fixes, 22-25
 Fix 23:<br>
 - Fixed Extra.js breaking the game when opening the thingy<br>
+- Fixed Shardism from doing a reset every time it is obtained<br>
+- Reworded Polarizes effect description just a bit<br>
+- Re-styled a couple buyables because they kept leaving 'the box'<br>
 <br>
 
 
@@ -1023,7 +1027,7 @@ var displayThings = [
 
 
 
-
+/*
 	function gh() {
 		if (true) return `<h6><br>
 self reminder: make 'run it back' actually work and endgame buttons<br>
@@ -1031,13 +1035,13 @@ also: add Tabs to Viewers for v0.7<br>
 also also: publish the official TSEGI guide
 </h6>
 `
-/*
+
    (0.7) Rebalance, and buff NMH-1 <br>	
    (0.7) Rebalance Check Upgrade 005 <br>
    (0.7) make activeCheck a global variable<br>
-*/		
+	
 	},
-
+*/	
 	
 	function debug() {
 
