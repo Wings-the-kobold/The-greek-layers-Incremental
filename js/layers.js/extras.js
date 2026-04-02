@@ -109,7 +109,15 @@ addLayer("dL", {
       content: [
                 
                 ["display-text", function() {
+                  if (player.dL.tab = "Social") return 
+                  `
+                  <h1> My socials and extra things :) </h1>
+                  <a href="https://discord.com/invite/tJDWU7twvB" target="__blank" rel="noopener noreferrer"> Join my comminuty server! </a>
+                  <a href="https://discord.com/invite/F3xveHV" target="__blank" rel="noopener noreferrer"> General TMT community server! </a>
+                  <a href="https://www.youtube.com/watch?v=_5T6EdPy4_4" target="__blank" rel="noopener noreferrer"> Voliik - Eclipse </a>
 
+                  //
+                  `
 }
 
           ],
@@ -117,12 +125,14 @@ addLayer("dL", {
           ["Custom", {id:11}],
           ["Custom", {id:12}],
           ["Custom", {id:13}],
+          ["Custom", {id:14}],
+          ["Custom", {id:15}],
          ]],
 
          "blank",
          
 
-         ["row", [ //check upgrades
+         ["row", [ //buttons
           ["Custom", {id:21}],
           ["Custom", {id:22}],
           ["Custom", {id:23}],
@@ -677,7 +687,17 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
 
       },
 
-      14: {
+        14: {
+        display() {return `<h2>Socials :D</h2>`},
+        onClick() {player.dL.tab = "Social"},
+        canClick() {return true},
+        style() {return {
+          "width": "100px",
+          "height": "40px",
+          }},  
+        unlocked() {return true},
+        },
+      15: {
         display() {return `<h2>Boring Stuff (Soon)</h2>`},
         onClick() {player.dL.tab = "Stats"},
         canClick() {return true},
@@ -685,7 +705,7 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
           "width": "100px",
           "height": "40px",
           }},  
-        unlocked() {return true}
+        unlocked() {return true},
 
       },
 
