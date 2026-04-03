@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6.09 F23-B20",
+	num: "ersion 0.6.09 F23-B21",
 	name: "studying the core.",
 	
 }
@@ -94,12 +94,14 @@ let changelog = ` <span class="ignThemes">
 <span> <i>and yet, the sun rises, why must we no longer appreciate it for its volatility...</i><br></span>
 <span> <i>will it ever be trusting enough to allow our gaze within? we will never know...</i></span><br><br>
 
-<h3> Extra Fixes, 22-25
+<h3> Extra Fixes, and tiny tweaks
 Fix 23:<br>
 - Fixed Extra.js breaking the game when opening the thingy<br>
 - Fixed Shardism from doing a reset every time it is obtained<br>
 - Reworded Polarizes effect description just a bit<br>
-- Re-styled a couple buyables because they kept leaving 'the box'<br>
+- Fixed Multiply and Plasmate that wasnt spending any resources without Automated Bonuses
+- Re-styled a couple buyables because they kept leaving 'the box'<br><br>
+Bal 21: Plasmate now spends solarity 10% of its cost
 <br>
 
 
@@ -674,7 +676,7 @@ function addedPlayerData() { return {
 	},
 
 	eventActive: false,
-	timerOfBonus: 86400,
+	timerOfBonus: 28800, //8 hours
 
 	thingy: 0,
 

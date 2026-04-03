@@ -879,7 +879,7 @@ return  tmp["S"].getResetGain
             <br>
             <h2> ${nerfText} +${displayNormal} </h2>
             <br>
-            <h2>Costs: ${format(  tmp[this.layer].buyables[this.id].cost     )} Solar Rays</h2>
+            <h2>Requires: ${format(  tmp[this.layer].buyables[this.id].cost     )} Solar Rays</h2>
             ${player.Sol.TBCore.active && getCoreDifficulty().gte(2) ? TBCoreRestrict : "<br><br>"}
           `
 
@@ -893,16 +893,15 @@ return  tmp["S"].getResetGain
               if (player.Sol.activeCheck == "Heliosphere") return getBuyableAmount("S",11).gte(100) ? false : player.Sol.HelioStat["Solar_Rays"].gte(this.cost());
               else return player.S.points.gte(this.cost())
             },
-            buy() {
-              if (!player.Sol.activeCheck == "Heliosphere") 
+            buy() { 
+              if (player.Sol.activeCheck == "Heliosphere")  {player.Sol.HelioStat["Solar_Rays"].minus(this.cost); addBuyables(this.layer, this.id, 1);}
+              
+              else if (player.Sol.activeCheck == "") 
                 {
-                player.S.points = player.S.points.minus(this.cost());
+                if (!player.C.hasFormality) player.S.points = player.S.points.minus(this.cost());
                 setBuyableAmount("S", 11, getBuyableAmount("S",11).plus(1))
               }
-              else {player.Sol.HelioStat["Solar_Rays"].minus(this.cost); addBuyables(this.layer, this.id, 1);}
-              
-
-              if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1)) && player.S.points.gte(this.cost)) {buyMaxBuyable("S",11); }
+              else if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1)) && player.S.points.gte(this.cost)) {buyMaxBuyable("S",11); }
 
               if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) Self_Reset("S");
                 
@@ -1072,6 +1071,7 @@ return  tmp["S"].getResetGain
             <h2> ${nerfText}  ${displayNormalEffect}</h2>
             <br>
             <h2> Costs: ${showNormalCost} </h2> <br>
+            ${player.C.hasHeirarchy == false?"<p> (10% of cost will be spent)":""} 
            ${requires}
             ${player.Sol.TBCore.active && getCoreDifficulty().gte(2) ? TBCoreRestrict : ""}
           `
@@ -1091,7 +1091,7 @@ return  tmp["S"].getResetGain
             },
             buy() {
             if (!player.Sol.activeCheck == "Heliosphere")
-              if (player.points.gte(this.cost)) { if (player.C.checkUpgrades.lt(2)) player.points = player.points.minus(this.cost()); }
+              if (player.points.gte(this.cost)) { if (player.C.hasHeirarchy == false) player.points = player.points.minus(this.cost().mul(0.1)); }
             else if (player.points.gte(this.cost) && player.Sol.activeCheck == "Heliosphere") player.Sol.HelioStat["Solarity"] = player.Sol.HelioStat["Solarity"].minus(this.cost());
               
             if (!(getBuyableAmount("S",12).gte(100) && player.Sol.activeCheck == "Heliosphere")) addBuyables(this.layer, this.id, 1);
