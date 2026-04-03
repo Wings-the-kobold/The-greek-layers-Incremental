@@ -623,7 +623,7 @@ var interval = setInterval(function() {
 	UpdateBranches();
 	UpdateRealTime();
 	changeImagesIndirect();
-	checkEndgame()
+	if (!player.inCutscene && player.cutsceneName == "" ) checkEndgame()
 
 	if (options.animateTree) {
 		nodePos.tick += 1
@@ -680,26 +680,23 @@ function outerGameUpdates() {
 }
 
 
-
+//var endgameCon = 
 
 
 function checkEndgame() {
 	//           THIS IS THE ONLY FUNCTION USED TO DO ENDGAME CUTSCENE!           EDIT THIS EVERY UPDATE!
-	var endgameCon = player.Sol.solarBurst
-
-	if (!(player.inCutscene && player.cutsceneName == "endGame"))
-		{
-		if (endgameCon) 
+	if (nonPlayerValues.continuePlaying) return;
+		if (player.Sol.solarBurst) 
 			{
-				
+			 end(); 	
 			EclipseTamed.play();	
-			options.autosave=false; save()
+			options.autosave=false; //save()
 			
 			
-			; return end(); } 
+		    } 
 	
 	}
-}
+
 
 
 //ALL CUSTOM FUNCTIONS ARE HERE

@@ -181,7 +181,7 @@ addLayer("tree-tab", {
               }},  
             unlocked() {return (player.timerToAgree == 0 && player.inCutscene && player.cutsceneName == "startGame")}
           },
-        
+        //nonPlayerValues.continuePlaying
 
           //finish the game off by adding these special options
             21: {
@@ -191,15 +191,18 @@ addLayer("tree-tab", {
                     return `<h2>Complete TSEGI (+1 to v${VRSN} TSEGI Completions) [still WIP]</h2>`
                         
                 },
-                        unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
-                        onClick() {player.finishedStCutscene = !player.finishedStCutscene;  TSEGICompletions["V"+VRSN+"_Amount"] += 1; save();},
+                        unlocked() {/* return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene */ return  false},
+                        onClick() {player.finishedStCutscene = !player.finishedStCutscene;  TSEGICompletions["V"+VRSN+"_Amount"] += 1; },
                         canClick() {return TSEGICompletions["V"+VRSN+"_Amount"] != 0},
                 },
             22: {
                 display() {return `<h2>Let me continue playing! (+1 v${VRSN} to TSEGI Completions) [still WIP]</h2>`},
                 unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
-                onClick() {player.cutsceneName = ""; player.inCutscene = false; nonPlayerValues.continuePlaying = true },
+                onClick() {player.cutsceneName = ""; player.inCutscene = false; nonPlayerValues.continuePlaying = true; player.showScreen = true; doPopup("msg","Note that everything past this point is unbalanced and may break", "Game Notifier",10);},
                 canClick() {return !nonPlayerValues.continuePlaying },
+                style() {
+                    
+                }
             },
             
             23: {
