@@ -570,8 +570,14 @@ return  tmp["S"].getResetGain
             let bonus = 0.2
             if (player.E.EclipseTier.gte(2)) bonus = 0.4
             
-
-             let upgTextbeforeBurst = `${showText} to the root formula of ${SR_tag} bonus <br><br>`  
+            let showNew = `root40 -> root${new Decimal(40).sub(upgradeEffect("S",12))}`
+             let upgTextbeforeBurst = `${showText} to the root formula of ${SR_tag} bonus <br>
+             ${showNew}
+             <br>
+             
+             
+             
+             `  
              if (player.Sol.solarBurst || player.Sol.testBurst) upgTextbeforeBurst = `+${bonus} to the static power bonus`
 
 
