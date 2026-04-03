@@ -101,7 +101,9 @@ Fix 23:<br>
 - Reworded Polarizes effect description just a bit<br>
 - Fixed Multiply and Plasmate that wasnt spending any resources without Automated Bonuses
 - Re-styled a couple buyables because they kept leaving 'the box'<br><br>
-Bal 21: Plasmate now spends solarity 10% of its cost
+Bal 21: 
+<br> - Plasmate now spends solarity 10% of its cost
+<br> - Reduced the thankyou bonus duration from 24 to 8 hours
 <br>
 
 
