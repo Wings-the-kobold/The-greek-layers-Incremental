@@ -99,7 +99,8 @@ Fix 23:<br>
 - Fixed Extra.js breaking the game when opening the thingy<br>
 - Fixed Shardism from doing a reset every time it is obtained<br>
 - Reworded Polarizes effect description just a bit<br>
-- Fixed Multiply and Plasmate that wasnt spending any resources without Automated Bonuses
+- Fixed Multiply and Plasmate that wasnt spending any resources without Automated Bonuses<br>
+- maybe fixed the vue issue??? <br>
 - Re-styled a couple buyables because they kept leaving 'the box'<br><br>
 Bal 21: 
 <br> - Plasmate now spends solarity 10% of its cost
