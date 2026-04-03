@@ -719,7 +719,7 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
           "width": "100px",
           "height": "40px",
           }},  
-        unlocked() {return (Check("C",13).has || player.E.EclipseTier.gte(1)) && player.dL.tab == "Storyline"}
+        unlocked() {return (player.C.hasTwilight || player.E.EclipseTier.gte(1)) && player.dL.tab == "Storyline"}
       },
 
       22: {

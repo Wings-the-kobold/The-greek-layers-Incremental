@@ -94,7 +94,7 @@ let changelog = ` <span class="ignThemes">
 <span> <i>and yet, the sun rises, why must we no longer appreciate it for its volatility...</i><br></span>
 <span> <i>will it ever be trusting enough to allow our gaze within? we will never know...</i></span><br><br>
 
-<h3> Extra Fixes, and tiny tweaks
+<h3> Extra Fixes, and tiny tweaks</h3>
 Fix 23:<br>
 - Fixed Extra.js breaking the game when opening the thingy<br>
 - Fixed Shardism from doing a reset every time it is obtained<br>
@@ -297,7 +297,7 @@ function getPointGen() {
     let TBSunP = player.Sol.TBSun.pending
     let TBCoreP = player.Sol.TBCore.pending
 	let BC2_INFL = false 
-	let gain = new Decimal(0)
+	let gain = new Decimal(1)
 
 	//timer: 1 day of 5x solarity bonus for 2 weeks, 1.5x Solar Rays
 
