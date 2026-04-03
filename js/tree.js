@@ -198,7 +198,7 @@ addLayer("tree-tab", {
             22: {
                 display() {return `<h2>Let me continue playing! (+1 v${VRSN} to TSEGI Completions) [still WIP]</h2>`},
                 unlocked() { return player.frames == 180 && player.cutsceneName == "endGame" && player.inCutscene},
-                onClick() {player.cutsceneName = ""; player.inCutscene = false; nonPlayerValues.continuePlaying = true; player.showScreen = true; doPopup("msg","Note that everything past this point is unbalanced and may break", "Game Notifier",10);},
+                onClick() {player.cutsceneName = ""; player.inCutscene = false; nonPlayerValues.continuePlaying = true; player.showScreen = true; TSEGICompletions["V"+VRSN+"_Amount"] += 1; save(); doPopup("msg","Note that everything past this point is unbalanced and may break", "Game Notifier",10);},
                 canClick() {return !nonPlayerValues.continuePlaying },
                 style() {
                     
