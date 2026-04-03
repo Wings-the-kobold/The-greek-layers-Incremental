@@ -108,19 +108,8 @@ addLayer("dL", {
     ":)": {       
       content: [
                 
-                ["display-text", function() {
-                  if (player.dL.tab == "Social") return 
-                  `
-                  <h1> My socials and extra things :) </h1>
-                  <a href="https://discord.com/invite/tJDWU7twvB" target="__blank" rel="noopener noreferrer"> Join my comminuty server! </a><br>
-                  <a href="https://discord.com/invite/F3xveHV" target="__blank" rel="noopener noreferrer"> General TMT community server! </a><br>
-                  <a href="https://www.youtube.com/watch?v=_5T6EdPy4_4" target="__blank" rel="noopener noreferrer"> Voliik - Eclipse </a><br>
-                  <a href="https://youtu.be/UKaWcE-GXWg" target="__blank" rel="noopener noreferrer"> Donbor - 86 Minutes until dark </a><br>          
-                  `
-}
-
-          ],
-         ["row", [ //check upgrades
+               
+         ["row", [ //tab buttons
           ["Custom", {id:11}],
           ["Custom", {id:12}],
           ["Custom", {id:13}],
@@ -131,7 +120,7 @@ addLayer("dL", {
          "blank",
          
 
-         ["row", [ //buttons
+         ["row", [ //tab minibuttons
           ["Custom", {id:21}],
           ["Custom", {id:22}],
           ["Custom", {id:23}],
@@ -140,7 +129,17 @@ addLayer("dL", {
         ]],
 
 
+ ["display-text", function() {
+                  if (player.dL.tab == "Social") return`
+                  <h1> My socials and extra things :) </h1><br>
+                  <a href="https://discord.com/invite/tJDWU7twvB" target="__blank" rel="noopener noreferrer"> Join my community server! </a><h6>(Full access w/ looking for a specific channel)</h6><br>
+                  <a href="https://discord.com/invite/F3xveHV" target="__blank" rel="noopener noreferrer"> General TMT community server! </a><br>
+                  <a href="https://www.youtube.com/watch?v=_5T6EdPy4_4" target="__blank" rel="noopener noreferrer"> Voliik - Eclipse </a><br>
+                  <a href="https://youtu.be/UKaWcE-GXWg" target="__blank" rel="noopener noreferrer"> Donbor - 86 Minutes until dark </a><br>          
+                  `
+                }
 
+          ],
       
     
         
@@ -526,7 +525,7 @@ addLayer("dL", {
    let text = `
         Hey, thanks for playing this game. it means alot to me.<br><br>
         People that helped with this game, as well as with debugging:<br>
-        Escapee: component help, general JS help, and a little feedback<br>
+        Escapee: component help, general JS help and feedback<br>
         Donbor: providing music '86 Minutes until dark'. for a check upgrade<br>
         Voliik: providing music 'Eclipse' as for the end game music<br>
         Deathpact: random inspiration for 'formality' <br>
