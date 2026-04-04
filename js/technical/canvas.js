@@ -22,7 +22,7 @@ function resizeCanvas() {
         middleX = window.innerWidth / 2
 			if (player.cutsceneName == "startGame" && player.inCutscene ) {startGameEclipse()}
 			else if (player.cutsceneName == "endGame" && player.inCutscene )  {endGameEclipse(); }
-			else if (player.cutsceneName == "") drawTree();	
+		    if (!player.inCutscene) drawTree();	
 }
 function fadeOutAt(n) {return 1 - (player.frames-n)/20}
 function fadeInAt(n) {return 0 + (player.frames-n)/20}
@@ -195,8 +195,8 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
 	let start = document.getElementById(num1).getBoundingClientRect();
     let end = document.getElementById(num2).getBoundingClientRect();
 
-	if (!player.inCutscene) {
-	let x1 = start.left + (start.width / 2) + document.body.scrollLeft;
+	
+	    let x1 = start.left + (start.width / 2) + document.body.scrollLeft;
 		let y1 = start.top + (start.height / 2) + document.body.scrollTop;
 		let x2 = end.left + (end.width / 2) + document.body.scrollLeft;
 		let y2 = end.top + (end.height / 2) + document.body.scrollTop;
@@ -207,7 +207,7 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
 		ctx.lineTo(x2, y2);
 		ctx.stroke();
 
-	}
+	
 	
 	
 

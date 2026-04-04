@@ -195,6 +195,7 @@ fixNaNs()
       ${sS}${player.C.FreeCP.gt(0) ? " (" + format(player.C.CenterPoints.plus(player.C.FreeCP)) + ") " : ""}${sE}
       ${FourMTD} `;
       
+      
   
      }],
        ["display-text",
@@ -308,8 +309,8 @@ fixNaNs()
        
        `
       if ((player["C"].hasFormality || player.E.EclipseTier.gt(0)) & !player["C"].hasHeirarchy) return `if you need a refresher on check upgrades, you can look at my docs, or you can wait until I add a button on refreshers on these types of things if you have unlocked them yet.`
-      if (player["C"].hasHeirarchy || player.E.EclipseTier.gte(2)) return ``
-
+      else if (player["C"].hasHeirarchy || player.E.EclipseTier.gte(2)) return ``
+      else return ``
 
      }],
      ["row", [
@@ -351,7 +352,7 @@ fixNaNs()
       let progression;
     
       if (player.C.EffectorTier.eq(4))
-      progression = `🙂`
+      progression = ``
       else if (player.C.EffectorTier.eq(3))
       progression = `[Last Minor Unlock at Effector Tier IV]`
       else if (player.C.EffectorTier.eq(2))
@@ -360,9 +361,9 @@ fixNaNs()
       progression = `[Next Minor Unlock at Effector Tier II]`
       else if (player["C"].Score.gte(1))
       progression = `[Next Minor Unlock at 2000 Modifier Score]`
-
+      else progression = ``
         return `${progression}<br>
-        ${type1}
+   
         `
   
      }],
@@ -1581,7 +1582,7 @@ fixNaNs()
     
     branches: ["S"],
     layerShown(){ 
-      if ( hasUpgrade("GL",15) || player.E.EclipseTier.gte(1) )   return true; 
+      if ( hasUpgrade("GL",31) || player.E.EclipseTier.gte(1) )   return true; 
   
     },
     row: 1, 

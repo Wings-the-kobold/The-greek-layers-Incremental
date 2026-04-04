@@ -1,14 +1,15 @@
 
 #optionWheel {
-	position: absolute;
-	top: 0;
-	transform: rotate(360deg); 
-	bottom: 9.33in;
-	right: 4cm;
-	height: 50px;
-	width: 50px;
-	cursor: pointer;
+	position: inherit;
+    top: 4cm;
+    transform: rotate(360deg);
+    /* bottom: 9.33in; */
+    right: 1.68cm;
+    height: 50px;
+    width: 50px;
+    cursor: solid;
 }
+
 
 #optionWheel:hover {
 	transform: rotate(360deg); 

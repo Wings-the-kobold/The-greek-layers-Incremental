@@ -94,14 +94,24 @@ let changelog = ` <span class="ignThemes">
 <span> <i>and yet, the sun rises, why must we no longer appreciate it for its volatility...</i><br></span>
 <span> <i>will it ever be trusting enough to allow our gaze within? we will never know...</i></span><br><br>
 
-<h3> Extra Fixes, and tiny tweaks</h3>
+<h3> Extra Fixes, and tiny tweaks due to feedback and bug reports</h3>
 Fix 23:<br>
+<b>4.02.2026 </b><br>
 - Fixed Extra.js breaking the game when opening the thingy<br>
 - Fixed Shardism from doing a reset every time it is obtained<br>
 - Reworded Polarizes effect description just a bit<br>
-- Fixed Multiply and Plasmate that wasnt spending any resources without Automated Bonuses<br>
-- maybe fixed the vue issue??? <br>
-- Re-styled a couple buyables because they kept leaving 'the box'<br><br>
+- (Functional) Multiply and Plasmate that wasnt spending any resources without Automated Bonuses<br>
+- (???) maybe fixed the vue issue??? (Spoiler: i somehow didnt)<br>
+- (Stylic) Re-styled a couple buyables because they kept leaving 'the box'<br>
+<b>4.03.2026</b><br>
+- (Stylic) Hopefully made the User Interface more mobile-friendly <br>
+- (Functional) Fixed Centrality not unlocking after Coronal was bought <br>
+- (Stylic) Fixed tree branches not rendering due to a cutscene related issue <br>
+
+Later, i will add notifiers but for now you might just have to keep switching layers as for time <br>
+
+
+<br><br>
 Bal 21: 
 <br> - Plasmate now spends solarity 10% of its cost
 <br> - Reduced the thankyou bonus duration from 24 to 8 hours
@@ -931,7 +941,7 @@ var displayThings = [
 		else if (hasUpgrade("GL",15)) {
 				 nextText = `Solock IV: Next Unlock at Twilight`
 			}
-		else if (hasUpgrade("S",14) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
+		else if (hasUpgrade("S",31) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
 				
 				
 				nextText = `Solock III: Next Unlock at Coronal Upgrade` //unlock 4

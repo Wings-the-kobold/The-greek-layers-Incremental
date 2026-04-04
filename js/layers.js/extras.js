@@ -97,13 +97,9 @@ addLayer("dL", {
   
     color: "#ff6a00",
     position: "0", 
-    
+    type: "none",
     row: "side", 
-    nodeStyle() {
-      return {
-        
-      }
-    },
+  
   tabFormat: {
     ":)": {       
       content: [
@@ -516,7 +512,7 @@ addLayer("dL", {
 
 
       ["display-text", function(){
-        if (player.dL.sub == "" && player.dL.tab == "Storyline") return `<h4> ...Choose a layer section to begin reading (WIP) </h4>`
+        if (player.dL.sub == "" && player.dL.tab == "Storyline") return `<h4> ...Choose a layer section to begin reading </h4>`
 
       }],
 
@@ -594,52 +590,7 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
       
       ]],
       
-      ["display-text",
-                function() { 
-                  let tempCalc = [new Decimal(DarknessUpgs_Row1[0]), new Decimal(DarknessUpgs_Row1[1]), new Decimal(DarknessUpgs_Row1[2])   ]
-                 // let JearBonus = player.points.log(20).mul(). Math.round(10000*(Core_effValue*0.01))/10000 
-                 let baseCoreThing = player.points.log(20).mul(CoreEffectMul)
-                 let coreBoost = baseCoreThing.pow_base(20)
-
-                 //boost the thing
-                 step1 = [tempCalc[0].mul(coreBoost), tempCalc[1].mul(coreBoost), tempCalc[2].mul(coreBoost)] 
-                 //done!
-
-                 //Apply formality for display and to make it accurate
-                 step2 = [step1[0].pow(0.666), step1[1], step1[2].pow(0.666)] 
-
-                 step3 = [step2[0].log(12), step2[1], step2[2].log(12) ]
-                 // convert to core energy 
-
-                  if (player.Sol.TBCore.x.gte(2) && player.dL.tab == "Stats") return `<h5>Jear upgrade multiplier breakdown: <br>
-                  
-                  
-                  
-                  ${"log20 of JEAR1 (Base core energy): " + format(tempCalc[0].log(20)     )  }
-                  <br>
-
-                  
-                  ${format(CoreEffectMul*100) + "% of core energy : " +"( "+ format(player.points.log(20).mul(CoreEffectMul) ) + " ) " }
-                  <br>
-                  ${"which translates to: " +" "+ format(coreBoost) + " to all Jear paths (before Formality/Twilight)" }
-                  <br>
-                  ${"jear paths are now: " + format(step1[0]) + " to Solarity, " + format(step1[1]) + " to SR, " + format(step1[2]) + " and " + format(step1[2]) + " to Solarity and SR"  }<br>
-
-
-                  <br>
-                  ${"Formality applied (Jear1, Jear2, Jear3): "  + format(step2[0] ) + " Solarity, NA" + ", " + format(step2[2] )+ " and " + format(step1[2]) + " SR"  }.
-                  <br>
-                  ${"Twilight applied after: " + format(step3[0]) + " Solarity , NA" +", " + format(step3[2] ) + " and " + format(step1[2]) + " SR"  }
-                  
-
-                  </h5>
-        
-                  
-                  
-                  `
-             
-            
-              }],
+  
 
 
       
@@ -670,7 +621,7 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
           "width": "100px",
           "height": "40px",
           }},  
-        unlocked() {return player["C"].activeCheck == "Twilight" || player["C"].hasTwilight == true|| player.E.EclipseTier.gte(1)}
+        unlocked() {return}
       },
       
       13: {
@@ -790,17 +741,13 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
         unlocked() {return player.dL.tab == "Unrelated"}
       },
       43: {
-        display() {
-          
-          
-          
-          
-          return `<img src="${imageScroll[chooseRndmElmnt]}"  style="width:280px;height:280px;"></img>`}, 
+        display() {return `<img src="${imageScroll[chooseRndmElmnt]}"  style="width:280px;height:280px;"></img>`}, 
         unlocked() {return player.dL.tab == "Unrelated"},
+        onClick() {console.log("click!")},
+        canClick() {return false},
         style() {return {
           "width": "300px",
           "height": "300px",
-          
           }},  
       }
         //alert("bunga")
@@ -884,7 +831,8 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
 
 
       tooltip: `<h5>Extras, Credits, Lore and Info</h5>`,
-    layerShown(){return true}
+    layerShown(){return true},
+    unlocked() {return true}
 })
 
 

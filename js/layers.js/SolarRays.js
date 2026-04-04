@@ -881,6 +881,7 @@ return  tmp["S"].getResetGain
             <br>
             <h2>Requires: ${format(  tmp[this.layer].buyables[this.id].cost     )} Solar Rays</h2>
             ${player.Sol.TBCore.active && getCoreDifficulty().gte(2) ? TBCoreRestrict : "<br><br>"}
+            ${player.C.hasHeirarchy == false?"<p> (10% of cost will be spent)":""} 
           `
 
             else if (player.Sol.activeCheck == "Heliosphere") {
@@ -898,8 +899,10 @@ return  tmp["S"].getResetGain
               
               else if (player.Sol.activeCheck == "") 
                 {
-                if (!player.C.hasFormality) player.S.points = player.S.points.minus(this.cost());
-                setBuyableAmount("S", 11, getBuyableAmount("S",11).plus(1))
+                if (!player.C.hasFormality)
+                  { player.S.points = player.S.points.minus(this.cost())
+                   setBuyableAmount("S", 11, getBuyableAmount("S",11).plus(1));
+                  }
               }
               else if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1)) && player.S.points.gte(this.cost)) {buyMaxBuyable("S",11); }
 
@@ -1071,7 +1074,7 @@ return  tmp["S"].getResetGain
             <h2> ${nerfText}  ${displayNormalEffect}</h2>
             <br>
             <h2> Costs: ${showNormalCost} </h2> <br>
-            ${player.C.hasHeirarchy == false?"<p> (10% of cost will be spent)":""} 
+            
            ${requires}
             ${player.Sol.TBCore.active && getCoreDifficulty().gte(2) ? TBCoreRestrict : ""}
           `
