@@ -900,7 +900,7 @@ return  tmp["S"].getResetGain
               else if (player.Sol.activeCheck == "") 
                 {
                 if (!player.C.hasFormality)
-                  { player.S.points = player.S.points.minus(this.cost())
+                  { player.S.points = player.S.points.minus(this.cost().mul(0.1))
                    setBuyableAmount("S", 11, getBuyableAmount("S",11).plus(1));
                   }
               }

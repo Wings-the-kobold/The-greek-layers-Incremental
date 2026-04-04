@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6.09 F23-B21",
+	num: "ersion 0.6.03 F23-B21",
 	name: "studying the core.",
 	
 }
@@ -108,15 +108,19 @@ Fix 23:<br>
 - (Functional) Fixed Centrality not unlocking after Coronal was bought <br>
 - (Stylic) Fixed tree branches not rendering due to a cutscene related issue <br>
 - fixed Centrality's minor unlock text returning undefined<br>
+<b> 4.04.2026 </b><br>
+- Fixed Polarize being able to be bought before the initial requirements<br>
+- fixed the (spends 10% of sr) psrt of plasmate
 
+<br>
 Later, i will add notifiers but for now you might just have to keep switching layers as for time <br>
 
 
 <br><br>
 Bal 21: 
 <br> - Plasmate now spends solarity 10% of its cost
-<br> - Reduced the thankyou bonus duration from 24 to 8 hours
-<br>
+<br> - Reduced the thank you bonus duration from 24 to 8 hours
+<br> 
 
 
 

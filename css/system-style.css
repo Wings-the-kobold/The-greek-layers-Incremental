@@ -175,7 +175,7 @@ td {
 	column-width: 50%;
 	min-height: 100%;
 	transition-duration: 2s;
-	
+	border: solid;
 	/* for now to help with reference */
 }
 
