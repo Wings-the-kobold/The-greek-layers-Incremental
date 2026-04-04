@@ -588,7 +588,7 @@ return  tmp["S"].getResetGain
               
               ` : `<h1>Must aquire<h1>`
           },
-          cost: new Decimal(100),
+          cost: new Decimal(105),
           canAfford() {
               if (hasUpgrade("dL",11) && player.Sol.TBCore.active) return player.S.points.gte(2.33e24)
               else if (getBuyableAmount("S",11).gte(10) && player["S"].points.gte(this.cost)) return true

@@ -101,12 +101,13 @@ Fix 23:<br>
 - Fixed Shardism from doing a reset every time it is obtained<br>
 - Reworded Polarizes effect description just a bit<br>
 - (Functional) Multiply and Plasmate that wasnt spending any resources without Automated Bonuses<br>
-- (???) maybe fixed the vue issue??? (Spoiler: i somehow didnt)<br>
+- (Vue 1) maybe fixed the vue issue??? (Spoiler: i somehow didnt)<br>
 - (Stylic) Re-styled a couple buyables because they kept leaving 'the box'<br>
 <b>4.03.2026</b><br>
 - (Stylic) Hopefully made the User Interface more mobile-friendly <br>
 - (Functional) Fixed Centrality not unlocking after Coronal was bought <br>
 - (Stylic) Fixed tree branches not rendering due to a cutscene related issue <br>
+- fixed Centrality's minor unlock text returning undefined<br>
 
 Later, i will add notifiers but for now you might just have to keep switching layers as for time <br>
 
