@@ -40,9 +40,9 @@ F sequence: 15,40
 show text here IF player.frames = value
 or use fadeInAt()
 fade in sequences: 50, 65, 95, 120 [start button show: 150] */	
-text((middleX - 195), (middleY - 400), "The Eclipse has just started...", fadeInAt(46) , 30)
-text((middleX - 300), (middleY + 350), "Your task:", fadeInAt(85) , 30)
-text((middleX - 120), (middleY + 350), "Survive, and Tame the Eclipse.", fadeInAt(120) , 30)
+text((middleX - 195), (middleY - 400), "The Eclipse has just started...", fadeInAt(46) , 30, "200, 140, 0")
+text((middleX - 300), (middleY + 350), "Your task:", fadeInAt(85) , 30, "200, 140, 0")
+text((middleX - 120), (middleY + 350), "Survive, and Tame the Eclipse.", fadeInAt(120) , 30, "200, 140, 0")
 //shrink Eclipse down to minimum
 //then start game
 }

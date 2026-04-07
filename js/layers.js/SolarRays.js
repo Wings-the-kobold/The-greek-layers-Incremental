@@ -541,7 +541,7 @@ return  tmp["S"].getResetGain
                 "border": "0px",
                 "margin": "5px",
                 "text-shadow": "0px 0px 10px #000000",
-                "color": "#664257"
+                "color": "#835670"
               }
             },
             effect() {
@@ -559,7 +559,7 @@ return  tmp["S"].getResetGain
 
         12: {
           fullDisplay() {
-            let showText = `???`
+            let showText = `reduce`
             if (hasUpgrade("S",12)) showText = `-${upgradeEffect("S",12)}`
               let costDisplay = `2.33e24`
               if (player.Sol.TBCore.active) costDisplay = `18.73`
@@ -571,7 +571,7 @@ return  tmp["S"].getResetGain
             if (player.E.EclipseTier.gte(2)) bonus = 0.4
             
             let showNew = `root40 -> root${new Decimal(40).sub(upgradeEffect("S",12))}`
-             let upgTextbeforeBurst = `${showText} to the root formula of ${SR_tag} bonus <br>
+             let upgTextbeforeBurst = `${showText} the root formula of ${SR_tag} bonus <br>
              ${showNew}
              <br>
              
@@ -605,7 +605,7 @@ return  tmp["S"].getResetGain
               "border": "0px",
               "margin": "5px",
               "text-shadow": "0px 0px 10px #000000",
-              "color": "#664257"
+            "color":" rgb(147, 107, 130)"
             }
           },
           effect() {
@@ -680,7 +680,7 @@ return  tmp["S"].getResetGain
             "letter-spacing": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "2px" : "0px",
             "filter": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "blur(1px)" : "blur(0px)",
             "text-shadow": "0px 0px 10px #000000",
-            "color": "#664257"
+             "color":" rgb(147, 107, 130)"
           }
         },
     },  
@@ -729,7 +729,7 @@ return  tmp["S"].getResetGain
             "letter-spacing": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "2px" : "0px",
             "filter": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "blur(1px)" : "blur(0px)",
             "text-shadow": "0px 0px 10px #000000",
-            "color": "#664257"
+            "color":" rgb(147, 107, 130)"
           }
         },
         onPurchase() {
@@ -778,7 +778,7 @@ return  tmp["S"].getResetGain
           "border": "0px",
           "margin": "5px",
           "text-shadow": "0px 0px 10px #000000",
-          "color": "#664257"
+         "color":" rgb(147, 107, 130)"
         }
       },
       onPurchase() {
@@ -1093,14 +1093,24 @@ return  tmp["S"].getResetGain
   
             },
             buy() {
-            if (!player.Sol.activeCheck == "Heliosphere")
-              if (player.points.gte(this.cost)) { if (player.C.hasHeirarchy == false) player.points = player.points.minus(this.cost().mul(0.1)); }
-            else if (player.points.gte(this.cost) && player.Sol.activeCheck == "Heliosphere") player.Sol.HelioStat["Solarity"] = player.Sol.HelioStat["Solarity"].minus(this.cost());
-              
-            if (!(getBuyableAmount("S",12).gte(100) && player.Sol.activeCheck == "Heliosphere")) addBuyables(this.layer, this.id, 1);
-            if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1)) && player.S.points.gte(this.cost)) {buyMaxBuyable("S",12 ); }
+            
+            if (player.points.gte(this.cost())) {
+              if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) {
+                player.points = player.points.root(1.5);
+              }
 
-            if (player.Sol.TBCore.active && getCoreDifficulty().gte(2)) player.points = player.points.root(1.5)
+              else if (player.Sol.activeCheck == "Heliosphere" && !(getBuyableAmount("S",12).gte(100))) {
+                player.Sol.HelioStat["Solarity"] = player.Sol.HelioStat["Solarity"].minus(this.cost());
+
+              }
+              else if (player.Sol.activeCheck == "") {
+                if (player.C.hasHeirarchy == false) player.points = player.points.minus(this.cost().mul(0.1)); 
+                
+              }
+              if (player.C.hasHeirarchy == false) addBuyables(this.layer, this.id, 1);
+              else if (player.C.hasHeirarchy == true) buyMaxBuyable("S",12)
+            }
+           
             },
             effect() {
               

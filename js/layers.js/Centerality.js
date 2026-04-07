@@ -807,7 +807,7 @@ fixNaNs()
           "border": "0px",
           "margin": "5px",
           "text-shadow": "0px 0px 10px #000000",
-          "color": "#3a3337"
+         "color":" rgb(147, 107, 130)",
         }
       },
       onPurchased() {
@@ -853,7 +853,7 @@ fixNaNs()
           "border": "0px",
           "margin": "5px",
           "text-shadow": "0px 0px 10px #000000",
-          "color": "#3a3337"
+          "color":" rgb(147, 107, 130)",
         }
       },
       onPurchased() {
@@ -898,7 +898,7 @@ fixNaNs()
       "border": "0px",
       "margin": "5px",
       "text-shadow": "0px 0px 10px #000000",
-      "color": "#3a3337"
+      "color":" rgb(147, 107, 130)",
     }
   },
   onPurchased() {
@@ -1114,7 +1114,7 @@ fixNaNs()
           "border": "0px",
           "margin": "10px",
           "text-shadow": "0px 0px 10px #000000",
-          "color": "#3a3337"
+          "color":" rgb(147, 107, 130)",
         }
       },
       onPurchased() {
@@ -1156,7 +1156,7 @@ fixNaNs()
         "border": "0px",
         "margin": "10px",
         "text-shadow": "0px 0px 10px #000000",
-        "color": "#3a3337"
+        "color":" rgb(147, 107, 130)",
       }
     },
     onPurchased() {

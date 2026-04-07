@@ -329,7 +329,7 @@ addLayer("GL", {
           border: "0px",
           margin: "5px",
           "text-shadow": "0px 0px 10px #000000",
-          color: "#664257",
+        "color":" rgb(147, 107, 130)"
         };
       },
       onPurchase() {
@@ -365,7 +365,7 @@ addLayer("GL", {
           border: "0px",
           margin: "5px",
           "text-shadow": "0px 0px 10px #000000",
-          color: "#664257",
+          "color":" rgb(147, 107, 130)"
         };
       },
       onPurchase() {
@@ -435,7 +435,7 @@ addLayer("GL", {
           border: "0px",
           margin: player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "25px" : "5px",
           "text-shadow": "0px 0px 10px #000000",
-          color: "#664257",
+        "color":" rgb(147, 107, 130)",
           transform: player.Sol["TMSun"].active|| (player.Sol.TBCore.active && getCoreDifficulty().gte(3))
             ? "rotate(10deg)"
             : "rotate(0deg)",
@@ -501,7 +501,7 @@ addLayer("GL", {
             : "rotate(0deg)",
           "letter-spacing": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "1.5px" : "0px",
           filter: player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "blur(1px)" : "blur(0px)",
-          color: "#664257",
+          "color":" rgb(147, 107, 130)",
           "text-shadow": "0px 0px 10px #000000",
         };
       },
@@ -601,7 +601,7 @@ addLayer("GL", {
           border: "0px",
           margin: "15px",
           "text-shadow": "0px 0px 10px #000000",
-          color: "#664257",
+          "color":" rgb(147, 107, 130)",
         };
       },
       onPurchase() {
@@ -710,7 +710,7 @@ addLayer("GL", {
           border: "0px",
           margin: "35px",
           "text-shadow": "0px 0px 10px #000000",
-          color: "#664257",
+         "color":" rgb(147, 107, 130)",
         };
       },
       onPurchase() {

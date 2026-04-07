@@ -110,7 +110,13 @@ Fix 23:<br>
 - fixed Centrality's minor unlock text returning undefined<br>
 <b> 4.04.2026 </b><br>
 - Fixed Polarize being able to be bought before the initial requirements<br>
-- fixed the (spends 10% of sr) psrt of plasmate
+- fixed the (spends 10% of sr) psrt of plasmate<br>
+<b> 4.06.2026 </b><br>
+- Changed the text color of the start cutscene to a more brighter and easier to read <br>
+- Made the boosts less obscure before it is bought <br>
+- Fixed and reworked Multiply to actually spend solarity <br>
+- Changed the color contrast to most upgrades for better readability <br>
+
 
 <br>
 Later, i will add notifiers but for now you might just have to keep switching layers as for time <br>
@@ -120,7 +126,7 @@ Later, i will add notifiers but for now you might just have to keep switching la
 Bal 21: 
 <br> - Plasmate now spends solarity 10% of its cost
 <br> - Reduced the thank you bonus duration from 24 to 8 hours
-<br> 
+<br> - Reduced the requirements of Polarizor from 105 to 85
 
 
 
