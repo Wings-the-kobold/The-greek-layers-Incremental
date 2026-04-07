@@ -364,8 +364,8 @@ addLayer("GL", {
           "border-radius": "0px",
           border: "0px",
           margin: "5px",
-          "text-shadow": "0px 0px 10px #000000",
-          "color":" rgb(147, 107, 130)"
+           "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
         };
       },
       onPurchase() {
@@ -434,8 +434,8 @@ addLayer("GL", {
           "border-radius": "0px",
           border: "0px",
           margin: player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "25px" : "5px",
-          "text-shadow": "0px 0px 10px #000000",
-        "color":" rgb(147, 107, 130)",
+          "text-shadow": "0px 0px 10px #965c3f",
+            "color":" rgb(77, 77, 77)",
           transform: player.Sol["TMSun"].active|| (player.Sol.TBCore.active && getCoreDifficulty().gte(3))
             ? "rotate(10deg)"
             : "rotate(0deg)",
@@ -501,8 +501,8 @@ addLayer("GL", {
             : "rotate(0deg)",
           "letter-spacing": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "1.5px" : "0px",
           filter: player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "blur(1px)" : "blur(0px)",
-          "color":" rgb(147, 107, 130)",
-          "text-shadow": "0px 0px 10px #000000",
+           "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
         };
       },
       onPurchase() {
@@ -600,8 +600,8 @@ addLayer("GL", {
           "border-radius": "0px",
           border: "0px",
           margin: "15px",
-          "text-shadow": "0px 0px 10px #000000",
-          "color":" rgb(147, 107, 130)",
+            "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
         };
       },
       onPurchase() {
@@ -646,7 +646,7 @@ addLayer("GL", {
             <h3 style="color: #f54242; text-shadow: 0px 0px 5px #2b0101;">Uncomfortibility </h3> <br><br>
          
 
-          
+           
           
 
           Boost Range: <br> 
@@ -709,8 +709,8 @@ addLayer("GL", {
           "border-radius": "0px",
           border: "0px",
           margin: "35px",
-          "text-shadow": "0px 0px 10px #000000",
-         "color":" rgb(147, 107, 130)",
+           "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
         };
       },
       onPurchase() {
@@ -844,7 +844,16 @@ addLayer("GL", {
   clickables: {
     11: {
       display() {
+         let CORE_ENERGY = `Solarity`
+          if (player.C.activeCheck == "Twilight") CORE_ENERGY = ""
 
+
+            let useSymbol = `Dilates your solarity by 0.5`
+            if (player)
+            if (player.Sol.TBCore.active) {
+              CORE_ENERGY = "Core Energy"
+              useSymbol = `Divides your core energy by 2`
+            }
        
 
        
@@ -852,11 +861,11 @@ addLayer("GL", {
         </h3><br>
         (You can still start solar light generations for a stronger generation)` : ``
 
-        let Inactive = `<h2>Start Up Solar Light Generation </h2> <br>[ Requires Solarizor ]<br>
+        let Inactive = `<h2>Start Up Solar Light Generation</h2>, which ${useSymbol}. which then afterwards you will begin to generate solar light based on ${CORE_ENERGY}<sup>0.2</sup>. <br>[ Requires Solarizor ]<br>
                         ${autoActive}
                         
         `;
-        let Active = `<h2> Using ^0.5 of Solarity gain to generate ^0.2 of Solar Light...</h2><br>
+        let Active = `<h2> Using ^0.5 of Solarity's gain to generate ^0.2 of Solar Light...</h2><br>
                      When Stopping generation, Reset Solar Upgrades, Solarity, Solar Rays, And Solar Modifiers.  <br>
                     <p>(Note: Starting generation does NOT reset lower layers!)</p><br><br>
                     

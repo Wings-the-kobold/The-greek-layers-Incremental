@@ -621,7 +621,7 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
           "width": "100px",
           "height": "40px",
           }},  
-        unlocked() {return}
+        unlocked() {return true}
       },
       
       13: {

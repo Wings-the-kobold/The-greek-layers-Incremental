@@ -133,11 +133,11 @@ addLayer("tree-tab", {
         12: {
             display() { 
                return `<h1>NOTICE:</h1><br><br>
-               
-              <h3> This game is HARD, slowpaced, and requires strategies to beat the game. </h3><br><br>
-                <h4>
+               <b>
+              <h3> This game is hard, slowpaced, and requires some bits of strategies to beat the game. </h3><br><br>
+                <h3>
                This game IS part of a series known as 'the greek layer tower'. which is a slow paced incremental game which may involve beating other games of thatonekobold or my incremental mods.<br>
-               Expect alot of timewalls and a few forcewalls in this game.<br>
+               Expect a few timewalls and a few forcewalls in this game.<br>
                Also Expect a bit of labor and complex strategies near endgame <br><br>
 
                If you cannot handle this concept or idea, then dont continue and play some other game! <br>
@@ -147,21 +147,21 @@ addLayer("tree-tab", {
                You can instead ask for a <b>Balance request</b> in the discord server if a certain mechanic or feature is needed to be rebalanced. in which you can join on the extra things page, or on the left side of the screen.
                however, the owner of the TGLT series/TSEGI (me) not just <i>only</i> decide whether or not it should be balaced, but the majority of people can or may decide if a feature urgently needs a rebalance.
                <br> Essentially, other people have to agree the feature can be rebalanced. not just me.
-
-               </h4>
+               </h3>
                
                <br>
                Oh also, in addition to such. this is NOT inspired by the roblox game Grass Cutting Incremental from "supernova". check the games credits on the top right when accepting TOS<br>            
                 
                You cannot continue until you have read the TOS <br> 
                You can accept in ${player.timerToAgree}<br>
+               </b>
                `
             },
             
             canClick() {return false},
             style() {return {
-              "width": "400px",
-              "height": "370px",
+              "width": "600px",
+              "height": "400px",
               }},  
             unlocked() {return (player.finishedStCutscene == true && player.inCutscene && player.cutsceneName == "startGame")}
         },

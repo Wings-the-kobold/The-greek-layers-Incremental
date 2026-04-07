@@ -806,8 +806,8 @@ fixNaNs()
           "border-radius": "0px",
           "border": "0px",
           "margin": "5px",
-          "text-shadow": "0px 0px 10px #000000",
-         "color":" rgb(147, 107, 130)",
+          "text-shadow": "0px 0px 10px #965c3f",
+            "color":" rgb(77, 77, 77)",
         }
       },
       onPurchased() {
@@ -852,8 +852,8 @@ fixNaNs()
           "border-radius": "0px",
           "border": "0px",
           "margin": "5px",
-          "text-shadow": "0px 0px 10px #000000",
-          "color":" rgb(147, 107, 130)",
+         "text-shadow": "0px 0px 10px #965c3f",
+            "color":" rgb(77, 77, 77)",
         }
       },
       onPurchased() {
@@ -897,8 +897,8 @@ fixNaNs()
       "border-radius": "0px",
       "border": "0px",
       "margin": "5px",
-      "text-shadow": "0px 0px 10px #000000",
-      "color":" rgb(147, 107, 130)",
+      "text-shadow": "0px 0px 10px #965c3f",
+            "color":" rgb(77, 77, 77)",
     }
   },
   onPurchased() {
@@ -1113,8 +1113,8 @@ fixNaNs()
           "border-radius": "0px",
           "border": "0px",
           "margin": "10px",
-          "text-shadow": "0px 0px 10px #000000",
-          "color":" rgb(147, 107, 130)",
+          "text-shadow": "0px 0px 10px #965c3f",
+            "color":" rgb(77, 77, 77)",
         }
       },
       onPurchased() {

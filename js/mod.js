@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6.03 F23-B21",
+	num: "ersion 0.6.04 F23-B21",
 	name: "studying the core.",
 	
 }
@@ -116,6 +116,8 @@ Fix 23:<br>
 - Made the boosts less obscure before it is bought <br>
 - Fixed and reworked Multiply to actually spend solarity <br>
 - Changed the color contrast to most upgrades for better readability <br>
+- <b> reworded Solar Rays Reset by a bit </b><br>
+- <b> reworded Solar light by a bit</b> <br>
 
 
 <br>

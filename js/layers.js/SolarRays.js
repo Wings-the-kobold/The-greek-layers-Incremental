@@ -1,5 +1,6 @@
 multiplyBeforeNerfs = new Decimal(0)
-
+const solarizorUpg = "rgb(115, 78, 36)"
+const solarizorUpgC ="rgb(62, 10, 79) 0px 0px 10px" 
 
 addLayer("S", {
    
@@ -247,6 +248,8 @@ if (hasUpgrade("dL",11) && player.Sol.TBCore.active)
       Reset: {
         11: {
           display() {
+          
+
             let nerf = new Decimal(0)
             if (player.C.activeCheck == "Formality") nerf = tmp["S"].getResetGain  .pow(1.501501502)
      
@@ -261,6 +264,7 @@ if (hasUpgrade("dL",11) && player.Sol.TBCore.active)
             let gained = player.S.points.plus(tmp["S"].getResetGain).log(20).sub(player.S.points.log(20)) 
             
             let CORE_ENERGY = `Solarity`
+
             let useSymbol = `^`
             if (player)
             if (player.Sol.TBCore.active) {
@@ -268,13 +272,13 @@ if (hasUpgrade("dL",11) && player.Sol.TBCore.active)
               useSymbol = `x`
             }
            
-            
-             
+            let text = `${CORE_ENERGY}<sup>${format(tmp.S.exponent,autoAcc)}</sup>`
+           if (player.Sol.TBCore.active) text = `${useSymbol}${format(tmp.S.exponent,autoAcc)} of Core Energy`
 
 
             if (player.Sol.activeCheck == "")
             return `
-            Gain ${SR_tag} by ${useSymbol}${format(tmp.S.exponent,autoAcc)} of ${CORE_ENERGY}, Then Reset ${CORE_ENERGY}.
+            Gain ${SR_tag} based on ${text}, Then Reset ${CORE_ENERGY}.
             <br>
              (Requires at least 1 ${CORE_ENERGY})<br><br>
             ${SR_tag} earned: ${nerfText} ${player.Sol.TBCore.active ? format(gained,3) : format(tmp["S"].getResetGain)} ${SR_tag} 
@@ -398,6 +402,7 @@ update(diff) {
 
 
 getResetGain() {
+  
   if (player.points.lt(1)) return Decimal.dZero;
     let Helio = player.Sol.activeCheck == "Heliosphere" ? 0.7 : 1
     let gain = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Solarity"].clampMin(1).log(10) : Decimal.pow(player.points, tmp.S.exponent).minus(1);
@@ -511,8 +516,8 @@ return  tmp["S"].getResetGain
                 let requires = `Requires:<br> Plasmate #5 <br><br> <br>`
                 if (hasUpgrade("dL",11) && player.Sol.TBCore.active) requires = `Requires: 200 Solar Light<br><br> <br>`
                 
-                let costDisplay = `Cost: 22 ${SR_tag}`
-                if (player.Sol.TBCore.active) costDisplay = `Cost: 1.032 ${SR_tag}`
+                let costDisplay = `Cost: 20 ${SR_tag}`
+                if (player.Sol.TBCore.active) costDisplay = `Cost: 1 ${SR_tag}`
                 
                 return !(player.Sol.activeCheck == "Heliosphere") ? ` <h2>Intricity</h2> <br>
                 ${requires}
@@ -523,7 +528,7 @@ return  tmp["S"].getResetGain
                 ` : `<h1>The Sun<h1>`
             },
            
-            cost: new Decimal(22),
+            cost: new Decimal(20),
             canAfford() {
               if (hasUpgrade("dL",11) && player.Sol.TBCore.active) return player.GL.Solarlight.gte(200)
               else if (getBuyableAmount("S",11).gte(5) && player["S"].points.gte(this.cost)) return true
@@ -540,8 +545,9 @@ return  tmp["S"].getResetGain
                 "border-radius": "0px",
                 "border": "0px",
                 "margin": "5px",
-                "text-shadow": "0px 0px 10px #000000",
-                "color": "#835670"
+                "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
+    
               }
             },
             effect() {
@@ -610,8 +616,8 @@ return  tmp["S"].getResetGain
               "border-radius": "0px",
               "border": "0px",
               "margin": "5px",
-              "text-shadow": "0px 0px 10px #000000",
-            "color":" rgb(147, 107, 130)"
+                "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
             }
           },
           effect() {
@@ -676,6 +682,7 @@ return  tmp["S"].getResetGain
           if (hasUpgrade("S",12) || player.C.EffectorTier.gte(3)) return true
         },
         style() {
+          
           return {
             "width": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "80px" :"160px",
             "height": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "80px" : "37.5px",
@@ -685,8 +692,8 @@ return  tmp["S"].getResetGain
             "transform": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "rotate(10deg)" : "rotate(0deg)",
             "letter-spacing": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "2px" : "0px",
             "filter": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "blur(1px)" : "blur(0px)",
-            "text-shadow": "0px 0px 10px #000000",
-             "color":" rgb(147, 107, 130)"
+            "text-shadow": solarizorUpgC,
+            "color": solarizorUpg 
           }
         },
     },  
@@ -734,8 +741,8 @@ return  tmp["S"].getResetGain
             "transform": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "rotate(-10deg)" : "rotate(0deg)",
             "letter-spacing": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "2px" : "0px",
             "filter": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ? "blur(1px)" : "blur(0px)",
-            "text-shadow": "0px 0px 10px #000000",
-            "color":" rgb(147, 107, 130)"
+             "text-shadow": solarizorUpgC,
+             "color": solarizorUpg,
           }
         },
         onPurchase() {
@@ -783,8 +790,8 @@ return  tmp["S"].getResetGain
           "border-radius": "0px",
           "border": "0px",
           "margin": "5px",
-          "text-shadow": "0px 0px 10px #000000",
-         "color":" rgb(147, 107, 130)"
+          "text-shadow": solarizorUpgC,
+          "color": solarizorUpg,
         }
       },
       onPurchase() {
@@ -1210,11 +1217,10 @@ return  tmp["S"].getResetGain
 
 
 
-
     
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "s", description: "S to Solarize", onPress(){if (tmp["S"].Reset.canClick) tmp["S"].Reset.onClick}},
+        {key: "s", description: "S to Solarize", onPress(){if (tmp["S"].Reset[11].canClick) tmp["S"].Reset[11].onClick()}},
     ],
     layerShown(){return player.startedGame == true}
     
