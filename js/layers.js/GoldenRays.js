@@ -434,13 +434,14 @@ addLayer("GL", {
           "border-radius": "0px",
           border: "0px",
           margin: player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "25px" : "5px",
-          "text-shadow": "0px 0px 10px #965c3f",
-            "color":" rgb(77, 77, 77)",
+          "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
           transform: player.Sol["TMSun"].active|| (player.Sol.TBCore.active && getCoreDifficulty().gte(3))
             ? "rotate(10deg)"
             : "rotate(0deg)",
           "letter-spacing": player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "1.5px" : "0px",
           filter: player.Sol["TMSun"].active|| (player.Sol.TBCore.active && getCoreDifficulty().gte(3))? "blur(1px)" : "blur(0px)",
+          
         };
       },
       onPurchase() {
