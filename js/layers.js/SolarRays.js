@@ -560,6 +560,12 @@ return  tmp["S"].getResetGain
         12: {
           fullDisplay() {
             let showText = `reduce`
+            let basetxt = ``
+            let base = new Decimal(5)
+            if (hasMilestone("E",2) && player.L.activeCheck == "") base = base.plus(5)
+
+
+
             if (hasUpgrade("S",12)) showText = `-${upgradeEffect("S",12)}`
               let costDisplay = `2.33e24`
               if (player.Sol.TBCore.active) costDisplay = `18.73`
@@ -571,7 +577,7 @@ return  tmp["S"].getResetGain
             if (player.E.EclipseTier.gte(2)) bonus = 0.4
             
             let showNew = `root40 -> root${new Decimal(40).sub(upgradeEffect("S",12))}`
-             let upgTextbeforeBurst = `${showText} the root formula of ${SR_tag} bonus <br>
+             let upgTextbeforeBurst = `reduce the root formula of ${SR_tag} bonus by ${base}<br>
              ${showNew}
              <br>
              
@@ -584,11 +590,11 @@ return  tmp["S"].getResetGain
             return !(player.Sol.activeCheck == "Heliosphere") ? `<h2>Polarize</h2> <br>
               ${requires}
               ${upgTextbeforeBurst}
-              ${!(hasUpgrade("dL",11) && player.Sol.TBCore.active) ? "Cost: 105 Solar Rays" : "<br>"}
+              ${!(hasUpgrade("dL",11) && player.Sol.TBCore.active) ? "Cost: 85 Solar Rays" : "<br>"}
               
               ` : `<h1>Must aquire<h1>`
           },
-          cost: new Decimal(105),
+          cost: new Decimal(85),
           canAfford() {
               if (hasUpgrade("dL",11) && player.Sol.TBCore.active) return player.S.points.gte(2.33e24)
               else if (getBuyableAmount("S",11).gte(10) && player["S"].points.gte(this.cost)) return true
