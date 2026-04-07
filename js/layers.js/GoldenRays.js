@@ -328,8 +328,8 @@ addLayer("GL", {
           "border-radius": "0px",
           border: "0px",
           margin: "5px",
-          "text-shadow": "0px 0px 10px #000000",
-        "color":" rgb(147, 107, 130)"
+          "text-shadow": solarizorUpgC,
+                "color": solarizorUpg,
         };
       },
       onPurchase() {
