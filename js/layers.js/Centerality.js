@@ -1069,7 +1069,7 @@ fixNaNs()
          else if (player.Sol.TMSun.active && TMSun.plus(TMSunP).eq(4) && player.Adaptive) return player.points.gte("7.15e137")
        
          if (player.Sol.TBCore.active && getCoreDifficulty().gte(3) && player.Adaptive) return player.points.log(20).gte(16)
-         else if (hasUpgrade("C",22)) return new Decimal(4)
+         else return new Decimal(4)
 
       },
       currencyDisplayName: "CenterPoints",
