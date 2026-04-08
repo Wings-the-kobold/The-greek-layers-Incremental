@@ -126,6 +126,7 @@ Fix 23:<br>
 - Effector tiers now work as intended as they were (Display issue :3) <br>
 - Fixed Weaver from vanishing from the shavow realm /silly<br>
 
+
 <br>
 Later, i will add notifiers but for now you might just have to keep switching layers as for time <br>
 
@@ -135,7 +136,7 @@ Bal 21:
 <br> - Plasmate now spends solarity 10% of its cost
 <br> - Reduced the thank you bonus duration from 24 to 8 hours
 <br> - Reduced the requirements of Polarizor from 105 to 85
-
+<br> - Maybe put a respec button much earlier on instead of unlocking it at ECT4
 
 
 <h3>v0.6 Fix 22, Balance 20</h3><br>
@@ -643,7 +644,8 @@ function getPointGen() {
 
 	return gain.clampMax(basegainCap)
 
-	// after 1st pestillessence, Lunar Inst. will divide after the cap so the debuff stays relevant
+
+	// after 1st pestillessence, Lunar Inst. will start dividing after the cap so the debuff stays relevant
 	// 
 }
 
@@ -732,7 +734,7 @@ var displayThings = [
 	
 	function s() {
 		let speed = new Decimal(1)
-		if (getClickableState("GL", 11)) speed = getPointGen().clampMax(player.SolarityCap).pow(0.5).pow(0.2)
+		if (getClickableState("GL", 11)) speed = getPointGen().clampMax(player.SolarityCap).pow(0.2).sub(1)
 		
 		if (hasUpgrade("C",16)) speed = speed.times(3.14)
 			
@@ -745,7 +747,7 @@ var displayThings = [
 		let genText = ``
 		if (getClickableState("GL",11) && !(player.Sol["TBCore"].active) && options.SolarityInfo) genText = `<h5>
 		<br>Solarity Generation has been reduced (OG generation was ${format(getPointGen().pow(2).clampMax(player.SolarityCap))}) </h5>
-		Generating ${format(speed)} Golden Light per second
+		Generating ${format(speed)} Solar Light per second
 		<br>`
 		let capped = ``
 	    let pushThrough = ``
@@ -955,7 +957,7 @@ var displayThings = [
 		else if (player.E.EclipseTier.eq(1)) {
 				 nextText = `Solock VI: Next Unlock at Eclipse Tier 2 `
 			}
-		else if (player.C.checkUpgrades.gte(3) || player.E.TopLVL.gte(1)) {
+		else if (player.C.hasTwilight || player.E.TopLVL.gte(1)) {
 				 nextText = `Solock V: Next Unlock at First Eclipsication`
 			}
 		else if (hasUpgrade("GL",31)) {

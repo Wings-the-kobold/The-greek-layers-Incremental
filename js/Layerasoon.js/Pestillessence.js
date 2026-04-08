@@ -79,6 +79,17 @@ function delay(ms) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
     tooltip: () => options.animateTree || options.betterTree ? `<h3>???</h3>` : `<p>Open Layer 3, ???</p><br>sneek peak for v0.7</p>`,       
   
     row: 3, 

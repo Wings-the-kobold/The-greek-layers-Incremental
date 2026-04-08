@@ -1490,7 +1490,8 @@ fixNaNs()
     if (hasUpgrade("C",11) || hasUpgrade("C",12)|| hasUpgrade("C",13)) return true
   },
   unlocked() {
-    if (player.E.EclipseTier.gte(4)) return true
+   
+    if (player.E.EclipseTier.gte(4) || player.C.EffectorTier.gte(4)) return true
     
   },
   style() { return {
