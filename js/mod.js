@@ -118,6 +118,11 @@ Fix 23:<br>
 - Changed the color contrast to most upgrades for better readability <br>
 - <b> reworded Solar Rays Reset by a bit </b><br>
 - <b> reworded Solar light by a bit</b> <br>
+<b> 4.07.2026 </b>
+- Fixed Solock not updating after obtaining Coronal upgrade <br>
+- Fixed Centrality reset from refusing to work <br>
+- Made Solar Light more accurate to generation <br>
+- Reworded and added what the Solar Light button does <br>
 
 
 <br>
@@ -485,6 +490,7 @@ function getPointGen() {
 
 
 	//--------------- Solarity generation nerf (after all bonuses) ----------------
+	
 	if (getClickableState("GL", 11) == true) gain = gain.pow(0.5)
 	if (player.L.activeCheck == "TimeTillDark") gain = gain.pow(0.6)
 	if (getClickableState("L",42)) gain = gain.root(3)
@@ -951,10 +957,10 @@ var displayThings = [
 		else if (player.C.checkUpgrades.gte(3) || player.E.TopLVL.gte(1)) {
 				 nextText = `Solock V: Next Unlock at First Eclipsication`
 			}
-		else if (hasUpgrade("GL",15)) {
+		else if (hasUpgrade("GL",31)) {
 				 nextText = `Solock IV: Next Unlock at Twilight`
 			}
-		else if (hasUpgrade("S",31) || player["GL"].Solar_Shards.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
+		else if (hasUpgrade("S",14) || player["GL"].Solarlight.gte(1) || player["GL"].Solar_Shards.gte(1)) {			 
 				
 				
 				nextText = `Solock III: Next Unlock at Coronal Upgrade` //unlock 4

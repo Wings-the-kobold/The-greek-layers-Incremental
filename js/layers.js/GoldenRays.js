@@ -86,7 +86,7 @@ addLayer("GL", {
       !player["GL"].Solarlight.gte(player["GL"].Solarlightcap)
     ) {
       mult = Decimal.pow(
-        getPointGen().clampMax(player.SolarityCap).pow(0.5),
+        getPointGen().clampMax(player.SolarityCap),
         0.2
       ).sub(1);
 
@@ -849,27 +849,25 @@ addLayer("GL", {
           if (player.C.activeCheck == "Twilight") CORE_ENERGY = ""
 
 
-            let useSymbol = `Dilates your solarity by 0.5`
+            let useSymbol = `^0.5`
             if (player)
             if (player.Sol.TBCore.active) {
               CORE_ENERGY = "Core Energy"
-              useSymbol = `Divides your core energy by 2`
+              useSymbol = `50%`
             }
        
 
        
-        let autoActive = player.Sol["TBSun"].x.gte(3) && getClickableState("GL",11) == false ? `<h3>Thanks to The Bleeding Eclipse 3, you're generating ${format(getPointGen().pow(0.5).pow(0.2).pow(0.3))} Solar Light per second.
-        </h3><br>
-        (You can still start solar light generations for a stronger generation)` : ``
+        let autoActive = player.Sol["TBSun"].x.gte(3) && getClickableState("GL",11) == false ? `<h3 style="color:rgb(98, 97, 25)";>Thanks to The Bleeding Eclipse 3, you're generating ${format(getPointGen().pow(0.5).pow(0.2).pow(0.3))} Solar Light per second.
+        </h3>(You can still start solar light generations for a stronger generation)` : ``
 
-        let Inactive = `<h2>Start Up Solar Light Generation</h2>, which ${useSymbol}. which then afterwards you will begin to generate solar light based on ${CORE_ENERGY}<sup>0.2</sup>. <br>[ Requires Solarizor ]<br>
-                        ${autoActive}
-                        
+        let Inactive = `<h2>Start Up Solar Light Generation</h2><br>${autoActive} 
+        <br><b> Reset Solarity, and temporarily reduce ${CORE_ENERGY} gains to ${useSymbol}, then begin generating Solar light based on its gain</b><br>[ Requires Solarizor ]<br>                    
         `;
         let Active = `<h2> Using ^0.5 of Solarity's gain to generate ^0.2 of Solar Light...</h2><br>
-                     When Stopping generation, Reset Solar Upgrades, Solarity, Solar Rays, And Solar Modifiers.  <br>
+                     When Stopping generation, Reset Solar Upgrades, Solarity, Solar Rays, Solar Modifiers, and Solarity.  <br>
                     <p>(Note: Starting generation does NOT reset lower layers!)</p><br><br>
-                    
+         
                       <br>`;
         return getClickableState("GL", 11) ? Active : Inactive;
       },
@@ -905,7 +903,7 @@ addLayer("GL", {
             }
           : {
               width: "400px",
-              height: "40px",
+              height: "60px",
               "border-radius": "20px",
               border: "10px",
               margin: "25px",

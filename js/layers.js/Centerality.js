@@ -1378,7 +1378,7 @@ fixNaNs()
                                  
               unlocked() { return true },
        
-             button: () => { if (!tmp["C"].CPgain.eq(0)) return !hasMilestone("E",3) ? `Centralize Once!` : `Centralize All!`; else return `Cant reset`},
+             button: () => { if (tmp["C"].CPgain.neq(0)) return !hasMilestone("E",3) ? `Centralize Once!` : `Centralize All!`; else return `Cant reset`},
                      },
        
                      

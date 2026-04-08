@@ -32,6 +32,7 @@ td {
 	align-items: center;
 	max-width: 100%;
 	margin: 0 auto;
+	transition-duration: 2s
 }
 
 .upgRow {
@@ -55,6 +56,7 @@ td {
 .treeThing {
 	margin: 0 10px 0 10px;
 	vertical-align: left;
+	transition-duration: 2s
 }
 
 .can.upg:hover {
@@ -74,6 +76,7 @@ td {
 	color: var(--color);
 	font-size: 40px;
 	cursor: pointer;
+	transition-duration: 2s
 }
 
 .other-back {
@@ -131,7 +134,7 @@ td {
 	min-height: 100%;
 	column-span: 1;
 	position: absolute;
-	overflow-y: hidden;
+	overflow-y: auto;
 	overflow-x: auto;
 	transition-duration: 2s
 }
