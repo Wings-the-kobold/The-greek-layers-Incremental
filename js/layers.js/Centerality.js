@@ -137,7 +137,7 @@ fixNaNs()
     else player.C.maxslots1, player.C.maxslots2 = 1;
     
 
-    player.C.requirement = player.C.CenterPoints.clampMin(1).pow_base(Compound).times(2000).div(Divisor).pow(exponent)
+    player.C.requirement = player.C.CenterPoints.clampMin(0).pow_base(Compound).times(2000).div(Divisor).pow(exponent)
 
     
    
