@@ -689,15 +689,17 @@ fixNaNs()
       
       let Twilight = new Decimal(0.75);if (hasMilestone("E",3)) Twilight = Twilight.plus(0.15);if (hasMilestone("E",5)) Twilight = Twilight.plus(0.15)
 
+
+        //
         
       if (player["C"].activeCheck == "Twilight" ) return `Goal: Multiply #30`  
 
       else if (Check("C",13).has && !player.Sol["TBCore"].active ) return `Multiply's effect is ^1.312, You now generate Solar rays ^${Twilight} of your solar rays (can be increased later on)<br>`
       
       if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) return `<h1> dignitary sacrifice... </h1>`
-      
+      // 
       else return `All effects are reduced to log12(x)<br><br>
-      Requires:Phaser #25, Plasmate #262, Multiply #380, 15 Center Points  `
+      Requires:Phaser #25, Plasmate #330, Multiply #525, 15 Center Points  `
        
         //return `${text} `
       },
@@ -723,7 +725,7 @@ fixNaNs()
     return (Check("C",13).EnterReq == true && !Check("C",13).has && player["C"].activeCheck == "")                                                             
     },  
   EnterReq() {
-    return (getBuyableAmount("S",11).gte(262) && getBuyableAmount("S",12).gte(380) && getBuyableAmount("GL",11).gte(25) && player.C.CenterPoints.gte(15) && Check("C",12).has)   
+    return (getBuyableAmount("S",11).gte(330) && getBuyableAmount("S",12).gte(525) && getBuyableAmount("GL",11).gte(25) && player.C.CenterPoints.gte(15) && Check("C",12).has)   
   },   
   CompReq() {
     return getBuyableAmount("S",12).gte(30)

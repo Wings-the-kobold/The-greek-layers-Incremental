@@ -139,8 +139,9 @@ Bal 21:
 <br> - Maybe put a respec button much earlier on instead of unlocking it at ECT4
 
 Bal 22: Increased Formality's gate requirements of Formality and Heirarchy's checks <br>
-   Formality (old): #60 and #325 -> #150 and #360 <br>
-   Heirarchy (old): #235 and #370 -> #260 and #470 <br>
+   Formality: #60 and #325 -> #150 and #360 <br>
+   Heirarchy: #235 and #370 -> #260 and #470 <br>
+   Twilight:  #262 and #380 -> #330 and #525 <br>
 <br> <p> psst, remind me to put this in extras to make this less cluttered by fixes! </p>
 
 
@@ -396,9 +397,9 @@ function getPointGen() {
 	if (hasUpgrade("C",13)) gain = gain.times(DarknessUpgs_Row1[2] ** deAmp)
 	if (hasUpgrade("C",11)) gain = gain.times(DarknessUpgs_Row1[0] ** deAmp)
 	if (player.C.activeCheck == "Formality" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ) gain = gain.pow(0.666)
-	if (player["C"].activeCheck == "Twilight" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ) gain = gain.log(12)
 	
 	gain = gain.mul(GetHeirarchyBonus()) 
+	if (player["C"].activeCheck == "Twilight" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ) gain = gain.log(12)
 	
 	
 	if (hasUpgrade("C",22)) gain = gain.pow(1.15);

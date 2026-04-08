@@ -857,7 +857,7 @@ return  tmp["S"].getResetGain
 
                 //change amount to 
 
-                if (amount.gte(this.cost) && !getBuyableAmount(this.layer, this.id).eq(100)) addBuyables(this.layer, this.id, 1)
+                if (amount.gte(this.cost()) && !getBuyableAmount(this.layer, this.id).eq(100)) addBuyables(this.layer, this.id, 1)
 
 
                }

@@ -129,6 +129,10 @@ addLayer("dL", {
                   if (player.dL.tab == "Social") return`
                   <h1> My socials and extra things :) </h1><br>
                   <a href="https://discord.com/invite/tJDWU7twvB" target="__blank" rel="noopener noreferrer"> Join my community server! </a><h6>(Full access w/ looking for a specific channel)</h6><br>
+                  
+                  Official TSEGI Guide! (Undone)<br>
+                  <a href="https://docs.google.com/document/d/1Bu7o2U7jOjJ1te-5HOkXgvbCZszzPEf-qQsKxmupK9o/edit?usp=sharing" target="__blank" rel="noopener noreferrer"> Donbor - 86 Minutes until dark </a><br> 
+                  
                   <a href="https://discord.com/invite/F3xveHV" target="__blank" rel="noopener noreferrer"> General TMT community server! </a><br>
                   <a href="https://www.youtube.com/watch?v=_5T6EdPy4_4" target="__blank" rel="noopener noreferrer"> Voliik - Eclipse </a><br>
                   <a href="https://youtu.be/UKaWcE-GXWg" target="__blank" rel="noopener noreferrer"> Donbor - 86 Minutes until dark </a><br>          
@@ -522,8 +526,8 @@ addLayer("dL", {
         Hey, thanks for playing this game. it means alot to me.<br><br>
         People that helped with this game, as well as with debugging:<br>
         <i>Escapee: component help, general JS help and feedback<br>
-        Sedar: early game rebalancing help, and stuffs<br>
-        Linguo: Bug sniper (Helped alot with bug killing) <br>
+        Sedar: early game rebalancing<br>
+        Linguo: Bug sniper (Helped alot with bug killing), and midgame balancing <br>
         </i>
         Donbor: providing music '86 Minutes until dark'. for a check upgrade<br>
         Voliik: providing music 'Eclipse' as for the end game music<br>
@@ -536,7 +540,8 @@ addLayer("dL", {
         And most importantly...
         <br>
         <b> You! </b> For playing this game After <i> 2 years </i> of hard development!
-
+        <br>
+        <b>Huge thanks to you all that gave me feedback to make this game a better experience while keeping it a generally slowpaced game!</b>
 
         <br>
 
@@ -660,7 +665,9 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
         unlocked() {return true},
 
       },
+      16: {
 
+      },
 
     
 
@@ -716,6 +723,8 @@ ${player.GL.points.gte(1) ? "<h3> SPECIAL CURRENCY/HIDDEN ACHIEVEMENT (Before it
           }},  
         unlocked() {return player.E.EclipseTier.gte(7) && player.dL.tab == "Storyline"}
       },
+
+      
       // add more 
 
 /*format(player.resetTime.log(20)) */
