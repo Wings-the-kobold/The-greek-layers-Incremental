@@ -396,11 +396,13 @@ function getPointGen() {
 	// ------------ CENTRALITY EFFECTS -----------
 	if (hasUpgrade("C",13)) gain = gain.times(DarknessUpgs_Row1[2] ** deAmp)
 	if (hasUpgrade("C",11)) gain = gain.times(DarknessUpgs_Row1[0] ** deAmp)
+
+	if ((player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.mul(GetHeirarchyBonus()) 
+		
 	if (player.C.activeCheck == "Formality" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ) gain = gain.pow(0.666)
-	
-	gain = gain.mul(GetHeirarchyBonus()) 
 	if (player["C"].activeCheck == "Twilight" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) ) gain = gain.log(12)
-	
+
+	if (!(player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.mul(GetHeirarchyBonus()) 
 	
 	if (hasUpgrade("C",22)) gain = gain.pow(1.15);
 
