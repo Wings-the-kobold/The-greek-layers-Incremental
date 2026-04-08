@@ -137,6 +137,7 @@ Bal 21:
 <br> - Reduced the thank you bonus duration from 24 to 8 hours
 <br> - Reduced the requirements of Polarizor from 105 to 85
 <br> - Maybe put a respec button much earlier on instead of unlocking it at ECT4
+<br> - Adjusted Formality's gate requirements from 60 / 325 to 
 
 
 <h3>v0.6 Fix 22, Balance 20</h3><br>

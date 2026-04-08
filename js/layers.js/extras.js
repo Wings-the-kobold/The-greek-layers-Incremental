@@ -157,7 +157,7 @@ addLayer("dL", {
         else if (Check("L",11).has) dUnl = `Get Eclipse Tier 6 to unlock more dialogue!`
         else if (player.L.activeCheck == "TimeTillDark") dUnl = `<br> Beat '4 Minutes Until Dark' to unlock more dialogue`
         else if (hasUpgrade("L",23) && !Check("E",11).has) dUnl = `start '4 Minutes Until Dark' to unlock more dialogue` 
-        else if (!player.L.LightCheck.gte(2)) dUnl = `<br> Acheive LK2 and DK2 level 2 to unlock more dialogue`
+        else if (!player.L.LightCheck.gte(2) && player.E.EclipseTier.eq(5)) dUnl = `<br> Acheive LK2 and DK2 level 2 to unlock more dialogue`
         else if (!Check("E",11).has && player.E.EclipseTier.eq(5)) dUnl = `<br> Beat 'The Forgotton' to unlock more dialogue`
         else if (player.E.EclipseTier.eq(4)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 5!`
         else if (player.E.EclipseTier.eq(3)) dUnl = `<br> Unlock more dialogue at Eclipse Tier 4!`

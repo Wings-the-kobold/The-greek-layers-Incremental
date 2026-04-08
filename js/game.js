@@ -59,7 +59,7 @@ const TMT_VERSION = {
 }
 
 var DarknessUpgs_Row1 = [16, 8, 4]
-var DarknessUpgs_Row2 = [1.05, 1.15, 3.14]
+var DarknessUpgs_Row2 = [1.05, 1.12, 3.14]
 const DarknessUpgs_Row3 = [6.75e5, 1.09, 2] //this is a const for now maybe
 
 var CoronalEffectRanges = [0.4 , 5.4]
@@ -944,7 +944,8 @@ function GetHeirarchyBonus() {
 
 	//if ()
 
-	let amnt = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["CP"].plus(player.C.FreeCP) : player.C.CenterPoints.plus(player.C.FreeCP)
+	let amnt = player.C.CenterPoints.plus(player.C.FreeCP) 
+	if ( player.Sol.activeCheck == "Heliosphere" ) amnt = player.Sol.HelioStat["CP"].plus(player.C.FreeCP)
 
     let effect = amnt.pow_base(base).clampMin(1)
 	
@@ -958,7 +959,7 @@ function GetHeirarchyBonus() {
 	//add upgrade that removes softcaps in Pestillessence
 	if (false) SolarHeat_softcap = (player.Sol.SolarHeat.sub(50)).pow_base(1.02)
 
-	effect = player.Sol.SolarHeat.gt(50) ? effect.mul(SolarHeat_softcap) : effect
+	if (player.Sol.SolarHeat.gt(50)) effect = effect.mul(SolarHeat_softcap) 
 	
 	
 
@@ -968,7 +969,7 @@ function GetHeirarchyBonus() {
 	//Disdained/ Harshcap
 						
 					//just in case if the idea is ass
-	if (!player.Sol.solarBurst && true) {
+	if (!player.Sol.solarBurst) {
 		//Increase the root, which starts at 1.5
 		let increasedRoot= new Decimal(0)
 		let baseRoot = new Decimal(1.5)
@@ -978,7 +979,7 @@ function GetHeirarchyBonus() {
 		baseRoot = baseRoot.plus(increasedRoot)
 
 
-		if (effect.gte(player.C.HeirarchyNerfStart)) effect = effect.div(player.C.HeirarchyNerfStartAt).root(baseRoot).mul(player.C.HeirarchyNerfStartAt)
+		if (effect.gte(player.C.HeirarchyNerfStartAt)) effect = effect.div(player.C.HeirarchyNerfStartAt).root(baseRoot).mul(player.C.HeirarchyNerfStartAt)
 	}
 
 	if (hasUpgrade("C",31)) Heirarchys_ValueBeforeSelfNerf = Heirarchys_ValueBeforeSelfNerf.mul(DarknessUpgs_Row3[0])

@@ -669,7 +669,7 @@ fixNaNs()
        return (getBuyableAmount("S",11).gte(235) && getBuyableAmount("S",12).gte(370) && getBuyableAmount("GL",11).gte(17) && Check("C",11).has)   
       },   
       CompReq() {
-    return getBuyableAmount("S",11).gte(40)
+    return getBuyableAmount("S",12).gte(80)
   },
 
       has() { return player["C"].hasHeirarchy },
