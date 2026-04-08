@@ -559,7 +559,7 @@ fixNaNs()
 
       },
       unlocked() {
-        if (player.C.Score.gte(1) || player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
+        if (player.C.Score.gte(2000) || player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
 
       },
 
