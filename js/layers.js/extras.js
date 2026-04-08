@@ -521,11 +521,14 @@ addLayer("dL", {
    let text = `
         Hey, thanks for playing this game. it means alot to me.<br><br>
         People that helped with this game, as well as with debugging:<br>
-        Escapee: component help, general JS help and feedback<br>
+        <i>Escapee: component help, general JS help and feedback<br>
+        Sedar: early game rebalancing help, and stuffs<br>
+        Linguo: Bug sniper (Helped alot with bug killing) <br>
+        </i>
         Donbor: providing music '86 Minutes until dark'. for a check upgrade<br>
         Voliik: providing music 'Eclipse' as for the end game music<br>
         Deathpact: random inspiration for 'formality' <br>
-        Sedar: early game rebalancing help, and stuffs<br>
+        
         Not my motivation: :trol:<br>
         Me: Creating the game<br>
         <br>

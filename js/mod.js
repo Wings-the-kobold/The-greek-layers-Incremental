@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6.04 F23-B21",
+	num: "ersion 0.6.07 F23-B21",
 	name: "studying the core.",
 	
 }
@@ -124,6 +124,7 @@ Fix 23:<br>
 - Made Solar Light more accurate to generation <br>
 - Reworded and added what the Solar Light button does <br>
 - Effector tiers now work as intended as they were (Display issue :3) <br>
+- Fixed Weaver from vanishing from the shavow realm /silly<br>
 
 <br>
 Later, i will add notifiers but for now you might just have to keep switching layers as for time <br>

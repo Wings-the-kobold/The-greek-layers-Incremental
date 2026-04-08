@@ -1100,10 +1100,10 @@ fixNaNs()
          let TMSunP = player.Sol.TMSun.pending
         let TMSDiff = TMSun.plus(TMSunP)
 
-        if (player.C.EffectorTier.gte(3)) return true
-        if (player.Sol.TMSun.active && TMSDiff.gte(4)) return true
         if (hasUpgrade("C",22) && player.Adaptive) return true
-        
+        else if (player.Sol.TMSun.active && TMSDiff.gte(4)) return true
+        else if (player.C.EffectorTier.gte(3)) return true
+        else return false
       },
       style() {
         let baseWidth = "200px"
