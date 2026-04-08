@@ -634,7 +634,7 @@ fixNaNs()
         
         if (!player["C"].hasHeirarchy && player["C"].activeCheck == "") text = `
         Meta Scaling starts instantly, of which also affects Plasmate. ^0.666 to Multiply's effect<br><br>
-        Requires: Phaser #17, Plasmate #235, Multiply #370  
+        Requires: Phaser #17, Plasmate #260, Multiply #470 
         `
         else if (player["C"].activeCheck == "Heirarchy") text = `Goal: Multiply #80`       
         if (player["C"].hasHeirarchy) text = `Center Points Boosts Solarity by a starting base of 5, and Automate 'Multiply' with a bulk purchase of 5! <br>
@@ -666,7 +666,7 @@ fixNaNs()
         return (Check("C",12).EnterReq == true && !Check("C",12).has && player["C"].activeCheck == "")                                                             
         },  
       EnterReq() {
-       return (getBuyableAmount("S",11).gte(235) && getBuyableAmount("S",12).gte(370) && getBuyableAmount("GL",11).gte(17) && Check("C",11).has)   
+       return (getBuyableAmount("S",11).gte(260) && getBuyableAmount("S",12).gte(470) && getBuyableAmount("GL",11).gte(17) && Check("C",11).has)   
       },   
       CompReq() {
     return getBuyableAmount("S",12).gte(80)

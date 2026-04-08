@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6.07 F23-B21",
+	num: "ersion 0.6.07 F23-B22",
 	name: "studying the core.",
 	
 }
@@ -137,7 +137,11 @@ Bal 21:
 <br> - Reduced the thank you bonus duration from 24 to 8 hours
 <br> - Reduced the requirements of Polarizor from 105 to 85
 <br> - Maybe put a respec button much earlier on instead of unlocking it at ECT4
-<br> - Adjusted Formality's gate requirements from 60 / 325 to 
+
+Bal 22: Increased Formality's gate requirements of Formality and Heirarchy's checks <br>
+   Formality (old): #60 and #325 -> #150 and #360 <br>
+   Heirarchy (old): #235 and #370 -> #260 and #470 <br>
+<br> <p> psst, remind me to put this in extras to make this less cluttered by fixes! </p>
 
 
 <h3>v0.6 Fix 22, Balance 20</h3><br>
