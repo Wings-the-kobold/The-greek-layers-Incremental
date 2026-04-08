@@ -417,7 +417,7 @@ addLayer("GL", {
         let effect = new Decimal(1);
         return (effect = player.Sol["TMSun"].active || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))
           ? new Decimal(1)
-          : player.points.pow(0.09));
+          : player.points.pow(0.09).clampMin(1));
       },
       cost: new Decimal(35),
       currencyInternalName: "Solar_Shards",

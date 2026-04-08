@@ -550,15 +550,16 @@ fixNaNs()
 
                                       `).join(`<br><br>`)
         
-   
-        if (player.E.EclipseTier.lt(1) || !player.C.EffectorTier.gte(1)) 
+          if (player.E.EclipseTier.eq(0) && player.C.EffectorTier.eq(0)) {
           if (player.Sol.activeCheck == "") return `<h1>Locked.</h1><br><h3>Get Effector Tier I to unlock this board</h3>`; 
           else return ``
-        else return `${effectsDisplay}`
+        }
+        else 
+        return `${effectsDisplay}`
 
       },
       unlocked() {
-        if (player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
+        if (player.C.Score.gte(1) || player.C.CenterPoints.gte(1) || player.C.EffectorTier.gte(1) || player.E.EclipseTier.gte(1)) return true
 
       },
 
@@ -1362,23 +1363,27 @@ fixNaNs()
                  onClick() {
                   if (hasMilestone("E",3) && !getClickableState("E",14))
                   player.C.CenterPoints = tmp["C"].CPgain
-                //  else player.C.CenterPoints = player.C.CenterPoints.plus(1)
+                 else player.C.CenterPoints = player.C.CenterPoints.plus(1)
                   if (player.Sol["TBCore"].x.eq(0)) player.GL.Solar_Shards = player.GL.Solar_Shards.root(4)
 
                   layer1Reset(player.C.EffectorTier.gte(4), "C")
                   if (player.Sol["TBCore"].active) reset_GoldRays()
                 },
              canClick() {
-              let TrueScore = player.Sol.activeCheck == "Heliosphere" ? player.Sol.HelioStat["Modifier"] : player.C.Score
+              let TrueScore = (player.Sol.activeCheck == "Heliosphere") ? player.Sol.HelioStat["Modifier"] : player.C.Score
               
 
-              if (TrueScore.gte(player.C.requirement) && tmp["C"].CPgain.neq(player.C.CenterPoints)) return true
+              if (TrueScore.gte(player.C.requirement) ) return true
 
             },
                                  
               unlocked() { return true },
        
-             button: () => { if (tmp["C"].CPgain.neq(0)) return !hasMilestone("E",3) ? `Centralize Once!` : `Centralize All!`; else return `Cant reset`},
+             button()  { 
+               if (tmp["C"].CPgain.eq(0)) return `Cant reset`
+               else if (hasMilestone("E",3)) return `Centralize All!`
+               else return `Centralize Once!` ; 
+            },
                      },
        
                      
@@ -1420,7 +1425,7 @@ fixNaNs()
   if (player.Sol["TRMoon"].x.gte(1)) Compound = new Decimal(Compound).sub(player.Sol.TRMoon.x.mul(0.02)) 
 
      if (hasMilestone("E",3) && TrueScore.gte(player.C.requirement)) mult = player.C.Score.root(exponent).times(Divisor).div(2000).log(Compound).round()
-    
+     else if (TrueScore.gte(player.C.requirement)) mult = decimalOne
       if (player.Sol.activeCheck == "Heliosphere") mult = mult.div(player.Sol.HelioStat["Reduction"])
     return mult
    },         
