@@ -467,7 +467,7 @@ getResetGain() {
 
     gain = gain.mul(player.Sol.SolarFragments.pow(2.4))
     if ( player.timerOfBonus != 0 ) gain = gain.mul(1.5)                          
-  return gain//.clampMin(1);
+  return gain.clampMin(0);
 
 },
 // also kind of redundant, 
@@ -1166,7 +1166,7 @@ return  tmp["S"].getResetGain
                 if (player.C.EffectorTier.gte(4)) effect = effect.mul(EffectorTier4_Boost);
                               
 
-                if (player.hasTwilight && !player.Sol["TBCore"].active) effect = effect.pow(1.312)
+                if (player.C.hasTwilight && !player.Sol["TBCore"].active) effect = effect.pow(1.312)
                 //if (player.C.checkUpgrades.gte(3))
               
               if (getBuyableAmount("L",12).gte(1)) effect = effect.mul(buyableEffect("L",12).clampMin(1))
@@ -1176,7 +1176,7 @@ return  tmp["S"].getResetGain
                 
 
               if (player["C"].activeCheck == "Heirarchy" || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))) effect = effect.pow(0.666)
-              if (player["C"].activeCheck == "Twilight"  || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))) effect = effect.log(12)
+              if (player["C"].activeCheck == "Twilight"  || (player.Sol.TBCore.active && getCoreDifficulty().gte(3))) effect = effect.log(12).plus(1)
               
                    if (getBuyableAmount("L",22).gte(3) && Hour.getHours() >= 12 ) effect = effect.mul((1.1 + (Hour.getHours() % 12)/55 ) ** Hour.getMinutes())
                 multiplyBeforeNerfs = effect.log(20)
