@@ -1316,7 +1316,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
 
                     } 
-                    else ready = `Not enough enlightenment levels...`
+                  else ready = `Not enough enlightenment levels... <br> To get to the next Eclipse Tier: ${player.E.ETCost} Enlightenment Levels `
                    
 
                      
