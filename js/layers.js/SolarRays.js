@@ -1117,7 +1117,7 @@ return  tmp["S"].getResetGain
 
               }
               else if (player.Sol.activeCheck == "") {
-                if (player.C.hasHeirarchy == false) player.points = player.points.minus(this.cost().mul(0.1)); 
+                if (player.C.hasHeirarchy == false) player.points = player.points.minus(this.cost()); 
                 
               }
               if (player.C.hasHeirarchy == false) addBuyables(this.layer, this.id, 1);

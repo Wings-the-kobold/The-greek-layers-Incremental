@@ -57,7 +57,7 @@ var modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "ersion 0.6.07 F23-B22",
+	num: "ersion 0.6.08 F23-B21",
 	name: "studying the core.",
 	
 }
@@ -131,6 +131,8 @@ Fix 23:<br>
 <br>
 <b>4.10.2026:</b>
 - fixed solar bursting doing weird things with the solarity gain stuff <br>
+- also fixed multiply spending 10% of its resources instead of 100% <br>
+- reverted bal22 stuff<br>
 <br>
 
 Later, i will add notifiers (stay tuned for v0.7!) but for now you might just have to keep switching layers as for time <br>
@@ -143,10 +145,11 @@ Bal 21:
 <br> - Reduced the requirements of Polarizor from 105 to 85
 <br> - Maybe put a respec button much earlier on instead of unlocking it at ECT4
 
-Bal 22: Increased Formality's gate requirements of Formality and Heirarchy's checks <br>
+<s>Bal 22: Increased Formality's gate requirements of Formality and Heirarchy's checks <br>
    Formality: #60 and #325 -> #150 and #360 <br>
    Heirarchy: #235 and #370 -> #260 and #470 <br>
    Twilight:  #262 and #380 -> #330 and #525 <br>
+   </s>
 <br> <p> psst, remind me to put this in extras to make this less cluttered by fixes! </p>
 
 
