@@ -618,7 +618,7 @@ function getPointGen() {
 	// remember the formula for extra bursts is 
 	// e(100 * 1.146^(SB-1)^2)	
 
-	if (player.Sol.solarBurst || player.Sol.testBurst) basegainCap = basegainCap.mul(BurstBonus)
+	if (player.Sol.solarBurst) basegainCap = basegainCap.mul(BurstBonus)
  	
 	
     capBeforeLightAdaptive = basegainCap
