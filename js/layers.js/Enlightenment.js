@@ -542,7 +542,7 @@ addLayer("E", {
     
     },
  upgrades: {
-11: {
+11: {  //do this one third
     fullDisplay() {
      
       let showReq = `Requires: 3 Eclipsium`
@@ -551,7 +551,7 @@ addLayer("E", {
         Queued Upgrade 1:<br> Reach 30000 Solar light with Plasmate 30 and Phaser 1 or less without any Solar shard Upgrades <br><br>
         ^0.5 of Plasmate amount increases Solar light cap<br> 
        
-        ${showReq}
+        
         `
     },
     unlocked() {
@@ -577,7 +577,7 @@ addLayer("E", {
 
     },
     canAfford() {
-      if (player.GL.Solarlight.gte(30000) && getBuyableAmount("S",11).lte(30) && getBuyableAmount("GL",11).lte(1) && player.E.Eclipsium.gte(3) && !hasUpgrade("GL",11) && !hasUpgrade("GL",12) && !hasUpgrade("GL",13) && !hasUpgrade("GL",21) && !hasUpgrade("GL",31) ) return true; else return false 
+      if (player.GL.Solarlight.gte(30000) && getBuyableAmount("S",11).lte(30) && getBuyableAmount("GL",11).lte(1) && !hasUpgrade("GL",11) && !hasUpgrade("GL",12) && !hasUpgrade("GL",13) && !hasUpgrade("GL",21) && !hasUpgrade("GL",31) ) return true; else return false 
     },
     pay() {
       EclipsiumReset(true)
@@ -585,7 +585,7 @@ addLayer("E", {
     }
 
 },
-12: {
+12: { // do this one first
   fullDisplay() {
     let effectTXT =  ``
     let showReq = `Requires: 1 Eclipsium`
@@ -596,7 +596,7 @@ addLayer("E", {
       Queued Upgrade 2:<br> Reach 5.11e13 Solarity without any Solarize Upgrades and Solar Shard Upgrades<br><br>
       Solar Charge Boosts Solarity Gain by ^0.45 of its effect <br>
       ${effectTXT}
-      ${showReq}
+     
       <br>
       `
   },
@@ -623,7 +623,7 @@ addLayer("E", {
   },
   canAfford() { return player.points.gte(5.11e13) 
   && !hasUpgrade("GL",11) && !hasUpgrade("GL",12) && !hasUpgrade("GL",13) && !hasUpgrade("GL",21) && !hasUpgrade("GL",31) && 
-  !hasUpgrade("S",11) && !hasUpgrade("S",12) && !hasUpgrade("S",13) && !hasUpgrade("S",14) && player.E.Eclipsium.gte(1);
+  !hasUpgrade("S",11) && !hasUpgrade("S",12) && !hasUpgrade("S",13) && !hasUpgrade("S",14) ;
 },
 pay() {
   EclipsiumReset(true)
@@ -634,8 +634,8 @@ pay() {
    
 
 
-13: {
-                       fullDisplay() {
+13: { //do this one second
+   fullDisplay() {
     
     let text = `Requires: 2 Eclipsium`
     if (hasUpgrade("E",this.id)) text = `PK-44's effect is ${format(this.effect())}`
@@ -643,7 +643,7 @@ pay() {
       Queued Upgrade 3:<br> Reach Plasmate #74 without Multiply and no effector tiers<br><br><br>
 
       ^0.4 of Multiply Amount boosts Plasmate. also 2x Solar Light cap <br>
-      ${text} <br>
+      <br>
       
       `
   },
@@ -669,7 +669,7 @@ pay() {
 
   },
   canAfford() {
-    if ( getBuyableAmount("S",11).gte(74) && getBuyableAmount("S",12).eq(0) && player.E.Eclipsium.gte(2) && player.C.EffectorTier.eq(0)
+    if ( getBuyableAmount("S",11).gte(74) && getBuyableAmount("S",12).eq(0) && player.C.EffectorTier.eq(0)
     ) return true; else return false 
   },
   pay() {
@@ -715,7 +715,10 @@ pay() {
 
   },
   canAfford() {
-    if (player.E.Solinity.gte(100) && player.E.Esolar.lte(15) && player.E.Eclipsium.gte(4)) return true; else return false 
+  
+
+
+    if (player.E.Solinity.gte(100) && player.E.Esolar.lte(15) && player.E.Eclipsium.gte(4) && player.E.upgrades.includes(11,12,13)) return true; else return false 
   },
   pay() {
     EclipsiumReset()
@@ -1461,6 +1464,40 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                   
                   
               },
+12: {   
+                display() {
+                  
+                  //"septic"  
+                return `
+                  <h2>I got softlocked!</h2>
+                  No worries, click here to do a Queued reset 
+                  `
+                  
+                },
+                onClick() {
+                  alert("Hey, if you are progressing just fine, dont click this, press ok to continue")
+                  EclipsiumReset("recontrol" , true)
+
+                },
+            canClick() {return true},
+            style() { return {
+                    "width": "200px",
+                    "height": "50px",
+                    "border-radius": "0px",
+                    "border": "0px",
+                    "margin": "0px",
+                    "text-shadow": "0px 0px 10px #000000",
+                    
+                  }
+                },   
+                
+          unlocked() {
+             return true
+
+
+          }
+    },
+
               13: {   
                 display() {
                   let gain = new Decimal(1)
