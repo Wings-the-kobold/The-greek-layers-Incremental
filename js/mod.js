@@ -376,19 +376,24 @@ function getPointGen() {
   	let SolarRay2 = sPoints.root(RootEFF2.sub(upgradeEffect("S",12).pow(deAmp)))	
     if (SolarRay1.gt(2)) SolarRay1 = softcap(SolarRay1, new Decimal(2), 0.3)
 
-	if (!player.Sol.solarBurst == false ) {
+	if (player.Sol.solarBurst == false ) {
 		if (!player.Sol["TBSun"].active || !(player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.pow(SolarRay1.clampMax(MAX)).clampMin(1)   
 		if (!player.Sol["TBSun"].active || !(player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.mul(SolarRay2).clampMin(1)
 		
-		
+	}
 
 
- 		let basePower = 1.5
+ 		
+
+    else if (player.Sol.solarBurst) {
+		let basePower = 1.5
         if (hasUpgrade("S",12)) basePower = 1.7
         if (hasUpgrade("S",12) && player.E.EclipseTier.gte(2)) basePower = 1.9
+		
+		
+		gain = gain.pow(basePower)   
+	}
 
-    else if (player.Sol.solarBurst) gain = gain.pow(basePower)
-}
 	// ----------- Solar Light effects ---------	
 
 	
