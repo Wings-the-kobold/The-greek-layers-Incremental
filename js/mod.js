@@ -125,10 +125,15 @@ Fix 23:<br>
 - Reworded and added what the Solar Light button does <br>
 - Effector tiers now work as intended as they were (Display issue :3) <br>
 - Fixed Weaver from vanishing from the shavow realm /silly<br>
-
-
+<b>4.09.2026:</b>
+- fixed twilight from not affecting multiply correctly <br>
+- fixed enlightenment levels being mean :( (it was defaulting to 'need more enlightenment levels' without giving how much you need <br>
 <br>
-Later, i will add notifiers but for now you might just have to keep switching layers as for time <br>
+<b>4.10.2026:</b>
+- fixed solar bursting doing weird things with the solarity gain stuff <br>
+<br>
+
+Later, i will add notifiers (stay tuned for v0.7!) but for now you might just have to keep switching layers as for time <br>
 
 
 <br><br>
@@ -371,18 +376,19 @@ function getPointGen() {
   	let SolarRay2 = sPoints.root(RootEFF2.sub(upgradeEffect("S",12).pow(deAmp)))	
     if (SolarRay1.gt(2)) SolarRay1 = softcap(SolarRay1, new Decimal(2), 0.3)
 
-	if (!player.Sol.solarBurst == false || player.Sol.testBurst == false) {
+	if (!player.Sol.solarBurst == false ) {
 		if (!player.Sol["TBSun"].active || !(player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.pow(SolarRay1.clampMax(MAX)).clampMin(1)   
 		if (!player.Sol["TBSun"].active || !(player.Sol.TBCore.active && getCoreDifficulty().gte(3))) gain = gain.mul(SolarRay2).clampMin(1)
-		}
+		
+		
 
 
  		let basePower = 1.5
         if (hasUpgrade("S",12)) basePower = 1.7
         if (hasUpgrade("S",12) && player.E.EclipseTier.gte(2)) basePower = 1.9
 
-    else if (player.Sol.solarBurst || player.Sol.testBurst) gain = gain.pow(basePower)
-
+    else if (player.Sol.solarBurst) gain = gain.pow(basePower)
+}
 	// ----------- Solar Light effects ---------	
 
 	

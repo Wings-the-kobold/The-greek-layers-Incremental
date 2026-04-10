@@ -1053,7 +1053,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
       let TillDarkText = `
       - Intricity and Polarized is Improved <br> Intricity: +0.05 -> +0.08 <br> ${polarizeImp} <br> 
-      ${player.Sol.solarBurst || player.Sol.testBurst ? "- Solar Rays's First hardcap is ^3 instead of ^2. but its formula is worse after ^2 <br>" : ""}
+      ${!player.Sol.solarBurst ? "- Solar Rays's First hardcap is ^3 instead of ^2. but its formula is worse after ^2 <br>" : ""}
       - ^1.15 Solarity Gain While inside Twilight check after the log nerf.`
 
       if (player.L.TimeTillDarkActive == true) TillDarkText = `<h3 style="color:#7d0f9c">Leave this page...<br></h3>`
