@@ -593,7 +593,7 @@ addLayer("E", {
     if (hasUpgrade("E",this.id)) effectTXT = `Pneomic's Effect is ${format(this.effect())} <br>`
     if (player.Sol.TBCore.active && getCoreDifficulty().gte(3)) effectTXT = `Pneomic gives ${format(this.effect().log(20))} free core energy `
       return `<h2>Pneomic</h2> <br>
-      Queued Upgrade 2:<br> Reach 5.11e13 Solarity without any Solarize Upgrades and Solar Shard Upgrades<br><br>
+      Queued Upgrade 2:<br> Reach 4.16e11 Solarity without any Solarize Upgrades and Solar Shard Upgrades<br><br>
       Solar Charge Boosts Solarity Gain by ^0.45 of its effect <br>
       ${effectTXT}
      
@@ -621,7 +621,7 @@ addLayer("E", {
     return effect
 
   },
-  canAfford() { return player.points.gte(5.11e13) 
+  canAfford() { return player.points.gte(4.16e11) // changed from 5.11e13 to 4.16e11
   && !hasUpgrade("GL",11) && !hasUpgrade("GL",12) && !hasUpgrade("GL",13) && !hasUpgrade("GL",21) && !hasUpgrade("GL",31) && 
   !hasUpgrade("S",11) && !hasUpgrade("S",12) && !hasUpgrade("S",13) && !hasUpgrade("S",14) ;
 },

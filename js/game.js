@@ -795,7 +795,7 @@ function EclipsiumReset(type="recontrol" , Queuereset=false) {
 	let varControl = true ? type!="recontrol" : true	
 					// if player has Pest-1A or something
 
-	if (!player.Sol["TBCore"].x.gte(2) && type!="recontrol") player.C.EffectorTier = new Decimal(0)
+	if ((!player.Sol["TBCore"].x.gte(2) && type!="recontrol") || Queuereset == true) player.C.EffectorTier = new Decimal(0)
 	player.GL.Solar_Shards = player.GL.Solar_Shards.root(3).floor()
 	
 	player.C.CenterPoints = player.C.CenterPoints.root(3)

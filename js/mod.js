@@ -132,7 +132,7 @@ Fix 23:<br>
 <b>4.10.2026:</b>
 - fixed solar bursting doing weird things with the solarity gain stuff <br>
 - also fixed multiply spending 10% of its resources instead of 100% <br>
-- reverted bal22 stuff<br>
+- PK-44 solarity requirements reduced from 5.11e13 to 4.16e11
 <br>
 
 Later, i will add notifiers (stay tuned for v0.7!) but for now you might just have to keep switching layers as for time <br>
