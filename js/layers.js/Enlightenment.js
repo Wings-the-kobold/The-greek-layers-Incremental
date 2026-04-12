@@ -718,7 +718,7 @@ pay() {
   
 
 
-    if (player.E.Solinity.gte(100) && player.E.Esolar.lte(15) && player.E.Eclipsium.gte(4) && player.E.upgrades.includes(11,12,13)) return true; else return false 
+    if (player.E.Solinity.gte(100) && player.E.Esolar.lte(15) && player.E.Eclipsium.gte(4) && hasUpgrade("E",11) && hasUpgrade("E",12) && hasUpgrade("E",13)) return true; else return false 
   },
   pay() {
     EclipsiumReset()
