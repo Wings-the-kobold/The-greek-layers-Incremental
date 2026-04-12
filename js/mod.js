@@ -134,7 +134,10 @@ Fix 23:<br>
 - also fixed multiply spending 10% of its resources instead of 100% <br>
 - PK-44 solarity requirements reduced from 5.11e13 to 4.16e11
 <br>
-
+<b>4.11.2026:</b>
+- fixed Astrologic's Requirement conditions not working properly <br>
+- fixed Eclipsify reset not being able to be done when whilst having the conditions (specifically ECT4)<br>
+<br>
 Later, i will add notifiers (stay tuned for v0.7!) but for now you might just have to keep switching layers as for time <br>
 
 

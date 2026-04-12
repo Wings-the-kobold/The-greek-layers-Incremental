@@ -1442,7 +1442,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                 if (player.E.EclipseTier.eq(5) && Check("L",11).has && player.E.ENLlevels.gte(player.E.ETCost)) return player.E.ENLlevels.gte(player.E.ETCost)
                 else if (player.E.EclipseTier.eq(6) && getBuyableAmount("Sol",13).gte(6)) return player.E.ENLlevels.gte(player.E.ETCost)
                  else if (player.E.EclipseTier.eq(7)) return false
-                else if (player.E.EclipseTier.lt(4)) return player.E.ENLlevels.gte(player.E.ETCost)                     
+                else if (player.E.EclipseTier.lte(4)) return player.E.ENLlevels.gte(player.E.ETCost)                     
                 
                 
 
