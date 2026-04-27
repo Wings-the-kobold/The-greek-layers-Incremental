@@ -893,8 +893,8 @@ return  tmp["S"].getResetGain
             <h2> ${nerfText} +${displayNormal} </h2>
             <br>
             <h2>Requires: ${format(  tmp[this.layer].buyables[this.id].cost     )} Solar Rays</h2>
-            ${player.Sol.TBCore.active && getCoreDifficulty().gte(2) ? TBCoreRestrict : "<br><br>"}
-            ${player.C.hasHeirarchy == false?"<p> (10% of cost will be spent)":""} 
+            ${player.Sol.TBCore.active && getCoreDifficulty().gte(2) ? TBCoreRestrict : "<br>"}${player.C.hasHeirarchy == false?"<br><p> (10% of cost will be spent)":""} 
+            
           `
 
             else if (player.Sol.activeCheck == "Heliosphere") {
@@ -908,7 +908,7 @@ return  tmp["S"].getResetGain
               else return player.S.points.gte(this.cost())
             },
             buy() { 
-              if (player.Sol.activeCheck == "Heliosphere")  {player.Sol.HelioStat["Solar_Rays"].minus(this.cost); addBuyables(this.layer, this.id, 1);}
+              if (player.Sol.activeCheck == "Heliosphere")  {player.Sol.HelioStat["Solar_Rays"].minus(this.cost.mul(0.1)); addBuyables(this.layer, this.id, 1);}
               
               else if (player.Sol.activeCheck == "") 
                 {
@@ -1117,7 +1117,7 @@ return  tmp["S"].getResetGain
 
               }
               else if (player.Sol.activeCheck == "") {
-                if (player.C.hasHeirarchy == false) player.points = player.points.minus(this.cost()); 
+                if (player.C.hasHeirarchy == false) player.points = player.points.minus(this.cost().mul(0.1)); 
                 
               }
               if (player.C.hasHeirarchy == false) addBuyables(this.layer, this.id, 1);

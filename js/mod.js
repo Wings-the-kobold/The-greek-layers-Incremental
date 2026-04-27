@@ -138,6 +138,10 @@ Fix 23:<br>
 - fixed Astrologic's Requirement conditions not working properly <br>
 - fixed Eclipsify reset not being able to be done when whilst having the conditions (specifically ECT4)<br>
 <br>
+<b> 4.26.2026: </b>
+- Fixed forgotton check gate requirements and its display <br>
+
+
 Later, i will add notifiers (stay tuned for v0.7!) but for now you might just have to keep switching layers as for time <br>
 
 
