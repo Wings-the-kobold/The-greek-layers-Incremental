@@ -140,7 +140,7 @@ Fix 23:<br>
 <br>
 <b> 4.26.2026: </b>
 - Fixed forgotton check gate requirements and its display <br>
-
+- Fixed the softlock via Eclarity QoL is moved from 6 to 5
 
 Later, i will add notifiers (stay tuned for v0.7!) but for now you might just have to keep switching layers as for time <br>
 

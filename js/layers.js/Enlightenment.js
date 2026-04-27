@@ -406,7 +406,8 @@ addLayer("E", {
 
     }],
             "upgrades",
- 
+            ["clickable",12],
+
           ],
          
 
@@ -1129,7 +1130,9 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     (which is ${format(player.C.Score.pow(0.25))} btw)<br>
     - Heirarchy's effect boost Solarity gain cap by ^0.33<br>
     (which is ${format(GetHeirarchyBonus().pow(0.33))} btw)<br>
-    - Unlock ??? <br>`
+    - Unlock ??? <br>
+    <p>Oh also, keep Eclarity on Future Eclipsifications. (and start with it) because at this point it's impossible to obtain.</p>
+    `
 
     if (player.L.TimeTillDarkActive == true) TillDarkText = `<h3 style="color:#7d0f9c">...</h3><br>`
 
@@ -1158,7 +1161,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
   effectDescription() {
 
     let Heirarchy = player.C.CenterPoints.pow_base(5).clampMin(1)
-
+//
     if (player.E.EclipseTier.gte(this.id))
     return `
     - QOL5: Generate 10% of Solinity gain per second. (Disables Solinity reset) <br>
@@ -1166,7 +1169,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
     - Dark and Light generation is raised to 1.25<br>
     - Unlock Solaris, the solar sun.<br>
      <p style="color:red"> DEBUFF: Recontrol buyables scalings is raised ^1.5</p><br>
-    <p>Oh also, keep Eclarity on Future Eclipsifications. (and start with it) because at this point it's impossible to obtain.</p>
+    
     ` 
 
 // player.E.EclipseTier.gte(6)
@@ -1344,7 +1347,7 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
                   onClick() {
                     
                     if (player.E.EclipseTier.gte(6)) {}
-                    else if (player.E.EclipseTier.eq(5)) player.E.upgrades = [11]; else player.E.upgrades = []
+                    else if (player.E.EclipseTier.gte(4)) player.E.upgrades = [11]; else player.E.upgrades = []
 
 
                     if (player.E.ENLlevels.gte(player.E.ETCost)) {
@@ -1534,6 +1537,24 @@ let effect2 = getBuyableAmount(this.layer, this.id).pow_base(1.2)
 
           }
     },
+
+
+
+              14: {
+                 display() {
+                  let gain = new Decimal(1)
+                  gain = player.E.ENLlevels
+
+                  //"septic"  
+                return `
+                   These autobuyers aren't letting me get eclatiyt
+                  `
+                  
+                },
+
+
+              }
+
             },
 
     row: 2, // Row the layer is in on the tree (0 is the first row)
