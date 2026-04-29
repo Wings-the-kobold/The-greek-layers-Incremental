@@ -465,9 +465,9 @@ addLayer("E", {
           */
           let text = ``
         
-          let modifiedReq = ``
+          let modifiedReq = `Expansion I #10, Phaser #68, <i>Cytochrisy #12</i>, Multiply #674`
 
-          if (!(player.Sol.solarBurst || player.Sol.testBurst)) modifiedReq = `<s>Expansion I #10,</s> Phaser #68, <i>Cytochrisy #12</i>, Multiply #674`
+          if ((player.Sol.solarBurst || player.Sol.testBurst)) modifiedReq = `<s>Expansion I #10,</s> Phaser #68, <i>Cytochrisy #12</i>, Multiply #674`
 
           if (!Check("E",11).has) text = `
           It is unknown, for the darkness lurks with pure rage...<br><br>
@@ -497,7 +497,7 @@ addLayer("E", {
       },  
     EnterReq() {
 
-    if (!(player.Sol.solarBurst || player.Sol.testBurst)) return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(12))   
+    if ((player.Sol.solarBurst || player.Sol.testBurst)) return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(12))   
     else return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(10) && getBuyableAmount("E",11).gte(8))   
     },   
     CompReq() {
