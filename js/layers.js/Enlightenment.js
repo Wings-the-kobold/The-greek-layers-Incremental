@@ -463,6 +463,11 @@ addLayer("E", {
           /*
 
           */
+
+          let showButton = ``
+          if (this.CompReq) showButton = `<br><br> <button onclick="Check('E',11).onClick()"> Remember who it once was... </button>`
+
+
           let text = ``
         
           let modifiedReq = `Expansion I #10, Phaser #68, <i>Cytochrisy #12</i>, Multiply #674`
@@ -473,7 +478,7 @@ addLayer("E", {
           It is unknown, for the darkness lurks with pure rage...<br><br>
           Requires:${modifiedReq}
           `
-          else if (player["E"].activeCheck == "Forgotton") text = `Goal: 1.16e20 Shade...? and 2 Center Points`       
+          if (player["E"].activeCheck == "Forgotton") text = `Goal: 1.16e20 Shade...? and 2 Center Points${showButton}`       
           if (Check("E",11).has) text = `Phaser is added into the Modifier score formula. You now Generate Solar shards ^0.2 of your current golden light<br>`
          
           if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) return `<h1> what are you waiting for... </h1>`
@@ -481,11 +486,11 @@ addLayer("E", {
           
         },
         onClick() {
-          if (player["E"].activeCheck == "Forgotton" && Check("E",11).CompReq == true ) {
+          if (player["E"].activeCheck == "Forgotton" && Check("E",11).CompReq ) {
             player["E"].forgotton = true
             player["E"].activeCheck = ""
           }
-          else if (Check("E",11).canEnter == true) player.E.activeCheck = "Forgotton"; layer2Reset()
+          else if (Check("E",11).canEnter) player.E.activeCheck = "Forgotton"; layer2Reset()
     
         },
         unlocked() {
@@ -493,28 +498,20 @@ addLayer("E", {
           else false
         },
     canEnter() {
-      return (Check("E",11).EnterReq == true && !Check("E",11).has && player["E"].activeCheck == "")                                                             
+      return (Check("E",11).EnterReq && !Check("E",11).has && player["E"].activeCheck == "")                                                             
       },  
     EnterReq() {
 
-    if ((player.Sol.solarBurst || player.Sol.testBurst)) return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(12))   
-    else return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(10) && getBuyableAmount("E",11).gte(8))   
+    if ( (player.Sol.solarBurst || player.Sol.testBurst)) return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(12))   
+    else return (getBuyableAmount("S",12).gte(674) && getBuyableAmount("GL",11).gte(68) && getBuyableAmount("E",12).gte(10) && getBuyableAmount("E",11).gte(8))    
+
     },   
-    CompReq() {
-    return player.C.CenterPoints.gte(2) && player.points.gte(1.16e20)
-    },
+    CompReq() {return (player.C.CenterPoints.gte(2) && player.points.gte(1.16e20))},
     
     has() { return player["E"].forgotton },
     
     png() {if ((player.Sol["TBCore"].active && player.Sol["TBCore"].pending.gte(1))) return `<p><img src="resources/The Cores Vision.png" style="width:100px;height:100px;"></p> `
          else return `<p><img src="resources/The Forgotton.png" style="width:150px;height:150px;"></p> `}
-    
-    
-    
-    
-    
-    
-    
     
     
     },

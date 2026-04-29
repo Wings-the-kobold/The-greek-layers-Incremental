@@ -453,6 +453,8 @@ function gridRun(layer, func, data, id) {
 }
 
 function Check(layer, id) {return tmp[layer].Check[id]}
+
+
 function Viewer(layer, id) {return tmp[layer].Viewer[id]}
 function Reset(layer, id) {return tmp[layer].Reset[id]}
 function Ception(layer,id) {return tmp[layer].buyables[id].gain}
@@ -775,3 +777,14 @@ devtools.toString = function() {
 //R-Swarm*'s 
 
 
+template: `
+		<div v-if="tmp[layer].buyables" class="upgTable">
+			<respec-button v-if="tmp[layer].buyables.respec && !(tmp[layer].buyables.showRespec !== undefined && tmp[layer].buyables.showRespec == false)" :layer = "layer" v-bind:style="[{'margin-bottom': '12px'}, tmp[layer].componentStyles['respec-button']]"></respec-button>
+			<div v-for="row in (data === undefined ? tmp[layer].buyables.rows : data)" class="upgRow">
+				<div v-for="col in tmp[layer].buyables.cols"><div v-if="tmp[layer].buyables[row*10+col]!== undefined && tmp[layer].buyables[row*10+col].unlocked" class="upgAlign" v-bind:style="{'margin-left': '0px', 'margin-right': '0px',  'height': (data ? data : 'inherit'),}">
+					<buyable :layer = "layer" :data = "row*10+col"></buyable>
+				</div></div>
+				<br >
+			</div>
+		</div>
+	`

@@ -214,7 +214,7 @@ ul {
 }
 
 .overlayThing {
-	z-index: 10000;
+	z-index: -2;
 	pointer-events:auto;
 }
 

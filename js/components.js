@@ -262,9 +262,11 @@ function loadVue() {
 
 	Vue.component('buyables', {
 		props: ['layer', 'data'],
+
 		template: `
 		<div v-if="tmp[layer].buyables" class="upgTable">
 			<respec-button v-if="tmp[layer].buyables.respec && !(tmp[layer].buyables.showRespec !== undefined && tmp[layer].buyables.showRespec == false)" :layer = "layer" v-bind:style="[{'margin-bottom': '12px'}, tmp[layer].componentStyles['respec-button']]"></respec-button>
+			
 			<div v-for="row in (data === undefined ? tmp[layer].buyables.rows : data)" class="upgRow">
 				<div v-for="col in tmp[layer].buyables.cols"><div v-if="tmp[layer].buyables[row*10+col]!== undefined && tmp[layer].buyables[row*10+col].unlocked" class="upgAlign" v-bind:style="{'margin-left': '0px', 'margin-right': '0px',  'height': (data ? data : 'inherit'),}">
 					<buyable :layer = "layer" :data = "row*10+col"></buyable>
@@ -273,7 +275,14 @@ function loadVue() {
 			</div>
 		</div>
 	`
-	})
+
+
+
+	}
+	)
+		
+		
+	
 
 	Vue.component('buyable', {
 		props: ['layer', 'data'],
@@ -689,12 +698,6 @@ function loadVue() {
 	} )
 
 
-
-
-
-
-
-
 	Vue.component('Reset', {	
 		props: ['layer','id','data'],		
 		data() {
@@ -737,17 +740,10 @@ function loadVue() {
 
 
 </div> 
-`, //v-html="tmp[layer].Reset[data.id].buttonText"
+`
 
-/* 
-
-*/
 
 	} )
-
-
-	
-
 
 	Vue.component('Check', {
 		props: ['layer','id','data'],	
@@ -763,6 +759,7 @@ function loadVue() {
 				isActive() {
 					if (player[layer].activeCheck == undefined) { 
 						return false
+						console.warn(player[layer] + " appears to be undefined.")
 					} else if (player[layer].activeCheck == "") {
 						return false
 					} else {
@@ -804,7 +801,7 @@ template: `<template><div v-if="Check(layer, data.id).unlocked"  >
 			v-if="player[layer].activeCheck == '' && !Check(layer, data.id).EnterReq && !Check(layer, data.id).has "
 			v-bind:class="{locked: true}"
 			
-			> [Locked] - Get the above requirements to proceed </button>
+			> [Locked] - Get the above requirements to enter this check </button>
 					
 			<button 
 			style=" display: inline-block; padding: 2px; width: 150px;" 
@@ -812,7 +809,7 @@ template: `<template><div v-if="Check(layer, data.id).unlocked"  >
 			v-if="player[layer].activeCheck == '' && Check(layer, data.id).EnterReq && !Check(layer, data.id).has "
 			v-bind:class="{can: Check(layer, data.id).EnterReq , locked: !Check(layer, data.id).EnterReq }"
 			
-			> Check For Bonuses </button>
+			> Check For Bonuses...? </button>
 
 			<button 
 			style=" display: inline-block; padding: 2px; width: 150px;" 
@@ -847,7 +844,6 @@ template: `<template><div v-if="Check(layer, data.id).unlocked"  >
 
 
 	// Unique Components / Custom Components as 1
-
 
 
 

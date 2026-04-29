@@ -140,9 +140,21 @@ Fix 23:<br>
 <br>
 <b> 4.26.2026: </b>
 - Fixed forgotton check gate requirements and its display <br>
-- Fixed the softlock via Eclarity QoL is moved from 6 to 5
+- Fixed the softlock via Eclarity QoL is moved from 6 to 5<br>
 
-Later, i will add notifiers (stay tuned for v0.7!) but for now you might just have to keep switching layers as for time <br>
+<b> 4.29.2026: </b>
+- "Fixed" Forgottons check upgrades completion logic<br>
+
+
+
+things in the future to add, or what's coming on V0.7<br>
+- Notifiers <br>
+- Improved TMT engine <br>
+- PESTILLESSENCE! <br>
+- Style/UI improvements/tweaks <br>
+- More settings regarding automation <br>
+- 4 Minutes Until Dark Full rework! <br>
+- 
 
 
 <br><br>
